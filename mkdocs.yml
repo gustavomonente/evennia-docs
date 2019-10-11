@@ -1,0 +1,20 @@
+site_name: "Evennia Manual"
+use_directory_urls: false
+nav:
+  - Home: index.md
+  - Admin: Administrative-Docs.md
+  - Building: Builder-Docs.md
+  - Game Development: Developer-Central.md
+  - Tutorials: Tutorials.md
+markdown_extensions:
+  - toc:
+      permalink: true
+  - extra:
+      fenced_code: true
+      tables: true
+  - wikilinks: 
+      end_url: .html
+plugins:
+  - search
+  - htmlproofer
+
