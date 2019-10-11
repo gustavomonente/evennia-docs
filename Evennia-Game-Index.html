@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Evennia Game Index - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#connect-with-the-wizard">Connect with the wizard</a></li>
+        <li class="main "><a href="#manual-settings">Manual Settings</a></li>
+        <li class="main "><a href="#non-public-games">Non-public games</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Connecting-the-game-to-the-Evennia-game-index"></a></p>
+<p>The <a href="http://games.evennia.com">Evennia game index</a> is a list of games built or
+being built with Evennia. Anyone is allowed to add their game to the index
+- also if you have just started development and don't yet accept external
+players. It's a chance for us to know you are out there and for you to make us
+intrigued about or excited for your upcoming game! </p>
+<p>All we ask is that you check so your game-name does not collide with one
+already in the list - be nice! </p>
+<h2 id="connect-with-the-wizard">Connect with the wizard<a class="headerlink" href="#connect-with-the-wizard" title="Permanent link">&para;</a></h2>
+<p>From your game dir, run</p>
+<pre><code>evennia connections
+</code></pre>
+<p>This will start the Evennia <em>Connection wizard</em>. From the menu, select to add
+your game to the Evennia Game Index. Follow the prompts and don't forget to
+save your new settings in the end. Use <code>quit</code> at any time if you change your
+mind.</p>
+<blockquote>
+<p>The wizard will create a new file <code>mygame/server/conf/connection_settings.py</code>
+with the settings you chose. This is imported from the end of your main
+settings file and will thus override it. You can edit this new file if you
+want, but remember that if you run the wizard again, your changes may get
+over-written.</p>
+</blockquote>
+<h2 id="manual-settings">Manual Settings<a class="headerlink" href="#manual-settings" title="Permanent link">&para;</a></h2>
+<p>If you don't want to use the wizard (maybe because you already have the client installed from an earlier version), you can also configure your index entry in your settings file (<code>mygame/server/conf/settings.py</code>). Add the following: </p>
+<pre><code class="python">GAME_INDEX_ENABLED = True 
+
+GAME_INDEX_LISTING = {
+    # required 
+    'game_status': 'pre-alpha',            # pre-alpha, alpha, beta, launched
+    'listing_contact': &quot;dummy@dummy.com&quot;,  # not publicly shown.
+    'short_description': 'Short blurb',    
+
+    # optional 
+    'long_description':
+        &quot;Longer description that can use Markdown like *bold*, _italic_&quot;
+        &quot;and [linkname](http://link.com). Use \n for line breaks.&quot;
+    'telnet_hostname': 'dummy.com',            
+    'telnet_port': '1234',                     
+    'web_client_url': 'dummy.com/webclient',   
+    'game_website': 'dummy.com',              
+    # 'game_name': 'MyGame',  # set only if different than settings.SERVERNAME
+}
+</code></pre>
+
+<p>Of these, the <code>game_status</code>, <code>short_description</code> and <code>listing_contact</code> are
+required.  The <code>listing_contact</code> is not publicly visible and is only meant as a
+last resort if we need to get in touch with you over any listing issue/bug (so
+far this has never happened).</p>
+<p>If <code>game_name</code> is not set, the <code>settings.SERVERNAME</code> will be used. Use empty strings 
+(<code>''</code>) for optional fields you don't want to specify at this time. </p>
+<h2 id="non-public-games">Non-public games<a class="headerlink" href="#non-public-games" title="Permanent link">&para;</a></h2>
+<p>If you don't specify neither <code>telnet_hostname + port</code> nor
+<code>web_client_url</code>, the Game index will list your game as <em>Not yet public</em>.
+Non-public games are moved to the bottom of the index since there is no way
+for people to try them out. But it's a good way to show you are out there, even
+if you are not ready for players yet.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

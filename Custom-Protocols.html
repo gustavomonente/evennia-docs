@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Custom Protocols - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#adding-custom-protocols">Adding custom Protocols</a></li>
+        <li class="main "><a href="#writing-your-own-protocol">Writing your own Protocol</a></li>
+            <li><a href="#sending-data-out">Sending data out</a></li>
+            <li><a href="#receiving-data">Receiving data</a></li>
+        <li class="main "><a href="#assorted-notes">Assorted notes</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Implementing-new-server-protocols-(advanced)."></a></p>
+<p><em>Note: This is considered an advanced topic and is mostly of interest to users planning to implement
+their own custom client protocol.</em></p>
+<p>A <a href="Portal-and-Server-Sessions">PortalSession</a> is the basic data object representing an external
+connection to the Evennia <a href="Portal-And-Server">Portal</a> -- usually a human player running a mud client
+of some kind.  The way they connect (the language the player's client and Evennia use to talk to
+each other) is called the connection <em>Protocol</em>. The most common such protocol for MUD:s is the
+<em>Telnet</em> protocol. All Portal Sessions are stored and managed by the Portal's <em>sessionhandler</em>.</p>
+<p>It's technically sometimes hard to separate the concept of <em>PortalSession</em> from the concept of
+<em>Protocol</em> since both depend heavily on the other (they are often created as the same class). When data flows through this part of the system, this is how it goes </p>
+<pre><code># In the Portal
+You &lt;-&gt; 
+  Protocol + PortalSession &lt;-&gt; 
+    PortalSessionHandler &lt;-&gt;
+      (AMP) &lt;-&gt; 
+        ServerSessionHandler &lt;-&gt;
+          ServerSession &lt;-&gt;
+            InputFunc  
+</code></pre>
+
+<p>(See the <a href="Messagepath.html">Message Path</a> for the bigger picture of how data flows through Evennia). The parts that needs to be customized to make your own custom protocol is the <code>Protocol + PortalSession</code> (which translates between data coming in/out over the wire to/from Evennia internal representation) as well as the <code>InputFunc</code> (which handles incoming data).</p>
+<h2 id="adding-custom-protocols">Adding custom Protocols<a class="headerlink" href="#adding-custom-protocols" title="Permanent link">&para;</a></h2>
+<p>Evennia has a plugin-system that add the protocol as a new "service" to the application.</p>
+<p>Take a look at <code>evennia/server/portal/portal.py</code>, notably the sections towards the end of that file.
+These are where the various in-built services like telnet, ssh, webclient etc are added to the
+Portal (there is an equivalent but shorter list in <code>evennia/server/server.py</code>).</p>
+<p>To add a new service of your own (for example your own custom client protocol) to the Portal or
+Server, look at  <code>mygame/server/conf/server_services_plugins</code> and <code>portal_services_plugins</code>. By
+default Evennia will look into these modules to find plugins. If you wanted to have it look for more
+modules, you could do the following:</p>
+<pre><code class="python">    # add to the Server
+    SERVER_SERVICES_PLUGIN_MODULES.append('server.conf.my_server_plugins')
+    # or, if you want to add to the Portal
+    PORTAL_SERVICES_PLUGIN_MODULES.append('server.conf.my_portal_plugins')
+</code></pre>
+
+<p>When adding a new connection you'll most likely only need to add new things to the <code>PORTAL_SERVICES_PLUGIN_MODULES</code>.</p>
+<p>This module can contain whatever you need to define your protocol, but it <em>must</em> contain a function
+<code>start_plugin_services(app)</code>. This is called by the Portal as part of its upstart. The function
+<code>start_plugin_services</code> must contain all startup code the server need.  The <code>app</code> argument is a
+reference to the Portal/Server application itself so the custom service can be added to it. The
+function should not return anything.</p>
+<p>This is how it looks:</p>
+<pre><code class="python">    # mygame/server/conf/portal_services_plugins.py
+
+    # here the new Portal Twisted protocol is defined
+    class MyOwnFactory( ... ):
+       [...]
+
+    # some configs
+    MYPROC_ENABLED = True # convenient off-flag to avoid having to edit settings all the time
+    MY_PORT = 6666
+
+    def start_plugin_services(portal):
+        &quot;This is called by the Portal during startup&quot;
+         if not MYPROC_ENABLED:
+             return
+         # output to list this with the other services at startup
+         print(&quot;  myproc: %s&quot; % MY_PORT)
+
+         # some setup (simple example)
+         factory = MyOwnFactory()
+         my_service = internet.TCPServer(MY_PORT, factory)
+         # all Evennia services must be uniquely named
+         my_service.setName(&quot;MyService&quot;)
+         # add to the main portal application
+         portal.services.addService(my_service)
+</code></pre>
+
+<p>Once the module is defined and targeted in settings, just reload the server and your new
+protocol/services should start with the others.</p>
+<h2 id="writing-your-own-protocol">Writing your own Protocol<a class="headerlink" href="#writing-your-own-protocol" title="Permanent link">&para;</a></h2>
+<p>Writing a stable communication protocol from scratch is not something we'll cover here, it's no
+trivial task. The good news is that Twisted offers implementations of many common protocols, ready
+for adapting.</p>
+<p>Writing a protocol implementation in Twisted usually involves creating a class inheriting from an already existing Twisted protocol class and from <code>evennia.server.session.Session</code> (multiple inheritance), then overloading the methods that particular protocol uses to link them to the Evennia-specific inputs. </p>
+<p>Here's a example to show the concept: </p>
+<pre><code class="python"># In module that we'll later add to the system through PORTAL_SERVICE_PLUGIN_MODULES
+
+# pseudo code 
+from twisted.something import TwistedClient
+# this class is used both for Portal- and Server Sessions
+from evennia.server.session import Session 
+
+from evennia.server.portal.portalsessionhandler import PORTAL_SESSIONS
+
+class MyCustomClient(TwistedClient, Session): 
+
+    def __init__(self, *args, **kwargs): 
+        super().__init__(*args, **kwargs)
+        self.sessionhandler = PORTAL_SESSIONS
+
+    # these are methods we must know that TwistedClient uses for 
+    # communication. Name and arguments could vary for different Twisted protocols
+    def onOpen(self, *args, **kwargs):
+        # let's say this is called when the client first connects
+
+        # we need to init the session and connect to the sessionhandler. The .factory
+        # is available through the Twisted parents
+
+        client_address = self.getClientAddress()  # get client address somehow
+
+        self.init_session(&quot;mycustom_protocol&quot;, client_address, self.factory.sessionhandler)
+        self.sessionhandler.connect(self)
+
+    def onClose(self, reason, *args, **kwargs):
+        # called when the client connection is dropped
+        # link to the Evennia equivalent
+        self.disconnect(reason)
+
+    def onMessage(self, indata, *args, **kwargs): 
+        # called with incoming data
+        # convert as needed here        
+        self.data_in(data=indata) 
+
+    def sendMessage(self, outdata, *args, **kwargs):
+        # called to send data out
+        # modify if needed        
+        super().sendMessage(self, outdata, *args, **kwargs)
+
+     # these are Evennia methods. They must all exist and look exactly like this
+     # The above twisted-methods call them and vice-versa. This connects the protocol
+     # the Evennia internals.  
+
+     def disconnect(self, reason=None): 
+         &quot;&quot;&quot;
+         Called when connection closes. 
+         This can also be called directly by Evennia when manually closing the connection.
+         Do any cleanups here.
+         &quot;&quot;&quot;
+         self.sessionhandler.disconnect(self)
+
+     def at_login(self): 
+         &quot;&quot;&quot;
+         Called when this session authenticates by the server (if applicable)
+         &quot;&quot;&quot;    
+
+     def data_in(self, **kwargs):
+         &quot;&quot;&quot;
+         Data going into the server should go through this method. It 
+         should pass data into `sessionhandler.data_in`. THis will be called
+         by the sessionhandler with the data it gets from the approrpriate 
+         send_* method found later in this protocol. 
+         &quot;&quot;&quot;
+         self.sessionhandler.data_in(self, text=kwargs['data'])
+
+     def data_out(self, **kwargs):
+         &quot;&quot;&quot;
+         Data going out from the server should go through this method. It should
+         hand off to the protocol's send method, whatever it's called.
+         &quot;&quot;&quot;
+         # we assume we have a 'text' outputfunc
+         self.onMessage(kwargs['text'])
+
+     # 'outputfuncs' are defined as `send_&lt;outputfunc_name&gt;`. From in-code, they are called 
+     # with `msg(outfunc_name=&lt;data&gt;)`. 
+
+     def send_text(self, txt, *args, **kwargs): 
+         &quot;&quot;&quot;
+         Send text, used with e.g. `session.msg(text=&quot;foo&quot;)`
+         &quot;&quot;&quot;
+         # we make use of the 
+         self.data_out(text=txt)
+
+     def send_default(self, cmdname, *args, **kwargs): 
+         &quot;&quot;&quot;
+         Handles all outputfuncs without an explicit `send_*` method to handle them.
+         &quot;&quot;&quot;
+         self.data_out(**{cmdname: str(args)})
+
+</code></pre>
+
+<p>The principle here is that the Twisted-specific methods are overridden to redirect inputs/outputs to the Evennia-specific methods. </p>
+<h3 id="sending-data-out">Sending data out<a class="headerlink" href="#sending-data-out" title="Permanent link">&para;</a></h3>
+<p>To send data out through this protocol, you'd need to get its Session and then you could e.g. </p>
+<pre><code class="python">    session.msg(text=&quot;foo&quot;)
+</code></pre>
+
+<p>The message will pass through the system such that the sessionhandler will dig out the session and check if it has a <code>send_text</code> method (it has). It will then pass the "foo" into that method, which in our case means sending "foo" across the network. </p>
+<h3 id="receiving-data">Receiving data<a class="headerlink" href="#receiving-data" title="Permanent link">&para;</a></h3>
+<p>Just because the protocol is there, does not mean Evennia knows what to do with it. An Inputfuncs.md must exist to receive it. In the case of the <code>text</code> input exemplified above, Evennia alredy handles this input - it will parse it as a Command name followed by its inputs. So handle that you need to simply add a cmdset with commands on your receiving Session (and/or the Object/Character it is puppeting). If not you may need to add your own Inputfunc (see the Inputfuncs.md page for how to do this. </p>
+<p>These might not be as clear-cut in all protocols, but the principle is there. These four basic
+components - however they are accessed - links to the <em>Portal Session</em>, which is the actual common
+interface between the different low-level protocols and Evennia.</p>
+<h2 id="assorted-notes">Assorted notes<a class="headerlink" href="#assorted-notes" title="Permanent link">&para;</a></h2>
+<p>To take two examples, Evennia supports the <em>telnet</em> protocol as well as <em>webclient</em>, via ajax or
+websockets. You'll find that whereas telnet is a textbook example of a Twisted protocol as seen
+above, the ajax protocol looks quite different due to how it interacts with the
+webserver through long-polling (comet) style requests. All the necessary parts
+mentioned above are still there, but by necessity implemented in very different
+ways. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

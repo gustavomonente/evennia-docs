@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Communications - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#msg">Msg</a></li>
+            <li><a href="#properties-defined-on-msg">Properties defined on Msg</a></li>
+        <li class="main "><a href="#tempmsg">TempMsg</a></li>
+        <li class="main "><a href="#channels">Channels</a></li>
+            <li><a href="#properties-defined-on-channel">Properties defined on Channel</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="How-to-code-with-Channels,-Messages-and-other-systems-for-sending-info-to-others."></a></p>
+<p>Apart from moving around in the game world and talking, players might need other forms of communication. This is offered by Evennia's <code>Comm</code> system. Stock evennia implements a 'MUX-like' system of channels, but there is nothing stopping you from changing things to better suit your taste. </p>
+<p>Comms rely on two main database objects - <code>Msg</code> and <code>Channel</code>. There is also the <code>TempMsg</code> which mimics the API of a <code>Msg</code> but has no connection to the database.</p>
+<h2 id="msg">Msg<a class="headerlink" href="#msg" title="Permanent link">&para;</a></h2>
+<p>The <code>Msg</code> object is the basic unit of communication in Evennia. A message works a little like an e-mail; it always has a sender (a <a href="Accounts.html">Account</a>) and one or more recipients. The recipients may be either other Accounts, or a <em>Channel</em> (see below). You can mix recipients to send the message to both Channels and Accounts if you like.</p>
+<p>Once created, a <code>Msg</code> is normally not changed. It is peristently saved in the database. This allows for comprehensive logging of communications. This could be useful for allowing senders/receivers to have 'mailboxes' with the messages they want to keep. </p>
+<h3 id="properties-defined-on-msg">Properties defined on <code>Msg</code><a class="headerlink" href="#properties-defined-on-msg" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>senders</code> - this is a reference to one or many <a href="Accounts.html">Account</a> or <a href="Objects.html">Objects</a> (normally <em>Characters</em>) sending the message.  This could also be an <em>External Connection</em> such as a message coming in over IRC/IMC2 (see below). There is usually only one sender, but the types can also be mixed in any combination.</li>
+<li><code>receivers</code> - a list of target <a href="Accounts.html">Accounts</a>, <a href="Objects.html">Objects</a> (usually <em>Characters</em>) or <em>Channels</em> to send the message to. The types of receivers can be mixed in any combination.</li>
+<li><code>header</code> - this is a text field for storing a title or header for the message. </li>
+<li><code>message</code> - the actual text being sent.</li>
+<li><code>date_sent</code> - when message was sent (auto-created).</li>
+<li><code>locks</code> - a <a href="Locks.html">lock definition</a>.</li>
+<li><code>hide_from</code> - this can optionally hold a list of objects, accounts or channels to hide this <code>Msg</code> from. This relationship is stored in the database primarily for optimization reasons, allowing for quickly post-filter out messages not intended for a given target.  There is no in-game methods for setting this, it's intended to be done in code.</li>
+</ul>
+<p>You create new messages in code using <code>evennia.create_message</code> (or <code>evennia.utils.create.create_message.</code>) </p>
+<h2 id="tempmsg">TempMsg<a class="headerlink" href="#tempmsg" title="Permanent link">&para;</a></h2>
+<p><code>evennia.comms.models</code> also has <code>TempMsg</code> which mimics the API of <code>Msg</code> but is not connected to the database. TempMsgs are used by Evennia for channel messages by default. They can be used for any system expecting a <code>Msg</code> but when you don't actually want to save anything. </p>
+<h2 id="channels">Channels<a class="headerlink" href="#channels" title="Permanent link">&para;</a></h2>
+<p>Channels are <a href="Typeclasses.html">Typeclassed</a> entities, which mean they can be easily extended and their functionality modified. To change which channel typeclass Evennia uses, change settings.BASE_CHANNEL_TYPECLASS.</p>
+<p>Channels act as generic distributors of messages. Think of them as "switch boards" redistributing <code>Msg</code> or <code>TempMsg</code> objects. Internally they hold a list of "listening" objects and any <code>Msg</code> (or <code>TempMsg</code>) sent to the channel will be distributed out to all channel listeners. Channels have <a href="Locks.html">Locks</a> to limit who may listen and/or send messages through them. </p>
+<p>The <em>sending</em> of text to a channel is handled by a dynamically created <a href="Commands.html">Command</a> that always have the same name as the channel. This is created for each channel by the global <code>ChannelHandler</code>. The Channel command is added to the Account's cmdset and normal command locks are used to determine which channels are possible to write to. When subscribing to a channel, you can then just write the channel name and the text to send. </p>
+<p>The default ChannelCommand (which can be customized by pointing <code>settings.CHANNEL_COMMAND_CLASS</code> to your own command), implements a few convenient features: </p>
+<ul>
+<li>It only sends <code>TempMsg</code> objects. Instead of storing individual entries in the database it instead dumps channel output a file log in <code>server/logs/channel_&lt;channelname&gt;.log</code>. This is mainly for practical reasons - we find one rarely need to query individual Msg objects at a later date. Just stupidly dumping the log to a file also means a lot less database overhead. </li>
+<li>It adds a <code>/history</code> switch to view the 20 last messages in the channel. These are read from the end of the log file. One can also supply a line number to start further back in the file (but always 20 entries at a time). It's used like this: <pre><code>&gt; public/history 
+&gt; public/history 35
+</code></pre>
+</li>
+</ul>
+<p>There are two default channels created in stock Evennia - <code>MudInfo</code> and <code>Public</code>.  <code>MudInfo</code> receives server-related messages meant for Admins whereas <code>Public</code>  is open to everyone to chat on (all new accounts are automatically joined to it when logging in, it is useful for asking questions). The default channels are defined by the <code>DEFAULT_CHANNELS</code> list (see <code>evennia/settings_default.py</code> for more details).</p>
+<p>You create new channels with <code>evennia.create_channel</code> (or <code>evennia.utils.create.create_channel</code>).</p>
+<p>In code, messages are sent to a channel using the <code>msg</code> or <code>tempmsg</code> methods of channels: </p>
+<pre><code> channel.msg(msgobj, header=None, senders=None, persistent=True)
+</code></pre>
+<p>The argument <code>msgobj</code> can be either a string, a previously constructed <code>Msg</code> or a <code>TempMsg</code> - in the latter cases all the following keywords are ignored since the message objects already contains all this information. If <code>msgobj</code> is a string, the other keywords are used for creating a new <code>Msg</code> or <code>TempMsg</code> on the fly, depending on if <code>persistent</code> is set or not. By default, a <code>TempMsg</code> is emitted for channel communication (since the default ChannelCommand instead logs to a file). </p>
+<pre><code class="python">    # assume we have a 'sender' object and a channel named 'mychan'
+
+    # manually sending a message to a channel
+    mychan.msg(&quot;Hello!&quot;, senders=[sender])
+</code></pre>
+
+<h3 id="properties-defined-on-channel">Properties defined on <code>Channel</code><a class="headerlink" href="#properties-defined-on-channel" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>key</code> - main name for channel</li>
+<li><code>aliases</code> - alternative native names for channels</li>
+<li><code>desc</code> - optional description of channel (seen in listings)</li>
+<li><code>keep_log</code> (bool) - if the channel should store messages (default)</li>
+<li><code>locks</code> - A <a href="Locks.html">lock definition</a>. Channels normally use the access_types <code>send, control</code> and <code>listen</code>.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

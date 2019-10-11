@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>How to connect Evennia to Twitter - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#configuring-twitter">Configuring Twitter</a></li>
+        <li class="main "><a href="#install-the-twitter-python-module">Install the twitter python module</a></li>
+        <li class="main "><a href="#a-basic-tweet-command">A basic tweet command</a></li>
+        <li class="main "><a href="#next-steps">Next Steps</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Connecting-your-game-to-a-twitter-account."></a></p>
+<p><a href="http://en.wikipedia.org/wiki/twitter">Twitter</a> is an online social networking service that enables users to send and read short 280-character messages called "tweets". Following is a short tutorial explaining how to enable users to send tweets from inside Evennia.</p>
+<h2 id="configuring-twitter">Configuring Twitter<a class="headerlink" href="#configuring-twitter" title="Permanent link">&para;</a></h2>
+<p>You must first have a Twitter account. Log in and register an App at the <a href="https://apps.twitter.com/">Twitter Dev Site</a>. Make sure you enable access to "write" tweets!</p>
+<p>To tweet from Evennia you will need both the "API Token" and the "API secret" strings as well as the "Access Token" and "Access Secret" strings.</p>
+<p>Twitter changed their requirements to require a Mobile number on the Twitter account to register new apps with write access.  If you're unable to do this, please see <a href="https://dev.twitter.com/notifications/new-apps-registration">this Dev post</a> which describes how to get around it.</p>
+<h2 id="install-the-twitter-python-module">Install the twitter python module<a class="headerlink" href="#install-the-twitter-python-module" title="Permanent link">&para;</a></h2>
+<p>To use Twitter you must install the <a href="https://pypi.python.org/pypi/twitter">Twitter</a> Python module:</p>
+<pre><code>pip install python-twitter
+</code></pre>
+
+<h2 id="a-basic-tweet-command">A basic tweet command<a class="headerlink" href="#a-basic-tweet-command" title="Permanent link">&para;</a></h2>
+<p>Evennia doesn't have a <code>tweet</code> command out of the box so you need to write your own little <a href="Commands.html">Command</a> in order to tweet. If you are unsure about how commands work and how to add them, it can be an idea to go through the <a href="https://github.com/evennia/evennia/wiki/Adding%20Command%20Tutorial">Adding a Command Tutorial</a> before continuing.</p>
+<p>You can create the command in a separate command module (something like <code>mygame/commands/tweet.py</code>) or together with your other custom commands, as you prefer.  </p>
+<p>This is how it can look: </p>
+<pre><code class="python">import twitter
+from evennia import Command
+
+# here you insert your unique App tokens
+# from the Twitter dev site
+TWITTER_API = twitter.Api(consumer_key='api_key',
+                          consumer_secret='api_secret',
+                          access_token_key='access_token_key',
+                          access_token_secret='access_token_secret')
+
+class CmdTweet(Command):
+    &quot;&quot;&quot;
+    Tweet a message
+
+    Usage: 
+      tweet &lt;message&gt;
+
+    This will send a Twitter tweet to a pre-configured Twitter account.
+    A tweet has a maximum length of 280 characters. 
+    &quot;&quot;&quot;
+
+    key = &quot;tweet&quot;
+    locks = &quot;cmd:pperm(tweet) or pperm(Developers)&quot;
+    help_category = &quot;Comms&quot;
+
+    def func(self):
+        &quot;This performs the tweet&quot;
+
+        caller = self.caller
+        tweet = self.args
+
+        if not tweet:
+            caller.msg(&quot;Usage: tweet &lt;message&gt;&quot;)      
+            return
+
+        tlen = len(tweet)
+        if tlen &gt; 280:
+            caller.msg(&quot;Your tweet was %i chars long (max 280).&quot; % tlen)
+            return
+
+        # post the tweet        
+        TWITTER_API.PostUpdate(tweet)
+
+        caller.msg(&quot;You tweeted:\n%s&quot; % tweet)
+</code></pre>
+
+<p>Be sure to substitute your own actual API/Access keys and secrets in the appropriate places. </p>
+<p>We default to limiting tweet access to players with <code>Developers</code>-level access <em>or</em> to those players that have the permission "tweet" (allow individual characters to tweet with <code>@perm/player playername = tweet</code>). You may change the <a href="Locks.html">lock</a> as you feel is appropriate. Change the overall permission to <code>Players</code> if you want everyone to be able to tweet. </p>
+<p>Now add this command to your default command set (e.g in <code>mygame/commands/defalt_cmdsets.py</code>") and reload the server. From now on those with access can simply use <code>tweet &lt;message&gt;</code> to see the tweet posted from the game's Twitter account.</p>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<p>This shows only a basic tweet setup, other things to do could be:</p>
+<ul>
+<li>Auto-Adding the character name to the tweet</li>
+<li>More error-checking of postings</li>
+<li>Changing locks to make tweeting open to more people</li>
+<li>Echo your tweets to an in-game channel</li>
+</ul>
+<p>Rather than using an explicit command you can set up a Script to send automatic tweets, for example to post updated game stats. See the <a href="https://github.com/evennia/evennia/wiki/Tutorial:-Tweeting-Game-Stats">Tweeting Game Stats tutorial</a> for help.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

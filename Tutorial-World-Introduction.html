@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Tutorial World Introduction - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#install">Install</a></li>
+        <li class="main "><a href="#gameplay">Gameplay</a></li>
+        <li class="main "><a href="#uninstall">Uninstall</a></li>
+        <li class="main "><a href="#notes">Notes</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="This-is-a-small-single-player-quest-with-code-you-can-learn-from."></a></p>
+<p>The <em>Tutorial World</em> is a small and functioning MUD-style game world.  It is intended to be deconstructed and used as a way to learn Evennia.  The game consists of a single-player quest and has some 20 rooms that you can explore as you seek to discover the whereabouts of a mythical weapon.</p>
+<p>The source code is fully documented. You can find the whole thing in <code>evennia/contrib/tutorial_world/</code>.</p>
+<p>Some features exemplified by the tutorial world: </p>
+<ul>
+<li>Tutorial command, giving "behind-the-scenes" help for every room and some of the special objects</li>
+<li>Rooms with custom <code>return_appearance</code> to show details. </li>
+<li>Hidden exits</li>
+<li>Objects with multiple custom interactions</li>
+<li>Large-area rooms</li>
+<li>Outdoor weather rooms</li>
+<li>Dark room, needing light source</li>
+<li>Puzzle object</li>
+<li>Multi-room puzzle</li>
+<li>Aggressive mobile with roam, pursue and battle state-engine AI</li>
+<li>Weapons, also used by mobs</li>
+<li>Simple combat system with attack/defend commands</li>
+<li>Object spawning</li>
+<li>Teleporter trap rooms</li>
+</ul>
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
+<p>The tutorial world consists of a few modules in <code>evennia/contrib/tutorial_world/</code> containing custom <a href="Typeclasses.html">Typeclasses</a> for <a href="Objects.html">rooms and objects</a> and associated <a href="Commands.html">Commands</a>.</p>
+<p>These reusable bits and pieces are then put together into a functioning game area ("world" is maybe too big a word for such a small zone) using a <a href="Batch-Processors">batch script</a> called <code>build.ev</code>. To install, log into the server as the superuser (user #1) and run:</p>
+<pre><code>@batchcommand tutorial_world.build
+</code></pre>
+<p>The world will be built (this might take a while, so don't rerun the command even if it seems the system has frozen). After finishing you will end up back in Limbo with a new exit called <code>tutorial</code>. </p>
+<p>An alternative is </p>
+<pre><code>@batchcommand/interactive tutorial_world.build
+</code></pre>
+<p>with the /interactive switch you are able to step through the building process at your own pace to see what happens in detail.</p>
+<p>To play the tutorial "correctly", you should <em>not</em> do so as superuser.  The reason for this is that many game systems ignore the presence of a superuser and will thus not work as normal. Use the <code>@quell</code> command to limit your powers or log out and reconnect as a different user. As superuser you can of course examine things "under the hood" later if you want. </p>
+<h2 id="gameplay">Gameplay<a class="headerlink" href="#gameplay" title="Permanent link">&para;</a></h2>
+<p><img alt="the castle off the moor" src="http://img05.deviantart.net/6490/i/2016/136/e/8/the_castle_off_the_moor_by_griatch_art-da2pmzu.jpg?1" /></p>
+<p><em>To get into the mood of this miniature quest, imagine you are an adventurer out to find fame and fortune. You have heard rumours of an old castle ruin by the coast. In its depth a warrior  princess was buried together with her powerful magical weapon - a valuable prize, if it's true. Of course this is a chance to adventure that you cannot turn down!</em></p>
+<p><em>You reach the ocean in the midst of a raging thunderstorm. With wind and rain screaming in your face you stand where the moor meets the sea along a high, rocky coast ...</em></p>
+<ul>
+<li>Look at everything.</li>
+<li>
+<p>Some objects are interactive in more than one way. Use the normal <code>help</code> command to get a feel for which commands are available at any given time. (use the command <code>tutorial</code> to get insight behind the scenes of the tutorial).</p>
+</li>
+<li>
+<p>In order to fight, you need to first find some type of weapon.</p>
+</li>
+<li><em>slash</em> is a normal attack</li>
+<li><em>stab</em> launches an attack that makes more damage but has a lower chance to hit.</li>
+<li><em>defend</em> will lower the chance to taking damage on your enemy's next attack.</li>
+<li>You <em>can</em> run from a fight that feels too deadly. Expect to be chased though.</li>
+<li>Being defeated is a part of the experience ...</li>
+</ul>
+<h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">&para;</a></h2>
+<p>Uninstalling the tutorial world basically means deleting all the rooms and objects it consists of. First, move out of the tutorial area. </p>
+<pre><code> @find tut#01
+ @find tut#16
+</code></pre>
+<p>This should locate the first and last rooms created by <code>build.ev</code> - <em>Intro</em> and <em>Outro</em>. If you installed normally, everything created between these two numbers should be part of the tutorial. Note their dbref numbers, for example 5 and 80. Next we just delete all objects in that range: </p>
+<pre><code> @del 5-80
+</code></pre>
+<p>You will see some errors since some objects are auto-deleted and so cannot be found when the delete mechanism gets to them. That's fine.  You should have removed the tutorial completely once the command finishes. </p>
+<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
+<p>When reading and learning from the code, keep in mind that <em>Tutorial World</em> was created with a very specific goal: to install easily and to not permanently modify the rest of the server. It therefore goes to some length to use only temporary solutions and to clean up after
+itself. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

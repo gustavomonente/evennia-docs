@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Adding room coordinates in your game - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#adding-room-coordinates-in-your-game">Adding room coordinates in your game</a></li>
+            <li><a href="#coordinates-as-tags">Coordinates as tags</a></li>
+            <li><a href="#some-additional-searches">Some additional searches</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="adding-room-coordinates-in-your-game">Adding room coordinates in your game<a class="headerlink" href="#adding-room-coordinates-in-your-game" title="Permanent link">&para;</a></h1>
+<p>This tutorial is moderately difficult in content.  You might want to be familiar and at ease with
+some Python concepts (like properties) and possibly Django concepts (like queries), although this
+tutorial will try to walk you through the process and give enough explanations each time.  If you don't feel very confident with math, don't hesitate to pause, go to the example section, which shows a tiny map, and try to walk around the code or read the explanation.</p>
+<p>Evennia doesn't have a coordinate system by default.  Rooms and other objects are linked by location
+and content:</p>
+<ul>
+<li>An object can be in a location, that is, another object.  Like an exit in a room.</li>
+<li>An object can access its content.  A room can see what objects uses it as location (that would
+  include exits, rooms, characters and so on).</li>
+</ul>
+<p>This system allows for a lot of flexibility and, fortunately, can be extended by other systems.
+Here, I offer you a way to add coordinates to every room in a way most compliant with Evennia
+design.  This will also show you how to use coordinates, find rooms around a given point for
+instance.</p>
+<h2 id="coordinates-as-tags">Coordinates as tags<a class="headerlink" href="#coordinates-as-tags" title="Permanent link">&para;</a></h2>
+<p>The first concept might be the most surprising at first glance: we will create coordinates as
+<a href="Tags.html">tags</a>.</p>
+<blockquote>
+<p>Why not attributes, wouldn't that be easier?</p>
+</blockquote>
+<p>It would.  We could just do something like <code>room.db.x = 3</code>.  The advantage of using tags is that it
+will be easy and effective to search.  Although this might not seem like a huge advantage right now,
+with a database of thousands of rooms, it might make a difference, particularly if you have a lot of
+things based on coordinates.</p>
+<p>Rather than giving you a step-by-step process, I'll show you the code.  Notice that we use
+properties to easily access and update coordinates.  This is a Pythonic approach.  Here's our first
+<code>Room</code> class, that you can modify in <code>typeclasses/rooms.py</code>:</p>
+<pre><code class="python"># in typeclasses/rooms.py
+
+from evennia import DefaultRoom
+
+class Room(DefaultRoom):
+    &quot;&quot;&quot;
+    Rooms are like any Object, except their location is None
+    (which is default). They also use basetype_setup() to
+    add locks so they cannot be puppeted or picked up.
+    (to change that, use at_object_creation instead)
+
+    See examples/object.py for a list of
+    properties and methods available on all Objects.
+    &quot;&quot;&quot;
+
+    @property
+    def x(self):
+        &quot;&quot;&quot;Return the X coordinate or None.&quot;&quot;&quot;
+        x = self.tags.get(category=&quot;coordx&quot;)
+        return int(x) if isinstance(x, str) else None
+
+    @x.setter
+    def x(self, x):
+        &quot;&quot;&quot;Change the X coordinate.&quot;&quot;&quot;
+        old = self.tags.get(category=&quot;coordx&quot;)
+        if old is not None:
+            self.tags.remove(old, category=&quot;coordx&quot;)
+        if x is not None:
+            self.tags.add(str(x), category=&quot;coordx&quot;)
+
+    @property
+    def y(self):
+        &quot;&quot;&quot;Return the Y coordinate or None.&quot;&quot;&quot;
+        y = self.tags.get(category=&quot;coordy&quot;)
+        return int(y) if isinstance(y, str) else None
+
+    @y.setter
+    def y(self, y):
+        &quot;&quot;&quot;Change the Y coordinate.&quot;&quot;&quot;
+        old = self.tags.get(category=&quot;coordy&quot;)
+        if old is not None:
+            self.tags.remove(old, category=&quot;coordy&quot;)
+        if y is not None:
+            self.tags.add(str(y), category=&quot;coordy&quot;)
+
+    @property
+    def z(self):
+        &quot;&quot;&quot;Return the Z coordinate or None.&quot;&quot;&quot;
+        z = self.tags.get(category=&quot;coordz&quot;)
+        return int(z) if isinstance(z, str) else None
+
+    @z.setter
+    def z(self, z):
+        &quot;&quot;&quot;Change the Z coordinate.&quot;&quot;&quot;
+        old = self.tags.get(category=&quot;coordz&quot;)
+        if old is not None:
+            self.tags.remove(old, category=&quot;coordz&quot;)
+        if z is not None:
+            self.tags.add(str(z), category=&quot;coordz&quot;)
+</code></pre>
+
+<p>If you aren't familiar with the concept of properties in Python, I encourage you to read a good
+tutorial on the subject.  <a href="https://www.programiz.com/python-programming/property">This article on Python properties</a> 
+is well-explained and should help you understand the idea.</p>
+<p>Let's look at our properties for <code>x</code>.  First of all is the read property.</p>
+<pre><code class="python">    @property
+    def x(self):
+        &quot;&quot;&quot;Return the X coordinate or None.&quot;&quot;&quot;
+        x = self.tags.get(category=&quot;coordx&quot;)
+        return int(x) if isinstance(x, str) else None
+</code></pre>
+
+<p>What it does is pretty simple:</p>
+<ol>
+<li>It gets the tag of category <code>"coordx"</code>.  It's the tag category where we store our X coordinate.
+   The <code>tags.get</code> method will return <code>None</code> if the tag can't be found.</li>
+<li>We convert the value to an integer, if it's a <code>str</code>.  Remember that tags can only contain <code>str</code>,
+   so we'll need to convert it.</li>
+</ol>
+<blockquote>
+<p>I thought tags couldn't contain values?</p>
+</blockquote>
+<p>Well, technically, they can't: they're either here or not.  But using tag categories, as we have
+done, we get a tag, knowing only its category.  That's the basic approach to coordinates in this
+tutorial.</p>
+<p>Now, let's look at the method that will be called when we wish to set <code>x</code> in our room:</p>
+<pre><code class="python">    @x.setter
+    def x(self, x):
+        &quot;&quot;&quot;Change the X coordinate.&quot;&quot;&quot;
+        old = self.tags.get(category=&quot;coordx&quot;)
+        if old is not None:
+            self.tags.remove(old, category=&quot;coordx&quot;)
+        if x is not None:
+            self.tags.add(str(x), category=&quot;coordx&quot;)
+</code></pre>
+
+<ol>
+<li>First, we remove the old X coordinate, if it exists.  Otherwise, we'd end up with two tags in our
+   room with "coordx" as their category, which wouldn't do at all.</li>
+<li>Then we add the new tag, giving it the proper category.</li>
+</ol>
+<blockquote>
+<p>Now what?</p>
+</blockquote>
+<p>If you add this code and reload your game, once you're logged in with a character in a room as its
+location, you can play around:</p>
+<pre><code>@py here.x
+@py here.x = 0
+@py here.y = 3
+@py here.z = -2
+@py here.z = None
+</code></pre>
+
+<p>The code might not be that easy to read, but you have to admit it's fairly easy to use.</p>
+<h2 id="some-additional-searches">Some additional searches<a class="headerlink" href="#some-additional-searches" title="Permanent link">&para;</a></h2>
+<p>Having coordinates is useful for several reasons:</p>
+<ol>
+<li>It can help in shaping a truly logical world, in its geography, at least.</li>
+<li>It can allow to look for specific rooms at given coordinates.</li>
+<li>It can be good in order to quickly find the rooms around a location.</li>
+<li>It can even be great in path-finding (finding the shortest path between two rooms).</li>
+</ol>
+<p>So far, our coordinate system can help with 1., but not much else.  Here are some methods that we
+could add to the <code>Room</code> typeclass.  These methods will just be search methods.  Notice that they are
+class methods, since we want to get rooms.</p>
+<h3 id="finding-one-room">Finding one room<a class="headerlink" href="#finding-one-room" title="Permanent link">&para;</a></h3>
+<p>First, a simple one: how to find a room at a given coordinate?  Say, what is the room at X=0, Y=0, Z=0?</p>
+<pre><code class="python">class Room(DefaultRoom):
+    # ...
+    @classmethod
+    def get_room_at(cls, x, y, z):
+        &quot;&quot;&quot;
+        Return the room at the given location or None if not found.
+
+        Args:
+            x (int): the X coord.
+            y (int): the Y coord.
+            z (int): the Z coord.
+
+        Return:
+            The room at this location (Room) or None if not found.
+
+        &quot;&quot;&quot;
+        rooms = cls.objects.filter(
+                db_tags__db_key=str(x), db_tags__db_category=&quot;coordx&quot;).filter(
+                db_tags__db_key=str(y), db_tags__db_category=&quot;coordy&quot;).filter(
+                db_tags__db_key=str(z), db_tags__db_category=&quot;coordz&quot;)
+        if rooms:
+            return rooms[0]
+
+        return None
+</code></pre>
+
+<p>This solution includes a bit of <a href="https://docs.djangoproject.com/en/1.11/topics/db/queries/">Django queries</a>. 
+Basically, what we do is reach for the object manager and search for objects with the matching tags.
+Again, don't spend too much time worrying about the mechanism, the method is quite easy to use:</p>
+<pre><code>Room.get_room_at(5, 2, -3)
+</code></pre>
+
+<p>Notice that this is a class method: you will call it from <code>Room</code> (the class), not an instance.  Though you still can:</p>
+<pre><code>@py here.get_room_at(3, 8, 0)
+</code></pre>
+<h3 id="finding-several-rooms">Finding several rooms<a class="headerlink" href="#finding-several-rooms" title="Permanent link">&para;</a></h3>
+<p>Here's another useful method that allows us to look for rooms around a given coordinate.  This is
+more advanced search and doing some calculation, beware!  Look at the following section if you're lost.</p>
+<pre><code class="python">from math import sqrt
+
+class Room(DefaultRoom):
+
+    # ...
+
+    @classmethod
+    def get_rooms_around(cls, x, y, z, distance):
+        &quot;&quot;&quot;
+        Return the list of rooms around the given coordinates.
+
+        This method returns a list of tuples (distance, room) that
+        can easily be browsed.  This list is sorted by distance (the
+        closest room to the specified position is always at the top
+        of the list).
+
+        Args:
+            x (int): the X coord.
+            y (int): the Y coord.
+            z (int): the Z coord.
+            distance (int): the maximum distance to the specified position.
+
+        Returns:
+            A list of tuples containing the distance to the specified
+            position and the room at this distance.  Several rooms
+            can be at equal distance from the position.
+
+        &quot;&quot;&quot;
+        # Performs a quick search to only get rooms in a square
+        x_r = list(reversed([str(x - i) for i in range(0, distance + 1)]))
+        x_r += [str(x + i) for i in range(1, distance + 1)]
+        y_r = list(reversed([str(y - i) for i in range(0, distance + 1)]))
+        y_r += [str(y + i) for i in range(1, distance + 1)]
+        z_r = list(reversed([str(z - i) for i in range(0, distance + 1)]))
+        z_r += [str(z + i) for i in range(1, distance + 1)]
+        wide = cls.objects.filter(
+                db_tags__db_key__in=x_r, db_tags__db_category=&quot;coordx&quot;).filter(
+                db_tags__db_key__in=y_r, db_tags__db_category=&quot;coordy&quot;).filter(
+                db_tags__db_key__in=z_r, db_tags__db_category=&quot;coordz&quot;)
+
+        # We now need to filter down this list to find out whether
+        # these rooms are really close enough, and at what distance
+        # In short: we change the square to a circle.
+        rooms = []
+        for room in wide:
+            x2 = int(room.tags.get(category=&quot;coordx&quot;))
+            y2 = int(room.tags.get(category=&quot;coordy&quot;))
+            z2 = int(room.tags.get(category=&quot;coordz&quot;))
+            distance_to_room = sqrt(
+                    (x2 - x) ** 2 + (y2 - y) ** 2 + (z2 - z) ** 2)
+            if distance_to_room &lt;= distance:
+                rooms.append((distance_to_room, room))
+
+        # Finally sort the rooms by distance
+        rooms.sort(key=lambda tup: tup[0])
+        return rooms
+</code></pre>
+
+<p>This gets more serious.</p>
+<ol>
+<li>We have specified coordinates as parameters.  We determine a broad range using the distance.
+   That is, for each coordinate, we create a list of possible matches.  See the example below.</li>
+<li>We then search for the rooms within this broader range.  It gives us a square
+   around our location.  Some rooms are definitely outside the range.  Again, see the example below to follow the logic.</li>
+<li>We filter down the list and sort it by distance from the specified coordinates.</li>
+</ol>
+<p>Notice that we only search starting at step 2.  Thus, the Django search doesn't look and cache all
+objects, just a wider range than what would be really necessary.  This method returns a circle of
+coordinates around a specified point.  Django looks for a square.  What wouldn't fit in the circle
+is removed at step 3, which is the only part that includes systematic calculation.  This method is
+optimized to be quick and efficient.</p>
+<h3 id="an-example">An example<a class="headerlink" href="#an-example" title="Permanent link">&para;</a></h3>
+<p>An example might help.  Consider this very simple map (a textual description follows):</p>
+<pre><code>4 A B C D
+3 E F G H
+2 I J K L
+1 M N O P
+  1 2 3 4
+</code></pre>
+
+<p>The X coordinates are given below.  The Y coordinates are given on the left.  This is a simple square with 16 rooms: 4 on each line, 4 lines of them.  All the rooms are identified by letters in this example: the first line at the top has rooms A to D, the second E to H, the third I to L and the fourth M to P.  The bottom-left room, X=1 and Y=1, is M.  The upper-right room X=4 and Y=4 is D.</p>
+<p>So let's say we want to find all the neighbors, distance 1, from the room J.  J is at X=2, Y=2.</p>
+<p>So we use:</p>
+<pre><code>Room.get_rooms_around(x=2, y=2, z=0, distance=1)
+# we'll assume a z coordinate of 0 for simplicity
+</code></pre>
+<ol>
+<li>First, this method gets all the rooms in a square around J.  So it gets E F G, I J K, M N O.  If you want, draw the square around these coordinates to see what's happening.</li>
+<li>Next, we browse over this list and check the real distance between J (X=2, Y=2) and the room.  The four corners of the square are not in this circle.  For instance, the distance between J and M is not 1.  If you draw a circle of center J and radius 1, you'll notice that the four corners of our square (E, G, M and O) are not in this circle. So we remove them.</li>
+<li>We sort by distance from J.</li>
+</ol>
+<p>So in the end we might obtain something like this:</p>
+<pre><code>[
+    (0, J), # yes, J is part of this circle after all, with a distance of 0
+    (1, F),
+    (1, I),
+    (1, K),
+    (1, N),
+]
+</code></pre>
+
+<p>You can try with more examples if you want to see this in action.</p>
+<h3 id="to-conclude">To conclude<a class="headerlink" href="#to-conclude" title="Permanent link">&para;</a></h3>
+<p>You can definitely use this system to map other objects, not just rooms.  You can easily remove the
+`Z coordinate too, if you simply need X and Y.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

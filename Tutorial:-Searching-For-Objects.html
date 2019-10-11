@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Tutorial: Searching For Objects - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#things-to-search-for">Things to search for</a></li>
+        <li class="main "><a href="#getting-objects-inside-another">Getting objects inside another</a></li>
+        <li class="main "><a href="#searching-using-objectsearch">Searching using Object.search</a></li>
+        <li class="main "><a href="#searching-using-utilssearch">Searching using utils.search</a></li>
+        <li class="main "><a href="#queries-in-django">Queries in Django</a></li>
+            <li><a href="#limiting-by-typeclass">Limiting by typeclass</a></li>
+        <li class="main "><a href="#multiple-conditions">Multiple conditions</a></li>
+            <li><a href="#complex-queries">Complex queries</a></li>
+            <li><a href="#annotations-and-f-objects">Annotations and F objects</a></li>
+            <li><a href="#grouping-by-and-values">Grouping By and Values</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Searching-For-Objects."></a></p>
+<p>You will often want to operate on a specific object in the database. For example when a player attacks a named target you'll need to find that target so it can be attacked. Or when a rain storm draws in you need to find all outdoor-rooms so you can show it raining in them. This tutorial explains Evennia's tools for searching.</p>
+<h2 id="things-to-search-for">Things to search for<a class="headerlink" href="#things-to-search-for" title="Permanent link">&para;</a></h2>
+<p>The first thing to consider is the base type of the thing you are searching for. Evennia organizes its database into a few main tables: <a href="Objects.html">Objects</a>, <a href="Accounts.html">Accounts</a>, <a href="Scripts.html">Scripts</a>, <a href="Communications#channels">Channels</a>, <a href="Communication#Msg">Messages</a> and <a href="Help-System">Help Entries</a>. Most of the time you'll likely spend your time searching for Objects and the occasional Accounts.</p>
+<p>So to find an entity, what can be searched for? </p>
+<ul>
+<li>The <code>key</code> is the name of the entity. While you can get this from <code>obj.key</code> the <em>database field</em> is actually named <code>obj.db_key</code> - this is useful to know only when you do <a href="#queries-in-django">direct database queries</a>. The one exception is <code>Accounts</code>, where the database field for <code>.key</code> is instead named <code>username</code> (this is a Django requirement). When you don't specify search-type, you'll usually search based on key. <em>Aliases</em> are extra names given to Objects using something like <code>@alias</code> or <code>obj.aliases.add('name')</code>. The main search functions (see below) will automatically search for aliases whenever you search by-key. </li>
+<li><a href="Tags.html">Tags</a> are the main way to group and identify objects in Evennia. Tags can most often be used (sometimes together with keys) to uniquely identify an object. For example, even though you have two locations with the same name, you can separate them by their tagging (this is how Evennia implements 'zones' seen in other systems). Tags can also have categories, to further organize your data for quick lookups. </li>
+<li>An object's <a href="Attributes.html">Attributes</a> can also used to find an object. This can be very useful but since Attributes can store almost any data they are far less optimized to search for than Tags or keys.</li>
+<li>The object's <a href="Typeclasses.html">Typeclass</a> indicate the sub-type of entity. A Character, Flower or Sword are all types of Objects. A Bot is a kind of Account. The database field is called <code>typeclass_path</code> and holds the full Python-path to the class. You can usually specify the <code>typeclass</code> as an argument to Evennia's search functions as well as use the class directly to limit queries. </li>
+<li>The <code>location</code> is only relevant for <a href="Objects.html">Objects</a> but is a very common way to weed down the number of candidates before starting to search. The reason is that most in-game commands tend to operate on things nearby (in the same room) so the choices can be limited from the start.</li>
+<li>The database id or the '#dbref' is unique (and never re-used) within each database table. So while there is one and only one Object with dbref <code>#42</code> there could also be an Account or  Script with the dbref <code>#42</code> at the same time. In almost all search methods you can replace the "key" search criterion with <code>"#dbref"</code> to search for that id. This can occasionally be practical and may be what you are used to from other code bases. But it is considered <em>bad practice</em> in Evennia to rely on hard-coded #dbrefs to do your searches. It makes your code tied to the exact layout of the database. It's also not very maintainable to have to remember abstract numbers. Passing the actual objects around and searching by Tags and/or keys will usually get you what you need.</li>
+</ul>
+<h2 id="getting-objects-inside-another">Getting objects inside another<a class="headerlink" href="#getting-objects-inside-another" title="Permanent link">&para;</a></h2>
+<p>All in-game <a href="Objects.html">Objects</a> have a <code>.contents</code> property that returns all objects 'inside' them (that is, all objects which has its <code>.location</code> property set to that object. This is a simple way to get everything in a room and is also faster since this lookup is cached and won't hit the database.</p>
+<ul>
+<li><code>roomobj.contents</code> returns a list of all objects inside <code>roomobj</code>. </li>
+<li><code>obj.contents</code> same as for a room, except this usually represents the object's inventory </li>
+<li><code>obj.location.contents</code> gets everything in <code>obj</code>'s location (including <code>obj</code> itself).</li>
+<li><code>roomobj.exits</code> returns all exits starting from <code>roomobj</code> (Exits are here defined as Objects with their <code>destination</code> field set). </li>
+<li><code>obj.location.contents_get(exclude=obj)</code> - this helper method returns all objects in <code>obj</code>'s location except <code>obj</code>.</li>
+</ul>
+<h2 id="searching-using-objectsearch">Searching using <code>Object.search</code><a class="headerlink" href="#searching-using-objectsearch" title="Permanent link">&para;</a></h2>
+<p>Say you have a <a href="Commands.html">command</a>, and you want it to do something to a target. You might be wondering how you retrieve that target in code, and that's where Evennia's search utilities come in. In the most common case, you'll often use the <code>search</code> method of the <code>Object</code> or <code>Account</code> typeclasses. In a command, the <code>.caller</code> property will refer back to the object using the command (usually a <code>Character</code>, which is a type of <code>Object</code>) while <code>.args</code> will contain Command's arguments:</p>
+<pre><code class="python"># e.g. in file mygame/commands/command.py
+
+from evennia import default_cmds
+
+class CmdPoke(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    Pokes someone.
+
+    Usage: poke &lt;target&gt;
+    &quot;&quot;&quot;
+    key = &quot;poke&quot;
+
+    def func(self):
+        &quot;&quot;&quot;Executes poke command&quot;&quot;&quot;
+        target = self.caller.search(self.args)  
+        if not target:  
+            # we didn't find anyone, but search has already let the 
+            # caller know. We'll just return, since we're done
+            return
+        # we found a target! we'll do stuff to them.
+        target.msg(&quot;You have been poked by %s.&quot; % self.caller)
+        self.caller.msg(&quot;You have poked %s.&quot; % target)
+</code></pre>
+
+<p>By default, the search method of a Character will attempt to find a unique object match for the string sent to it (<code>self.args</code>, in this case, which is the arguments passed to the command by the player) in the surroundings of the Character - the room or their inventory. If there is no match found, the return value (which is assigned to <code>target</code>) will be <code>None</code>, and an appropriate failure message will be sent to the Character. If there's not a unique match, <code>None</code> will again be returned, and a different error message will be sent asking them to disambiguate the multi-match. By default, the user can then pick out a specific match using with a number and dash preceding the name of the object: <code>character.search("2-pink unicorn")</code> will try to find the second pink unicorn in the room.</p>
+<p>The search method has many <a href="https://github.com/evennia/evennia/wiki/evennia.objects.objects#defaultcharactersearch">arguments</a> that allow you to refine the search, such as by designating the location to search in or only matching specific typeclasses. </p>
+<h2 id="searching-using-utilssearch">Searching using <code>utils.search</code><a class="headerlink" href="#searching-using-utilssearch" title="Permanent link">&para;</a></h2>
+<p>Sometimes you will want to find something that isn't tied to the search methods of a character or account. In these cases, Evennia provides a <a href="https://github.com/evennia/evennia/wiki/evennia.utils.search">utility module with a number of search functions</a>. For example, suppose you want a command that will find and display all the rooms that are tagged as a 'hangout', for people to gather by. Here's a simple Command to do this: </p>
+<pre><code class="python"># e.g. in file mygame/commands/command.py
+
+from evennia import default_cmds
+from evennia.utils.search import search_tag
+
+class CmdListHangouts(default_cmds.MuxCommand):
+    &quot;&quot;&quot;Lists hangouts&quot;&quot;&quot;
+    key = &quot;hangouts&quot;
+
+    def func(self):
+        &quot;&quot;&quot;Executes 'hangouts' command&quot;&quot;&quot;
+        hangouts = search_tag(key=&quot;hangout&quot;, 
+                              category=&quot;location tags&quot;)        
+        self.caller.msg(&quot;Hangouts available: {}&quot;.format(
+                        &quot;, &quot;.join(str(ob) for ob in hangouts)))
+</code></pre>
+
+<p>This uses the <code>search_tag</code> function to find all objects previously tagged with <a href="Tags.html">Tags</a> "hangout" and with category "location tags". </p>
+<p>Other important search methods in <code>utils.search</code> are</p>
+<ul>
+<li><code>search_object</code></li>
+<li><code>search_account</code></li>
+<li><code>search_scripts</code></li>
+<li><code>search_channel</code></li>
+<li><code>search_message</code></li>
+<li><code>search_help</code></li>
+<li><code>search_tag</code> - find Objects with a given Tag. </li>
+<li><code>search_account_tag</code> - find Accounts with a given Tag.</li>
+<li><code>search_script_tag</code> - find Scripts with a given Tag.</li>
+<li><code>search_channel_tag</code> - find Channels with a given Tag.</li>
+<li><code>search_object_attribute</code> - find Objects with a given Attribute.</li>
+<li><code>search_account_attribute</code> - find Accounts with a given Attribute.</li>
+<li><code>search_attribute_object</code> - this returns the actual Attribute, not the object it sits on.</li>
+</ul>
+<blockquote>
+<p>Note: All search functions return a Django <code>queryset</code> which is technically a list-like representation of the database-query it's about to do. Only when you convert it to a real list, loop over it or try to slice or access any of its contents will the datbase-lookup happen. This means you could yourself customize the query further if you know what you are doing (see the next section).</p>
+</blockquote>
+<h2 id="queries-in-django">Queries in Django<a class="headerlink" href="#queries-in-django" title="Permanent link">&para;</a></h2>
+<p><em>This is an advanced topic.</em></p>
+<p>Evennia's search methods should be sufficient for the vast majority of situations. But eventually you might find yourself trying to figure out how to get searches for unusual circumstances: Maybe you want to find all characters who are <em>not</em> in rooms tagged as hangouts <em>and</em> have the lycanthrope tag <em>and</em> whose names start with a vowel, but <em>not</em> with 'Ab', and <em>only if</em> they have 3 or more objects in their inventory ... You could in principle use one of the earlier search methods to find all candidates and then loop over them with a lot of if statements in raw Python. But you can do this much more efficiently by querying the database directly.</p>
+<p>Enter <a href="https://docs.djangoproject.com/en/1.11/ref/models/querysets/">django's querysets</a>. A QuerySet is the representation of a database query and can be modified as desired. Only once one tries to retrieve the data of that query is it <em>evaluated</em> and does an actual database request. This is useful because it means you can modify a query as much as you want (even pass it around) and only hit the database once you are happy with it. 
+Evennia's search functions are themselves an even higher level wrapper around Django's queries, and many search methods return querysets. That means that you could get the result from a search function and modify the resulting query to your own ends to further tweak what you search for. </p>
+<p>Evaluated querysets can either contain objects such as Character objects, or lists of values derived from the objects. Queries usually use the 'manager' object of a class, which by convention is the <code>.objects</code> attribute of a class. For example, a query of Accounts that contain the letter 'a' could be: </p>
+<pre><code class="python">    from typeclasses.accounts import Account
+
+queryset = Account.objects.filter(username__contains='a')
+
+</code></pre>
+
+<p>The <code>filter</code> method of a manager takes arguments that allow you to define the query, and you can continue to refine the query by calling additional methods until you evaluate the queryset, causing the query to be executed and return a result. For example, if you have the result above, you could, without causing the queryset to be evaluated yet, get rid of matches that contain the letter 'e by doing this:</p>
+<pre><code class="python">queryset = result.exclude(username__contains='e')
+
+</code></pre>
+
+<blockquote>
+<p>You could also have chained <code>.exclude</code> directly to the end of the previous line. </p>
+</blockquote>
+<p>Once you try to access the result, the queryset will be evaluated automatically under the hood:</p>
+<pre><code class="python">accounts = list(queryset)  # this fills list with matches
+
+for account in queryset:
+    # do something with account
+
+accounts = queryset[:4]  # get first four matches
+account = queryset[0]  # get first match
+# etc
+
+</code></pre>
+
+<h3 id="limiting-by-typeclass">Limiting by typeclass<a class="headerlink" href="#limiting-by-typeclass" title="Permanent link">&para;</a></h3>
+<p>Although <code>Character</code>s, <code>Exit</code>s, <code>Room</code>s, and other children of <code>DefaultObject</code> all shares the same underlying database table, Evennia provides a shortcut to do more specific queries only for those typeclasses. For example, to find only <code>Character</code>s whose names start with 'A', you might do: </p>
+<pre><code class="python">Character.objects.filter(db_key__startswith=&quot;A&quot;)
+
+</code></pre>
+
+<p>If Character has a subclass <code>Npc</code> and you wanted to find only Npc's you'd instead do</p>
+<pre><code class="python">Npc.objects.filter(db_key__startswith=&quot;A&quot;)
+
+</code></pre>
+
+<p>If you wanted to search both Characters and all its subclasses (like Npc) you use the <code>*_family</code> method which is added by Evennia: </p>
+<pre><code class="python">Character.objects.filter_family(db_key__startswith=&quot;A&quot;)
+</code></pre>
+
+<p>The higher up in the inheritance hierarchy you go the more objects will be included in these searches. There is one special case, if you really want to include <em>everything</em> from a given database table. You do that by searching on the database model itself. These are named <code>ObjectDB</code>, <code>AccountDB</code>, <code>ScriptDB</code> etc. </p>
+<pre><code class="python">from evennia import AccountDB
+
+# all Accounts in the database, regardless of typeclass
+all = AccountDB.objects.all()
+
+</code></pre>
+
+<p>Here are the most commonly used methods to use with the <code>objects</code> managers: </p>
+<ul>
+<li><code>filter</code> - query for a listing of objects based on search criteria. Gives empty queryset if none were found.</li>
+<li><code>get</code> - query for a single match - raises exception if none were found, or more than one was found.</li>
+<li><code>all</code> - get all instances of the particular type.</li>
+<li><code>filter_family</code> - like <code>filter</code>, but search all sub classes as well.</li>
+<li><code>get_family</code> - like <code>get</code>, but search all sub classes as well.</li>
+<li><code>all_family</code> - like <code>all</code>, but return entities of all subclasses as well. </li>
+</ul>
+<h2 id="multiple-conditions">Multiple conditions<a class="headerlink" href="#multiple-conditions" title="Permanent link">&para;</a></h2>
+<p>If you pass more than one keyword argument to a query method, the query becomes an <code>AND</code> relationship. For example, if we want to find characters whose names start with "A" <em>and</em> are also werewolves (have the <code>lycanthrope</code> tag), we might do:</p>
+<pre><code class="python">queryset = Character.objects.filter(db_key__startswith=&quot;A&quot;, db_tags__db_key=&quot;lycanthrope&quot;)`
+</code></pre>
+
+<p>To exclude lycanthropes currently in rooms tagged as hangouts, we might tack on an <code>.exclude</code> as before:</p>
+<pre><code class="python">queryset = quersyet.exclude(db_location__db_tags__db_key=&quot;hangout&quot;)`.
+</code></pre>
+
+<p>Note the syntax of the keywords in building the queryset. For example, <code>db_location</code> is the name of the database field sitting on (in this case) the <code>Character</code> (Object). Double underscore <code>__</code> works like dot-notation in normal Python (it's used since dots are not allowed in keyword names). So the instruction <code>db_location__db_tags__db_key="hangout"</code> should be read as such:</p>
+<ol>
+<li>"On the <code>Character</code> object ... (this comes from us building this queryset using the <code>Character.objects</code> manager) </li>
+<li>... get the value of the <code>db_location</code> field ... (this references a Room object, normally)</li>
+<li>... on that location, get the value of the <code>db_tags</code> field ... (this is a many-to-many field that can be treated like an object for this purpose. It references all tags on the location)</li>
+<li>... through the <code>db_tag</code> manager, find all Tags having a field <code>db_key</code> set to the value "hangout"."</li>
+</ol>
+<p>This may seem a little complex at first, but this syntax will work the same for all queries. Just remember that all <em>database-fields</em> in Evennia are prefaced with <code>db_</code>. So even though Evennia is nice enough to alias the <code>db_key</code> field so you can normally just do <code>char.key</code> to get a character's name, the database field is actually called <code>db_key</code> and the real name must be used for the purpose of building a query. </p>
+<blockquote>
+<p>Don't confuse database fields with <a href="Attributes.html">Attributes</a> you set via <code>obj.db.attr = 'foo'</code> or <code>obj.attributes.add()</code>. Attributes are custom database entities <em>linked</em> to an object. They are not separate fields <em>on</em> that object like <code>db_key</code> or <code>db_location</code> are. You can get attached Attributes manually through the <code>db_attributes</code> many-to-many field in the same way as <code>db_tags</code> above. </p>
+</blockquote>
+<h3 id="complex-queries">Complex queries<a class="headerlink" href="#complex-queries" title="Permanent link">&para;</a></h3>
+<p>What if you want to have a query with with <code>OR</code> conditions or negated requirements (<code>NOT</code>)? Enter Django's Complex Query object, <a href="https://docs.djangoproject.com/en/1.11/topics/db/queries/#complex-lookups-with-q-objects">Q</a>. <code>Q()</code> objects take a normal django keyword query as its arguments. The special thing is that these Q objects can then be chained together with set operations: <code>|</code> for OR, <code>&amp;</code> for AND, and preceded with <code>~</code> for NOT to build a combined, complex query. </p>
+<p>In our original Lycanthrope example we wanted our werewolves to have names that could start with any vowel except for the specific beginning "ab".</p>
+<pre><code class="python">from django.db.models import Q
+from typeclasses.characters import Character
+
+query = Q()
+for letter in (&quot;aeiouy&quot;):
+    query |= Q(db_key__istartswith=letter)
+query &amp;= ~Q(db_key__istartswith=&quot;ab&quot;)
+query = Character.objects.filter(query)
+
+list_of_lycanthropes = list(query)      
+</code></pre>
+
+<p>In the above example, we construct our query our of several Q objects that each represent one part of the query. We iterate over the list of vowels, and add an <code>OR</code> condition to the query using <code>|=</code> (this is the same idea as using <code>+=</code> which may be more familiar). Each <code>OR</code> condition checks that the name starts with one of the valid vowels. Afterwards, we add (using <code>&amp;=</code>) an <code>AND</code> condition that is negated with the <code>~</code> symbol. In other words we require that any match should <em>not</em> start with the string "ab". Note that we don't actually hit the database until we convert the query to a list at the end (we didn't need to do that either, but could just have kept the query until we needed to do something with the matches).</p>
+<h3 id="annotations-and-f-objects">Annotations and <code>F</code> objects<a class="headerlink" href="#annotations-and-f-objects" title="Permanent link">&para;</a></h3>
+<p>What if we wanted to filter on some condition that isn't represented easily by a field on the object? Maybe we want to find rooms only containing five or more objects? </p>
+<p>We <em>could</em> retrieve all interesting candidates and run them through a for-loop to get and count their <code>.content</code> properties. We'd then just return a list of only those objects with enough contents. It would look something like this (note: don't actually do this!):</p>
+<pre><code class="python"># probably not a good idea to do it this way
+
+from typeclasses.rooms import Room
+
+queryset = Room.objects.all()  # get all Rooms
+rooms = [room for room in queryset if len(room.contents) &gt;= 5]
+
+</code></pre>
+
+<p>Once the number of rooms in your game increases, this could become quite expensive. Additionally, in some particular contexts, like when using the web features of Evennia, you must have the result as a queryset in order to use it in operations, such as in Django's admin interface when creating list filters.</p>
+<p>Enter <a href="https://docs.djangoproject.com/en/1.11/ref/models/expressions/#f-expressions">F objects</a> and <em>annotations</em>. So-called F expressions allow you to do a query that looks at a value of each object in the database, while annotations allow you to calculate and attach a value to a query. So, let's do the same example as before directly in the database: </p>
+<pre><code class="python">from typeclasses.rooms import Room
+from django.db.models import Count
+
+room_count = Room.objects.annotate(num_objects=Count('locations_set'))
+queryset = room_count.filter(num_objects__gte=5)
+
+rooms = (Room.objects.annotate(num_objects=Count('locations_set'))
+                     .filter(num_objects__gte=5))
+
+rooms = list(rooms)
+
+</code></pre>
+
+<p>Here we first create an annotation <code>num_objects</code> of type <code>Count</code>, which is a Django class. Note that use of <code>location_set</code> in that <code>Count</code>. The <code>*_set</code> is a back-reference automatically created by Django. In this case it allows you to find all objects that <em>has the current object as location</em>. Once we have those, they are counted. 
+Next we filter on this annotation, using the name <code>num_objects</code> as something we can filter for. We use <code>num_objects__gte=5</code> which means that <code>num_objects</code> should be greater than 5. This is a little harder to get one's head around but much more efficient than lopping over all objects in Python.</p>
+<p>What if we wanted to compare two parameters against one another in a query? For example, what if instead of having 5 or more objects, we only wanted objects that had a bigger inventory than they had tags? Here an F-object comes in handy: </p>
+<pre><code class="python">from django.db.models import Count, F
+from typeclasses.rooms import Room
+
+result = (Room.objects.annotate(num_objects=Count('locations_set'), 
+                                num_tags=Count('db_tags'))
+                      .filter(num_objects__gt=F('num_tags')))
+</code></pre>
+
+<p>F-objects allows for wrapping an annotated structure on the right-hand-side of the expression. It will be evaluated on-the-fly as needed. </p>
+<h3 id="grouping-by-and-values">Grouping By and Values<a class="headerlink" href="#grouping-by-and-values" title="Permanent link">&para;</a></h3>
+<p>Suppose you used tags to mark someone belonging an organization. Now you want to make a list and need to get the membership count of every organization all at once. That's where annotations and the <code>.values_list</code> queryset method come in. Values/Values Lists are an alternate way of returning a queryset - instead of objects, you get a list of dicts or tuples that hold selected properties from the the matches. It also allows you a way to 'group up' queries for returning information. For example, to get a display about each tag per Character and the names of the tag:</p>
+<pre><code class="python">result = (Character.objects.filter(db_tags__db_category=&quot;organization&quot;)
+                           .values_list('db_tags__db_key')
+                           .annotate(cnt=Count('id'))
+                           .order_by('-cnt'))
+</code></pre>
+
+<p>The result queryset will be a list of tuples ordered in descending order by the number of matches, in a format like the following:
+```
+[('Griatch Fanclub', 3872), ("Chainsol's Ainneve Testers", 2076), ("Blaufeuer's Whitespace Fixers", 1903),
+ ("Volund's Bikeshed Design Crew", 1764), ("Tehom's Misanthropes", 1)]</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

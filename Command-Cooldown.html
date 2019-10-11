@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Command Cooldown - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#non-persistent-cooldown">Non-persistent cooldown</a></li>
+        <li class="main "><a href="#persistent-cooldown">Persistent cooldown</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-tutorial-for-making-commands-that-cannot-be-repeated-until-after-a-cooldown-time-has-passed."></a></p>
+<p>Some types of games want to limit how often a command can be run. If a
+character casts the spell <em>Firestorm</em>, you might not want them to spam that
+command over and over. Or in an advanced combat system, a massive swing may
+offer a chance of lots of damage at the cost of not being able to re-do it for
+a while. Such effects are called <em>cooldowns</em>. </p>
+<p>This page exemplifies a very resource-efficient way to do cooldowns. A more
+'active' way is to use asynchronous delays as in the <a href="Command-Duration#Blocking-Commands">command duration
+tutorial</a>, the two might be useful to
+combine if you want to echo some message to the user after the cooldown ends. </p>
+<h2 id="non-persistent-cooldown">Non-persistent cooldown<a class="headerlink" href="#non-persistent-cooldown" title="Permanent link">&para;</a></h2>
+<p>This little recipe will limit how often a particular command can be run. Since
+Commands are class instances, and those are cached in memory, a command
+instance will remember things you store on it. So just store the current time
+of execution! Next time the command is run, it just needs to check if it has
+that time stored, and compare it with the current time to see if a desired
+delay has passed. </p>
+<pre><code class="python">import time 
+from evennia import default_cmds
+
+class CmdSpellFirestorm(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    Spell - Firestorm
+
+    Usage: 
+      cast firestorm &lt;target&gt;
+
+    This will unleash a storm of flame. You can only release one 
+    firestorm every five minutes (assuming you have the mana). 
+    &quot;&quot;&quot;
+    key = &quot;cast firestorm&quot;
+    locks = &quot;cmd:isFireMage()&quot;
+
+    def func(self):
+        &quot;Implement the spell&quot;
+
+        # check cooldown (5 minute cooldown)
+        now = time.time()   
+        if hasattr(self, &quot;lastcast&quot;) and \
+                now - self.lastcast &lt; 5 * 60:
+            message = &quot;You cannot cast this spell again yet.&quot;
+            self.caller.msg(message)
+            return 
+
+        #[the spell effect is implemented]
+
+        # if the spell was successfully cast, store the casting time
+        self.lastcast = now 
+</code></pre>
+
+<p>We just check the <code>lastcast</code> flag, and update it if everything works out.
+Simple and very effective since everything is just stored in memory. The
+drawback of this simple scheme is that it's non-persistent. If you do
+<code>@reload</code>, the cache is cleaned and all such ongoing cooldowns will be
+forgotten. It is also limited only to this one command, other commands cannot
+(easily) check for this value. </p>
+<h2 id="persistent-cooldown">Persistent cooldown<a class="headerlink" href="#persistent-cooldown" title="Permanent link">&para;</a></h2>
+<p>This is essentially the same mechanism as the simple one above, except we use
+the database to store the information which means the cooldown will survive a
+server reload/reboot. Since commands themselves have no representation in the
+database, you need to use the caster for the storage.</p>
+<pre><code class="python">    # inside the func() of CmdSpellFirestorm as above
+
+    # check cooldown (5 minute cooldown)
+
+    now = time.time()
+    lastcast = self.caller.db.firestorm_lastcast 
+
+    if lastcast and now - lastcast &lt; 5 * 60:
+        message = &quot;You need to wait before casting this spell again.&quot;
+        self.caller.msg(message)
+        return      
+
+    #[the spell effect is implemented]
+
+    # if the spell was successfully cast, store the casting time
+    self.caller.db.firestorm_lastcast = now
+</code></pre>
+
+<p>Since we are storing as an <a href="Attributes.html">Attribute</a>, we need to identify the
+variable as <code>firestorm_lastcast</code> so we are sure we get the right one (we'll
+    likely have other skills with cooldowns after all). But this method of
+using cooldowns also has the advantage of working <em>between</em> commands - you can
+for example let all fire-related spells check the same cooldown to make sure
+the casting of <em>Firestorm</em> blocks all fire-related spells for a while. Or, in
+the case of taking that big swing with the sword, this could now block all
+other types of attacks for a while before the warrior can recover. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

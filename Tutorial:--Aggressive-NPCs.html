@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Tutorial:  Aggressive NPCs - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-tutorial-on-making-NPC's-do-things-(like-attack)-when-a-character-enters"></a>)</p>
+<p>This tutorial shows the implementation of an NPC object that responds to characters entering their location. In this example the NPC has the option to respond aggressively or not, but any actions could be triggered this way.</p>
+<p>One could imagine using a <a href="Scripts.html">Script</a> that is constantly checking for newcomers. This would be highly inefficient (most of the time its check would fail). Instead we handle this on-demand by using a couple of existing object hooks to inform the NPC that a Character has entered.</p>
+<p>It is assumed that you already know how to create custom room and character typeclasses, please see the <a href="https://github.com/evennia/evennia/wiki/Tutorial%20for%20basic%20MUSH%20like%20game">Basic Game tutorial</a> if you haven't already done this.</p>
+<p>What we will need is the following: </p>
+<ul>
+<li>An NPC typeclass that can react when someone enters</li>
+<li>A custom <a href="Objects.html">Room</a> typeclass that can tell the NPC that someone entered</li>
+<li>We will also tweak our default <code>Character</code> typeclass a little. </li>
+</ul>
+<p>To begin with, we need to create an NPC typeclass.</p>
+<pre><code class="python"># mygame/typeclasses/npc.py
+
+from characters import Character 
+
+class Npc(Character):
+    &quot;&quot;&quot;
+    A NPC typeclass which extends the character class.
+    &quot;&quot;&quot;
+    def at_char_entered(self, character):
+        &quot;&quot;&quot;
+         A simple is_aggressive check. 
+         Can be expanded upon later.
+        &quot;&quot;&quot;       
+        if self.db.is_aggressive:
+            self.execute_cmd(&quot;say Graaah, die %s!&quot; % character)
+        else:
+            self.execute_cmd(&quot;say Greetings, %s!&quot; % character)
+</code></pre>
+
+<p>We will define our custom <code>Character</code> typeclass below. As for the new <code>at_char_entered</code> method we've just defined, we'll ensure that it will be called by the room where the NPC is located, when a player enters that room.  You'll notice that right now, the NPC merely speaks.  You can expand this part as you like and trigger all sorts of effects here (like combat code, fleeing, bartering or quest-giving) as your game design dictates.</p>
+<p>Now your room typeclass needs to have the following added:</p>
+<pre><code class="python"># mygame/typeclasses/rooms.py
+
+from evennia import utils
+from characters import Character
+from npc import Npc
+
+    # ... inside your Room typeclass ...
+    def at_object_receive(self, obj, source_location):
+        if utils.inherits_from(obj, 'Npc'): # An NPC has entered
+            pass
+        else:
+            if utils.inherits_from(obj, 'Character'): 
+                # A PC has entered, NPC is caught above.
+                # Cause the character to look around
+                obj.execute_cmd('look')
+                for item in self.contents:
+                    if utils.inherits_from(item, 'Npc'): 
+                        # An NPC is in the room
+                        item.at_char_entered(obj)
+</code></pre>
+
+<p>Take particular note of the inherits at the top of this section, you'll need to ensure that they correctly point to your default <code>Character</code> class as well as the newly created <code>Npc</code> class.</p>
+<blockquote>
+<p>Note:  <a href="https://github.com/evennia/evennia/wiki/evennia.objects.objects#defaultroomat_object_receive">at_object_receive</a> is a default hook of the <code>DefaultObject</code> typeclass (and its children). Here we are overriding this hook in our customized room typeclass to suit our needs. </p>
+</blockquote>
+<p>This room checks the typeclass of objects entering it (using <code>utils.inherits_from</code> and responds to <code>Characters</code>, ignoring other NPCs or objects.  When triggered the room will look through its contents and inform any <code>Npc</code>s inside by calling their <code>at_char_entered</code> method.</p>
+<p>You'll also see that we have added a 'look' into this code, this is because by default the <code>at_object_receive</code> is carried out <em>before</em> the characters' <code>at_after_move</code> which, we will now overload.  This meant that a character entering would see the NPC perform its actions before the 'look' command. So we deactivate the look in our default <code>Character</code> class: </p>
+<pre><code class="python"># mygame/typeclasses/characters.py
+
+    # inside the character class
+    def at_after_move(self, source_location):
+        &quot;&quot;&quot;
+        Default is to look around after a move 
+        Note:  This has been moved to room.at_object_receive
+        &quot;&quot;&quot;
+        #self.execute_cmd('look')
+        pass
+</code></pre>
+
+<p>Now that's done, let's create an NPC and make it aggressive.</p>
+<pre><code>@reload
+@create/drop Orc:npc.Npc
+</code></pre>
+
+<p>(you could also give the path as <code>typeclasses.npc.Npc</code>, but Evennia will look into the <code>typeclasses</code> folder automatically so this is a little shorter). </p>
+<p>When you enter the aggressive NPC's location, it will default to using its peaceful action (say your name is Anna):</p>
+<pre><code>Orc says, &quot;Greetings, Anna!&quot;
+</code></pre>
+
+<p>Now we turn on the aggressive mode (we do it manually but it could also be triggered by some sort of AI code). </p>
+<pre><code>@set orc/is_aggressive = True
+</code></pre>
+
+<p>Now it will perform its aggressive action whenever a character enters.</p>
+<pre><code>Orc says, &quot;Graaah, die, Anna!&quot;
+</code></pre></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

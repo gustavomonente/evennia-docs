@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Unit Testing - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#running-the-evennia-test-suite">Running the Evennia test suite</a></li>
+        <li class="main "><a href="#running-tests-with-custom-settings-file">Running tests with custom settings file</a></li>
+        <li class="main "><a href="#writing-new-tests">Writing new tests</a></li>
+            <li><a href="#using-the-evenniatest-class">Using the EvenniaTest class</a></li>
+            <li><a href="#testing-in-game-commands">Testing in-game Commands</a></li>
+            <li><a href="#unit-testing-contribs-with-custom-models">Unit testing contribs with custom models</a></li>
+            <li><a href="#a-note-on-adding-new-tests">A note on adding new tests</a></li>
+            <li><a href="#a-note-on-making-the-test-runner-faster">A note on making the test runner faster</a></li>
+        <li class="main "><a href="#testing-for-game-development-mini-tutorial">Testing for Game development (mini-tutorial)</a></li>
+            <li><a href="#basic-testing-using-evennia">Basic testing using Evennia</a></li>
+            <li><a href="#a-simple-example">A simple example</a></li>
+            <li><a href="#testing-commands">Testing commands</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Describes-how-to-expand-the-code-with-automatic-testing-suites."></a></p>
+<p><em>Unit testing</em> means testing components of a program in isolation from each other to make sure every part works on its own before using it with others. Extensive testing helps avoid new updates causing unexpected side effects as well as alleviates general code rot (a more comprehensive wikipedia article on unit testing can be found <a href="http://en.wikipedia.org/wiki/Unit_test">here</a>).</p>
+<p>A typical unit test set calls some function or method with a given input, looks at the result and makes sure that this result looks as expected. Rather than having lots of stand-alone test programs, Evennia makes use of a central <em>test runner</em>. This is a program that gathers all available tests all over the Evennia source code (called <em>test suites</em>) and runs them all in one go. Errors and tracebacks are reported. </p>
+<p>By default Evennia only tests itself. But you can also add your own tests to your game code and have Evennia run those for you. </p>
+<h2 id="running-the-evennia-test-suite">Running the Evennia test suite<a class="headerlink" href="#running-the-evennia-test-suite" title="Permanent link">&para;</a></h2>
+<p>To run the full Evennia test suite, go to your game folder and issue the command</p>
+<pre><code>evennia test evennia
+</code></pre>
+<p>This will run all the evennia tests using the default settings. You could also run only a subset of all tests by specifying a subpackage of the library:</p>
+<pre><code>evennia test evennia.commands.default
+</code></pre>
+<p>A temporary database will be instantiated to manage the tests. If everything works out you will see how many tests were run and how long it took. If something went wrong you will get error messages. If you contribute to Evennia, this is a useful sanity check to see you haven't introduced an unexpected bug.</p>
+<h2 id="running-tests-with-custom-settings-file">Running tests with custom settings file<a class="headerlink" href="#running-tests-with-custom-settings-file" title="Permanent link">&para;</a></h2>
+<p>If you have implemented your own tests for your game (see below) you can run them from your game dir with </p>
+<pre><code>evennia test .
+</code></pre>
+<p>The period (<code>.</code>) means to run all tests found in the current directory and all subdirectories. You could also specify, say, <code>typeclasses</code> or <code>world</code> if you wanted to just run tests in those subdirs. </p>
+<p>Those tests will all be run using the default settings. To run the tests with your own settings file you must use the <code>--settings</code> option:</p>
+<pre><code>evennia --settings settings.py test .
+</code></pre>
+<p>The <code>--settings</code> option of Evennia takes a file name in the <code>mygame/server/conf</code> folder. It is normally used to swap settings files for testing and development. In combination with <code>test</code>, it forces Evennia to use this settings file over the default one.</p>
+<h2 id="writing-new-tests">Writing new tests<a class="headerlink" href="#writing-new-tests" title="Permanent link">&para;</a></h2>
+<p>Evennia's test suite makes use of Django unit test system, which in turn relies on Python's <em>unittest</em> module. </p>
+<blockquote>
+<p>If you want to help out writing unittests for Evennia, take a look at Evennia's <a href="https://coveralls.io/github/evennia/evennia">coveralls.io page</a>. There you see which modules have any form of test coverage and which does not.</p>
+</blockquote>
+<p>To make the test runner find the tests, they must be put in a module named <code>test*.py</code> (so <code>test.py</code>, <code>tests.py</code> etc). Such a test module will be found wherever it is in the package. It can be a good idea to look at some of Evennia's <code>tests.py</code> modules to see how they look. </p>
+<p>Inside a testing file, a <code>unittest.TestCase</code> class is used to test a single aspect or component in various ways. Each test case contains one ore more <em>test methods</em> - these define the actual tests to run. You can name the test methods anything you want as long as  the name starts with "<code>test_</code>".  Your <code>TestCase</code> class can also have a method <code>setUp()</code>. This is run before each test, setting up and storing whatever preparations the test methods need. Conversely, a <code>tearDown()</code> method can optionally do cleanup after each test. </p>
+<p>To test the results, you use special methods of the <code>TestCase</code> class.  Many of those start with "<code>assert</code>", such as <code>assertEqual</code> or <code>assertTrue</code>.</p>
+<p>Example of a <code>TestCase</code> class:</p>
+<pre><code class="python">    import unittest
+
+    # the function we want to test
+    from mypath import myfunc
+
+    class TestObj(unittest.TestCase):
+       &quot;This tests a function myfunc.&quot;
+
+       def test_return_value(self):
+           &quot;test method. Makes sure return value is as expected.&quot;  
+           expected_return = &quot;This is me being nice.&quot;
+           actual_return = myfunc()
+           # test 
+           self.assertEqual(expected_return, actual_return)
+       def test_alternative_call(self):
+           &quot;test method. Calls with a keyword argument.&quot;
+           expected_return = &quot;This is me being baaaad.&quot;
+           actual_return = myfunc(bad=True)
+           # test
+           self.assertEqual(expected_return, actual_return)    
+</code></pre>
+
+<p>You might also want to read the <a href="http://docs.python.org/library/unittest.html">documentation for the unittest module</a>.</p>
+<h3 id="using-the-evenniatest-class">Using the EvenniaTest class<a class="headerlink" href="#using-the-evenniatest-class" title="Permanent link">&para;</a></h3>
+<p>Evennia offers a custom TestCase, the <code>evennia.utils.test_resources.EvenniaTest</code> class. This class initiates a range of useful properties on themselves for testing Evennia systems. Examples are <code>.account</code> and <code>.session</code> representing a mock connected Account and its Session and <code>.char1</code> and <code>char2</code> representing Characters complete with a location in the test database. These are all useful when testing Evennia system requiring any of the default Evennia typeclasses as inputs. See the full definition of the <code>EvenniaTest</code> class in <a href="https://github.com/evennia/evennia/blob/master/evennia/utils/test_resources.py">evennia/utils/test_resources.py</a>.</p>
+<pre><code class="python"># in a test module
+
+from evennia.utils.test_resources import EvenniaTest
+
+class TestObject(EvenniaTest):
+    def test_object_search(self):
+        # char1 and char2 are both created in room1
+        self.assertEqual(self.char1.search(self.char2.key), self.char2)
+        self.assertEqual(self.char1.search(self.char1.location.key), self.char1.location)
+        # ...
+</code></pre>
+
+<h3 id="testing-in-game-commands">Testing in-game Commands<a class="headerlink" href="#testing-in-game-commands" title="Permanent link">&para;</a></h3>
+<p>In-game Commands are a special case. Tests for the default commands are put in <code>evennia/commands/default/tests.py</code>. This uses a custom <code>CommandTest</code> class that inherits from <code>evennia.utils.test_resources.EvenniaTest</code> described above. <code>CommandTest</code> supplies extra convenience functions for executing commands and check that their return values (calls of <code>msg()</code> returns expected values. It uses Characters and Sessions generated on the <code>EvenniaTest</code> class to call each class). </p>
+<p>Each command tested should have its own <code>TestCase</code> class. Inherit this class from the <code>CommandTest</code> class in the same module to get access to the command-specific utilities mentioned.</p>
+<pre><code class="python">    from evennia.commands.default.tests import CommandTest
+    from evennia.commands.default import general
+    class TestSet(CommandTest):
+        &quot;tests the look command by simple call, using Char2 as a target&quot;
+        def test_mycmd_char(self):
+            self.call(general.CmdLook(), &quot;Char2&quot;, &quot;Char2(#7)&quot;)
+        &quot;tests the look command by simple call, with target as room&quot;
+        def test_mycmd_room(self):
+            self.call(general.CmdLook(), &quot;Room&quot;, 
+                      &quot;Room(#1)\nroom_desc\nExits: out(#3)\n&quot;
+                      &quot;You see: Obj(#4), Obj2(#5), Char2(#7)&quot;)
+</code></pre>
+
+<h3 id="unit-testing-contribs-with-custom-models">Unit testing contribs with custom models<a class="headerlink" href="#unit-testing-contribs-with-custom-models" title="Permanent link">&para;</a></h3>
+<p>A special case is if you were to create a contribution to go to the <code>evennia/contrib</code> folder that uses its <a href="New-Models">own database models</a>. The problem with this is that Evennia (and Django) will only recognize models in <code>settings.INSTALLED_APPS</code>. If a user wants to use your contrib, they will be required to add your models to their settings file. But since contribs are optional you cannot add the model to Evennia's central <code>settings_default.py</code> file - this would always create your optional models regardless of if the user wants them. But at the same time a contribution is a part of the Evennia distribution and its unit tests should be run with all other Evennia tests using <code>evennia test evennia</code>.</p>
+<p>The way to do this is to only temporarily add your models to the <code>INSTALLED_APPS</code> directory when the test runs. here is an example of how to do it.</p>
+<blockquote>
+<p>Note that this solution, derived from this <a href="http://stackoverflow.com/questions/502916/django-how-to-create-a-model-dynamically-just-for-testing#503435">stackexchange answer</a> is currently untested! Please report your findings.</p>
+</blockquote>
+<pre><code class="python"># a file contrib/mycontrib/tests.py
+
+from django.conf import settings
+import django
+from evennia.utils.test_resources import EvenniaTest
+
+OLD_DEFAULT_SETTINGS = settings.INSTALLED_APPS
+DEFAULT_SETTINGS = dict(
+    INSTALLED_APPS=(
+        'contrib.mycontrib.tests',
+        ),
+    DATABASES={
+        &quot;default&quot;: {
+            &quot;ENGINE&quot;: &quot;django.db.backends.sqlite3&quot;
+            }
+        },
+    SILENCED_SYSTEM_CHECKS=[&quot;1_7.W001&quot;],
+    )
+
+class TestMyModel(EvenniaTest):
+    def setUp(self):
+
+        if not settings.configured:
+           settings.configure(**DEFAULT_SETTINGS)
+        django.setup()
+
+        from django.core.management import call_command
+        from django.db.models import loading
+        loading.cache.loaded = False
+        call_command('syncdb', verbosity=0)
+
+    def tearDown(self):
+        settings.configure(**OLD_DEFAULT_SETTINGS)
+        django.setup()
+
+        from django.core.management import call_command
+        from django.db.models import loading
+        loading.cache.loaded = False
+        call_command('syncdb', verbosity=0)
+
+    # test cases below ...
+
+    def test_case(self):
+        # test case here
+</code></pre>
+
+<h3 id="a-note-on-adding-new-tests">A note on adding new tests<a class="headerlink" href="#a-note-on-adding-new-tests" title="Permanent link">&para;</a></h3>
+<p>Having an extensive tests suite is very important for avoiding code degradation as Evennia is developed. Only a small fraction of the Evennia codebase is covered by test suites at this point. Writing new tests is not hard, it's more a matter of finding the time to do so. So adding new tests is really an area where everyone can contribute, also with only limited Python skills. </p>
+<h3 id="a-note-on-making-the-test-runner-faster">A note on making the test runner faster<a class="headerlink" href="#a-note-on-making-the-test-runner-faster" title="Permanent link">&para;</a></h3>
+<p>If you have custom models with a large number of migrations, creating the test database can take a very long time. If you don't require migrations to run for your tests, you can disable them with the django-test-without-migrations package. To install it, simply:</p>
+<pre><code>$ pip install django-test-without-migrations
+</code></pre>
+
+<p>Then add it to your <code>INSTALLED_APPS</code> in your <code>server.conf.settings.py</code>:</p>
+<pre><code class="python">INSTALLED_APPS = (
+    # ...
+    'test_without_migrations',
+)
+</code></pre>
+
+<p>After doing so, you can then run tests without migrations by adding the <code>--nomigrations</code> argument:</p>
+<pre><code>evennia test --settings settings.py --nomigrations .
+</code></pre>
+
+<h2 id="testing-for-game-development-mini-tutorial">Testing for Game development (mini-tutorial)<a class="headerlink" href="#testing-for-game-development-mini-tutorial" title="Permanent link">&para;</a></h2>
+<p>Unit testing can be of paramount importance to game developers. When starting with a new game, it is recommended to look into unit testing as soon as possible; an already huge game is much harder to write tests for.  The benefits of testing a game aren't different from the ones regarding library testing.  For example it is easy to introduce bugs that affect previously working code. Testing is there to ensure your project behaves the way it should and continue to do so.</p>
+<p>If you have never used unit testing (with Python or another language), you might want to check the <a href="https://docs.python.org/2/library/unittest.html">official Python documentation about unit testing</a>, particularly the first section dedicated to a basic example.</p>
+<h3 id="basic-testing-using-evennia">Basic testing using Evennia<a class="headerlink" href="#basic-testing-using-evennia" title="Permanent link">&para;</a></h3>
+<p>Evennia's test runner can be used to launch tests in your game directory (let's call it 'mygame'). Evennia's test runner does a few useful things beyond the normal Python unittest module:</p>
+<ul>
+<li>It creates and sets up an empty database, with some useful objects (accounts, characters and rooms, among others).</li>
+<li>It provides simple ways to test commands, which can be somewhat tricky at times, if not tested properly.</li>
+</ul>
+<p>Therefore, you should use the command-line to execute the test runner, while specifying your own game directories (not the one containing evennia).  Go to your game directory (referred as 'mygame' in this section) and execute the test runner:</p>
+<pre><code>evennia --settings settings.py test commands
+</code></pre>
+<p>This command will execute Evennia's test runner using your own settings file. It will set up a dummy database of your choice and look into the 'commands' package defined in your game directory (<code>mygame/commands</code> in this example) to find tests. The test module's name should begin with 'test' and contain one or more <code>TestCase</code>.  A full example can be found below.</p>
+<h3 id="a-simple-example">A simple example<a class="headerlink" href="#a-simple-example" title="Permanent link">&para;</a></h3>
+<p>In your game directory, go to <code>commands</code> and create a new file <code>tests.py</code> inside (it could be named anything starting with <code>test</code>). We will start by making a test that has nothing to do with Commands, just to show how unit testing works:</p>
+<pre><code class="python">    # mygame/commands/tests.py
+
+    import unittest
+
+    class TestString(unittest.TestCase):
+
+        &quot;&quot;&quot;Unittest for strings (just a basic example).&quot;&quot;&quot;
+
+        def test_upper(self):
+            &quot;&quot;&quot;Test the upper() str method.&quot;&quot;&quot;
+            self.assertEqual('foo'.upper(), 'FOO')
+</code></pre>
+
+<p>This example, inspired from the Python documentation, is used to test the 'upper()' method of the 'str' class.  Not very useful, but it should give you a basic idea of how tests are used.</p>
+<p>Let's execute that test to see if it works.</p>
+<pre><code>&gt; evennia --settings settings.py test commands
+
+TESTING: Using specified settings file 'server.conf.settings'.
+
+(Obs: Evennia's full test suite may not pass if the settings are very
+different from the default. Use 'test .' as arguments to run only tests
+on the game dir.)
+
+Creating test database for alias 'default'...
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK
+Destroying test database for alias 'default'...
+</code></pre>
+<p>We specified the <code>commands</code> package to the evennia test command since that's where we put our test file. In this case we could just as well just said <code>.</code> to search all of <code>mygame</code> for testing files. If we have a lot of tests it may be useful to test only a single set at a time though. We get an information text telling us we are using our custom settings file (instead of Evennia's default file) and then the test runs. The test passes! Change the "FOO" string to something else in the test to see how it looks when it fails.</p>
+<h3 id="testing-commands">Testing commands<a class="headerlink" href="#testing-commands" title="Permanent link">&para;</a></h3>
+<p>This section will test the proper execution of the 'abilities' command, as described in the <a href="First-Steps-Coding">First Steps Coding</a> page.  Follow this tutorial to create the 'abilities' command, we will need it to test it.</p>
+<p>Testing commands in Evennia is a bit more complex than the simple testing example we have seen. Luckily, Evennia supplies a special test class to do just that ... we just need to inherit from it and use it properly. This class is called 'CommandTest' and is defined in the 'evennia.commands.default.tests' package.  To create a test for our 'abilities' command, we just need to create a class that inherits from 'CommandTest' and add methods.</p>
+<p>We could create a new test file for this but for now we just append to the <code>tests.py</code> file we already have in <code>commands</code> from before. </p>
+<pre><code class="python">    # bottom of mygame/commands/tests.py
+
+    from evennia.commands.default.tests import CommandTest
+
+    from commands.command import CmdAbilities
+    from typeclasses.characters import Character
+
+    class TestAbilities(CommandTest):
+
+        character_typeclass = Character
+
+        def test_simple(self):
+            self.call(CmdAbilities(), &quot;&quot;, &quot;STR: 5, AGI: 4, MAG: 2&quot;)
+</code></pre>
+
+<ul>
+<li>Line 1-4:  we do some importing.  'CommandTest' is going to be our base class for our test, so we need it.  We also import our command ('CmdAbilities' in this case).  Finally we import the 'Character' typeclass.  We need it, since 'CommandTest' doesn't use 'Character', but 'DefaultCharacter', which means the character calling the command won't have the abilities we have written in the 'Character' typeclass.</li>
+<li>Line 6-8:  that's the body of our test.  Here, a single command is tested in an entire class.  Default commands are usually grouped by category in a single class.  There is no rule, as long as you know where you put your tests.  Note that we set the 'character_typeclass' class attribute to Character.  As explained above, if you didn't do that, the system would create a 'DefaultCharacter' object, not a 'Character'.  You can try to remove line 4 and 8 to see what happens when running the test.</li>
+<li>Line 10-11:  our unique testing method.  Note its name:  it should begin by 'test_'.  Apart from that, the method is quite simple:  it's an instance method (so it takes the 'self' argument) but no other arguments are needed.  Line 11 uses the 'call' method, which is defined in 'CommandTest'.  It's a useful method that compares a command against an expected result.  It would be like comparing two strings with 'assertEqual', but the 'call' method does more things, including testing the command in a realistic way (calling its hooks in the right order, so you don't have to worry about that).</li>
+</ul>
+<p>Line 11 can be understood as:  test the 'abilities' command (first parameter), with no argument (second parameter), and check that the character using it receives his/her abilities (third parameter).</p>
+<p>Let's run our new test:</p>
+<pre><code>&gt; evennia --settings settings.py test commands
+[...]
+Creating test database for alias 'default'...
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.156s
+
+OK
+Destroying test database for alias 'default'...
+</code></pre>
+<p>Two tests were executed, since we have kept 'TestString' from last time.  In case of failure, you will get much more information to help you fix the bug.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

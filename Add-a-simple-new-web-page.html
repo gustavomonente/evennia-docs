@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Add a simple new web page - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#create-the-view">Create the view</a></li>
+        <li class="main "><a href="#the-html-page">The HTML page</a></li>
+        <li class="main "><a href="#the-url">The URL</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Simple-tutorial-for-getting-going-with-the-web-components-of-evennia"></a></p>
+<p>Evennia leverages <a href="https://docs.djangoproject.com">Django</a> which is a web development framework.
+Huge professional websites are made in Django and there is extensive documentation (and books) on it
+. You are encouraged to at least look at the Django basic tutorials. Here we will just give a brief
+introduction for how things hang together, to get you started. </p>
+<p>We assume you have installed and set up Evennia to run. A webserver and website comes out of the
+box. You can get to that by entering <code>http://localhost:4001</code> in your web browser - you should see a
+welcome page with some game statistics and a link to the web client. Let us add a new page that you
+can get to by going to <code>http://localhost:4001/story</code>.</p>
+<h3 id="create-the-view">Create the view<a class="headerlink" href="#create-the-view" title="Permanent link">&para;</a></h3>
+<p>A django "view" is a normal Python function that django calls to render the HTML page you will see
+in the web browser. Here we will just have it spit back the raw html, but Django can do all sorts of
+cool stuff with the page in the view, like adding dynamic content or change it on the fly. Open
+<code>mygame/web</code> folder and add a new module there named <code>story.py</code> (you could also put it in its own
+folder if you wanted to be neat. Don't forget to add an empty <code>__init__.py</code> file if you do, to tell
+Python you can import from the new folder). Here's how it looks:</p>
+<pre><code class="python"># in mygame/web/story.py
+
+from django.shortcuts import render
+
+def storypage(request):
+    return render(request, &quot;story.html&quot;)
+</code></pre>
+
+<p>This view takes advantage of a shortcut provided to use by Django, <em>render</em>. This shortcut gives the
+template some information from the request, for instance, the game name, and then renders it.</p>
+<h3 id="the-html-page">The HTML page<a class="headerlink" href="#the-html-page" title="Permanent link">&para;</a></h3>
+<p>We need to find a place where Evennia (and Django) looks for html files (called <em>templates</em> in
+Django parlance). You can specify such places in your settings (see the <code>TEMPLATES</code> variable in
+<code>default_settings.py</code> for more info), but here we'll use an existing one. Go to
+<code>mygame/template/overrides/website/</code> and create a page <code>story.html</code> there. </p>
+<p>This is not a HTML tutorial, so we'll go simple:</p>
+<pre><code class="html">{% extends &quot;base.html&quot; %}
+{% block content %}
+&lt;div class=&quot;row&quot;&gt;
+  &lt;div class=&quot;col&quot;&gt;
+    &lt;h1&gt;A story about a tree&lt;/h1&gt;
+    &lt;p&gt;
+        This is a story about a tree, a classic tale ...
+    &lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+{% endblock %}
+</code></pre>
+
+<p>Since we've used the <em>render</em> shortcut, Django will allow us to extend our base styles easily.</p>
+<p>If you'd rather not take advantage of Evennia's base styles, you can do something like this instead:</p>
+<pre><code class="html">&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1&gt;A story about a tree&lt;/h1&gt;
+    &lt;p&gt;
+    This is a story about a tree, a classic tale ...
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h3 id="the-url">The URL<a class="headerlink" href="#the-url" title="Permanent link">&para;</a></h3>
+<p>When you enter the address <code>http://localhost:4001/story</code> in your web browser, Django will parse that
+field to figure out which page you want to go to. You tell it which patterns are relevant in the
+file
+<a href="https://github.com/evennia/evennia/blob/master/evennia/game_template/web/urls.py">mygame/web/urls.py</a>.
+Open it now. </p>
+<p>Django looks for the variable <code>urlpatterns</code> in this file. You want to add your new pattern to the
+<code>custom_patterns</code> list we have prepared - that is then merged with the default <code>urlpatterns</code>. Here's
+how it could look:</p>
+<pre><code class="python">from web import story
+
+# ...
+
+custom_patterns = [
+    url(r'story', story.storypage, name='Story'),
+]
+</code></pre>
+
+<p>That is, we import our story view module from where we created it earlier and then create an <code>url</code>
+instance. The first argument to <code>url</code> is the pattern of the url we want to find (<code>"story"</code>) (this is
+a regular expression if you are familiar with those) and then our view function we want to direct
+to.</p>
+<p>That should be it. Reload Evennia and you should be able to browse to your new story page!</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

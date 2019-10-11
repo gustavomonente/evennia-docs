@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>IRC - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#configuring-irc">Configuring IRC</a></li>
+        <li class="main "><a href="#setting-up-irc-step-by-step">Setting up IRC, step by step</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Connecting-your-game-to-an-external-IRC-channel."></a></p>
+<p><a href="http://en.wikipedia.org/wiki/Internet_Relay_Chat">IRC (Internet Relay Chat)</a> is a long standing chat protocol used by many open-source projects for communicating in real time. By connecting one of Evennia's <a href="Communications.html">Channels</a> to an IRC channel you can communicate also with people not on an mud themselves. You can also use IRC if you are only running your Evennia MUD locally on your computer (your game doesn't need to be open to the public)! All you need is an internet connection. For IRC operation you also need <a href="http://twistedmatrix.com/trac/wiki/TwistedWords">twisted.words</a>. This is available simply as a package <em>python-twisted-words</em> in many Linux distros, or directly downloadable from the link.</p>
+<h2 id="configuring-irc">Configuring IRC<a class="headerlink" href="#configuring-irc" title="Permanent link">&para;</a></h2>
+<p>To configure IRC, you'll need to activate it in your settings file. </p>
+<pre><code class="python">    IRC_ENABLED = True
+</code></pre>
+
+<p>Start Evennia and log in as a privileged user. You should now have a new command available: <code>@irc2chan</code>. This command is called like this:</p>
+<pre><code> @irc2chan[/switches] &lt;evennia_channel&gt; = &lt;ircnetwork&gt; &lt;port&gt; &lt;#irchannel&gt; &lt;botname&gt;
+</code></pre>
+<p>If you already know how IRC works, this should be pretty self-evident to use. Read the help entry for more features.</p>
+<h2 id="setting-up-irc-step-by-step">Setting up IRC, step by step<a class="headerlink" href="#setting-up-irc-step-by-step" title="Permanent link">&para;</a></h2>
+<p>You can connect IRC to any Evennia channel (so you could connect it to the default <em>public</em> channel if you like), but for testing, let's set up a new channel <code>irc</code>.</p>
+<pre><code> @ccreate irc = This is connected to an irc channel!
+</code></pre>
+<p>You will automatically join the new channel.</p>
+<p>Next we will create a connection to an external IRC network and channel. There are many, many IRC nets. <a href="http://www.irchelp.org/irchelp/networks/popular.html">Here is a list</a> of some of the biggest ones, the one you choose is not really very important unless you want to connect to a particular channel (also make sure that the network allows for "bots" to connect).</p>
+<p>For testing, we choose the <em>Freenode</em> network, <code>irc.freenode.net</code>. We will connect to a test channel, let's call it <em>#myevennia-test</em> (an IRC channel always begins with <code>#</code>). It's best if you pick an obscure channel name that didn't exist previously - if it didn't exist it will be created for you. </p>
+<blockquote>
+<p><em>Don't</em> connect to <code>#evennia</code> for testing and debugging, that is Evennia's official chat channel! You <em>are</em> welcome to connect your game to <code>#evennia</code> once you have everything working though - it can be a good way to get help and ideas. But if you do, please do so with an in-game channel open only to your game admins and developers).</p>
+</blockquote>
+<p>The <em>port</em> needed depends on the network. For Freenode this is <code>6667</code>.</p>
+<p>What will happen is that your Evennia server will connect to this IRC channel as a normal user. This "user" (or "bot") needs a name, which you must also supply. Let's call it "mud-bot".</p>
+<p>To test that the bot connects correctly you also want to log onto this channel with a separate, third-party IRC client. There are hundreds of such clients available. If you use Firefox, the <em>Chatzilla</em> plugin is good and easy. Freenode also offers its own web-based chat page.  Once you have connected to a network, the command to join is usually <code>/join #channelname</code> (don't forget the #).</p>
+<p>Next we connect Evennia with the IRC channel.</p>
+<pre><code> @irc2chan irc = irc.freenode.net 6667 #myevennia-test mud-bot
+</code></pre>
+<p>Evennia will now create a new IRC bot <code>mud-bot</code> and connect it to the IRC network and the channel #myevennia. If you are connected to the IRC channel you will soon see the user <em>mud-bot</em> connect.</p>
+<p>Write something in the Evennia channel <em>irc</em>.</p>
+<pre><code> irc Hello, World!
+[irc] Anna: Hello, World!
+</code></pre>
+<p>If you are viewing your IRC channel with a separate IRC client you should see your text appearing there, spoken by the bot:</p>
+<pre><code>mud-bot&gt; [irc] Anna: Hello, World!
+</code></pre>
+<p>Write <code>Hello!</code> in your IRC client window and it will appear in your normal channel, marked with the name of the IRC channel you used (#evennia here).</p>
+<pre><code>[irc] Anna@#myevennia-test: Hello!
+</code></pre>
+<p>Your Evennia gamers can now chat with users on external IRC channels!</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

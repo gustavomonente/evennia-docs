@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Apache Config - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#mod_wsgi-setup">mod_wsgi Setup</a></li>
+            <li><a href="#install-mod_wsgi">Install mod_wsgi</a></li>
+            <li><a href="#copy-and-modify-the-vhost">Copy and modify the VHOST</a></li>
+            <li><a href="#restartreload-apache">Restart/Reload Apache</a></li>
+            <li><a href="#enjoy">Enjoy</a></li>
+            <li><a href="#a-note-on-code-reloading">A note on code reloading</a></li>
+            <li><a href="#further-notes-and-hints">Further notes and hints:</a></li>
+        <li class="main "><a href="#mod_proxy-and-mod_ssl-setup">mod_proxy and mod_ssl setup</a></li>
+            <li><a href="#install-mod_ssl">Install mod_ssl</a></li>
+            <li><a href="#tls-proxywebsocket-configuration">TLS proxy+websocket configuration</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Optional-info-for-using-Apache-as-a-webserver-instead-of-Evennia's-own."></a></p>
+<p><strong>Warning</strong>: This information is presented as a convenience, using another webserver than Evennia's
+own is not directly supported and you are on your own if you want to do so.  Evennia's webserver
+works out of the box without any extra configuration and also runs in-process making sure to avoid
+caching race conditions. The browser web client will most likely not work (at least not without
+tweaking) on a third-party web server.</p>
+<p>One reason for wanting to use an external webserver like Apache would be to act as a <em>proxy</em> in
+front of the Evennia webserver. Getting this working with TLS (encryption) requires some extra work
+covered at the end of this page. </p>
+<p>Note that the Apache instructions below might be outdated. If something is not working right, or you
+use Evennia with a different server, please let us know. Also, if there is a particular Linux distro
+you would like covered, please let us know.</p>
+<h2 id="mod_wsgi-setup">mod_wsgi Setup<a class="headerlink" href="#mod_wsgi-setup" title="Permanent link">&para;</a></h2>
+<h3 id="install-mod_wsgi">Install mod_wsgi<a class="headerlink" href="#install-mod_wsgi" title="Permanent link">&para;</a></h3>
+<h4 id="fedorarhel">Fedora/RHEL<a class="headerlink" href="#fedorarhel" title="Permanent link">&para;</a></h4>
+<p>Apache HTTP Server and mod_wsgi are available in the standard package repositories for Fedora and RHEL:</p>
+<pre><code># dnf install httpd mod_wsgi
+or
+# yum install httpd mod_wsgi
+</code></pre>
+
+<h4 id="ubuntudebian">Ubuntu/Debian<a class="headerlink" href="#ubuntudebian" title="Permanent link">&para;</a></h4>
+<p>Apache HTTP Server and mod_wsgi are available in the standard package repositories for Ubuntu and Debian:</p>
+<pre><code># apt-get update
+# apt-get install apache2 libapache2-mod-wsgi
+</code></pre>
+
+<h3 id="copy-and-modify-the-vhost">Copy and modify the VHOST<a class="headerlink" href="#copy-and-modify-the-vhost" title="Permanent link">&para;</a></h3>
+<p>After <code>mod_wsgi</code> is installed, copy the <code>evennia/web/utils/evennia_wsgi_apache.conf</code> file to your
+apache2 vhosts/sites folder. On Debian/Ubuntu, this is <code>/etc/apache2/sites-enabled/</code>. Make your
+modifications <strong>after</strong> copying the file there.</p>
+<p>Read the comments and change the paths to point to the appropriate locations within your setup.</p>
+<h3 id="restartreload-apache">Restart/Reload Apache<a class="headerlink" href="#restartreload-apache" title="Permanent link">&para;</a></h3>
+<p>You'll then want to reload or restart apache2 after changing the configurations.</p>
+<h4 id="fedorarhelubuntu">Fedora/RHEL/Ubuntu<a class="headerlink" href="#fedorarhelubuntu" title="Permanent link">&para;</a></h4>
+<pre><code># systemctl restart httpd
+</code></pre>
+
+<h4 id="ubuntudebian_1">Ubuntu/Debian<a class="headerlink" href="#ubuntudebian_1" title="Permanent link">&para;</a></h4>
+<pre><code># systemctl restart apache2
+</code></pre>
+
+<h3 id="enjoy">Enjoy<a class="headerlink" href="#enjoy" title="Permanent link">&para;</a></h3>
+<p>With any luck, you'll be able to point your browser at your domain or subdomain that you set up in
+your vhost and see the nifty default Evennia webpage. If not, read the hopefully informative error
+message and work from there. Questions may be directed to our <a href="http://evennia.com">Evennia Community
+site</a>.</p>
+<h3 id="a-note-on-code-reloading">A note on code reloading<a class="headerlink" href="#a-note-on-code-reloading" title="Permanent link">&para;</a></h3>
+<p>If your <code>mod_wsgi</code> is set up to run on daemon mode (as will be the case by default on Debian and
+Ubuntu), you may tell <code>mod_wsgi</code> to reload by using the <code>touch</code> command on
+<code>evennia/game/web/utils/apache_wsgi.conf</code>. When <code>mod_wsgi</code> sees that the file modification time has
+changed, it will force a code reload. Any modifications to the code will not be propagated to the
+live instance of your site until reloaded.</p>
+<p>If you are not running in daemon mode or want to force the issue, simply restart or reload apache2 to apply your changes.</p>
+<h3 id="further-notes-and-hints">Further notes and hints:<a class="headerlink" href="#further-notes-and-hints" title="Permanent link">&para;</a></h3>
+<p>If you get strange (and usually uninformative) <code>Permission denied</code> errors from Apache, make sure
+that your <code>evennia</code> directory is located in a place the webserver may actually access. For example,
+some Linux distributions may default to very restrictive access permissions on a user's <code>/home</code>
+directory. </p>
+<p>One user commented that they had to add the following to their Apache config to get things to work.
+Not confirmed, but worth trying if there are trouble.</p>
+<pre><code>&lt;Directory "/home/&lt;yourname&gt;/evennia/game/web"&gt;
+                Options +ExecCGI
+                Allow from all
+&lt;/Directory&gt;
+</code></pre>
+<h2 id="mod_proxy-and-mod_ssl-setup"><code>mod_proxy</code> and <code>mod_ssl</code> setup<a class="headerlink" href="#mod_proxy-and-mod_ssl-setup" title="Permanent link">&para;</a></h2>
+<p>Below are steps on running Evennia using a front-end proxy (Apache HTTP), <code>mod_proxy_http</code>,
+<code>mod_proxy_wstunnel</code>, and <code>mod_ssl</code>. <code>mod_proxy_http</code> and <code>mod_proxy_wstunnel</code> will simply be referred to as
+<code>mod_proxy</code> below. </p>
+<h3 id="install-mod_ssl">Install <code>mod_ssl</code><a class="headerlink" href="#install-mod_ssl" title="Permanent link">&para;</a></h3>
+<h4 id="fedorarhel_1">Fedora/RHEL<a class="headerlink" href="#fedorarhel_1" title="Permanent link">&para;</a></h4>
+<p>Apache HTTP Server and <code>mod_ssl</code> are available in the standard package repositories for Fedora and RHEL:</p>
+<pre><code># dnf install httpd mod_ssl
+or
+# yum install httpd mod_ssl
+
+</code></pre>
+
+<h4 id="ubuntudebian_2">Ubuntu/Debian<a class="headerlink" href="#ubuntudebian_2" title="Permanent link">&para;</a></h4>
+<p>Apache HTTP Server and <code>mod_sslj</code>kl are installed together in the <code>apache2</code> package and available in the
+standard package repositories for Ubuntu and Debian. <code>mod_ssl</code> needs to be enabled after installation:</p>
+<pre><code># apt-get update
+# apt-get install apache2 
+# a2enmod ssl
+
+</code></pre>
+
+<h3 id="tls-proxywebsocket-configuration">TLS proxy+websocket configuration<a class="headerlink" href="#tls-proxywebsocket-configuration" title="Permanent link">&para;</a></h3>
+<p>Below is a sample configuration for Evennia with a TLS-enabled http and websocket proxy.</p>
+<h4 id="apache-http-server-configuration">Apache HTTP Server Configuration<a class="headerlink" href="#apache-http-server-configuration" title="Permanent link">&para;</a></h4>
+<pre><code>&lt;VirtualHost *:80&gt;
+  # Always redirect to https/443
+  ServerName mud.example.com
+  Redirect / https://mud.example.com
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+  ServerName mud.example.com
+
+  SSLEngine On
+
+  # Location of certificate and key
+  SSLCertificateFile /etc/pki/tls/certs/mud.example.com.crt
+  SSLCertificateKeyFile /etc/pki/tls/private/mud.example.com.key
+
+  # Use a tool https://www.ssllabs.com/ssltest/ to scan your set after setting up.
+  SSLProtocol TLSv1.2
+  SSLCipherSuite HIGH:!eNULL:!NULL:!aNULL
+
+  # Proxy all websocket traffic to port 4002 in Evennia
+  ProxyPass /ws ws://127.0.0.1:4002/
+  ProxyPassReverse /ws ws://127.0.0.1:4002/
+
+  # Proxy all HTTP traffic to port 4001 in Evennia
+  ProxyPass / http://127.0.0.1:4001/
+  ProxyPassReverse / http://127.0.0.1:4001/
+
+  # Configure separate logging for this Evennia proxy
+  ErrorLog logs/evennia_error.log
+  CustomLog logs/evennia_access.log combined
+&lt;/VirtualHost&gt;
+</code></pre>
+
+<h4 id="evennia-secure-websocket-configuration">Evennia secure websocket configuration<a class="headerlink" href="#evennia-secure-websocket-configuration" title="Permanent link">&para;</a></h4>
+<p>There is a slight trick in setting up Evennia so websocket traffic is handled correctly by the
+proxy. You must set the <code>WEBSOCKET_CLIENT_URL</code> setting in your <code>mymud/server/conf/settings.py</code> file:</p>
+<pre><code>WEBSOCKET_CLIENT_URL = &quot;wss://external.example.com/ws&quot;
+</code></pre>
+
+<p>The setting above is what the client's browser will actually use. Note the use of <code>wss://</code> is
+because our client will be communicating over an encrypted connection ("wss" indicates websocket
+over SSL/TLS). Also, especially note the additional path <code>/ws</code> at the end of the URL. This is how
+Apache HTTP Server identifies that a particular request should be proxied to Evennia's websocket
+port but this should be applicable also to other types of proxies (like nginx). </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

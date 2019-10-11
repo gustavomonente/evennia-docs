@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Parsing command arguments, theory and best practices - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#what-are-command-arguments">What are command arguments?</a></li>
+        <li class="main "><a href="#working-with-strings">Working with strings</a></li>
+            <li><a href="#selfargs">self.args</a></li>
+            <li><a href="#stripping">Stripping</a></li>
+            <li><a href="#convert-arguments-to-numbers">Convert arguments to numbers</a></li>
+            <li><a href="#working-with-several-arguments">Working with several arguments</a></li>
+            <li><a href="#optional-arguments">Optional arguments</a></li>
+        <li class="main "><a href="#evennia-searches">Evennia searches</a></li>
+            <li><a href="#local-searches">Local searches</a></li>
+            <li><a href="#quiet-searches">Quiet searches</a></li>
+            <li><a href="#global-searches">Global searches</a></li>
+        <li class="main "><a href="#conclusion">Conclusion</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Parsing-command-arguments-best-practices"></a></p>
+<p>This tutorial will elaborate on the many ways one can parse command arguments.  The first step after <a href="Adding-Command-Tutorial">adding a command</a> usually is to parse its arguments.  There are lots of ways to do it, but some are indeed better than others and this tutorial will try to present them.</p>
+<p>If you're a Python beginner, this tutorial might help you a lot.  If you're already familiar with Python syntax, this tutorial might still contain useful information.  There are still a lot of things I find in the standard library that come as a surprise, though they were there all along.  This might be true for others.</p>
+<p>In this tutorial we will:</p>
+<ul>
+<li>Parse arguments with numbers.</li>
+<li>Parse arguments with delimiters.</li>
+<li>Take a look at optional arguments.</li>
+<li>Parse argument containing object names.</li>
+</ul>
+<h2 id="what-are-command-arguments">What are command arguments?<a class="headerlink" href="#what-are-command-arguments" title="Permanent link">&para;</a></h2>
+<p>I'm going to talk about command arguments and parsing a lot in this tutorial.  So let's be sure we talk about the same thing before going any further:</p>
+<blockquote>
+<p>A command is an Evennia object that handles specific user input.</p>
+</blockquote>
+<p>For instance, the default <code>look</code> is a command.  After having created your Evennia game, and connected to it, you should be able to type <code>look</code> to see what's around.  In this context, <code>look</code> is a command.</p>
+<blockquote>
+<p>Command arguments are additional text passed after the command.</p>
+</blockquote>
+<p>Following the same example, you can type <code>look self</code> to look at yourself.  In this context, <code>self</code> is the text specified after <code>look</code>.  <code>" self"</code> is the argument to the <code>look</code> command.</p>
+<p>Part of our task as a game developer is to connect user inputs (mostly commands) with actions in the game.  And most of the time, entering commands is not enough, we have to rely on arguments for specifying actions with more accuracy.</p>
+<p>Take the <code>say</code> command.  If you couldn't specify what to say as a command argument (<code>say hello!</code>), you would have trouble communicating with others in the game.  One would need to create a different command for every kind of word or sentence, which is, of course, not practical.</p>
+<p>Last thing: what is parsing?</p>
+<blockquote>
+<p>In our case, parsing is the process by which we convert command arguments into something we can work with.</p>
+</blockquote>
+<p>We don't usually use the command argument as is (which is just text, of type <code>str</code> in Python).  We need to extract useful information.  We might want to ask the user for a number, or the name of another character present in the same room.  We're going to see how to do all that now.</p>
+<h2 id="working-with-strings">Working with strings<a class="headerlink" href="#working-with-strings" title="Permanent link">&para;</a></h2>
+<p>In object terms, when you write a command in Evennia (when you write the Python class), the arguments are stored in the <code>args</code> attribute.  Which is to say, inside your <code>func</code> method, you can access the command arguments in <code>self.args</code>.</p>
+<h3 id="selfargs">self.args<a class="headerlink" href="#selfargs" title="Permanent link">&para;</a></h3>
+<p>To begin with, look at this example:</p>
+<pre><code class="python">class CmdTest(Command):
+
+    &quot;&quot;&quot;
+    Test command.
+
+    Syntax:
+      test [argument]
+
+    Enter any argument after test.
+
+    &quot;&quot;&quot;
+
+    key = &quot;test&quot;
+
+    def func(self):
+        self.msg(f&quot;You have entered: {self.args}.&quot;)
+</code></pre>
+
+<p>If you add this command and test it, you will receive exactly what you have entered without any parsing:</p>
+<pre><code>&gt; test Whatever
+You have entered:  Whatever.
+&gt; test
+You have entered: .
+</code></pre>
+
+<blockquote>
+<p>The lines starting with <code>&gt;</code> indicate what you enter into your client.  The other lines are what you receive from the game server.</p>
+</blockquote>
+<p>Notice two things here:</p>
+<ol>
+<li>The left space between our command key ("test", here) and our command argument is not removed.  That's why there are two spaces in our output at line 2.  Try entering something like "testok".</li>
+<li>Even if you don't enter command arguments, the command will still be called with an empty string in <code>self.args</code>.</li>
+</ol>
+<p>Perhaps a slight modification to our code would be appropriate to see what's happening.  We will force Python to display the command arguments as a debug string using a little shortcut.</p>
+<pre><code class="python">class CmdTest(Command):
+
+    &quot;&quot;&quot;
+    Test command.
+
+    Syntax:
+      test [argument]
+
+    Enter any argument after test.
+
+    &quot;&quot;&quot;
+
+    key = &quot;test&quot;
+
+    def func(self):
+        self.msg(f&quot;You have entered: {self.args!r}.&quot;)
+</code></pre>
+
+<p>The only line we have changed is the last one, and we have added <code>!r</code> between our braces to tell Python to print the debug version of the argument (the repr-ed version).  Let's see the result:</p>
+<pre><code>&gt; test Whatever
+You have entered: ' Whatever'.
+&gt; test
+You have entered: ''.
+&gt; test And something with '?
+You have entered: &quot; And something with '?&quot;.
+</code></pre>
+
+<p>This displays the string in a way you could see in the Python interpreter.  It might be easier to read... to debug, anyway.</p>
+<p>I insist so much on that point because it's crucial: the command argument is just a string (of type <code>str</code>) and we will use this to parse it.  What you will see is mostly not Evennia-specific, it's Python-specific and could be used in any other project where you have the same need.</p>
+<h3 id="stripping">Stripping<a class="headerlink" href="#stripping" title="Permanent link">&para;</a></h3>
+<p>As you've seen, our command arguments are stored with the space.  And the space between the command and the arguments is often of no importance.</p>
+<blockquote>
+<p>Why is it ever there?</p>
+</blockquote>
+<p>Evennia will try its best to find a matching command.  If the user enters your command key with arguments (but omits the space), Evennia will still be able to find and call the command.  You might have seen what happened if the user entered <code>testok</code>.  In this case, <code>testok</code> could very well be a command (Evennia checks for that) but seeing none, and because there's a <code>test</code> command, Evennia calls it with the arguments <code>"ok"</code>.</p>
+<p>But most of the time, we don't really care about this left space, so you will often see code to remove it.  There are different ways to do it in Python, but a command use case is the <code>strip</code> method on <code>str</code> and its cousins, <code>lstrip</code> and <code>rstrip</code>.</p>
+<ul>
+<li><code>strip</code>: removes one or more characters (either spaces or other characters) from both ends of the string.</li>
+<li><code>lstrip</code>: same thing but only removes from the left end (left strip) of the string.</li>
+<li><code>rstrip</code>: same thing but only removes from the right end (right strip) of the string.</li>
+</ul>
+<p>Some Python examples might help:</p>
+<pre><code class="python">&gt;&gt;&gt; '   this is '.strip() # remove spaces by default
+'this is'
+&gt;&gt;&gt; &quot;   What if I'm right?   &quot;.lstrip() # strip spaces from the left
+&quot;What if I'm right?   &quot;
+&gt;&gt;&gt; 'Looks good to me...'.strip('.') # removes '.'
+'Looks good to me'
+&gt;&gt;&gt; '&quot;Now, what is it?&quot;'.strip('&quot;?') # removes '&quot;' and '?' from both ends
+'Now, what is it'
+</code></pre>
+
+<p>Usually, since we don't need the space separator, but still want our command to work if there's no separator, we call <code>lstrip</code> on the command arguments:</p>
+<pre><code class="python">class CmdTest(Command):
+
+    &quot;&quot;&quot;
+    Test command.
+
+    Syntax:
+      test [argument]
+
+    Enter any argument after test.
+
+    &quot;&quot;&quot;
+
+    key = &quot;test&quot;
+
+    def parse(self):
+        &quot;&quot;&quot;Parse arguments, just strip them.&quot;&quot;&quot;
+        self.args = self.args.lstrip()
+
+    def func(self):
+        self.msg(f&quot;You have entered: {self.args!r}.&quot;)
+</code></pre>
+
+<blockquote>
+<p>We are now beginning to override the command's <code>parse</code> method, which is typically useful just for argument parsing.  This method is executed before <code>func</code> and so <code>self.args</code> in <code>func()</code> will contain our <code>self.args.lstrip()</code>.</p>
+</blockquote>
+<p>Let's try it:</p>
+<pre><code>&gt; test Whatever
+You have entered: 'Whatever'.
+&gt; test
+You have entered: ''.
+&gt; test And something with '?
+You have entered: &quot;And something with '?&quot;.
+&gt; test     And something with lots of spaces
+You have entered: 'And something with lots of spaces'.
+</code></pre>
+
+<p>Spaces at the end of the string are kept, but all spaces at the beginning are removed:</p>
+<blockquote>
+<p><code>strip</code>, <code>lstrip</code> and <code>rstrip</code> without arguments will strip spaces, line breaks and other common separators.  You can specify one or more characters as a parameter.  If you specify more than one character, all of them will be stripped from your original string.</p>
+</blockquote>
+<h3 id="convert-arguments-to-numbers">Convert arguments to numbers<a class="headerlink" href="#convert-arguments-to-numbers" title="Permanent link">&para;</a></h3>
+<p>As pointed out, <code>self.args</code> is a string (of type <code>str</code>).  What if we want the user to enter a number?</p>
+<p>Let's take a very simple example: creating a command, <code>roll</code>, that allows to roll a six-sided die.  The player has to guess the number, specifying the number as argument.  To win, the player has to match the number with the die.  Let's see an example:</p>
+<pre><code>&gt; roll 3
+You roll a die.  It lands on the number 4.
+You played 3, you have lost.
+&gt; dice 1
+You roll a die.  It lands on the number 2.
+You played 1, you have lost.
+&gt; dice 1
+You roll a die.  It lands on the number 1.
+You played 1, you have won!
+</code></pre>
+
+<p>If that's your first command, it's a good opportunity to try to write it.  A command with a simple and finite role always is a good starting choice.  Here's how we could (first) write it... but it won't work as is, I warn you:</p>
+<pre><code class="python">from random import randint
+
+from evennia import Command
+
+class CmdRoll(Command):
+
+    &quot;&quot;&quot;
+    Play random, enter a number and try your luck.
+
+    Usage:
+      roll &lt;number&gt;
+
+    Enter a valid number as argument.  A random die will be rolled and you
+    will win if you have specified the correct number.
+
+    Example:
+      roll 3
+
+    &quot;&quot;&quot;
+
+    key = &quot;roll&quot;
+
+    def parse(self):
+        &quot;&quot;&quot;Convert the argument to a number.&quot;&quot;&quot;
+        self.args = self.args.lstrip()
+
+    def func(self):
+        # Roll a random die
+        figure = randint(1, 6) # return a pseudo-random number between 1 and 6, including both
+        self.msg(f&quot;You roll a die.  It lands on the number {figure}.&quot;)
+
+        if self.args == figure: # THAT WILL BREAK!
+            self.msg(f&quot;You played {self.args}, you have won!&quot;)
+        else:
+            self.msg(f&quot;You played {self.args}, you have lost.&quot;)
+</code></pre>
+
+<p>If you try this code, Python will complain that you try to compare a number with a string: <code>figure</code> is a number and <code>self.args</code> is a string and can't be compared as-is in Python.  Python doesn't do "implicit converting" as some languages do.  By the way, this might be annoying sometimes, and other times you will be glad it tries to encourage you to be explicit rather than implicit about what to do.  This is an ongoing debate between programmers.  Let's move on!</p>
+<p>So we need to convert the command argument from a <code>str</code> into an <code>int</code>.  There are a few ways to do it.  But the proper way is to try to convert and deal with the <code>ValueError</code> Python exception.</p>
+<p>Converting a <code>str</code> into an <code>int</code> in Python is extremely simple: just use the <code>int</code> function, give it the string and it returns an integer, if it could.  If it can't, it will raise <code>ValueError</code>.  So we'll need to catch that.  However, we also have to indicate to Evennia that, should the number be invalid, no further parsing should be done.  Here's a new attempt at our command with this converting:</p>
+<pre><code class="python">from random import randint
+
+from evennia import Command, InterruptCommand
+
+class CmdRoll(Command):
+
+    &quot;&quot;&quot;
+    Play random, enter a number and try your luck.
+
+    Usage:
+      roll &lt;number&gt;
+
+    Enter a valid number as argument.  A random die will be rolled and you
+    will win if you have specified the correct number.
+
+    Example:
+      roll 3
+
+    &quot;&quot;&quot;
+
+    key = &quot;roll&quot;
+
+    def parse(self):
+        &quot;&quot;&quot;Convert the argument to number if possible.&quot;&quot;&quot;
+        args = self.args.lstrip()
+
+        # Convert to int if possible
+        # If not, raise InterruptCommand.  Evennia will catch this
+        # exception and not call the 'func' method.
+        try:
+            self.entered = int(args)
+        except ValueError:
+            self.msg(f&quot;{args} is not a valid number.&quot;)
+            raise InterruptCommand
+
+    def func(self):
+        # Roll a random die
+        figure = randint(1, 6) # return a pseudo-random number between 1 and 6, including both
+        self.msg(f&quot;You roll a die.  It lands on the number {figure}.&quot;)
+
+        if self.entered == figure:
+            self.msg(f&quot;You played {self.entered}, you have won!&quot;)
+        else:
+            self.msg(f&quot;You played {self.entered}, you have lost.&quot;)
+</code></pre>
+
+<p>Before enjoying the result, let's examine the <code>parse</code> method a little more: what it does is try to convert the entered argument from a <code>str</code> to an <code>int</code>.  This might fail (if a user enters <code>roll something</code>).  In such a case, Python raises a <code>ValueError</code> exception.  We catch it in our <code>try/except</code> block, send a message to the user and raise the <code>InterruptCommand</code> exception in response to tell Evennia to not run <code>func()</code>, since we have no valid number to give it.</p>
+<p>In the <code>func</code> method, instead of using <code>self.args</code>, we use <code>self.entered</code> which we have defined in our <code>parse</code> method.  You can expect that, if <code>func()</code> is run, then <code>self.entered</code> contains a valid number.</p>
+<p>If you try this command, it will work as expected this time: the number is converted as it should and compared to the die roll.  You might spend some minutes playing this game.  Time out!</p>
+<p>Something else we could want to address: in our small example, we only want the user to enter a positive number between 1 and 6.  And the user can enter <code>roll 0</code> or <code>roll -8</code> or <code>roll 208</code> for that matter, the game still works.  It might be worth addressing.  Again, you could write a condition to do that, but since we're catching an exception, we might end up with something cleaner by grouping:</p>
+<pre><code class="python">from random import randint
+
+from evennia import Command, InterruptCommand
+
+class CmdRoll(Command):
+
+    &quot;&quot;&quot;
+    Play random, enter a number and try your luck.
+
+    Usage:
+      roll &lt;number&gt;
+
+    Enter a valid number as argument.  A random die will be rolled and you
+    will win if you have specified the correct number.
+
+    Example:
+      roll 3
+
+    &quot;&quot;&quot;
+
+    key = &quot;roll&quot;
+
+    def parse(self):
+        &quot;&quot;&quot;Convert the argument to number if possible.&quot;&quot;&quot;
+        args = self.args.lstrip()
+
+        # Convert to int if possible
+        try:
+            self.entered = int(args)
+            if not 1 &lt;= self.entered &lt;= 6:
+                # self.entered is not between 1 and 6 (including both)
+                raise ValueError
+        except ValueError:
+            self.msg(f&quot;{args} is not a valid number.&quot;)
+            raise InterruptCommand
+
+    def func(self):
+        # Roll a random die
+        figure = randint(1, 6) # return a pseudo-random number between 1 and 6, including both
+        self.msg(f&quot;You roll a die.  It lands on the number {figure}.&quot;)
+
+        if self.entered == figure:
+            self.msg(f&quot;You played {self.entered}, you have won!&quot;)
+        else:
+            self.msg(f&quot;You played {self.entered}, you have lost.&quot;)
+</code></pre>
+
+<p>Using grouped exceptions like that makes our code easier to read, but if you feel more comfortable checking, afterward, that the number the user entered is in the right range, you can do so in a latter condition.</p>
+<blockquote>
+<p>Notice that we have updated our <code>parse</code> method only in this last attempt, not our <code>func()</code> method which remains the same.  This is one goal of separating argument parsing from command processing, these two actions are best kept isolated.</p>
+</blockquote>
+<h3 id="working-with-several-arguments">Working with several arguments<a class="headerlink" href="#working-with-several-arguments" title="Permanent link">&para;</a></h3>
+<p>Often a command expects several arguments.  So far, in our example with the "roll" command, we only expect one argument: a number and just a number.  What if we want the user to specify several numbers?  First the number of dice to roll, then the guess?</p>
+<blockquote>
+<p>You won't win often if you roll 5 dice but that's for the example.</p>
+</blockquote>
+<p>So we would like to interpret a command like this:</p>
+<pre><code>&gt; roll 3 12
+</code></pre>
+<p>(To be understood: roll 3 dice, my guess is the total number will be 12.)</p>
+<p>What we need is to cut our command argument, which is a <code>str</code>, break it at the space (we use the space as a delimiter).  Python provides the <code>str.split</code> method which we'll use.  Again, here are some examples from the Python interpreter:</p>
+<pre><code>&gt;&gt;&gt; args = "3 12"
+&gt;&gt;&gt; args.split(" ")
+['3', '12']
+&gt;&gt;&gt; args = "a command with several arguments"
+&gt;&gt;&gt; args.split(" ")
+['a', 'command', 'with', 'several', 'arguments']
+&gt;&gt;&gt;
+</code></pre>
+<p>As you can see, <code>str.split</code> will "convert" our strings into a list of strings.  The specified argument (<code>" "</code> in our case) is used as delimiter.  So Python browses our original string.  When it sees a delimiter, it takes whatever is before this delimiter and append it to a list.</p>
+<p>The point here is that <code>str.split</code> will be used to split our argument.  But, as you can see from the above output, we can never be sure of the length of the list at this point:</p>
+<pre><code>&gt;&gt;&gt; args = "something"
+&gt;&gt;&gt; args.split(" ")
+['something']
+&gt;&gt;&gt; args = ""
+&gt;&gt;&gt; args.split(" ")
+['']
+&gt;&gt;&gt;
+</code></pre>
+<p>Again we could use a condition to check the number of split arguments, but Python offers a better approach, making use of its exception mechanism.  We'll give a second argument to <code>str.split</code>, the maximum number of splits to do.  Let's see an example, this feature might be confusing at first glance:</p>
+<pre><code>&gt;&gt;&gt; args = "that is something great"
+&gt;&gt;&gt; args.split(" ", 1) # one split, that is a list with two elements (before, after)
+</code></pre>
+<p>['that', 'is something great']</p>
+<blockquote>
+<blockquote>
+<blockquote></blockquote>
+</blockquote>
+</blockquote>
+<p>Read this example as many times as needed to understand it.  The second argument we give to <code>str.split</code> is not the length of the list that should be returned, but the number of times we have to split.  Therefore, we specify 1 here, but we get a list of two elements (before the separator, after the separator).</p>
+<blockquote>
+<p>What will happen if Python can't split the number of times we ask?</p>
+</blockquote>
+<p>It won't:</p>
+<pre><code>&gt;&gt;&gt; args = "whatever"
+&gt;&gt;&gt; args.split(" ", 1) # there isn't even a space here...
+['whatever']
+&gt;&gt;&gt;
+</code></pre>
+<p>This is one moment I would have hoped for an exception and didn't get one.  But there's another way which will raise an exception if there is an error: variable unpacking.</p>
+<p>We won't talk about this feature in details here.  It would be complicated.  But the code is really straightforward to use.  Let's take our example of the roll command but let's add a first argument: the number of dice to roll.</p>
+<pre><code class="python">from random import randint
+
+from evennia import Command, InterruptCommand
+
+class CmdRoll(Command):
+
+    &quot;&quot;&quot;
+    Play random, enter a number and try your luck.
+
+    Specify two numbers separated by a space.  The first number is the
+    number of dice to roll (1, 2, 3) and the second is the expected sum
+    of the roll.
+
+    Usage:
+      roll &lt;dice&gt; &lt;number&gt;
+
+    For instance, to roll two 6-figure dice, enter 2 as first argument.
+    If you think the sum of these two dice roll will be 10, you could enter:
+
+        roll 2 10
+
+    &quot;&quot;&quot;
+
+    key = &quot;roll&quot;
+
+    def parse(self):
+        &quot;&quot;&quot;Split the arguments and convert them.&quot;&quot;&quot;
+        args = self.args.lstrip()
+
+        # Split: we expect two arguments separated by a space
+        try:
+            number, guess = args.split(&quot; &quot;, 1)
+        except ValueError:
+            self.msg(&quot;Invalid usage.  Enter two numbers separated by a space.&quot;)
+            raise InterruptCommand
+
+        # Convert the entered number (first argument)
+        try:
+            self.number = int(number)
+            if self.number &lt;= 0:
+                raise ValueError
+        except ValueError:
+            self.msg(f&quot;{number} is not a valid number of dice.&quot;)
+            raise InterruptCommand
+
+        # Convert the entered guess (second argument)
+        try:
+            self.guess = int(guess)
+            if not 1 &lt;= self.guess &lt;= self.number * 6:
+                raise ValueError
+        except ValueError:
+            self.msg(f&quot;{self.guess} is not a valid guess.&quot;)
+            raise InterruptCommand
+
+    def func(self):
+        # Roll a random die X times (X being self.number)
+        figure = 0
+        for _ in range(self.number):
+            figure += randint(1, 6)
+
+        self.msg(f&quot;You roll {self.number} dice and obtain the sum {figure}.&quot;)
+
+        if self.guess == figure:
+            self.msg(f&quot;You played {self.guess}, you have won!&quot;)
+        else:
+            self.msg(f&quot;You played {self.guess}, you have lost.&quot;)
+</code></pre>
+
+<p>The beginning of the <code>parse()</code> method is what interests us most:</p>
+<pre><code class="python">try:
+    number, guess = args.split(&quot; &quot;, 1)
+except ValueError:
+    self.msg(&quot;Invalid usage.  Enter two numbers separated by a space.&quot;)
+    raise InterruptCommand
+</code></pre>
+
+<p>We split the argument using <code>str.split</code> but we capture the result in two variables.  Python is smart enough to know that we want what's left of the space in the first variable, what's right of the space in the second variable.  If there is not even a space in the string, Python will raise a <code>ValueError</code> exception.</p>
+<p>This code is much easier to read than browsing through the returned strings of <code>str.split</code>.  We can convert both variables the way we did previously.  Actually there are not so many changes in this version and the previous one, most of it is due to name changes for clarity.</p>
+<blockquote>
+<p>Splitting a string with a maximum of splits is a common occurrence while parsing command arguments.  You can also see the <code>str.rspli8t</code> method that does the same thing but from the right of the string.  Therefore, it will attempt to find delimiters at the end of the string and work toward the beginning of it.</p>
+</blockquote>
+<p>We have used a space as a delimiter.  This is absolutely not necessary.  You might remember that most default Evennia commands can take an <code>=</code> sign as a delimiter.  Now you know how to parse them as well:</p>
+<pre><code>&gt;&gt;&gt; cmd_key = "tel"
+&gt;&gt;&gt; cmd_args = "book = chest"
+&gt;&gt;&gt; left, right = cmd_args.split("=") # mighht raise ValueError!
+&gt;&gt;&gt; left
+'book '
+&gt;&gt;&gt; right
+' chest'
+&gt;&gt;&gt;
+</code></pre>
+<h3 id="optional-arguments">Optional arguments<a class="headerlink" href="#optional-arguments" title="Permanent link">&para;</a></h3>
+<p>Sometimes, you'll come across commands that have optional arguments.  These arguments are not necessary but they can be set if more information is needed.  I will not provide the entire command code here but just enough code to show the mechanism in Python:</p>
+<p>Again, we'll use <code>str.split</code>, knowing that we might not have any delimiter at all.  For instance, the player could enter the "tel" command like this:</p>
+<pre><code>&gt; tel book
+&gt; tell book = chest
+</code></pre>
+<p>The equal sign is optional along with whatever is specified after it.  A possible solution in our <code>parse</code> method would be:</p>
+<pre><code class="python">    def parse(self):
+        args = self.args.lstrip()
+
+        # = is optional
+        try:
+            obj, destination = args.split(&quot;=&quot;, 1)
+        except ValueError:
+            obj = args
+            destination = None
+</code></pre>
+
+<p>This code would place everything the user entered in <code>obj</code> if she didn't specify any equal sign.  Otherwise, what's before the equal sign will go in <code>obj</code>, what's after the equal sign will go in <code>destination</code>.  This makes for quick testing after that, more robust code with less conditions that might too easily break your code if you're not careful.</p>
+<blockquote>
+<p>Again, here we specified a maximum numbers of splits.  If the users enters:</p>
+</blockquote>
+<pre><code>&gt; tel book = chest = chair
+</code></pre>
+<p>Then <code>destination</code> will contain: <code>" chest = chair"</code>.  This is often desired, but it's up to you to set parsing however you like.</p>
+<h2 id="evennia-searches">Evennia searches<a class="headerlink" href="#evennia-searches" title="Permanent link">&para;</a></h2>
+<p>After this quick tour of some <code>str</code> methods, we'll take a look at some Evennia-specific features that you won't find in standard Python.</p>
+<p>One very common task is to convert a <code>str</code> into an Evennia object.  Take the previous example: having <code>"book"</code>  in a variable is great, but we would prefer to know what the user is talking about... what is this <code>"book"</code>?</p>
+<p>To get an object from a string, we perform an Evennia search.  Evennia provides a <code>search</code> method on all typeclassed objects (you will most likely use the one on characters or accounts).  This method supports a very wide array of arguments and has <a href="https://github.com/evennia/evennia/wiki/Tutorial:-Searching-For-Objects">its own tutorial</a>.  Some examples of useful cases follow:</p>
+<h3 id="local-searches">Local searches<a class="headerlink" href="#local-searches" title="Permanent link">&para;</a></h3>
+<p>When an account or a character enters a command, the account or character is found in the <code>caller</code> attribute.  Therefore, <code>self.caller</code> will contain an account or a character (or a session if that's a session command, though that's not as frequent).  The <code>search</code> method will be available on this caller.</p>
+<p>Let's take the same example of our little "tel" command.  The user can specify an object as argument:</p>
+<pre><code class="python">    def parse(self):
+        name = self.args.lstrip()
+</code></pre>
+
+<p>We then need to "convert" this string into an Evennia object.  The Evennia object will be searched in the caller's location and its contents by default (that is to say, if the command has been entered by a character, it will search the object in the character's room and the character's inventory).</p>
+<pre><code class="python">    def parse(self):
+        name = self.args.lstrip()
+
+        self.obj = self.caller.search(name)
+</code></pre>
+
+<p>We specify only one argument to the <code>search</code> method here: the string to search.  If Evennia finds a match, it will return it and we keep it in the <code>obj</code> attribute.  If it can't find anything, it will return <code>None</code> so we need to check for that:</p>
+<pre><code class="python">    def parse(self):
+        name = self.args.lstrip()
+
+        self.obj = self.caller.search(name)
+        if self.obj is None:
+            # A proper error message has already been sent to the caller
+            raise InterruptCommand
+</code></pre>
+
+<p>That's it.  After this condition, you know that whatever is in <code>self.obj</code> is a valid Evennia object (another character, an object, an exit...).</p>
+<h3 id="quiet-searches">Quiet searches<a class="headerlink" href="#quiet-searches" title="Permanent link">&para;</a></h3>
+<p>By default, Evennia will handle the case when more than one match is found in the search.  The user will be asked to narrow down and re-enter the command.  You can, however, ask to be returned the list of matches and handle this list yourself:</p>
+<pre><code class="python">    def parse(self):
+        name = self.args.lstrip()
+
+        objs = self.caller.search(name, quiet=True)
+        if not objs:
+            # This is an empty list, so no match
+            self.msg(f&quot;No {name!r} was found.&quot;)
+            raise InterruptCommand
+
+        self.obj = objs[0] # Take the first match even if there are several
+</code></pre>
+
+<p>All we have changed to obtain a list is a keyword argument in the <code>search</code> method: <code>quiet</code>.  If set to <code>True</code>,  then errors are ignored and a list is always returned, so we need to handle it as such.  Notice in this example, <code>self.obj</code> will contain a valid object too, but if several matches are found, <code>self.obj</code> will contain the first one, even if more matches are available.</p>
+<h3 id="global-searches">Global searches<a class="headerlink" href="#global-searches" title="Permanent link">&para;</a></h3>
+<p>By default, Evennia will perform a local search, that is, a search limited by the location in which the caller is.  If you want to perform a global search (search in the entire database), just set the <code>global_search</code> keyword argument to <code>True</code>:</p>
+<pre><code class="python">    def parse(self):
+        name = self.args.lstrip()
+        self.obj = self.caller.search(name, global_search=True)
+</code></pre>
+
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>Parsing command arguments is vital for most game designers.  If you design "intelligent" commands, users should be able to guess how to use them without reading the help, or with a very quick peek at said help.  Good commands are intuitive to users.  Better commands do what they're told to do.  For game designers working on MUDs, commands are the main entry point for users into your game.  This is no trivial.  If commands execute correctly (if their argument is parsed, if they don't behave in unexpected ways and report back the right errors), you will have happier players that might stay longer on your game.  I hope this tutorial gave you some pointers on ways to improve your command parsing.  There are, of course, other ways you will discover, or ways you are already using in your code.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

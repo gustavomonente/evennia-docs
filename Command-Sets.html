@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Command Sets - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#defining-command-sets">Defining Command Sets</a></li>
+            <li><a href="#properties-on-command-sets">Properties on Command Sets</a></li>
+        <li class="main "><a href="#command-sets-searched">Command Sets Searched</a></li>
+        <li class="main "><a href="#adding-and-merging-command-sets">Adding and Merging Command Sets</a></li>
+            <li><a href="#merge-rules">Merge Rules</a></li>
+            <li><a href="#assorted-notes">Assorted Notes</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Containers-for-commands,-merges-to-describe-which-commands-are-available-at-any-moment."></a></p>
+<p>Command Sets are intimately linked with <a href="Commands.html">Commands</a> and you should be familiar with Commands before reading this page. The two pages were split for ease of reading.</p>
+<p>A <em>Command Set</em> (often referred to as a CmdSet or cmdset) is the basic unit for storing one or more <em>Commands</em>. A given Command can go into any number of different command sets. Storing Command classes in a command set is the way to make commands available to use in your game. </p>
+<p>When storing a CmdSet on an object, you will make the commands in that command set available to the object. An example is the default command set stored on new Characters. This command set contains all the useful commands, from <code>look</code> and <code>inventory</code> to <code>@dig</code> and <code>@reload</code> (<a href="Locks#Permissions">permissions</a> then limit which players may use them, but that's a separate topic).</p>
+<p>When an account enters a command, cmdsets from the Account, Character, its location, and elsewhere are pulled together into a <em>merge stack</em>. This stack is merged together in a specific order to create a single "merged" cmdset, representing the pool of commands available at that very moment.</p>
+<p>An example would be a <code>Window</code> object that has a cmdset with two commands in it: <code>look through window</code> and <code>open window</code>. The command set would be visible to players in the room with the window, allowing them to use those commands only there. You could imagine all sorts of clever uses of this, like a <code>Television</code> object which had multiple commands for looking at it, switching channels and so on. The tutorial world included with Evennia showcases a dark room that replaces certain critical commands with its own versions because the Character cannot see. </p>
+<p>If you want a quick start into defining your first commands and using them with command sets, you can head over to the <a href="Adding-Command-Tutorial">Adding Command Tutorial</a> which steps through things without the explanations. </p>
+<h2 id="defining-command-sets">Defining Command Sets<a class="headerlink" href="#defining-command-sets" title="Permanent link">&para;</a></h2>
+<p>A CmdSet is, as most things in Evennia, defined as a Python class inheriting from the correct parent (<code>evennia.CmdSet</code>, which is a shortcut to <code>evennia.commands.cmdset.CmdSet</code>). The CmdSet class only needs to define one method, called <code>at_cmdset_creation()</code>. All other class parameters are optional, but are used for more advanced set manipulation and coding (see the <a href="#merge-rules">merge rules</a> section). </p>
+<pre><code class="python"># file mygame/commands/mycmdset.py
+
+from evennia import CmdSet
+
+# this is a theoretical custom module with commands we 
+# created previously: mygame/commands/mycommands.py
+from commands import mycommands
+
+class MyCmdSet(CmdSet):    
+    def at_cmdset_creation(self):
+        &quot;&quot;&quot;
+        The only thing this method should need
+        to do is to add commands to the set.
+        &quot;&quot;&quot; 
+        self.add(mycommands.MyCommand1())
+        self.add(mycommands.MyCommand2())
+        self.add(mycommands.MyCommand3())
+</code></pre>
+
+<p>The CmdSet's <code>add()</code> method can also take another CmdSet as input. In this case all the commands from that CmdSet will be appended to this one as if you added them line by line:</p>
+<pre><code class="python">    def at_cmdset_creation(): 
+        ...
+        self.add(AdditionalCmdSet) # adds all command from this set
+        ...
+</code></pre>
+
+<p>If you added your command to an existing cmdset (like to the default cmdset), that set is already loaded into memory. You need to make the server aware of the code changes: </p>
+<pre><code>@reload 
+</code></pre>
+
+<p>You should now be able to use the command. </p>
+<p>If you created a new, fresh cmdset, this must be added to an object in order to make the commands within available. A simple way to temporarily test a cmdset on yourself is use the <code>@py</code> command to execute a python snippet:</p>
+<pre><code class="python">@py self.cmdset.add('commands.mycmdset.MyCmdSet')
+</code></pre>
+
+<p>This will stay with you until you <code>@reset</code> or <code>@shutdown</code> the server, or you run</p>
+<pre><code class="python">@py self.cmdset.delete('commands.mycmdset.MyCmdSet')
+</code></pre>
+
+<p>In the example above, a specific Cmdset class is removed. Calling <code>delete</code> without arguments will remove the latest added cmdset. </p>
+<blockquote>
+<p>Note: Command sets added using <code>cmdset.add</code> are, by default, <em>not</em> persistent in the database. </p>
+</blockquote>
+<p>If you want the cmdset to survive a reload, you can do: </p>
+<pre><code>@py self.cmdset.add(commands.mycmdset.MyCmdSet, permanent=True)
+</code></pre>
+
+<p>Or you could add the cmdset as the <em>default</em> cmdset: </p>
+<pre><code>@py self.cmdset.add_default(commands.mycmdset.MyCmdSet)
+</code></pre>
+
+<p>An object can only have one "default" cmdset (but can also have none). This is meant as a safe fall-back even if all other cmdsets fail or are removed. It is always persistent and will not be affected by <code>cmdset.delete()</code>. To remove a default cmdset you must explicitly call <code>cmdset.remove_default()</code>.</p>
+<p>Command sets are often added to an object in its <code>at_object_creation</code> method. For more examples of adding commands, read the <a href="Adding-Command-Tutorial">Step by step tutorial</a>. Generally you can customize which command sets are added to your objects by using <code>self.cmdset.add()</code> or <code>self.cmdset.add_default()</code>. </p>
+<blockquote>
+<p>Important: Commands are identified uniquely by key <em>or</em> alias (see <a href="Commands.html">Commands</a>). If any overlap exists, two commands are considered identical. Adding a Command to a command set that already has an identical command will <em>replace</em> the previous command. This is very important. You must take this behavior into account when attempting to overload any default Evennia commands with your own. Otherwise, you may accidentally "hide" your own command in your command set when adding a new one that has a matching alias. </p>
+</blockquote>
+<h3 id="properties-on-command-sets">Properties on Command Sets<a class="headerlink" href="#properties-on-command-sets" title="Permanent link">&para;</a></h3>
+<p>There are several extra flags that you can set on CmdSets in order to modify how they work. All are optional and will be set to defaults otherwise.  Since many of these relate to <em>merging</em> cmdsets, you might want to read the <a href="https://github.com/evennia/evennia/wiki/Command-Sets#adding-and-merging-command-sets">Adding and Merging Command Sets</a> section for some of these to make sense.</p>
+<ul>
+<li><code>key</code> (string) - an identifier for the cmdset. This is optional, but should be unique. It is used for display in lists, but also to identify special merging behaviours using the <code>key_mergetype</code> dictionary below. - <code>mergetype</code> (string) - allows for one of the following string values: "<em>Union</em>", "<em>Intersect</em>", "<em>Replace</em>", or "<em>Remove</em>".  </li>
+<li><code>priority</code> (int) - This defines the merge order of the merge stack - cmdsets will merge in rising order of priority with the highest priority set merging last. During a merger, the commands from the set with the higher priority will have precedence (just what happens depends on the <a href="#adding-and-merging-command-sets">merge type</a>). If priority is identical, the order in the merge stack determines preference. The priority value must be greater or equal to <code>-100</code>. Most in-game sets should usually have priorities between <code>0</code> and <code>100</code>. Evennia default sets have priorities as follows (these can be changed if you want a different distribution): <ul>
+<li>EmptySet: <code>-101</code> (should be lower than all other sets)</li>
+<li>SessionCmdSet: <code>-20</code></li>
+<li>AccountCmdSet: <code>-10</code></li>
+<li>CharacterCmdSet: <code>0</code></li>
+<li>ExitCmdSet: <code>101</code> (generally should always be available)</li>
+<li>ChannelCmdSet: <code>101</code> (should usually always be available) - since exits never accept arguments, there is no collision between exits named the same as a channel even though the commands "collide".</li>
+</ul>
+</li>
+<li><code>key_mergetype</code> (dict) - a dict of <code>key:mergetype</code> pairs. This allows this cmdset to merge differently with certain named cmdsets. If the cmdset to merge with has a <code>key</code> matching an entry in <code>key_mergetype</code>, it will not be merged according to the setting in <code>mergetype</code> but according to the mode in this dict. Please note that this is more complex than it may seem due to the <a href="#adding-and-merging-command-sets">merge order</a> of command sets.  Please review that section before using <code>key_mergetype</code>.</li>
+<li><code>duplicates</code> (bool/None default <code>None</code>) - this determines what happens when merging same-priority cmdsets containing same-key commands together. The<code>dupicate</code> option will <em>only</em> apply when merging the cmdset with this option onto one other cmdset with the same priority. The resulting cmdset will <em>not</em> retain this <code>duplicate</code> setting. <ul>
+<li><code>None</code> (default): No duplicates are allowed and the cmdset being merged "onto" the old one will take precedence. The result will be unique commands. <em>However</em>, the system will assume this value to be <code>True</code> for cmdsets on Objects, to avoid dangerous clashes. This is usually the safe bet.</li>
+<li><code>False</code>: Like <code>None</code> except the system will not auto-assume any value for cmdsets defined on Objects.</li>
+<li><code>True</code>: Same-named, same-prio commands will merge into the same cmdset.  This will lead to a multimatch error (the user will get a list of possibilities in order to specify which command they meant). This is is useful e.g. for on-object cmdsets (example: There is a <code>red button</code> and a <code>green button</code> in the room. Both have a <code>press button</code> command, in cmdsets with the same priority. This flag makes sure that just writing <code>press button</code> will force the Player to define just which object's command was intended).</li>
+</ul>
+</li>
+<li><code>no_objs</code> this is a flag for the cmdhandler that builds the set of commands available at every moment. It tells the handler not to include cmdsets from objects around the account (nor from rooms or inventory) when building the merged set. Exit commands will still be included. This option can have three values:<ul>
+<li><code>None</code> (default): Passthrough of any value set explicitly earlier in the merge stack. If never set explicitly, this acts as <code>False</code>. </li>
+<li><code>True</code>/<code>False</code>: Explicitly turn on/off. If two sets with explicit <code>no_objs</code> are merged, priority determines what is used. </li>
+</ul>
+</li>
+<li><code>no_exits</code> - this is a flag for the cmdhandler that builds the set of commands available at every moment. It tells the handler not to include cmdsets from exits. This flag can have three values:<ul>
+<li><code>None</code> (default):  Passthrough of any value set explicitly earlier in the merge stack. If never set explicitly, this acts as <code>False</code>. </li>
+<li><code>True</code>/<code>False</code>: Explicitly turn on/off. If two sets with explicit <code>no_exits</code> are merged, priority determines what is used. </li>
+</ul>
+</li>
+<li><code>no_channels</code> (bool) - this is a flag for the cmdhandler that builds the set of commands available at every moment. It tells the handler not to include cmdsets from available in-game channels. This flag can have three values:<ul>
+<li><code>None</code> (default):  Passthrough of any value set explicitly earlier in the merge stack. If never set explicitly, this acts as <code>False</code>.</li>
+<li><code>True</code>/<code>False</code>: Explicitly turn on/off. If two sets with explicit <code>no_channels</code> are merged, priority determines what is used. </li>
+</ul>
+</li>
+</ul>
+<h2 id="command-sets-searched">Command Sets Searched<a class="headerlink" href="#command-sets-searched" title="Permanent link">&para;</a></h2>
+<p>When a user issues a command, it is matched against the <a href="#adding-and-merging-command-sets">merged</a> command sets available to the player at the moment. Which those are may change at any time (such as when the player walks into the room with the <code>Window</code> object described earlier). </p>
+<p>The currently valid command sets are collected from the following sources:</p>
+<ul>
+<li>The cmdsets stored on the currently active <a href="Sessions.html">Session</a>. Default is the empty <code>SessionCmdSet</code> with merge priority <code>-20</code>.</li>
+<li>The cmdsets defined on the <a href="Accounts.html">Account</a>. Default is the AccountCmdSet with merge priority <code>-10</code>. </li>
+<li>All cmdsets on the Character/Object (assuming the Account is currently puppeting such a Character/Object). Merge priority <code>0</code>.</li>
+<li>The cmdsets of all objects carried by the puppeted Character (checks the <code>call</code> lock). Will not be included if <code>no_objs</code> option is active in the merge stack.</li>
+<li>The cmdsets of the Character's current location (checks the <code>call</code> lock). Will not be included if <code>no_objs</code> option is active in the merge stack. </li>
+<li>The cmdsets of objects in the current location (checks the <code>call</code> lock). Will not be included if <code>no_objs</code> option is active in the merge stack. </li>
+<li>The cmdsets of Exits in the location. Merge priority <code>+101</code>. Will not be included if <code>no_exits</code> <em>or</em> <code>no_objs</code> option is active in the merge stack.</li>
+<li>The <a href="Communications.html">channel</a> cmdset containing commands for posting to all channels the account or character is currently connected to. Merge priority <code>+101</code>. Will not be included if <code>no_channels</code> option is active in the merge stack.</li>
+</ul>
+<p>Note that an object does not <em>have</em> to share its commands with its surroundings. A Character's cmdsets should not be shared for example, or all other Characters would get multi-match errors just by being in the same room. The ability of an object to share its cmdsets is managed by its <code>call</code> <a href="Locks.html">lock</a>. For example, <a href="Objects.html">Character objects</a> defaults to <code>call:false()</code> so that any cmdsets on them can only be accessed by themselves, not by other objects around them. Another example might be to lock an object with <code>call:inside()</code> to only make their commands available to objects inside them, or <code>cmd:holds()</code> to make their commands available only if they are held.</p>
+<h2 id="adding-and-merging-command-sets">Adding and Merging Command Sets<a class="headerlink" href="#adding-and-merging-command-sets" title="Permanent link">&para;</a></h2>
+<p><em>Note: This is an advanced topic. It's very useful to know about, but you might want to skip it if this is your first time learning about commands.</em></p>
+<p>CmdSets have the special ability that they can be <em>merged</em> together into new sets. Which of the ingoing commands end up in the merged set is defined by the <em>merge rule</em> and the relative <em>priorities</em> of the two sets.  Removing the latest added set will restore things back to the way it was before the addition.</p>
+<p>CmdSets are non-destructively stored in a stack inside the cmdset handler on the object. This stack is parsed to create the "combined" cmdset active at the moment. CmdSets from other sources are also included in the merger such as those on objects in the same room (like buttons to press) or those introduced by state changes (such as when entering a menu). The cmdsets are all ordered after priority and then merged together in <em>reverse order</em>. That is, the higher priority will be merged "onto" lower-prio ones. By defining a cmdset with a merge-priority between that of two other sets, you will make sure it will be merged in between them. 
+The very first cmdset in this stack is called the <em>Default cmdset</em> and is protected from accidental deletion. Running <code>obj.cmdset.delete()</code> will never delete the default set. Instead one should add new cmdsets on top of the default to "hide" it, as described below.  Use the special <code>obj.cmdset.delete_default()</code> only if you really know what you are doing. </p>
+<p>CmdSet merging is an advanced feature useful for implementing powerful game effects. Imagine for example a player entering a dark room. You don't want the player to be able to find everything in the room at a glance - maybe you even want them to have a hard time to find stuff in their backpack! You can then define a different CmdSet with commands that override the normal ones. While they are in the dark room, maybe the <code>look</code> and <code>inv</code> commands now just tell the player they cannot see anything! Another example would be to offer special combat commands only when the player is in combat. Or when being on a boat. Or when having taken the super power-up. All this can be done on the fly by merging command sets.</p>
+<h3 id="merge-rules">Merge Rules<a class="headerlink" href="#merge-rules" title="Permanent link">&para;</a></h3>
+<p>Basic rule is that command sets are merged in <em>reverse priority order</em>. That is, lower-prio sets are merged first and higher prio sets are merged "on top" of them. Think of it like a layered cake with the highest priority on top. </p>
+<p>To further understand how sets merge, we need to define some examples. Let's call the first command set <strong>A</strong> and the second <strong>B</strong>. We assume <strong>B</strong> is the command set already active on our object and we will merge <strong>A</strong> onto <strong>B</strong>. In code terms this would be done by <code>object.cdmset.add(A)</code>. Remember, B is already active on <code>object</code> from before. </p>
+<p>We let the <strong>A</strong> set have higher priority than <strong>B</strong>. A priority is simply an integer number. As seen in the list above, Evennia's default cmdsets have priorities in the range <code>-101</code> to <code>120</code>. You are usually safe to use a priority of <code>0</code> or <code>1</code> for most game effects. </p>
+<p>In our examples, both sets contain a number of commands which we'll identify by numbers, like <code>A1, A2</code> for set <strong>A</strong> and <code>B1, B2, B3, B4</code> for <strong>B</strong>. So for that example both sets contain commands with the same keys (or aliases) "1" and "2" (this could for example be "look" and "get" in the real game), whereas commands 3 and 4 are unique to <strong>B</strong>. To describe a merge between these sets, we would write <code>A1,A2 + B1,B2,B3,B4 = ?</code> where <code>?</code> is a list of commands that depend on which merge type <strong>A</strong> has, and which relative priorities the two sets have. By convention, we read this statement as "New command set <strong>A</strong> is merged onto the old command set <strong>B</strong> to form <strong>?</strong>".</p>
+<p>Below are the available merge types and how they work. Names are partly borrowed from <a href="http://en.wikipedia.org/wiki/Set_theory">Set theory</a>.</p>
+<ul>
+<li>
+<p><strong>Union</strong> (default) - The two cmdsets are merged so that as many commands as possible from each cmdset ends up in the merged cmdset. Same-key commands are merged by priority. </p>
+<pre><code> # Union
+ A1,A2 + B1,B2,B3,B4 = A1,A2,B3,B4
+</code></pre>
+</li>
+<li>
+<p><strong>Intersect</strong> - Only commands found in <em>both</em> cmdsets (i.e. which have the same keys) end up in the merged cmdset, with the higher-priority cmdset replacing the lower one's commands.</p>
+<pre><code> # Intersect 
+ A1,A3,A5 + B1,B2,B4,B5 = A1,A5
+</code></pre>
+</li>
+<li>
+<p><strong>Replace</strong> -   The commands of the higher-prio cmdset completely replaces the lower-priority cmdset's commands, regardless of if same-key commands exist or not. </p>
+<pre><code> # Replace
+ A1,A3 + B1,B2,B4,B5 = A1,A3
+</code></pre>
+</li>
+<li>
+<p><strong>Remove</strong> - The high-priority command sets removes same-key commands from the lower-priority cmdset. They are not replaced with anything, so this is a sort of filter that prunes the low-prio set using the high-prio one as a template. </p>
+<pre><code> # Remove
+ A1,A3 + B1,B2,B3,B4,B5 = B2,B4,B5
+</code></pre>
+</li>
+</ul>
+<p>Besides <code>priority</code> and <code>mergetype</code>, a command-set also takes a few other variables to control how they merge:</p>
+<ul>
+<li><code>duplicates</code> (bool) - determines what happens when two sets of equal priority merge. Default is that the new set in the merger  (i.e.  <strong>A</strong> above) automatically takes precedence. But if <em>duplicates</em> is true, the result will be a merger with more than one of each name match.  This will usually lead to the player receiving a multiple-match error higher up the road, but can be good for things like cmdsets on non-player objects in a room, to allow the system to warn that more than one 'ball' in the room has the same 'kick' command defined on it and offer a chance to  select which ball to kick ...  Allowing duplicates only makes sense for <em>Union</em> and <em>Intersect</em>, the setting is ignored for the other mergetypes.</li>
+<li><code>key_mergetypes</code> (dict) - allows the cmdset to define a unique mergetype for particular cmdsets, identified by their cmdset <code>key</code>.  Format is <code>{CmdSetkey:mergetype}</code>. Example: <code>{'Myevilcmdset','Replace'}</code> which would make sure for this set to always use 'Replace' on the cmdset with the key <code>Myevilcmdset</code> only, no matter what the main <code>mergetype</code> is set to. </li>
+</ul>
+<blockquote>
+<p>Warning: The <code>key_mergetypes</code> dictionary <em>can only work on the cmdset we merge onto</em>. When using <code>key_mergetypes</code> it is thus important to consider the merge priorities - you must make sure that you pick a priority <em>between</em> the cmdset you want to detect and the next higher one, if any. That is, if we define a cmdset with a high priority and set it to affect a cmdset that is far down in the merge stack, we would not "see" that set when it's time for us to merge. Example: Merge stack is <code>A(prio=-10), B(prio=-5), C(prio=0), D(prio=5)</code>. We now merge a cmdset <code>E(prio=10)</code> onto this stack, with a <code>key_mergetype={"B":"Replace"}</code>. But priorities dictate that we won't be merged onto B, we will be merged onto E (which is a merger of the lower-prio sets at this point). Since we are merging onto E and not B, our <code>key_mergetype</code> directive won't trigger. To make sure it works we must make sure we merge onto B.  Setting E's priority to, say, -4 will make sure to merge it onto B and affect it appropriately.</p>
+</blockquote>
+<p>More advanced cmdset example: </p>
+<pre><code class="python">from commands import mycommands
+
+class MyCmdSet(CmdSet):
+
+    key = &quot;MyCmdSet&quot;
+    priority = 4
+    mergetype = &quot;Replace&quot;
+    key_mergetypes = {'MyOtherCmdSet':'Union'}  
+
+    def at_cmdset_creation(self):
+        &quot;&quot;&quot;
+        The only thing this method should need
+        to do is to add commands to the set.
+        &quot;&quot;&quot;     
+        self.add(mycommands.MyCommand1())
+        self.add(mycommands.MyCommand2())
+        self.add(mycommands.MyCommand3())
+</code></pre>
+
+<h3 id="assorted-notes">Assorted Notes<a class="headerlink" href="#assorted-notes" title="Permanent link">&para;</a></h3>
+<p>It is very important to remember that two commands are compared <em>both</em> by their <code>key</code> properties <em>and</em> by their <code>aliases</code> properties. If either keys or one of their aliases match, the two commands are considered the <em>same</em>. So consider these two Commands:</p>
+<ul>
+<li>A Command with key "kick" and alias "fight"</li>
+<li>A Command with key "punch" also with an alias "fight"</li>
+</ul>
+<p>During the cmdset merging (which happens all the time since also things like channel commands and exits are merged in), these two commands will be considered <em>identical</em> since they share alias. It means only one of them will remain after the merger. Each will also be compared with all other commands having any combination of the keys and/or aliases "kick", "punch" or "fight".</p>
+<p>... So avoid duplicate aliases, it will only cause confusion. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Web Features - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#web-site">Web site</a></li>
+            <li><a href="#customizing-the-website">Customizing the Website</a></li>
+            <li><a href="#overloading-django-views">Overloading Django views</a></li>
+        <li class="main "><a href="#web-client">Web client</a></li>
+            <li><a href="#customizing-the-web-client">Customizing the web client</a></li>
+        <li class="main "><a href="#the-django-admin-page">The Django 'Admin' Page</a></li>
+        <li class="main "><a href="#more-reading">More reading</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Gets-you-started-on-using-Evennia's-web-integration-abilities."></a></p>
+<p>Evennia is its own webserver and hosts a default website and browser webclient. </p>
+<h2 id="web-site">Web site<a class="headerlink" href="#web-site" title="Permanent link">&para;</a></h2>
+<p>The Evennia website is a Django application that ties in with the MUD database. Since the website shares this database you could, for example, tell website visitors how many accounts are logged into the game at the moment, how long the server has been up and any other database information you may want. During development you can access the website by pointing your browser to <code>http://localhost:4001</code>. </p>
+<blockquote>
+<p>You may also want to set <code>DEBUG = True</code> in your settings file for debugging the website. You will then see proper tracebacks in the browser rather than just error codes. Note however that this will <em>leak memory a lot</em> (it stores everything all the time) and is <em>not to be used in production</em>. It's recommended to only use <code>DEBUG</code> for active web development and to turn it off otherwise.</p>
+</blockquote>
+<p>A Django (and thus Evennia) website basically consists of three parts, a <a href="https://docs.djangoproject.com/en/1.9/topics/http/views/">view</a> an associated <a href="https://docs.djangoproject.com/en/1.9/topics/templates/">template</a> and an <code>urls.py</code> file. Think of the view as the Python back-end and the template as the HTML files you are served, optionally filled with data from the back-end. The urls file is a sort of mapping that tells Django that if a specific URL is given in the browser, a particular view should be triggered. You are wise to review the Django documentation for details on how to use these components.</p>
+<p>Evennia's default website is located in <a href="https://github.com/evennia/evennia/tree/master/evennia/web/website">evennia/web/website</a>. In this folder you'll find the simple default view as well as subfolders <code>templates</code> and <code>static</code>. Static files are things like images, CSS files and Javascript. </p>
+<h3 id="customizing-the-website">Customizing the Website<a class="headerlink" href="#customizing-the-website" title="Permanent link">&para;</a></h3>
+<p>You customize your website from your game directory. In the folder <code>web</code> you'll find folders <code>static</code>, <code>templates</code>, <code>static_overrides</code> and <code>templates_overrides</code>. The first two of those are populated automatically by Django and used to serve the website. You should not edit anything in them - the change will be lost. To customize the website you'll need to copy the file you want to change from the <code>web/website/template/</code> or <code>web/website/static/ path to the corresponding place under one of</code>_overrides` directories. </p>
+<p>Example: To override or modify <code>evennia/web/website/template/website/index.html</code> you need to add/modify <code>mygame/web/template_overrides/website/index.html</code>. </p>
+<p>The detailed description on how to customize the website is best described in tutorial form. See the <a href="Web-Tutorial">Web Tutorial</a> for more information.</p>
+<h3 id="overloading-django-views">Overloading Django views<a class="headerlink" href="#overloading-django-views" title="Permanent link">&para;</a></h3>
+<p>The Python backend for every HTML page is called a <a href="https://docs.djangoproject.com/en/1.9/topics/http/views/">Django view</a>. A view can do all sorts of functions, but the main one is to update variables data that the page can display, like how your out-of-the-box website will display statistics about number of users and database objects. </p>
+<p>To re-point a given page to a <code>view.py</code> of your own, you need to modify <code>mygame/web/urls.py</code>. An <a href="https://docs.djangoproject.com/en/1.9/topics/http/urls/">URL pattern</a> is a <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression</a> that you need to enter in the address field of your web browser to get to the page in question. If you put your own URL pattern <em>before</em> the default ones, your own view will be used instead. The file <code>urls.py</code> even marks where you should put your change. </p>
+<p>Here's an example: </p>
+<pre><code class="python"># mygame/web/urls.py
+
+from django.conf.urls import url, include
+# default patterns
+from evennia.web.urls import urlpatterns
+
+# our own view to use as a replacement
+from web.myviews import myview
+
+# custom patterns to add
+patterns = [
+    # overload the main page view
+    url(r'^', myview, name='mycustomview'),
+]
+
+urlpatterns = patterns + urlpatterns
+
+</code></pre>
+
+<p>Django will always look for a list named <code>urlpatterns</code> which consists of the results of <code>url()</code> calls. It will use the <em>first</em> match it finds in this list. Above, we add a new URL redirect from the root of the website. It will now our own function <code>myview</code> from a new module <code>mygame/web/myviews.py</code>. </p>
+<blockquote>
+<p>If our game is found on <code>http://mygame.com</code>, the regular expression <code>"^"</code> means we just entered <code>mygame.com</code> in the address bar. If we had wanted to add a view for <code>http://mygame.com/awesome</code>, the regular expression would have been <code>^/awesome</code>. </p>
+</blockquote>
+<p>Look at <a href="https://github.com/evennia/evennia/blob/master/evennia/web/website/views.py#L82">evennia/web/website/views.py</a> to see the inputs and outputs you must have to define a view. Easiest may be to copy the default file to <code>mygame/web</code> to have something to modify and expand on. </p>
+<p>Restart the server and reload the page in the browser - the website will now use your custom view. If there are errors, consider turning on <code>settings.DEBUG</code> to see the full tracebacks - in debug mode you will also log all requests in <code>mygame/server/logs/http_requests.log</code>. </p>
+<h2 id="web-client">Web client<a class="headerlink" href="#web-client" title="Permanent link">&para;</a></h2>
+<p>Evennia comes with a MUD client accessible from a normal web browser. During development you can try it at <code>http://localhost:4001/webclient</code>. The client consists of several parts, all under <a href="https://github.com/evennia/evennia/blob/master/evennia/web/webclient/">evennia/web/webclient/</a>:</p>
+<ul>
+<li><code>templates/webclient/webclient.html</code> and <code>templates/base.html</code> are the very simplistic django html templates describing the webclient layout. The <code>base.html</code> acts as a header that sets up all the basic stuff the client needs, so one only needs to modify the much cleaner <code>webclient.html</code>. </li>
+<li><code>static/webclient/evennia.js</code> is the main evennia javascript library. This handles all communication between Evennia and the client over websockets and via AJAX/COMET if the browser can't handle websockets. It will make the <code>Evennia</code> object available to the javascript namespace, which offers methods for sending and receiving data to/from the server transparently. This is intended to be used also if swapping out the gui front end. </li>
+<li><code>static/webclient/js/evennia.js</code> is the default GUI of the webclient. This handles the input line, the send button and sends text to the right DOM elements in the html file. It makes use of the <code>evennia.js</code> library for all in/out and implements a "telnet-like" interface.</li>
+<li><code>static/webclient/css/webclient.css</code> is the CSS file for the client; it also defines things like how to display ANSI/Xterm256 colors etc. </li>
+<li>The server-side webclient protocols are found in <code>evennia/server/portal/webclient.py</code> and <code>webclient_ajax.py</code> for the two types of connections. You can't (and should not need to) modify these. </li>
+</ul>
+<h3 id="customizing-the-web-client">Customizing the web client<a class="headerlink" href="#customizing-the-web-client" title="Permanent link">&para;</a></h3>
+<p>Like was the case for the website, you override the webclient from your game directory. You need to add/modify a file in the matching directory location within one of the <code>_overrides</code> directories. </p>
+<p>Example: To replace/modify <code>evennia/web/webclient/static/webclient/js/webclient_gui.js</code> you need copy and modify the file at <code>mygame/web/static_overrides/webclient/js/webclient_gui.js</code>. </p>
+<p>See the <a href="Web-Tutorial">Web Tutorial</a> for more on how to customize the webclient.</p>
+<h2 id="the-django-admin-page">The Django 'Admin' Page<a class="headerlink" href="#the-django-admin-page" title="Permanent link">&para;</a></h2>
+<p>Django comes with a built-in <a href="https://docs.djangoproject.com/en/1.10/ref/contrib/admin/">admin website</a>. This is accessible by clicking the 'admin' button from your game website. The admin site allows you to see, edit and create objects in your database from a graphical interface.</p>
+<p>The behavior of default Evennia models are controlled by files <code>admin.py</code> in the Evennia package. New database models you choose to add yourself (such as in the Web Character View Tutorial) can/will also have <code>admin.py</code> files. New models are registered to the admin website by a call of <code>admin.site.register(model class, admin class)</code> inside an admin.py file. It is an error to attempt to register a model that has already been registered. </p>
+<p>To overload Evennia's admin files you don't need to modify Evennia itself. To customize you can call <code>admin.site.unregister(model class)</code>, then follow that with <code>admin.site.register</code> in one of your own admin.py files in a new app that you add.</p>
+<h2 id="more-reading">More reading<a class="headerlink" href="#more-reading" title="Permanent link">&para;</a></h2>
+<p>Evennia relies on Django for its web features. For details on expanding your web experience, the <a href="https://docs.djangoproject.com/en">Django documentation</a> or the <a href="http://www.djangobook.com/en/2.0/index.html">Django Book</a> are the main resources to look into. In Django lingo, the Evennia is a django "project" that consists of Django "applications". For the sake of web implementation, the relevant django "applications" in default Evennia are <code>web/website</code> or <code>web/webclient</code>.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

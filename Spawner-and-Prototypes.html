@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Spawner and Prototypes - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#using-the-olc">Using the OLC</a></li>
+        <li class="main "><a href="#the-prototype">The prototype</a></li>
+            <li><a href="#prototype-keys">Prototype keys</a></li>
+            <li><a href="#prototype-values">Prototype values</a></li>
+        <li class="main "><a href="#storing-prototypes">Storing prototypes</a></li>
+            <li><a href="#database-prototypes">Database prototypes</a></li>
+            <li><a href="#module-based-prototypes">Module-based prototypes</a></li>
+        <li class="main "><a href="#using-spawn">Using @spawn</a></li>
+        <li class="main "><a href="#using-evenniaprototypesspawner">Using evennia.prototypes.spawner()</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Describing-how-to-create-objects-with-the-spawner."></a></p>
+<p>The <em>spawner</em> is a system for defining and creating individual objects from a base template called a
+<em>prototype</em>. It is only designed for use with in-game <a href="Objects.html">Objects</a>, not any other type of
+entity.</p>
+<p>The normal way to create a custom object in Evennia is to make a <a href="Typeclasses.html">Typeclass</a>. If you
+haven't read up on Typeclasses yet, think of them as normal Python classes that save to the database
+behind the scenes. Say you wanted to create a "Goblin" enemy. A common way to do this would be to
+first create a <code>Mobile</code> typeclass that holds everything common to mobiles in the game, like generic
+AI, combat code and various movement methods. A  <code>Goblin</code> subclass is then made to inherit from
+<code>Mobile</code>. The <code>Goblin</code> class adds stuff unique to goblins, like group-based AI (because goblins are
+smarter in a group), the ability to panic, dig for gold etc.</p>
+<p>But now it's time to actually start to create some goblins and put them in the world. What if we
+wanted those goblins to not all look the same? Maybe we want grey-skinned and green-skinned goblins
+or some goblins that can cast spells or which wield different weapons? We <em>could</em> make subclasses of
+<code>Goblin</code>, like <code>GreySkinnedGoblin</code> and <code>GoblinWieldingClub</code>. But that seems a bit excessive (and a
+lot of Python code for every little thing). Using classes can also become impractical when wanting
+to combine them - what if we want a grey-skinned goblin shaman wielding a spear - setting up a web
+of classes inheriting each other with multiple inheritance can be tricky.</p>
+<p>This is what the <em>prototype</em> is for. It is a Python dictionary that describes these per-instance
+changes to an object. The prototype also has the advantage of allowing an in-game builder to
+customize an object without access to the Python backend. Evennia also allows for saving and
+searching prototypes so other builders can find and use (and tweak) them later. Having a library of
+interesting prototypes is a good reasource for builders. The OLC system allows for creating, saving,
+loading and manipulating prototypes using a menu system.</p>
+<p>The <em>spawner</em> takes a prototype and uses it to create (spawn) new, custom objects.</p>
+<h2 id="using-the-olc">Using the OLC<a class="headerlink" href="#using-the-olc" title="Permanent link">&para;</a></h2>
+<p>Enter the <code>olc</code> command or <code>@spawn/olc</code> to enter the prototype wizard. This is a menu system for
+creating, loading, saving and manipulating prototypes. It's intended to be used by in-game builders
+and will give a better understanding of prototypes in general. Use <code>help</code> on each node of the menu
+for more information. Below are further details about how prototypes work and how they are used.</p>
+<h2 id="the-prototype">The prototype<a class="headerlink" href="#the-prototype" title="Permanent link">&para;</a></h2>
+<p>The prototype dictionary can either be created for you by the OLC (see above), be  written manually in a Python module (and then referenced by the <code>@spawn</code> command/OLC), or created on-the-fly and manually loaded into the spawner function or <code>@spawn</code> command. </p>
+<p>The dictionary defines all possible database-properties of an Object. It has a fixed set of allowed keys. When preparing to store the prototype in the database (or when using the OLC), some 
+of these keys are mandatory. When just passing a one-time prototype-dict to the spawner the system is
+more lenient and will use defaults for keys not explicitly provided. </p>
+<p>In dictionary form, a prototype can look something like this: </p>
+<pre><code class="python">{ 
+   &quot;prototype_key&quot;: &quot;house&quot;
+   &quot;key&quot;: &quot;Large house&quot;
+   &quot;typeclass&quot;: &quot;typeclasses.rooms.house.House&quot;
+ }
+</code></pre>
+
+<p>If you wanted to load it into the spawner in-game you could just put all on one line: </p>
+<pre><code>@spawn {"prototype_key="house", "key": "Large house", ...}
+</code></pre>
+<blockquote>
+<p>Note that the prototype dict as given on the command line must be a valid Python structure -
+so you need to put quotes around strings etc. For security reasons, a dict inserted from-in game cannot have any 
+other advanced Python functionality, such as executable code, <code>lambda</code> etc. If builders are supposed
+to be able to use such features, you need to offer them through <a href="#protfuncs">$protfuncs</a>, embedded runnable functions that you have full control to check and vet before running.  </p>
+</blockquote>
+<h3 id="prototype-keys">Prototype keys<a class="headerlink" href="#prototype-keys" title="Permanent link">&para;</a></h3>
+<p>All keys starting with <code>prototype_</code> are for book keeping.</p>
+<ul>
+<li><code>prototype_key</code> - the 'name' of the prototype. While this can sometimes be skipped (such as when
+    defining a prototype in a module or feeding a prototype-dict manually to the spawner function), it's good 
+    practice to try to include this. It is used for book-keeping and storing of the prototype so you<br />
+    can find it later.</li>
+<li><code>prototype_parent</code> - If given, this should be the <code>prototype_key</code> of another prototype stored in
+    the system or available in a module. This makes this prototype <em>inherit</em> the keys from the
+    parent and only override what is needed. Give a tuple <code>(parent1, parent2, ...)</code> for multiple
+    left-right inheritance. If this is not given, a <code>typeclass</code> should usually be defined (below). </li>
+<li><code>prototype_desc</code> - this is optional and used when listing the prototype in in-game listings.</li>
+<li><code>protototype_tags</code> - this is optional and allows for tagging the prototype in order to find it
+   easier later.</li>
+<li><code>prototype_locks</code> - two lock types are supported: <code>edit</code> and <code>spawn</code>. The first lock restricts
+   the copying and editing of the prototype when loaded through the OLC. The second determines who
+   may use the prototype to create new objects.</li>
+</ul>
+<p>The remaining keys determine actual aspects of the objects to spawn from this prototype:</p>
+<ul>
+<li><code>key</code> - the main object identifier. Defaults to "Spawned Object <em>X</em>", where <em>X</em> is a random integer.</li>
+<li><code>typeclass</code> - A full python-path (from your gamedir) to the typeclass you want to use. If not set, the <code>prototype_parent</code> should be 
+   defined, with <code>typeclass</code> defined somewhere in the parent chain. When creating a one-time prototype
+   dict just for spawning, one could omit this - <code>settings.BASE_OBJECT_TYPECLASS</code> will be used instead.</li>
+<li><code>location</code> - this should be a <code>#dbref</code>.</li>
+<li><code>home</code> - a valid <code>#dbref</code>. Defaults to <code>location</code> or <code>settings.DEFAULT_HOME</code> if location does not exist.</li>
+<li><code>destination</code> - a valid <code>#dbref</code>. Only used by exits.</li>
+<li><code>permissions</code> - list of permission strings, like <code>["Accounts", "may_use_red_door"]</code></li>
+<li><code>locks</code> - a <a href="Locks.html">lock-string</a> like <code>"edit:all();control:perm(Builder)"</code></li>
+<li><code>aliases</code> - list of strings for use as aliases</li>
+<li><code>tags</code> - list <a href="Tags.html">Tags</a>. These are given as tuples <code>(tag, category, data)</code>.</li>
+<li><code>attrs</code> - list of <a href="Attributes.html">Attributes</a>. These are given as tuples <code>(attrname, value, category, lockstring)</code></li>
+<li>Any other keywords are interpreted as non-category <a href="Attributes.html">Attributes</a> and their values. This is
+   convenient for simple Attributes - use <code>attrs</code> for full control of Attributes.</li>
+</ul>
+<p>Deprecated as of Evennia 0.8:</p>
+<ul>
+<li><code>ndb_&lt;name&gt;</code> - sets the value of a non-persistent attribute (<code>"ndb_"</code> is stripped from the name).
+   This is simply not useful in a prototype and is deprecated.</li>
+<li><code>exec</code> - This accepts a code snippet or a list of code snippets to run. This should not be used -
+   use callables or <a href="#protfuncs">$protfuncs</a> instead (see below).</li>
+</ul>
+<h3 id="prototype-values">Prototype values<a class="headerlink" href="#prototype-values" title="Permanent link">&para;</a></h3>
+<p>The prototype supports values of several different types.</p>
+<p>It can be a hard-coded value:</p>
+<pre><code class="python">    {&quot;key&quot;: &quot;An ugly goblin&quot;, ...}
+
+</code></pre>
+
+<p>It can also be a <em>callable</em>. This callable is called without arguments whenever the prototype is used to
+spawn a new object:</p>
+<pre><code class="python">    {&quot;key&quot;: _get_a_random_goblin_name, ...}
+
+</code></pre>
+
+<p>By use of Python <code>lambda</code> one can wrap the callable so as to make immediate settings in the
+prototype:</p>
+<pre><code class="python">    {&quot;key&quot;: lambda: random.choice((&quot;Urfgar&quot;, &quot;Rick the smelly&quot;, &quot;Blargh the foul&quot;, ...)), ...}
+
+</code></pre>
+
+<h4 id="protfuncs">Protfuncs<a class="headerlink" href="#protfuncs" title="Permanent link">&para;</a></h4>
+<p>Finally, the value can be a <em>prototype function</em> (<em>Protfunc</em>). These look like simple function calls that you embed in strings and that has a <code>$</code> in front, like </p>
+<pre><code class="python">    {&quot;key&quot;: &quot;$choice(Urfgar, Rick the smelly, Blargh the foul)&quot;,
+     &quot;attrs&quot;: {&quot;desc&quot;: &quot;This is a large $red(and very red) demon. &quot;
+                       &quot;He has $randint(2,5) skulls in a chain around his neck.&quot;}
+</code></pre>
+
+<p>At execution time, the place of the protfunc will be replaced with the result of that protfunc being called (this is always a string). A protfunc works in much the same way as an
+<a href="https://github.com/evennia/evennia/wiki/TextTags#inline-functions">InlineFunc</a> - they are actually
+parsed using the same parser - except protfuncs are run every time the prototype is used to spawn a new object (whereas an inlinefunc is called when a text is returned to the user). </p>
+<p>Here is how a protfunc is defined (same as an inlinefunc). </p>
+<pre><code class="python"># this is a silly example, you can just color the text red with |r directly!
+def red(*args, **kwargs):
+   &quot;&quot;&quot;
+   Usage: $red(&lt;text&gt;)
+   Returns the same text you entered, but red.
+   &quot;&quot;&quot;
+   if not args or len(args) &gt; 1:
+      raise ValueError(&quot;Must have one argument, the text to color red!&quot;)
+   return &quot;|r{}|n&quot;.format(args[0])
+</code></pre>
+
+<blockquote>
+<p>Note that we must make sure to validate input and raise <code>ValueError</code> if that fails. Also, it is <em>not</em> possible to use keywords in the call to the protfunc (so something like <code>$echo(text, align=left)</code> is invalid). The <code>kwargs</code> requred is for internal evennia use and not used at all for protfuncs (only by inlinefuncs). </p>
+</blockquote>
+<p>To make this protfunc available to builders in-game, add it to a new module and add the path to that module to <code>settings.PROT_FUNC_MODULES</code>: </p>
+<pre><code class="python"># in mygame/server/conf/settings.py
+
+PROT_FUNC_MODULES += [&quot;world.myprotfuncs&quot;]
+
+</code></pre>
+
+<p>All <em>global callables</em> in your added module will be considered a new protfunc. To avoid this (e.g. to have helper functions that are not protfuncs on their own), name your function something starting with <code>_</code>. </p>
+<p>The default protfuncs available out of the box are defined in <code>evennia/prototypes/profuncs.py</code>. To override the ones available, just add the same-named function in your own protfunc module.</p>
+<table>
+<thead>
+<tr>
+<th>Protfunc</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$random()</code></td>
+<td>Returns random value in range [0, 1)</td>
+</tr>
+<tr>
+<td><code>$randint(start, end)</code></td>
+<td>Returns random value in range [start, end]</td>
+</tr>
+<tr>
+<td><code>$left_justify(&lt;text&gt;)</code></td>
+<td>Left-justify text</td>
+</tr>
+<tr>
+<td><code>$right_justify(&lt;text&gt;)</code></td>
+<td>Right-justify text to screen width</td>
+</tr>
+<tr>
+<td><code>$center_justify(&lt;text&gt;)</code></td>
+<td>Center-justify text to screen width</td>
+</tr>
+<tr>
+<td><code>$full_justify(&lt;text&gt;)</code></td>
+<td>Spread text across screen width by adding spaces</td>
+</tr>
+<tr>
+<td><code>$protkey(&lt;name&gt;)</code></td>
+<td>Returns value of another key in this prototype (self-reference)</td>
+</tr>
+<tr>
+<td><code>$add(&lt;value1&gt;, &lt;value2&gt;)</code></td>
+<td>Returns value1 + value2. Can also be lists, dicts etc</td>
+</tr>
+<tr>
+<td><code>$sub(&lt;value1&gt;, &lt;value2&gt;)</code></td>
+<td>Returns value1 - value2</td>
+</tr>
+<tr>
+<td><code>$mult(&lt;value1&gt;, &lt;value2&gt;)</code></td>
+<td>Returns value1 * value2</td>
+</tr>
+<tr>
+<td><code>$div(&lt;value1&gt;, &lt;value2&gt;)</code></td>
+<td>Returns value2 / value1</td>
+</tr>
+<tr>
+<td><code>$toint(&lt;value&gt;)</code></td>
+<td>Returns value converted to integer (or value if not possible)</td>
+</tr>
+<tr>
+<td><code>$eval(&lt;code&gt;)</code></td>
+<td>Returns result of <a href="https://docs.python.org/2/library/ast.html#ast.literal_eval">literal-eval</a> of code string. Only simple python expressions.</td>
+</tr>
+<tr>
+<td><code>$obj(&lt;query&gt;)</code></td>
+<td>Returns object #dbref searched globally by key, tag or #dbref. Error if more than one found."</td>
+</tr>
+<tr>
+<td><code>$objlist(&lt;query&gt;)</code></td>
+<td>Like <code>$obj</code>, except always returns a list of zero, one or more results.</td>
+</tr>
+<tr>
+<td><code>$dbref(dbref)</code></td>
+<td>Returns argument if it is formed as a #dbref (e.g. #1234), otherwise error.</td>
+</tr>
+</tbody>
+</table>
+<p>For developers with access to Python, using protfuncs in prototypes is generally not useful. Passing real Python functions is a lot more powerful and flexible. Their main use is to allow in-game builders to
+do limited coding/scripting for their prototypes without giving them direct access to raw Python.</p>
+<h2 id="storing-prototypes">Storing prototypes<a class="headerlink" href="#storing-prototypes" title="Permanent link">&para;</a></h2>
+<p>A prototype can be defined and stored in two ways, either in the database or as a dict in a module. </p>
+<h3 id="database-prototypes">Database prototypes<a class="headerlink" href="#database-prototypes" title="Permanent link">&para;</a></h3>
+<p>Stored as <a href="Scripts.html">Scripts</a> in the database. These are sometimes referred to as <em>database-prototypes</em> This is the only way for in-game builders to modify and add prototypes. They have the advantage of being easily modifiable and sharable between builders but you need to work with them using in-game tools.  </p>
+<h3 id="module-based-prototypes">Module-based prototypes<a class="headerlink" href="#module-based-prototypes" title="Permanent link">&para;</a></h3>
+<p>These prototypes are defined as dictionaries assigned to global variables in one of the modules defined in <code>settings.PROTOTYPE_MODULES</code>. They can only be modified from outside the game so they are are necessarily "read-only" from in-game and cannot be modified (but copies of them could be made into database-prototypes). These were the only prototypes available before Evennia 0.8. Module based prototypes can be useful in order for developers to provide read-only "starting" or "base" prototypes to build from or if they just prefer to work offline in an external code editor. </p>
+<p>By default <code>mygame/world/prototypes.py</code> is set up for you to add your own prototypes. <em>All global dicts</em> in this module will be considered by Evennia to be a prototype. You could also tell Evennia to look for prototypes in more modules if you want: </p>
+<pre><code class="python"># in mygame/server/conf.py
+
+PROTOTYPE_MODULES = += [&quot;world.myownprototypes&quot;, &quot;combat.prototypes&quot;]
+
+</code></pre>
+
+<p>Here is an example of a prototype defined in a module: </p>
+<pre><code>```python
+# in a module Evennia looks at for prototypes,
+# (like mygame/world/prototypes.py)
+
+ORC_SHAMAN = {"key":"Orc shaman",
+      "typeclass": "typeclasses.monsters.Orc",
+      "weapon": "wooden staff",
+      "health": 20}
+```
+</code></pre>
+<blockquote>
+<p>Note that in the example above, <code>"ORC_SHAMAN"</code> will become the <code>prototype_key</code> of this prototype.
+It's the only case when <code>prototype_key</code> can be skipped in a prototype. However, if <code>prototype_key</code>
+was given explicitly, that would take precedence. This is a legacy behavior and it's recommended
+that you always add <code>prototype_key</code> to be consistent.</p>
+</blockquote>
+<h2 id="using-spawn">Using @spawn<a class="headerlink" href="#using-spawn" title="Permanent link">&para;</a></h2>
+<p>The spawner can be used from inside the game through the Builder-only <code>@spawn</code> command. Assuming the
+"goblin" typeclass is available to the system (either as a database-prototype or read from module),
+you can spawn a new goblin with</p>
+<pre><code>@spawn goblin
+</code></pre>
+<p>You can also specify the prototype directly as a valid Python dictionary:</p>
+<pre><code>@spawn {"prototype_key": "shaman", \
+    "key":"Orc shaman", \
+        "prototype_parent": "goblin", \
+        "weapon": "wooden staff", \
+        "health": 20}
+</code></pre>
+<blockquote>
+<p>Note: The <code>@spawn</code> command is more lenient about the prototype dictionary than shown here. So you can for example skip the <code>prototype_key</code> if you are just testing a throw-away prototype. A random hash will be used to please the validation. You could also skip  <code>prototype_parent/typeclass</code> - then the typeclass given by <code>settings.BASE_OBJECT_TYPECLASS</code> will be used. </p>
+</blockquote>
+<h2 id="using-evenniaprototypesspawner">Using evennia.prototypes.spawner()<a class="headerlink" href="#using-evenniaprototypesspawner" title="Permanent link">&para;</a></h2>
+<p>In code you access the spawner mechanism directly via the call</p>
+<pre><code class="python">    new_objects = evennia.prototypes.spawner.spawn(*prototypes)
+</code></pre>
+
+<p>All arguments are prototype dictionaries. The function will return a
+matching list of created objects. Example:</p>
+<pre><code class="python">    obj1, obj2 = evennia.prototypes.spawner.spawn({&quot;key&quot;: &quot;Obj1&quot;, &quot;desc&quot;: &quot;A test&quot;},
+                                                  {&quot;key&quot;: &quot;Obj2&quot;, &quot;desc&quot;: &quot;Another test&quot;})
+</code></pre>
+
+<blockquote>
+<p>Hint: Same as when using <code>@spawn</code>, when spawning from a one-time prototype dict like this, you can skip otherwise required keys, like <code>prototype_key</code> or <code>typeclass</code>/<code>prototype_parent</code>. Defaults will be used.</p>
+</blockquote>
+<p>Note that no <code>location</code> will be set automatically when using <code>evennia.prototypes.spawner.spawn()</code>, you
+have to specify <code>location</code> explicitly in the prototype dict.</p>
+<p>If the prototypes you supply are using <code>prototype_parent</code> keywords, the spawner will read prototypes from modules 
+in <code>settings.PROTOTYPE_MODULES</code> as well as those saved to the database to determine the body of available parents. The <code>spawn</code> command takes many optional keywords, you can find its definition <a href="https://github.com/evennia/evennia/wiki/evennia.prototypes.spawner#spawn">in the api docs</a>.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

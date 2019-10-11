@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Coding FAQ - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#table-of-contents">Table of Contents</a></li>
+        <li class="main "><a href="#removing-default-commands">Removing default commands</a></li>
+        <li class="main "><a href="#preventing-character-from-moving-based-on-a-condition">Preventing character from moving based on a condition</a></li>
+        <li class="main "><a href="#reference-initiating-object-in-an-evmenu-command">Reference initiating object in an EvMenu command.</a></li>
+        <li class="main "><a href="#adding-color-to-default-evennia-channels">Adding color to default Evennia Channels</a></li>
+        <li class="main "><a href="#selectively-turn-off-commands-in-a-room">Selectively turn off commands in a room</a></li>
+        <li class="main "><a href="#select-command-based-on-a-condition">Select Command based on a condition</a></li>
+        <li class="main "><a href="#automatically-updating-code-when-reloading">Automatically updating code when reloading</a></li>
+        <li class="main "><a href="#changing-all-exit-messages">Changing all exit messages</a></li>
+        <li class="main "><a href="#add-parsing-with-the-to-delimiter">Add parsing with the "to" delimiter</a></li>
+        <li class="main "><a href="#store-last-used-session-ip-address">Store last used session IP address</a></li>
+        <li class="main "><a href="#non-latin-characters-in-evtable">Non-latin characters in EvTable</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><em>This FAQ page is for users to share their solutions to coding problems. Keep it brief and link to the docs if you can rather than too lengthy explanations. Don't forget to check if an answer already exists before answering - maybe you can clarify that answer rather than to make a new Q&amp;A section.</em></p>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#removing-default-commands">Removing default commands</a></li>
+<li><a href="#preventing-character-from-moving-based-on-a-condition">Preventing character from moving based on a condition</a></li>
+<li><a href="#reference-initiating-object-in-an-evmenu-command">Reference initiating object in an EvMenu command</a></li>
+<li><a href="#adding-color-to-default-evennia-channels">Adding color to default Evennia Channels</a></li>
+<li><a href="#selectively-turn-off-commands-in-a-room">Selectively turn off commands in a room</a></li>
+<li><a href="#select-command-based-on-a-condition">Select Command based on a condition</a></li>
+<li><a href="#automatically-updating-code-when-reloading">Automatically updating code when reloading</a></li>
+<li><a href="#changing-all-exit-messages">Changing all exit messages</a></li>
+<li><a href="#add-parsing-with-the-to-delimiter">Add parsing with the "to" delimiter</a></li>
+<li><a href="#store-last-used-session-ip-address">Store last used session IP address</a></li>
+<li><a href="#non-latin-characters-in-evtable">Use wide characters with EvTable</a></li>
+</ul>
+<h2 id="removing-default-commands">Removing default commands<a class="headerlink" href="#removing-default-commands" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> How does one <em>remove</em> (not replace) e.g. the default <code>get</code> <a href="Commands.html">Command</a> from the Character <a href="Command-Sets.html">Command Set</a>?</p>
+<p><strong>A:</strong> Go to <code>mygame/commands/default_cmdsets.py</code>. Find the <code>CharacterCmdSet</code> class. It has one method named <code>at_cmdset_creation</code>. At the end of that method, add the following line: <code>self.remove(default_cmds.CmdGet())</code>. See the <a href="Adding-Command-Tutorial">Adding Commands Tutorial</a> for more info.</p>
+<h2 id="preventing-character-from-moving-based-on-a-condition">Preventing character from moving based on a condition<a class="headerlink" href="#preventing-character-from-moving-based-on-a-condition" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> How does one keep a character from using any exit, if they meet a certain condition? (I.E. in combat, immobilized, etc.)</p>
+<p><strong>A:</strong> The <code>at_before_move</code> hook is called by Evennia just before performing any move. If it returns <code>False</code>, the move is aborted. Let's say we want to check for an <a href="Attributes.html">Attribute</a> <code>cantmove</code>. Add the following code to the <code>Character</code> class:</p>
+<pre><code class="python">def at_before_move(self, destination):
+    &quot;Called just before trying to move&quot;
+    if self.db.cantmove: # replace with condition you want to test
+        self.msg(&quot;Something is preventing you from moving!&quot;)
+        return False
+    return True
+</code></pre>
+
+<h2 id="reference-initiating-object-in-an-evmenu-command">Reference initiating object in an EvMenu command.<a class="headerlink" href="#reference-initiating-object-in-an-evmenu-command" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> An object has a Command on it starts up an EvMenu instance. How do I capture a reference to that object for use in the menu?</p>
+<p><strong>A:</strong> When an <a href="EvMenu.html">EvMenu</a> is started, the menu object is stored as <code>caller.ndb._menutree</code>. This is a good place to store menu-specific things since it will clean itself up when the menu closes. When initiating the menu, any additional keywords you give will be available for you as properties on this menu object:</p>
+<pre><code class="python">class MyObjectCommand(Command):
+    # A Command stored on an object (the object is always accessible from
+    # the Command as self.obj)
+    def func(self):
+        # add the object as the stored_obj menu property
+        EvMenu(caller, ..., stored_obj=self.obj)
+
+</code></pre>
+
+<p>Inside the menu you can now access the object through <code>caller.ndb._menutree.stored_obj</code>.</p>
+<h2 id="adding-color-to-default-evennia-channels">Adding color to default Evennia Channels<a class="headerlink" href="#adding-color-to-default-evennia-channels" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> How do I add colors to the names of Evennia channels?</p>
+<p><strong>A:</strong> The Channel typeclass' <code>channel_prefix</code> method decides what is shown at the beginning of a channel send. Edit <code>mygame/typeclasses/channels.py</code> (and then <code>@reload</code>):</p>
+<pre><code class="python"># define our custom color names
+CHANNEL_COLORS = {'public': '|015Public|n',
+                  'newbie': '|550N|n|551e|n|552w|n|553b|n|554i|n|555e|n',
+                  'staff': '|010S|n|020t|n|030a|n|040f|n|050f|n'}
+
+# Add to the Channel class
+    # ...
+    def channel_prefix(self, msg, emit=False):
+        prefix_string = &quot;&quot;
+        if self.key in COLORS:
+            prefix_string = &quot;[%s] &quot; % CHANNEL_COLORS.get(self.key.lower())
+        else:
+            prefix_string = &quot;[%s] &quot; % self.key.capitalize()
+        return prefix_string
+</code></pre>
+
+<p>Additional hint: To make colors easier to change from one place you could instead put the <code>CHANNEL_COLORS</code> dict in your settings file and import it as <code>from django.conf.settings import CHANNEL_COLORS</code>.</p>
+<h2 id="selectively-turn-off-commands-in-a-room">Selectively turn off commands in a room<a class="headerlink" href="#selectively-turn-off-commands-in-a-room" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> I want certain commands to turn off in a given room. They should still work normally for staff.</p>
+<p><strong>A:</strong> This is done using a custom cmdset on a room <a href="Locks">locked with the 'call' lock type</a>. Only if this lock is passed will the commands on the room be made available to an object inside it. Here is an example of a room where certain commands are disabled for non-staff:</p>
+<pre><code class="python"># in mygame/typeclasses/rooms.py
+
+from evennia import default_commands, CmdSet
+
+class CmdBlocking(default_commands.MuxCommand):
+    # block commands give, get, inventory and drop
+    key = &quot;give&quot;
+    aliases = [&quot;get&quot;, &quot;inventory&quot;, &quot;drop&quot;]
+    def func(self):
+        self.caller.msg(&quot;You cannot do that in this room.&quot;)
+
+class BlockingCmdSet(CmdSet):
+    key = &quot;blocking_cmdset&quot;
+    # default commands have prio 0
+    priority = 1
+    def at_cmdset_creation(self):
+        self.add(CmdBlocking())
+
+class BlockingRoom(Room):
+    def at_object_creation(self):
+        self.cmdset.add(BlockingCmdSet, permanent=True)
+        # only share commands with players in the room that
+        # are NOT Builders or higher
+        self.locks.add(&quot;call:not perm(Builders)&quot;)
+</code></pre>
+
+<p>After <code>@reload</code>, make some <code>BlockingRooms</code> (or switch a room to it with <code>@typeclass</code>). Entering one will now replace the given commands for anyone that does not have the <code>Builders</code> or higher permission. Note that the 'call' lock is special in that even the superuser will be affected by it (otherwise superusers would always see other player's cmdsets and a game would be unplayable for superusers).</p>
+<h2 id="select-command-based-on-a-condition">Select Command based on a condition<a class="headerlink" href="#select-command-based-on-a-condition" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> I want a command to be available only based on a condition. For example I want the "werewolf" command to only be available on a full moon, from midnight to three in-game time.</p>
+<p><strong>A:</strong> This is easiest accomplished by putting the "werewolf" command on the Character as normal, but to <a href="Locks.html">lock</a> it with the "cmd" type lock. Only if the "cmd" lock type is passed will the command be available.</p>
+<pre><code class="python"># in mygame/commands/command.py
+
+from evennia import Command
+
+class CmdWerewolf(Command):
+    key = &quot;werewolf&quot;
+    # lock full moon, between 00:00 (midnight) and 03:00.
+    locks = &quot;cmd:is_full_moon(0, 3)&quot;
+    def func(self):
+        # ...
+</code></pre>
+
+<p>Add this to the <a href="Adding-Command-Tutorial">default cmdset as usual</a>. The <code>is_full_moon</code> <a href="https://github.com/evennia/evennia/wiki/Locks#lock-functions">lock function</a> does not yet exist. We must create that:</p>
+<pre><code class="python"># in mygame/server/conf/lockfuncs.py
+
+def is_full_moon(accessing_obj, accessed_obj,
+                 starthour, endhour, *args, **kwargs):
+    # calculate if the moon is full here and
+    # if current game time is between starthour and endhour
+    # return True or False
+
+</code></pre>
+
+<p>After a <code>@reload</code>, the <code>werewolf</code> command will be available only at the right time, that is when the <code>is_full_moon</code> lock function returns True.</p>
+<h2 id="automatically-updating-code-when-reloading">Automatically updating code when reloading<a class="headerlink" href="#automatically-updating-code-when-reloading" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> I have a development server running Evennia.  Can I have the server update its code-base when I reload?</p>
+<p><strong>A:</strong> Having a development server that pulls updated code whenever you reload it can be really useful if you have limited shell access to your server, or want to have it done automatically.  If you have your project in a configured Git environment, it's a matter of automatically calling <code>git pull</code> when you reload.  And that's pretty straightforward:</p>
+<p>In <code>/server/conf/at_server_startstop.py</code>:</p>
+<pre><code class="python">import subprocess
+
+# ... other hooks ...
+
+def at_server_reload_stop():
+    &quot;&quot;&quot;
+    This is called only time the server stops before a reload.
+    &quot;&quot;&quot;
+    print(&quot;Pulling from the game repository...&quot;)
+    process = subprocess.call([&quot;git&quot;, &quot;pull&quot;], shell=False)
+</code></pre>
+
+<p>That's all.  We call <code>subprocess</code> to execute a shell command (that code works on Windows and Linux, assuming the current directory is your game directory, which is probably the case when you run Evennia).  <code>call</code> waits for the process to complete, because otherwise, Evennia would reload on partially-modified code, which would be problematic.</p>
+<p>Now, when you enter <code>@reload</code> on your development server, the game repository is updated from the configured remote repository (Github, for instance).  Your development cycle could resemble something like:</p>
+<ol>
+<li>Coding on the local machine.</li>
+<li>Testing modifications.</li>
+<li>Committing once, twice or more (being sure the code is still working, unittests are pretty useful here).</li>
+<li>When the time comes, login to the development server and run <code>@reload</code>.</li>
+</ol>
+<p>The reloading might take one or two additional seconds, since Evennia will pull from your remote Git repository.  But it will reload on it and you will have your modifications ready, without needing connecting to your server using SSH or something similar.</p>
+<h2 id="changing-all-exit-messages">Changing all exit messages<a class="headerlink" href="#changing-all-exit-messages" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> How can I change the default exit messages to something like "XXX leaves east" or "XXX arrives from the west"?</p>
+<p><strong>A:</strong> the default exit messages are stored in two hooks, namely <code>announce_move_from</code> and <code>announce_move_to</code>, on the <code>Character</code> typeclass (if what you want to change is the message other characters will see when a character exits).</p>
+<p>These two hooks provide some useful features to easily update the message to be displayed.  They take both the default message and mapping as argument.  You can easily call the parent hook with these information:</p>
+<ul>
+<li>The message represents the string of characters sent to characters in the room when a character leaves.</li>
+<li>The mapping is a dictionary containing additional mappings (you will probably not need it for simple customization).</li>
+</ul>
+<p>It is advisable to look in the <a href="https://github.com/evennia/evennia/tree/master/evennia/objects/objects.py">code of both hooks</a>, and read the hooks' documentation.  The explanations on how to quickly update the message are shown below:</p>
+<pre><code class="python"># In typeclasses/characters.py
+&quot;&quot;&quot;
+Characters
+
+&quot;&quot;&quot;
+from evennia import DefaultCharacter
+
+class Character(DefaultCharacter):
+    &quot;&quot;&quot;
+    The default character class.
+
+    ...
+    &quot;&quot;&quot;
+
+    def announce_move_from(self, destination, msg=None, mapping=None):
+        &quot;&quot;&quot;
+        Called if the move is to be announced. This is
+        called while we are still standing in the old
+        location.
+
+        Args:
+            destination (Object): The place we are going to.
+            msg (str, optional): a replacement message.
+            mapping (dict, optional): additional mapping objects.
+
+        You can override this method and call its parent with a
+        message to simply change the default message.  In the string,
+        you can use the following as mappings (between braces):
+            object: the object which is moving.
+            exit: the exit from which the object is moving (if found).
+            origin: the location of the object before the move.
+            destination: the location of the object after moving.
+
+        &quot;&quot;&quot;
+        super().announce_move_from(destination, msg=&quot;{object} leaves {exit}.&quot;)
+
+    def announce_move_to(self, source_location, msg=None, mapping=None):
+        &quot;&quot;&quot;
+        Called after the move if the move was not quiet. At this point
+        we are standing in the new location.
+
+        Args:
+            source_location (Object): The place we came from
+            msg (str, optional): the replacement message if location.
+            mapping (dict, optional): additional mapping objects.
+
+        You can override this method and call its parent with a
+        message to simply change the default message.  In the string,
+        you can use the following as mappings (between braces):
+            object: the object which is moving.
+            exit: the exit from which the object is moving (if found).
+            origin: the location of the object before the move.
+            destination: the location of the object after moving.
+
+        &quot;&quot;&quot;
+        super().announce_move_to(source_location, msg=&quot;{object} arrives from the {exit}.&quot;)
+</code></pre>
+
+<p>We override both hooks, but call the parent hook to display a different message.  If you read the provided docstrings, you will better understand why and how we use mappings (information between braces).  You can provide additional mappings as well, if you want to set a verb to move, for instance, or other, extra information.</p>
+<h2 id="add-parsing-with-the-to-delimiter">Add parsing with the "to" delimiter<a class="headerlink" href="#add-parsing-with-the-to-delimiter" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> How do I change commands to undestand say <code>give obj to target</code> as well as the default <code>give obj = target</code>?</p>
+<p><strong>A:</strong> You can make change the default <code>MuxCommand</code> parent with your own class making a small change in its <code>parse</code> method:</p>
+<pre><code class="python">    # in mygame/commands/command.py
+    from evennia import default_cmds
+    class MuxCommand(default_cmds.MuxCommand):
+        def parse(self):
+            &quot;&quot;&quot;Implement an additional parsing of 'to'&quot;&quot;&quot;
+            super().parse()
+            if &quot; to &quot; in self.args:
+                self.lhs, self.rhs = self.args.split(&quot; to &quot;, 1)
+</code></pre>
+
+<p>Next you change the parent of the default commands in settings:</p>
+<pre><code class="python">    COMMAND_DEFAULT_CLASS = &quot;commands.command.MuxCommand&quot;
+</code></pre>
+
+<p>Do a <code>@reload</code> and all default commands will now use your new tweaked parent class. A copy of the
+MuxCommand class is also found commented-out in the <code>mygame/commands/command.py</code> file.</p>
+<h2 id="store-last-used-session-ip-address">Store last used session IP address<a class="headerlink" href="#store-last-used-session-ip-address" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> If a user has already logged out of an Evennia account, their IP is no longer visible to staff that wants to ban-by-ip (instead of the user) with <code>@ban/ip</code>?</p>
+<p><strong>A:</strong> One approach is to write the IP from the last session onto the "account" account object.</p>
+<p><code>typeclasses/accounts.py</code></p>
+<pre><code class="python">    def at_post_login(self):
+        super().at_post_login()
+        self.db.lastsite = self.sessions.all()[-1].address
+</code></pre>
+
+<p>Adding timestamp for login time and appending to a list to keep the last N login IP addresses and timestamps is possible, also.  Additionally, if you don't want the list to grow beyond a <code>do_not_exceed</code> length, conditionally pop a value after you've added it, if the length has grown too long.</p>
+<p><strong>NOTE:</strong> You'll need to add <code>import time</code> to generate the login timestamp.</p>
+<pre><code class="python">    def at_post_login(self):
+        super().at_post_login()
+        do_not_exceed = 24  # Keep the last two dozen entries
+        session = self.sessions.all()[-1]  # Most recent session
+        if not self.db.lastsite:
+           self.db.lastsite = []
+        self.db.lastsite = self.db.lastsite.insert(0, (session.address,
+                                                      int(time.time())))
+        if len(self.db.lastsite) &gt; do_not_exceed:
+            self.db.lastsite.pop()
+</code></pre>
+
+<p>This only stores the data. You may want to interface the <code>@ban</code> command or make a menu-driven viewer for staff to browse the list and display how long ago the login occurred.</p>
+<h2 id="non-latin-characters-in-evtable">Non-latin characters in EvTable<a class="headerlink" href="#non-latin-characters-in-evtable" title="Permanent link">&para;</a></h2>
+<p><strong>Q:</strong> When using e.g. Chinese characters in EvTable, some lines appear to be too wide, for example</p>
+<pre><code>+------+------+
+|      |      |
+|  测试  |  测试  |
+|      |      |
++~~~~~~+~~~~~~+
+</code></pre>
+
+<p><strong>A:</strong> The reason for this is because certain non-latin characters are <em>visually</em> much wider than their len() suggests. There is little Evennia can (reliably) do about this. If you are using such characters, you need to make sure to use a suitable mono-spaced font where are width are equal. You can set this in your web client and need to recommend it for telnet-client users. See <a href="https://github.com/evennia/evennia/issues/1522">this discussion</a> where some suitable fonts are suggested.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>OOB - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#briefly-on-inputoutputcommands">Briefly on input/outputcommands</a></li>
+        <li class="main "><a href="#sending-and-receiving-an-oob-message">Sending and receiving an OOB message</a></li>
+        <li class="main "><a href="#supported-oob-protocols">Supported OOB protocols</a></li>
+            <li><a href="#telnet">Telnet</a></li>
+            <li><a href="#ssh">SSH</a></li>
+            <li><a href="#web-client">Web client</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>OOB, or Out-Of-Band, means sending data between Evennia and the user's client without the user prompting it or necessarily being aware that it's being passed. Common uses would be to update client health-bars, handle client button-presses or to display certain tagged text in a different window pane.</p>
+<h2 id="briefly-on-inputoutputcommands">Briefly on input/outputcommands<a class="headerlink" href="#briefly-on-inputoutputcommands" title="Permanent link">&para;</a></h2>
+<p>Inside Evennia, all server-client communication happens in the same way (so plain text is also an 'OOB message' as far as Evennia is concerned). The message follows the <a href="Messagepath.html">Message Path</a>. You should read up on that if you are unfamiliar with it. As the message travels along the path it has a standardized internal form: a tuple with a string, a tuple and a dict:</p>
+<pre><code>("cmdname", (args), {kwargs})
+</code></pre>
+<p>This is often referred to as an <em>inputcommand</em> or <em>outputcommand</em>, depending on the direction it's traveling. The end point for an inputcommand, (the 'Evennia-end' of the message path) is a matching <a href="Inputfuncs.html">Inputfunc</a>. This function is called as <code>cmdname(session, *args, **kwargs)</code> where <code>session</code> is the Session-source of the command. Inputfuncs can easily be added by the developer to support/map client commands to actions inside Evennia (see the <a href="Inputfuncs.html">inputfunc</a> page for more details). </p>
+<p>When a message is outgoing (at the 'Client-end' of the message path) the outputcommand is handled by a matching <em>Outputfunc</em>. This is responsible for converting the internal Evennia representation to a form suitable to send over the wire to the Client. Outputfuncs are hard-coded. Which is chosen and how it processes the outgoing data depends on the nature of the client it's connected to. The only time one would want to add new outputfuncs is as part of developing support for a new Evennia <a href="https://github.com/evennia/evennia/wiki/Custom-Protocols">Protocol</a>.</p>
+<h2 id="sending-and-receiving-an-oob-message">Sending and receiving an OOB message<a class="headerlink" href="#sending-and-receiving-an-oob-message" title="Permanent link">&para;</a></h2>
+<p>Sending is simple. You just use the normal <code>msg</code> method of the object whose session you want to send to. For example in a Command: </p>
+<pre><code class="python">    caller.msg(cmdname=((args, ...), {key:value, ...}))
+</code></pre>
+
+<p>A special case is the <code>text</code> input/outputfunc. It's so common that it's the default of the <code>msg</code> method. So these are equivalent:</p>
+<pre><code class="python">    caller.msg(&quot;Hello&quot;)
+    caller.msg(text=&quot;Hello&quot;)
+</code></pre>
+
+<p>You don't have to specify the full output/input definition. So for example, if your particular command only needs kwargs, you can skip the <code>(args)</code> part. Like in the <code>text</code> case you can skip writing the tuple if there is only one arg ... and so on - the input is pretty flexible. If there are no args at all you need to give the empty tuple <code>msg(cmdname=(,)</code> (giving <code>None</code> would mean a single argument <code>None</code>).</p>
+<p>Which commands you can send depends on the client. If the client does not support an explicit OOB protocol (like many old/legacy MUD clients) Evennia can only send <code>text</code> to them and will quietly drop any other types of outputfuncs. </p>
+<blockquote>
+<p>Remember that a given message may go to multiple clients with different capabilities. So unless you turn off telnet completely and only rely on the webclient, you should never rely on non-<code>text</code> OOB messages always reaching all targets.</p>
+</blockquote>
+<p>Inputfuncs.md lists the default inputfuncs available to handle incoming OOB messages. To accept more you need to add more inputfuncs (see that page for more info). </p>
+<h2 id="supported-oob-protocols">Supported OOB protocols<a class="headerlink" href="#supported-oob-protocols" title="Permanent link">&para;</a></h2>
+<p>Evennia supports clients using one of the following protocols: </p>
+<h3 id="telnet">Telnet<a class="headerlink" href="#telnet" title="Permanent link">&para;</a></h3>
+<p>By default telnet (and telnet+SSL) supports only the plain <code>text</code> outputcommand. Evennia however detects if the Client supports one of two MUD-specific OOB <em>extensions</em> to the standard telnet protocol - GMCP or MSDP. Evennia supports both simultaneously and will switch to the protocol the client uses. If the client supports both, GMCP will be used. </p>
+<blockquote>
+<p>Note that for Telnet, <code>text</code> has a special status as the "in-band" operation. So the <code>text</code> outputcommand sends the <code>text</code> argument directly over the wire, without going through the OOB translations described below.</p>
+</blockquote>
+<h4 id="telnet-gmcp">Telnet + GMCP<a class="headerlink" href="#telnet-gmcp" title="Permanent link">&para;</a></h4>
+<p><a href="http://www.gammon.com.au/gmcp">GMCP</a>, the <em>Generic Mud Communication Protocol</em> sends data on the form <code>cmdname + JSONdata</code>. Here the cmdname is expected to be on the form "Package.Subpackage". There could also be additional Sub-sub packages etc. The names of these 'packages' and 'subpackages' are not that well standardized beyond what individual MUDs or companies have chosen to go with over the years. You can decide on your own package names, but here are what others are using:</p>
+<ul>
+<li><a href="http://www.aardwolf.com/wiki/index.php/Clients/GMCP">Aardwolf GMCP</a></li>
+<li><a href="http://discworld.starturtle.net/lpc/playing/documentation.c?path=/concepts/gmcp">Discworld GMCP</a></li>
+<li><a href="http://www.outland.org/infusions/wiclear/index.php?title=MUD%20Protocols&amp;lang=en">Avatar GMCP</a></li>
+<li><a href="http://nexus.ironrealms.com/GMCP">IRE games GMCP</a></li>
+</ul>
+<p>Evennia will translate underscores to <code>.</code> and capitalize to fit the specification. So the outputcommand <code>foo_bar</code> will become a GMCP command-name <code>Foo.Bar</code>. A GMCP command "Foo.Bar" will be come <code>foo_bar</code>. To send a GMCP command that turns into an Evennia inputcommand without an underscore, use the <code>Core</code> package. So <code>Core.Cmdname</code> becomes just <code>cmdname</code> in Evennia and vice versa. </p>
+<p>On the wire, a GMCP instruction for <code>("cmdname", ("arg",), {})</code> will look like this: </p>
+<pre><code>IAC SB GMCP "cmdname" "arg" IAC SE
+</code></pre>
+<p>where all the capitalized words are telnet character constants specified in <code>evennia/server/portal/telnet_oob.py</code>. These are parsed/added by the protocol and we don't include these in the listings below. </p>
+<table>
+<thead>
+<tr>
+<th>Input/Outputfunc</th>
+<th>GMCP-Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[cmd_name, [], {}]</code></td>
+<td>Cmd.Name</td>
+</tr>
+<tr>
+<td><code>[cmd_name, [arg], {}]</code></td>
+<td>Cmd.Name arg</td>
+</tr>
+<tr>
+<td><code>[cmd_na_me, [args],{}]</code></td>
+<td>Cmd.Na.Me [args]</td>
+</tr>
+<tr>
+<td><code>[cmd_name, [], {kwargs}]</code></td>
+<td>Cmd.Name {kwargs}</td>
+</tr>
+<tr>
+<td><code>[cmdname, [args, {kwargs}]</code></td>
+<td>Core.Cmdname [[args],{kwargs}]</td>
+</tr>
+</tbody>
+</table>
+<p>Since Evennia already supplies default inputfuncs that don't match the names expected by the most common GMCP implementations we have a few hard-coded mappings for those:</p>
+<table>
+<thead>
+<tr>
+<th>GMCP command name</th>
+<th>Input/Outputfunc name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Core.Hello"</td>
+<td>"client_options"</td>
+</tr>
+<tr>
+<td>"Core.Supports.Get"</td>
+<td>"client_options"</td>
+</tr>
+<tr>
+<td>"Core.Commands.Get"</td>
+<td>"get_inputfuncs"</td>
+</tr>
+<tr>
+<td>"Char.Value.Get"</td>
+<td>"get_value"</td>
+</tr>
+<tr>
+<td>"Char.Repeat.Update"</td>
+<td>"repeat"</td>
+</tr>
+<tr>
+<td>"Char.Monitor.Update"</td>
+<td>"monitor"</td>
+</tr>
+</tbody>
+</table>
+<h4 id="telnet-msdp">Telnet + MSDP<a class="headerlink" href="#telnet-msdp" title="Permanent link">&para;</a></h4>
+<p><a href="http://tintin.sourceforge.net/msdp/">MSDP</a>, the <em>Mud Server Data Protocol</em>, is a competing standard to GMCP. The MSDP protocol page specifies a range of "recommended" available MSDP command names. Evennia does <em>not</em> support those - since MSDP doesn't specify a special format for its command names (like GMCP does) the client can and should just call the internal Evennia inputfunc by its actual name. </p>
+<p>MSDP uses Telnet character constants to package various structured data over the wire. MSDP supports strings, arrays (lists) and tables (dicts). These are used to define the cmdname, args and kwargs needed. When sending MSDP for <code>("cmdname", ("arg",), {})</code> the resulting MSDP instruction will look like this: </p>
+<pre><code>IAC SB MSDP VAR cmdname VAL arg IAC SE
+</code></pre>
+<p>The various available MSDP constants like <code>VAR</code> (variable), <code>VAL</code> (value), <code>ARRAYOPEN</code>/<code>ARRAYCLOSE</code> and <code>TABLEOPEN</code>/<code>TABLECLOSE</code> are specified in <code>evennia/server/portal/telnet_oob</code>. </p>
+<table>
+<thead>
+<tr>
+<th>Outputfunc/Inputfunc</th>
+<th>MSDP instruction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[cmdname, [], {}]</code></td>
+<td>VAR cmdname VAL</td>
+</tr>
+<tr>
+<td><code>[cmdname, [arg], {}]</code></td>
+<td>VAR cmdname VAL arg</td>
+</tr>
+<tr>
+<td><code>[cmdname, [args],{}]</code></td>
+<td>VAR cmdname VAL ARRAYOPEN VAL arg VAL arg ... ARRAYCLOSE</td>
+</tr>
+<tr>
+<td><code>[cmdname, [], {kwargs}]</code></td>
+<td>VAR cmdname VAL TABLEOPEN VAR key VAL val ... TABLECLOSE</td>
+</tr>
+<tr>
+<td><code>[cmdname, [args], {kwargs}]</code></td>
+<td>VAR cmdname VAL ARRAYOPEN VAL arg VAL arg ... ARRAYCLOSE VAR cmdname VAL TABLEOPEN VAR key VAL val ... TABLECLOSE</td>
+</tr>
+</tbody>
+</table>
+<p>Observe that <code>VAR ... VAL</code> always identifies cmdnames, so if there are multiple arrays/dicts tagged with the same cmdname they will be appended to the args, kwargs of that inputfunc. Vice-versa, a different <code>VAR ... VAL</code> (outside a table) will come out as a second, different command input.</p>
+<h3 id="ssh">SSH<a class="headerlink" href="#ssh" title="Permanent link">&para;</a></h3>
+<p>SSH only supports the <code>text</code> input/outputcommand. </p>
+<h3 id="web-client">Web client<a class="headerlink" href="#web-client" title="Permanent link">&para;</a></h3>
+<p>Our web client uses pure JSON structures for all its communication, including <code>text</code>. This maps directly to the Evennia internal output/inputcommand, including eventual empty args/kwargs. So the same example <code>("cmdname", ("arg",), {})</code> will be sent/received as a valid JSON structure </p>
+<pre><code>["cmdname, ["arg"], {}]
+</code></pre>
+<p>Since JSON is native to Javascript, this becomes very easy for the webclient to handle.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

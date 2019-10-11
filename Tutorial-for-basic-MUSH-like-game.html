@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Tutorial for basic MUSH like game - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#server-settings">Server Settings</a></li>
+        <li class="main "><a href="#creating-the-character">Creating the Character</a></li>
+        <li class="main "><a href="#character-generation">Character Generation</a></li>
+            <li><a href="#the-setpower-command">The +setpower command</a></li>
+            <li><a href="#chargen-areas">Chargen areas</a></li>
+            <li><a href="#testing-chargen">Testing chargen</a></li>
+        <li class="main "><a href="#combat-system">Combat System</a></li>
+            <li><a href="#attacking-with-the-attack-command">Attacking with the +attack command</a></li>
+            <li><a href="#have-look-show-combat-scores">Have "look" show combat scores</a></li>
+        <li class="main "><a href="#npc-system">NPC system</a></li>
+            <li><a href="#creating-an-npc-with-createnpc">Creating an NPC with +createNPC</a></li>
+            <li><a href="#editing-the-npc-with-editnpc">Editing the NPC with +editNPC</a></li>
+            <li><a href="#making-the-npc-do-stuff-the-npc-command">Making the NPC do stuff - the +npc command</a></li>
+        <li class="main "><a href="#concluding-remarks">Concluding remarks</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-long-tutorial-for-building-a-simple-MUSH-in-Evennia,-from-scratch."></a></p>
+<p>This tutorial lets you code a small but complete and functioning MUSH-like game in Evennia. A <a href="http://en.wikipedia.org/wiki/MUSH">MUSH</a> is, for our purposes, a class of roleplay-centric games focused on free form storytelling. Even if you are not interested in MUSH:es, this is still a good first game-type to try since it's not so code heavy. You will be able to use the same principles for building other types of games.  </p>
+<p>The tutorial starts from scratch. If you did the <a href="First-Steps-Coding">First Steps Coding</a> tutorial already you should have some ideas about how to do some of the steps already. </p>
+<p>The following are the (very simplistic and cut-down) features we will implement (this was taken from a feature request from a MUSH user new to Evennia). A Character in this system should: </p>
+<ul>
+<li>Have a “Power” score from 1 to 10 that measures how strong they are (stand-in for the stat system).</li>
+<li>Have a command (e.g. <code>+setpower 4</code>) that sets their power (stand-in for character generation code).</li>
+<li>Have a command (e.g. <code>+attack</code>) that lets them roll their power and produce a "Combat Score" between <code>1</code> and <code>10*Power</code>, displaying the result and editing their object to record this number  (stand-in for <code>+actions</code> in the command code).</li>
+<li>Have a command that displays everyone in the room and what their most recent "Combat Score" roll was (stand-in for the combat code).</li>
+<li>Have a command (e.g. <code>+createNPC Jenkins</code>) that creates an NPC with full abilities.</li>
+<li>Have a command to control NPCs, such as <code>+npc/cmd (name)=(command)</code> (stand-in for the NPC controlling code).</li>
+</ul>
+<p>In this tutorial we will assume you are starting from an empty database without any previous modifications. </p>
+<h2 id="server-settings">Server Settings<a class="headerlink" href="#server-settings" title="Permanent link">&para;</a></h2>
+<p>To emulate a MUSH, the default <code>MULTISESSION_MODE=0</code> is enough (one unique session per account/character). This is the default so you don't need to change anything. You will still be able to puppet/unpuppet objects you have permission to, but there is no character selection out of the box in this mode.</p>
+<p>We will assume our game folder is called <code>mygame</code> henceforth.  You should be fine with the default SQLite3 database. </p>
+<h2 id="creating-the-character">Creating the Character<a class="headerlink" href="#creating-the-character" title="Permanent link">&para;</a></h2>
+<p>First thing is to choose how our Character class works. We don't need to define a special NPC object -- an NPC is after all just a Character without an Account currently controlling them. </p>
+<p>Make your changes in the <code>mygame/typeclasses/characters.py</code> file:</p>
+<pre><code class="python"># mygame/typeclasses/characters.py
+
+from evennia import DefaultCharacter
+
+class Character(DefaultCharacter):
+    &quot;&quot;&quot;
+     [...]
+    &quot;&quot;&quot;
+    def at_object_creation(self):
+        &quot;This is called when object is first created, only.&quot;   
+        self.db.power = 1         
+        self.db.combat_score = 1
+</code></pre>
+
+<p>We defined two new <a href="Attributes.html">Attributes</a> <code>power</code> and <code>combat_score</code> and set them to default values. Make sure to <code>@reload</code> the server if you had it already running (you need to reload every time you update your python code, don't worry, no accounts will be disconnected by the reload). </p>
+<p>Note that only <em>new</em> characters will see your new Attributes (since the <code>at_object_creation</code> hook is called when the object is first created, existing Characters won't have it).  To update yourself, run </p>
+<pre><code> @typeclass/force self
+</code></pre>
+<p>This resets your own typeclass (the <code>/force</code> switch is a safety measure to not do this accidentally), this means that <code>at_object_creation</code> is re-run. </p>
+<pre><code> examine self
+</code></pre>
+<p>Under the "Persistent attributes" heading you should now find the new Attributes <code>power</code> and <code>score</code> set on yourself by <code>at_object_creation</code>. If you don't, first make sure you <code>@reload</code>ed into the new code, next look at your server log (in the terminal/console) to see if there were any syntax errors in your code that may have stopped your new code from loading correctly. </p>
+<h2 id="character-generation">Character Generation<a class="headerlink" href="#character-generation" title="Permanent link">&para;</a></h2>
+<p>We assume in this example that Accounts first connect into a "character generation area". Evennia also supports full OOC menu-driven character generation, but for this example, a simple start room is enough. When in this room (or rooms) we allow character generation commands. In fact, character generation commands will <em>only</em> be available in such rooms. </p>
+<p>Note that this again is made so as to be easy to expand to a full-fledged game. With our simple example, we could simply set an <code>is_in_chargen</code> flag on the account and have the <code>+setpower</code> command check it. Using this method however will make it easy to add more functionality later. </p>
+<p>What we need are the following:</p>
+<ul>
+<li>One character generation <a href="Commands.html">Command</a> to set the "Power" on the <code>Character</code>.  </li>
+<li>A chargen <a href="Command-Sets">CmdSet</a> to hold this command. Lets call it <code>ChargenCmdset</code>.  </li>
+<li>A custom <code>ChargenRoom</code> type that makes this set of commands available to players in such rooms.  </li>
+<li>One such room to test things in.  </li>
+</ul>
+<h3 id="the-setpower-command">The +setpower command<a class="headerlink" href="#the-setpower-command" title="Permanent link">&para;</a></h3>
+<p>For this tutorial we will add all our new commands to <code>mygame/commands/command.py</code> but you could split your commands into multiple module if you prefered.</p>
+<p>For this tutorial character generation will only consist of one <a href="Commands.html">Command</a> to set the Character s "power" stat. It will be called on the following MUSH-like form: </p>
+<pre><code> +setpower 4
+</code></pre>
+<p>Open <code>command.py</code> file. It contains documented empty templates for the base command and the "MuxCommand" type used by default in Evennia. We will use the plain <code>Command</code> type here, the <code>MuxCommand</code> class offers some extra features like stripping whitespace that may be useful - if so, just import from that instead. </p>
+<p>Add the following to the end of the <code>command.py</code> file: </p>
+<pre><code class="python"># end of command.py
+from evennia import Command # just for clarity; already imported above
+
+class CmdSetPower(Command):
+    &quot;&quot;&quot;
+    set the power of a character
+
+    Usage: 
+      +setpower &lt;1-10&gt;
+
+    This sets the power of the current character. This can only be 
+    used during character generation.    
+    &quot;&quot;&quot;
+
+    key = &quot;+setpower&quot;
+    help_category = &quot;mush&quot;
+
+    def func(self):
+        &quot;This performs the actual command&quot;
+        errmsg = &quot;You must supply a number between 1 and 10.&quot;
+        if not self.args:
+            self.caller.msg(errmsg)      
+            return
+        try:
+            power = int(self.args)  
+        except ValueError:
+            self.caller.msg(errmsg)
+            return
+        if not (1 &lt;= power &lt;= 10):
+            self.caller.msg(errmsg)
+            return
+        # at this point the argument is tested as valid. Let's set it.
+        self.caller.db.power = power
+        self.caller.msg(&quot;Your Power was set to %i.&quot; % power)
+</code></pre>
+
+<p>This is a pretty straightforward command. We do some error checking, then set the power on ourself. We use a <code>help_category</code> of "mush" for all our commands, just so they are easy to find and separate in the help list.</p>
+<p>Save the file. We will now add it to a new <a href="Command-Sets">CmdSet</a> so it can be accessed (in a full chargen system you would of course have more than one command here).</p>
+<p>Open <code>mygame/commands/default_cmdsets.py</code> and import your <code>command.py</code> module at the top. We also import the default <code>CmdSet</code> class for the next step: </p>
+<pre><code class="python">from evennia import CmdSet
+from commands import command
+</code></pre>
+
+<p>Next scroll down and define a new command set (based on the base <code>CmdSet</code> class we just imported at the end of this file, to hold only our chargen-specific command(s): </p>
+<pre><code class="python"># end of default_cmdsets.py
+
+class ChargenCmdset(CmdSet):
+    &quot;&quot;&quot;
+    This cmdset it used in character generation areas.
+    &quot;&quot;&quot;
+    key = &quot;Chargen&quot;
+    def at_cmdset_creation(self):
+        &quot;This is called at initialization&quot;
+        self.add(command.CmdSetPower()) 
+</code></pre>
+
+<p>In the future you can add any number of commands to this cmdset, to expand your character generation system as you desire. Now we need to actually put that cmdset on something so it's made available to users.  We could put it directly on the Character, but that would make it available all the time. It's cleaner to put it on a room, so it's only available when players are in that room. </p>
+<h3 id="chargen-areas">Chargen areas<a class="headerlink" href="#chargen-areas" title="Permanent link">&para;</a></h3>
+<p>We will create a simple Room typeclass to act as a template for all our Chargen areas. Edit <code>mygame/typeclasses/rooms.py</code> next:</p>
+<pre><code class="python"># end of rooms.py
+
+from commands.default_cmdsets import ChargenCmdset
+
+class ChargenRoom(Room):
+    &quot;&quot;&quot;
+    This room class is used by character-generation rooms. It makes
+    the ChargenCmdset available.
+    &quot;&quot;&quot;
+    def at_object_creation(self):
+        &quot;this is called only at first creation&quot;
+        self.cmdset.add(ChargenCmdset, permanent=True)
+</code></pre>
+
+<p>Note how new rooms created with this typeclass will always start with <code>ChargenCmdset</code> on themselves. Don't forget the <code>permanent=True</code> keyword or you will lose the cmdset after a server reload. For more information about <a href="Command-Sets">Command Sets</a> and <a href="Commands.html">Commands</a>, see the respective links. </p>
+<h3 id="testing-chargen">Testing chargen<a class="headerlink" href="#testing-chargen" title="Permanent link">&para;</a></h3>
+<p>First, make sure you have <code>@reload</code>ed the server (or use <code>evennia reload</code> from the terminal) to have your new python code added to the game. Check your terminal and fix any errors you see - the error traceback lists exactly where the error is found - look line numbers in files you have changed.</p>
+<p>We can't test things unless we have some chargen areas to test. Log into the game (you should at this point be using the new, custom Character class). Let's dig a chargen area to test. </p>
+<pre><code> @dig chargen:rooms.ChargenRoom = chargen,finish
+</code></pre>
+<p>If you read the help for <code>@dig</code> you will find that this will create a new room named <code>chargen</code>. The part after the <code>:</code> is the python-path to the Typeclass you want to use. Since Evennia will automatically try the <code>typeclasses</code> folder of our game directory, we just specify <code>rooms.ChargenRoom</code>, meaning it will look inside the module <code>rooms.py</code> for a class named <code>ChargenRoom</code> (which is what we created above). The names given after <code>=</code> are the names of exits to and from the room from your current location. You could also append aliases to each one name, such as <code>chargen;character generation</code>. </p>
+<p>So in summary, this will create a new room of type ChargenRoom and open an exit <code>chargen</code> to it and an exit back here named <code>finish</code>. If you see errors at this stage, you must fix them in your code. <code>@reload</code>
+between fixes. Don't continue until the creation seems to have worked okay. </p>
+<pre><code> chargen
+</code></pre>
+<p>This should bring you to the chargen room. Being in there you should now have the <code>+setpower</code> command available, so test it out. When you leave (via the <code>finish</code> exit), the command will go away and trying <code>+setpower</code> should now give you a command-not-found error. Use <code>ex me</code> (as a privileged user) to check so the <code>Power</code> <a href="Attributes.html">Attribute</a> has been set correctly.</p>
+<p>If things are not working, make sure your typeclasses and commands are free of bugs and that you have entered the paths to the various command sets and commands correctly. Check the logs or command line for tracebacks and errors. </p>
+<h2 id="combat-system">Combat System<a class="headerlink" href="#combat-system" title="Permanent link">&para;</a></h2>
+<p>We will add our combat command to the default command set, meaning it will be available to everyone at all times. The combat system consists of a <code>+attack</code> command to get how successful our attack is. We also change the default <code>look</code> command to display the current combat score.</p>
+<h3 id="attacking-with-the-attack-command">Attacking with the +attack command<a class="headerlink" href="#attacking-with-the-attack-command" title="Permanent link">&para;</a></h3>
+<p>Attacking in this simple system means rolling a random "combat score" influenced by the <code>power</code> stat set during Character generation:</p>
+<pre><code>&gt; +attack
+You +attack with a combat score of 12!
+</code></pre>
+<p>Go back to <code>mygame/commands/command.py</code> and add the command to the end like this: </p>
+<pre><code class="python">import random
+
+class CmdAttack(Command):
+    &quot;&quot;&quot;
+    issues an attack 
+
+    Usage: 
+        +attack 
+
+    This will calculate a new combat score based on your Power.
+    Your combat score is visible to everyone in the same location.
+    &quot;&quot;&quot;
+    key = &quot;+attack&quot;
+    help_category = &quot;mush&quot;
+
+    def func(self):
+        &quot;Calculate the random score between 1-10*Power&quot;
+        caller = self.caller
+        power = caller.db.power
+        if not power:
+            # this can happen if caller is not of 
+            # our custom Character typeclass 
+            power = 1
+        combat_score = random.randint(1, 10 * power)
+        caller.db.combat_score = combat_score
+
+        # announce
+        message = &quot;%s +attack%s with a combat score of %s!&quot;
+        caller.msg(message % (&quot;You&quot;, &quot;&quot;, combat_score))
+        caller.location.msg_contents(message % 
+                                     (caller.key, &quot;s&quot;, combat_score),
+                                     exclude=caller)
+</code></pre>
+
+<p>What we do here is simply to generate a "combat score" using Python's inbuilt <code>random.randint()</code> function. We then store that and echo the result to everyone involved. </p>
+<p>To make the <code>+attack</code> command available to you in game, go back to <code>mygame/commands/default_cmdsets.py</code> and scroll down to the <code>CharacterCmdSet</code> class. At the correct place add this line: </p>
+<pre><code class="python">self.add(command.CmdAttack())
+</code></pre>
+
+<p><code>@reload</code> Evennia and the <code>+attack</code> command should be available to you. Run it and use e.g. <code>@ex</code> to make sure the <code>combat_score</code> attribute is saved correctly. </p>
+<h3 id="have-look-show-combat-scores">Have "look" show combat scores<a class="headerlink" href="#have-look-show-combat-scores" title="Permanent link">&para;</a></h3>
+<p>Players should be able to view all current combat scores in the room.  We could do this by simply adding a second command named something like <code>+combatscores</code>, but we will instead let the default <code>look</code> command do the heavy lifting for us and display our scores as part of its normal output, like this: </p>
+<pre><code>&gt;  look Tom
+Tom (combat score: 3)
+This is a great warrior.
+</code></pre>
+<p>We don't actually have to modify the <code>look</code> command itself however. To understand why, take a look at how the default <code>look</code> is actually defined. It sits in <code>evennia/commands/default/general.py</code> (or browse it online <a href="https://github.com/evennia/evennia/blob/master/evennia/commands/default/general.py#L44">here</a>).  You will find that the actual return text is done by the <code>look</code> command calling a <em>hook method</em> named <code>return_appearance</code> on the object looked at. All the <code>look</code> does is to echo whatever this hook returns.  So what we need to do is to edit our custom Character typeclass and overload its <code>return_appearance</code> to return what we want (this is where the advantage of having a custom typeclass comes into play for real).</p>
+<p>Go back to your custom Character typeclass in <code>mygame/typeclasses/characters.py</code>. The default implementation of <code>return appearance</code> is found in  <code>evennia.DefaultCharacter</code> (or online <a href="https://github.com/evennia/evennia/blob/master/evennia/objects/objects.py#L1438">here</a>).  If you want to make bigger changes you could copy &amp; paste the whole default thing into our overloading method. In our case the change is small though: </p>
+<pre><code class="python">class Character(DefaultCharacter):
+    &quot;&quot;&quot;
+     [...]
+    &quot;&quot;&quot;
+    def at_object_creation(self):
+        &quot;This is called when object is first created, only.&quot;   
+        self.db.power = 1         
+        self.db.combat_score = 1
+
+    def return_appearance(self, looker):
+        &quot;&quot;&quot;
+        The return from this method is what
+        looker sees when looking at this object.
+        &quot;&quot;&quot;
+        text = super().return_appearance(looker)
+        cscore = &quot; (combat score: %s)&quot; % self.db.combat_score
+        if &quot;\n&quot; in text:
+            # text is multi-line, add score after first line
+            first_line, rest = text.split(&quot;\n&quot;, 1)
+            text = first_line + cscore + &quot;\n&quot; + rest
+        else:
+            # text is only one line; add score to end
+            text += cscore
+        return text
+</code></pre>
+
+<p>What we do is to simply let the default <code>return_appearance</code> do its thing (<code>super</code> will call the parent's version of the same method). We then split out the first line of this text, append our <code>combat_score</code> and put it back together again. </p>
+<p><code>@reload</code> the server and you should be able to look at other Characters and see their current combat scores.</p>
+<blockquote>
+<p>Note: A potentially more useful way to do this would be to overload the entire <code>return_appearance</code> of the <code>Room</code>s of your mush and change how they list their contents; in that way one could see all combat scores of all present Characters at the same time as looking at the room. We leave this as an exercise.</p>
+</blockquote>
+<h2 id="npc-system">NPC system<a class="headerlink" href="#npc-system" title="Permanent link">&para;</a></h2>
+<p>Here we will re-use the Character class by introducing a command that can create NPC objects. We should also be able to set its Power and order it around.  </p>
+<p>There are a few ways to define the NPC class. We could in theory create a custom typeclass for it and put a custom NPC-specific cmdset on all NPCs. This cmdset could hold all manipulation commands. Since we expect NPC manipulation to be a common occurrence among the user base however, we will instead put all relevant NPC commands in the default command set and limit eventual access with <a href="Locks#Permissions">Permissions and Locks</a>.</p>
+<h3 id="creating-an-npc-with-createnpc">Creating an NPC with +createNPC<a class="headerlink" href="#creating-an-npc-with-createnpc" title="Permanent link">&para;</a></h3>
+<p>We need a command for creating the NPC, this is a very straightforward command: </p>
+<pre><code>&gt; +createnpc Anna
+You created the NPC 'Anna'.
+</code></pre>
+<p>At the end of <code>command.py</code>, create our new command:</p>
+<pre><code class="python">from evennia import create_object
+
+class CmdCreateNPC(Command):
+    &quot;&quot;&quot;
+    create a new npc
+
+    Usage:
+        +createNPC &lt;name&gt;
+
+    Creates a new, named NPC. The NPC will start with a Power of 1.
+    &quot;&quot;&quot; 
+    key = &quot;+createnpc&quot;
+    aliases = [&quot;+createNPC&quot;]
+    locks = &quot;call:not perm(nonpcs)&quot;
+    help_category = &quot;mush&quot; 
+
+    def func(self):
+        &quot;creates the object and names it&quot;
+        caller = self.caller
+        if not self.args:
+            caller.msg(&quot;Usage: +createNPC &lt;name&gt;&quot;)
+            return
+        if not caller.location:
+            # may not create npc when OOC
+            caller.msg(&quot;You must have a location to create an npc.&quot;)
+            return
+        # make name always start with capital letter
+        name = self.args.strip().capitalize()
+        # create npc in caller's location
+        npc = create_object(&quot;characters.Character&quot;, 
+                      key=name, 
+                      location=caller.location,
+                      locks=&quot;edit:id(%i) and perm(Builders);call:false()&quot; % caller.id)
+        # announce 
+        message = &quot;%s created the NPC '%s'.&quot;
+        caller.msg(message % (&quot;You&quot;, name)) 
+        caller.location.msg_contents(message % (caller.key, name), 
+                                                exclude=caller)        
+</code></pre>
+
+<p>Here we define a <code>+createnpc</code> (<code>+createNPC</code> works too) that is callable by everyone <em>not</em> having the <code>nonpcs</code> "<a href="Locks#Permissions">permission</a>" (in Evennia, a "permission" can just as well be used to block access, it depends on the lock we define). We create the NPC object in the caller's current location, using our custom <code>Character</code> typeclass to do so. </p>
+<p>We set an extra lock condition on the NPC, which we will use to check who may edit the NPC later -- we allow the creator to do so, and anyone with the Builders permission (or higher). See <a href="Locks.html">Locks</a> for more information about the lock system.</p>
+<p>Note that we just give the object default permissions (by not specifying the <code>permissions</code> keyword to the <code>create_object()</code> call).  In some games one might want to give the NPC the same permissions as the Character creating them, this might be a security risk though.</p>
+<p>Add this command to your default cmdset the same way you did the <code>+attack</code> command earlier. <code>@reload</code> and it will be available to test. </p>
+<h3 id="editing-the-npc-with-editnpc">Editing the NPC with +editNPC<a class="headerlink" href="#editing-the-npc-with-editnpc" title="Permanent link">&para;</a></h3>
+<p>Since we re-used our custom character typeclass, our new NPC already has a <em>Power</em> value - it defaults to 1. How do we change this? </p>
+<p>There are a few ways we can do this. The easiest is to remember that the <code>power</code> attribute is just a simple <a href="Attributes.html">Attribute</a> stored on the NPC object. So as a Builder or Admin we could set this right away with the default <code>@set</code> command: </p>
+<pre><code> @set mynpc/power = 6
+</code></pre>
+<p>The <code>@set</code> command is too generally powerful though, and thus only available to staff. We will add a custom command that only changes the things we want players to be allowed to change. We could in principle re-work our old <code>+setpower</code> command, but let's try something more useful. Let's make a <code>+editNPC</code> command. </p>
+<pre><code>&gt; +editNPC Anna/power = 10
+Set Anna's property 'power' to 10.
+</code></pre>
+<p>This is a slightly more complex command. It goes at the end of your <code>command.py</code> file as before. </p>
+<pre><code class="python">class CmdEditNPC(Command):
+    &quot;&quot;&quot;
+    edit an existing NPC
+
+    Usage: 
+      +editnpc &lt;name&gt;[/&lt;attribute&gt; [= value]]
+
+    Examples:
+      +editnpc mynpc/power = 5
+      +editnpc mynpc/power    - displays power value
+      +editnpc mynpc          - shows all editable 
+                                attributes and values
+
+    This command edits an existing NPC. You must have 
+    permission to edit the NPC to use this.
+    &quot;&quot;&quot;
+    key = &quot;+editnpc&quot;
+    aliases = [&quot;+editNPC&quot;]
+    locks = &quot;cmd:not perm(nonpcs)&quot;
+    help_category = &quot;mush&quot; 
+
+    def parse(self):
+        &quot;We need to do some parsing here&quot;
+        args = self.args
+        propname, propval = None, None
+        if &quot;=&quot; in args: 
+            args, propval = [part.strip() for part in args.rsplit(&quot;=&quot;, 1)] 
+        if &quot;/&quot; in args:
+            args, propname = [part.strip() for part in args.rsplit(&quot;/&quot;, 1)]
+        # store, so we can access it below in func()
+        self.name = args
+        self.propname = propname
+        # a propval without a propname is meaningless
+        self.propval = propval if propname else None
+
+    def func(self):
+        &quot;do the editing&quot;
+
+        allowed_propnames = (&quot;power&quot;, &quot;attribute1&quot;, &quot;attribute2&quot;)
+
+        caller = self.caller
+        if not self.args or not self.name:
+            caller.msg(&quot;Usage: +editnpc name[/propname][=propval]&quot;) 
+            return
+        npc = caller.search(self.name)
+        if not npc:
+            return
+        if not npc.access(caller, &quot;edit&quot;):
+            caller.msg(&quot;You cannot change this NPC.&quot;)
+            return 
+        if not self.propname:
+            # this means we just list the values
+            output = &quot;Properties of %s:&quot; % npc.key
+            for propname in allowed_propnames: 
+                propvalue = npc.attributes.get(propname, default=&quot;N/A&quot;)
+                output += &quot;\n %s = %s&quot; % (propname, propvalue)
+            caller.msg(output)
+        elif self.propname not in allowed_propnames: 
+            caller.msg(&quot;You may only change %s.&quot; % 
+                              &quot;, &quot;.join(allowed_propnames))
+        elif self.propval:
+            # assigning a new propvalue
+            # in this example, the properties are all integers...
+            intpropval = int(self.propval)  
+            npc.attributes.add(self.propname, intpropval) 
+            caller.msg(&quot;Set %s's property '%s' to %s&quot; %
+                         (npc.key, self.propname, self.propval))
+        else:
+            # propname set, but not propval - show current value
+            caller.msg(&quot;%s has property %s = %s&quot; % 
+                         (npc.key, self.propname, 
+                          npc.attributes.get(self.propname, default=&quot;N/A&quot;)))
+</code></pre>
+
+<p>This command example shows off the use of more advanced parsing but otherwise it's mostly error checking. It searches for the given npc in the same room, and checks so the caller actually has permission to "edit" it before continuing. An account without the proper permission won't even be able to view the properties on the given NPC. It's up to each game if this is the way it should be.</p>
+<p>Add this to the default command set like before and you should be able to try it out. </p>
+<p><em>Note: If you wanted a player to use this command to change an on-object property like the NPC's name (the <code>key</code> property), you'd need to modify the command since "key" is not an Attribute (it is not retrievable via <code>npc.attributes.get</code> but directly via <code>npc.key</code>). We leave this as an optional exercise.</em></p>
+<h3 id="making-the-npc-do-stuff-the-npc-command">Making the NPC do stuff - the +npc command<a class="headerlink" href="#making-the-npc-do-stuff-the-npc-command" title="Permanent link">&para;</a></h3>
+<p>Finally, we will make a command to order our NPC around. For now, we will limit this command to only be usable by those having the "edit" permission on the NPC. This can be changed if it's possible for anyone to use the NPC. </p>
+<p>The NPC, since it inherited our Character typeclass has access to most commands a player does. What it doesn't have access to are Session and Player-based cmdsets (which means, among other things that they cannot chat on channels, but they could do that if you just added those commands). This makes the <code>+npc</code> command simple:</p>
+<pre><code>+npc Anna = say Hello!
+Anna says, 'Hello!'
+</code></pre>
+<p>Again, add to the end of your <code>command.py</code> module:</p>
+<pre><code class="python">class CmdNPC(Command):
+    &quot;&quot;&quot;
+    controls an NPC
+
+    Usage: 
+        +npc &lt;name&gt; = &lt;command&gt;
+
+    This causes the npc to perform a command as itself. It will do so
+    with its own permissions and accesses. 
+    &quot;&quot;&quot;
+    key = &quot;+npc&quot;
+    locks = &quot;call:not perm(nonpcs)&quot;
+    help_category = &quot;mush&quot;
+
+    def parse(self):
+        &quot;Simple split of the = sign&quot;
+        name, cmdname = None, None
+        if &quot;=&quot; in self.args:
+            name, cmdname = [part.strip() 
+                             for part in self.args.rsplit(&quot;=&quot;, 1)]
+        self.name, self.cmdname = name, cmdname
+
+    def func(self):
+        &quot;Run the command&quot;
+        caller = self.caller
+        if not self.cmdname:
+            caller.msg(&quot;Usage: +npc &lt;name&gt; = &lt;command&gt;&quot;)
+            return
+        npc = caller.search(self.name)   
+        if not npc:
+            return
+        if not npc.access(caller, &quot;edit&quot;):
+            caller.msg(&quot;You may not order this NPC to do anything.&quot;)
+            return
+        # send the command order
+        npc.execute_cmd(self.cmdname)
+        caller.msg(&quot;You told %s to do '%s'.&quot; % (npc.key, self.cmdname))
+</code></pre>
+
+<p>Note that if you give an erroneous command, you will not see any error message, since that error will be returned to the npc object, not to you. If you want players to see this, you can give the caller's session ID to the <code>execute_cmd</code> call, like this:</p>
+<pre><code class="python">npc.execute_cmd(self.cmdname, sessid=self.caller.sessid)
+</code></pre>
+
+<p>Another thing to remember is however that this is a very simplistic way to control NPCs. Evennia supports full puppeting very easily. An Account (assuming the "puppet" permission was set correctly) could simply do <code>@ic mynpc</code> and be able to play the game "as" that NPC. This is in fact just what happens when an Account takes control of their normal Character as well. </p>
+<h2 id="concluding-remarks">Concluding remarks<a class="headerlink" href="#concluding-remarks" title="Permanent link">&para;</a></h2>
+<p>This ends the tutorial. It looks like a lot of text but the amount of code you have to write is actually relatively short. At this point you should have a basic skeleton of a game and a feel for what is involved in coding your game. </p>
+<p>From here on you could build a few more ChargenRooms and link that to a bigger grid. The <code>+setpower</code> command can either be built upon or accompanied by many more to get a more elaborate character generation.</p>
+<p>The simple "Power" game mechanic should be easily expandable to something more full-fledged and useful, same is true for the combat score principle. The <code>+attack</code> could be made to target a specific player (or npc) and automatically compare their relevant attributes to determine a result.</p>
+<p>To continue from here, you can take a look at the <a href="Tutorial-World-Introduction">Tutorial World</a>. For more specific ideas, see the <a href="Tutorials.html">other tutorials and hints</a> as well 
+as the <a href="Developer-Central">Developer Central</a>.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

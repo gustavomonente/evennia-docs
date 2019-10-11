@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Tutorials - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li class="active">
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="Developer-Central.html">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="disabled">
+                                <a rel="prev" >
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#building">Building</a></li>
+        <li class="main "><a href="#general-development-tutorials">General Development tutorials</a></li>
+        <li class="main "><a href="#coding-first-step-tutorials">Coding - First Step tutorials</a></li>
+        <li class="main "><a href="#custom-objects-and-typeclasses">Custom objects and typeclasses</a></li>
+        <li class="main "><a href="#game-mechanics-tutorials">Game mechanics tutorials</a></li>
+        <li class="main "><a href="#miscellaneous-system-tutorials">Miscellaneous system tutorials</a></li>
+        <li class="main "><a href="#contrib">Contrib</a></li>
+        <li class="main "><a href="#web-tutorials">Web tutorials</a></li>
+        <li class="main "><a href="#evennia-for-engine-users">Evennia for [Engine]-Users</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Overview-of-all-tutorial-type-documentation."></a></p>
+<p>Before continuing to read these tutorials (and especially before you start to code or build your game in earnest) it's strongly recommended that you read the <a href="Coding-Introduction">Evennia coding introduction</a> as well as the <a href="Game-Planning">Planning your own game</a> pages first. </p>
+<p>Please note that it's not within the scope of our tutorials to teach you basic Python. If you are new to the language, expect to have to look up concepts you are unfamiliar with. Usually a quick internet search will give you all info you need. Furthermore, our tutorials tend to focus on implementation and concepts. As such they give only brief explanations to use Evennia features while providing ample links to the relevant detailed documentation.</p>
+<p>The main information resource for builders is the <a href="Builder-Docs">Builder Documentation</a>. Coders should refer to the <a href="Developer-Central">Developer Central</a> for further information.</p>
+<h3 id="building">Building<a class="headerlink" href="#building" title="Permanent link">&para;</a></h3>
+<p><em>Help with populating your game world.</em></p>
+<ul>
+<li><a href="Building-Quickstart">Tutorial: Building Quick-start</a> - helps you build your first rocks and crates using Evennia's defaults.</li>
+<li><a href="Understanding-Color-Tags">Tutorial: Understanding Color Tags</a>- explains how you color your game's text.</li>
+<li><a href="Tutorial-World-Introduction">Introduction: The Tutorial World</a> - this introduces the full (if small) solo-adventure game that comes with the Evennia distribution. It is useful both as an example of building and of coding. </li>
+<li><a href="Building-a-mech-tutorial">Tutorial: Building a Giant Mech</a> - this starts as a building tutorial and transitions into writing code. </li>
+</ul>
+<h3 id="general-development-tutorials">General Development tutorials<a class="headerlink" href="#general-development-tutorials" title="Permanent link">&para;</a></h3>
+<p><em>General code practices for newbie game developers.</em></p>
+<p>To use Evennia, you will need basic understanding of Python <a href="http://docs.python.org/3.7/tutorial/modules.html">modules</a>, <a href="http://www.tutorialspoint.com/python/python_variable_types.htm">variables</a>, <a href="http://docs.python.org/tutorial/controlflow.html#if-statements">conditional statements</a>, <a href="http://docs.python.org/tutorial/controlflow.html#for-statements">loops</a>, <a href="http://docs.python.org/tutorial/controlflow.html#defining-functions">functions</a>, <a href="http://docs.python.org/tutorial/datastructures.html">lists, dictionaries, list comprehensions</a> and <a href="http://docs.python.org/tutorial/introduction.html#strings">string formatting</a>. You should also have a basic understanding of <a href="http://www.tutorialspoint.com/python/python_classes_objects.htm">object-oriented programming</a> and what Python <a href="http://docs.python.org/tutorial/classes.html">Classes</a> are.</p>
+<ul>
+<li><a href="https://wiki.python.org/moin/BeginnersGuide/NonProgrammers">Python tutorials for beginners</a> - external link with tutorials for those not familiar with coding in general or Python in particular.</li>
+<li><a href="Version-Control">Tutorial: Version Control</a> - use GIT to organize your code both for your own game project and for contributing to Evennia.  </li>
+<li>MIT offers free courses in many subjects.  Their <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00sc-introduction-to-computer-science-and-programming-spring-2011/">Introduction to Computer Science and Programming</a> uses Python as its language of choice.  Longer path, but more in-depth.  Definitely worth a look.</li>
+</ul>
+<h3 id="coding-first-step-tutorials">Coding - First Step tutorials<a class="headerlink" href="#coding-first-step-tutorials" title="Permanent link">&para;</a></h3>
+<p><em>Starting tutorials for you who are new to developing with Evennia.</em></p>
+<ul>
+<li><a href="https://github.com/evennia/evennia/wiki/Python-basic-introduction">Python basic introduction</a> (part 1) - Python intro using Evennia.</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Python-basic-tutorial-part-two">Python basic introduction</a> (part 2) - More on objects, classes and finding where things are. </li>
+<li><a href="https://github.com/evennia/evennia/wiki/First%20Steps%20Coding">Tutorial: First Steps Coding</a> - learn each basic feature on their own through step-by-step instruction. </li>
+<li><a href="Tutorial-for-basic-MUSH-like-game">Tutorial: A small first game</a> - learn basic features as part of building a small but working game from scratch.</li>
+<li><a href="Adding-Command-Tutorial">Tutorial: Adding new commands</a> - focuses specifically on how to add new commands.</li>
+<li><a href="Parsing-command-arguments,-theory-and-best-practices">Tutorial: Parsing command argument</a>.</li>
+<li><a href="Adding-Object-Typeclass-Tutorial">Tutorial: Adding new objects</a> - focuses specifically on how to add new objects.</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Tutorial:-Searching-For-Objects">Tutorial: Searching objects in the database</a> - how to find existing objects so you can operate on them.</li>
+</ul>
+<h3 id="custom-objects-and-typeclasses">Custom objects and typeclasses<a class="headerlink" href="#custom-objects-and-typeclasses" title="Permanent link">&para;</a></h3>
+<p><em>Examples of designing new objects for your game world</em></p>
+<ul>
+<li><a href="Weather-Tutorial">Tutorial: Rooms with Weather</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Tutorial:--Aggressive-NPCs">Tutorial: Aggressive NPC's</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Tutorial:--NPC's-listening">Tutorial: Listening NPC's</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Tutorial:--Vehicles">Tutorial: Creating a vehicle</a></li>
+<li><a href="NPC-shop-Tutorial">Tutorial: Making an NPC shop</a> (also advanced <a href="EvMenu.html">EvMenu</a> usage)</li>
+<li><a href="Static-In-Game-Map">Tutorial: Implementing a Static In Game Map</a> (also <a href="Batch-code-processor">Batch Code</a> usage)</li>
+<li><a href="Dynamic-In-Game-Map">Tutorial: Implementing a Dynamic In Game Map</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Unit-Testing#testing-for-game-development-mini-tutorial">Tutorial: Writing your own unit tests</a></li>
+</ul>
+<h3 id="game-mechanics-tutorials">Game mechanics tutorials<a class="headerlink" href="#game-mechanics-tutorials" title="Permanent link">&para;</a></h3>
+<p><em>Creating the underlying game mechanics of game play.</em></p>
+<ul>
+<li><a href="Implementing-a-game-rule-system">Hints: Implementing a game rule system</a></li>
+<li><a href="Turn-based-Combat-System">Tutorial: Implementing a Combat system</a></li>
+<li><a href="Evennia-for-roleplaying-sessions">Tutorial: Evennia for running tabletop rpgs</a></li>
+</ul>
+<h3 id="miscellaneous-system-tutorials">Miscellaneous system tutorials<a class="headerlink" href="#miscellaneous-system-tutorials" title="Permanent link">&para;</a></h3>
+<p><em>Design various game systems and achieve particular effects.</em></p>
+<ul>
+<li><a href="Coding-FAQ">FAQ</a>: A place for users to enter their own hints on achieving various goals in Evennia.</li>
+<li><a href="Command-Prompt">Tutorial: Adding a Command prompt</a></li>
+<li><a href="Zones">Tutorial: Creating a Zoning system</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Manually-Configuring-Color">Tutorial: Letting players manually configure color settings</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/EvMenu#ask-for-simple-input">Hints: Asking the user a question and dealing with the result</a></li>
+<li><a href="Command-Duration">Hints: Designing commands that take time to finish</a></li>
+<li><a href="Command-Cooldown">Hints: Adding cooldowns to commands</a></li>
+<li><a href="Mass-and-weight-for-objects">Tutorial: Mass and weight for objects</a></li>
+<li><a href="Default-Exit-Errors">Hints: Show a different message when trying a non-existent exit</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Tutorial:-Tweeting-Game-Stats">Tutorial: Make automatic tweets of game statistics</a></li>
+<li><a href="Gametime-Tutorial">Tutorial: Handling virtual time in your game</a></li>
+<li><a href="Coordinates">Tutorial: Setting up a coordinate system for rooms</a></li>
+<li><a href="Customize-channels">Tutorial: customize the way channels and channel commands work in your game</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Unit-Testing#testing-for-game-development-mini-tutorial">Tutorial: Adding unit tests to your game project</a></li>
+</ul>
+<h3 id="contrib">Contrib<a class="headerlink" href="#contrib" title="Permanent link">&para;</a></h3>
+<p><em>This section contains tutorials linked with contribs.  These contribs can be used in your game, but you'll need to install them explicitly.  They add common features that can earn you time in implementation.</em></p>
+<ul>
+<li>
+<p><a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/README.md">list of contribs</a></p>
+</li>
+<li>
+<p><a href="Dialogues-in-events">In-game Python: dialogues with characters</a>.</p>
+</li>
+<li><a href="A-voice-operated-elevator-using-events">In-game Python: a voice-operated elevator</a>.</li>
+</ul>
+<h3 id="web-tutorials">Web tutorials<a class="headerlink" href="#web-tutorials" title="Permanent link">&para;</a></h3>
+<p><em>Expanding Evennia's web presence.</em></p>
+<ul>
+<li><a href="Add-a-simple-new-web-page">Tutorial: Add a new web page</a> - simple example to see how Django pages hang together.</li>
+<li><a href="Web-Tutorial">Tutorial: Website customization</a> - learn how to start customizing your game's web presence.</li>
+<li><a href="Bootstrap-&amp;-Evennia">Tutorial: Bootstrap &amp; Evennia</a> - Learn more about Bootstrap, the current CSS framework Evennia is using </li>
+<li><a href="Web-Character-View-Tutorial">Tutorial: Build a web page displaying a game character</a> - make a way to view your character on the web page.</li>
+<li><a href="Help-System-Tutorial">Tutorial: access your help system from your website</a></li>
+<li><a href="Add-a-wiki-on-your-website">Tutorial: add a wiki on your website</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Web-Character-Generation/">Tutorial: Web Character Generation</a> - make a web-based character application form.</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Bootstrap-Components-and-Utilities">Tutorial: Bootstrap Components and Utilities</a> - Describes some common Bootstrap Components and Utilities that might help in designing for Evennia</li>
+</ul>
+<h3 id="evennia-for-engine-users">Evennia for [Engine]-Users<a class="headerlink" href="#evennia-for-engine-users" title="Permanent link">&para;</a></h3>
+<p><em>Hints for new users more familiar with other game engines.</em></p>
+<ul>
+<li><a href="Evennia-for-Diku-Users">Evennia for Diku Users</a> - read up on the differences between Diku style muds and Evennia.</li>
+<li><a href="Evennia-for-MUSH-Users">Evennia for MUSH Users</a> - an introduction to Evennia for those accustomed to MUSH-style servers.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

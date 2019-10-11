@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Messagepath - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#the-ingoing-message-path">The ingoing message path</a></li>
+            <li><a href="#client">Client</a></li>
+            <li><a href="#portal-session">Portal Session</a></li>
+            <li><a href="#portalsessionhandler">PortalSessionHandler</a></li>
+            <li><a href="#serversessionhandler">ServerSessionHandler</a></li>
+            <li><a href="#serversession">ServerSession</a></li>
+            <li><a href="#inputfunc">Inputfunc</a></li>
+        <li class="main "><a href="#the-outgoing-message-path">The outgoing message path</a></li>
+            <li><a href="#msg">msg</a></li>
+            <li><a href="#session">Session</a></li>
+            <li><a href="#serversessionhandler_1">ServerSessionHandler</a></li>
+            <li><a href="#portalsessionhandler_1">PortalSessionHandler</a></li>
+            <li><a href="#portalsession">PortalSession</a></li>
+            <li><a href="#client_1">Client</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Describes-the-path-messages-take-through-the-server"></a></p>
+<p>The main functionality of Evennia is to communicate with clients connected to it; a player enters commands or their client queries for a gui update (ingoing data). The server responds or sends data on its own as the game changes (outgoing data). It's important to understand how this flow of information works in Evennia.</p>
+<h2 id="the-ingoing-message-path">The ingoing message path<a class="headerlink" href="#the-ingoing-message-path" title="Permanent link">&para;</a></h2>
+<p>We'll start by tracing data from the client to the server. Here it is in short:</p>
+<pre><code>Client -&gt;
+ PortalSession -&gt;
+  PortalSessionhandler -&gt;
+   (AMP) -&gt;
+    ServerSessionHandler -&gt;
+      ServerSession -&gt;
+        Inputfunc
+</code></pre>
+<h3 id="client">Client<a class="headerlink" href="#client" title="Permanent link">&para;</a></h3>
+<p>The client sends data to Evennia in two ways.</p>
+<ul>
+<li>When first connecting, the client can send data to the server about its
+ capabilities. This is things like "I support xterm256 but not unicode" and is
+ mainly used when a Telnet client connects. This is called a "handshake" and
+ will generally set some flags on the <a href="Portal-and-Server">Portal Session</a> that
+ are later synced to the Server Session. Since this is not something the player
+ controls, we'll not explore this further here.</li>
+<li>The client can send an <em>inputcommand</em> to the server. Traditionally this only
+ happens when the player enters text on the command line. But with a custom
+ client GUI, a command could also come from the pressing of a button. Finally
+ the client may send commands based on a timer or some trigger.</li>
+</ul>
+<p>Exactly how the inputcommand looks when it travels from the client to Evennia
+depends on the <a href="Client-APIs">Protocol</a> used:
+ - Telnet: A string. If GMCP or MSDP OOB protocols are used, this string will
+ be formatted in a special way, but it's still a raw string. If Telnet SSL is
+ active, the string will be encrypted.
+ - SSH: An encrypted string
+ - Webclient: A JSON-serialized string.</p>
+<h3 id="portal-session">Portal Session<a class="headerlink" href="#portal-session" title="Permanent link">&para;</a></h3>
+<p>Each client is connected to the game via a <em>Portal Session</em>, one per connection. This Session is different depending on the type of connection (telnet, webclient etc) and thus know how to handle that particular data type. So regardless of how the data arrives, the Session will identify the type of the instruction and any arguments it should have. For example, the telnet protocol will figure that anything arriving normally over the wire should be passed on as a "text" type.</p>
+<h3 id="portalsessionhandler">PortalSessionHandler<a class="headerlink" href="#portalsessionhandler" title="Permanent link">&para;</a></h3>
+<p>The <em>PortalSessionhandler</em> manages all connected Sessions in the Portal. Its <code>data_in</code> method (called by each Portal Session) will parse the command names and arguments from the protocols and convert them to a standardized form we call the <em>inputcommand</em>:</p>
+<pre><code class="python">    (commandname, (args), {kwargs})
+</code></pre>
+
+<p>All inputcommands must have a name, but they may or may not have arguments and keyword arguments - in fact no default inputcommands use kwargs at all. The most common inputcommand is "text", which has the argument the player input on the command line:</p>
+<pre><code class="python">    (&quot;text&quot;, (&quot;look&quot;,), {})
+</code></pre>
+
+<p>This inputcommand-structure is pickled together with the unique session-id of the Session to which it belongs. This is then sent over the AMP connection.</p>
+<h3 id="serversessionhandler">ServerSessionHandler<a class="headerlink" href="#serversessionhandler" title="Permanent link">&para;</a></h3>
+<p>On the Server side, the AMP unpickles the data and associates the session id with the server-side Sessions.md. Data and Session are passed to the server-side <code>SessionHandler.data_in</code>. This in turn calls <code>ServerSession.data_in()</code></p>
+<h3 id="serversession">ServerSession<a class="headerlink" href="#serversession" title="Permanent link">&para;</a></h3>
+<p>The method <code>ServerSession.data_in</code> is meant to offer a single place to override if they want to examine <em>all</em> data passing into the server from the client. It is meant to call the <code>ssessionhandler.call_inputfuncs</code> with the (potentially processed) data (so this is technically a sort of detour back to the sessionhandler).</p>
+<p>In <code>call_inputfuncs</code>, the inputcommand's name is compared against the names of all the <em>inputfuncs</em> registered with the server. The inputfuncs are named the same as the inputcommand they are supposed to handle, so the (default) inputfunc for handling our "look" command is called "text". These are just normal functions and one can plugin new ones by simply putting them in a module where Evennia looks for such functions.</p>
+<p>If a matching inputfunc is found, it will be called with the Session and the inputcommand's arguments:</p>
+<pre><code class="python">    text(session, *(&quot;look&quot;,), **{})
+</code></pre>
+
+<p>If no matching inputfunc is found, an inputfunc named "default" will be tried and if that is also not found, an error will be raised.</p>
+<h3 id="inputfunc">Inputfunc<a class="headerlink" href="#inputfunc" title="Permanent link">&para;</a></h3>
+<p>The <a href="Inputfuncs.html">Inputfunc</a> must be on the form <code>func(session, *args, **kwargs)</code>. An exception is the <code>default</code> inputfunc which has form <code>default(session, cmdname, *args, **kwargs)</code>, where <code>cmdname</code> is the un-matched inputcommand string.</p>
+<p>This is where the message's path diverges, since just what happens next depends on the type of inputfunc was triggered. In the example of sending "look", the inputfunc is named "text". It will pass the argument to the <code>cmdhandler</code> which will eventually lead to the <code>look</code> command being executed.</p>
+<h2 id="the-outgoing-message-path">The outgoing message path<a class="headerlink" href="#the-outgoing-message-path" title="Permanent link">&para;</a></h2>
+<p>Next let's trace the passage from server to client.</p>
+<pre><code>msg -&gt;
+ ServerSession -&gt;
+  ServerSessionHandler -&gt;
+   (AMP) -&gt;
+    PortalSessionHandler -&gt;
+     PortalSession -&gt;
+      Client
+</code></pre>
+<h3 id="msg">msg<a class="headerlink" href="#msg" title="Permanent link">&para;</a></h3>
+<p>All outgoing messages start in the <code>msg</code> method. This is accessible from three places:</p>
+<ul>
+<li><code>Object.msg</code></li>
+<li><code>Account.msg</code></li>
+<li><code>Session.msg</code></li>
+</ul>
+<p>The call sign of the <code>msg</code> method looks like this:</p>
+<pre><code class="python">    msg(text=None, from_obj=None, session=None, options=None, **kwargs)
+</code></pre>
+
+<p>For our purposes, what is important to know is that with the exception of <code>from_obj</code>, <code>session</code> and <code>options</code>, all keywords given to the <code>msg</code> method is the name of an <em>outputcommand</em> and its arguments. So <code>text</code> is actually such a command, taking a string as its argument. The reason <code>text</code> sits as the first keyword argument is that it's so commonly used (<code>caller.msg("Text")</code> for example). Here are some examples</p>
+<pre><code class="python">    msg(&quot;Hello!&quot;)   # using the 'text' outputfunc
+    msg(prompt=&quot;HP:%i, SP: %i, MP: %i&quot; % (HP, SP, MP))
+    msg(mycommand=((1,2,3,4), {&quot;foo&quot;: &quot;bar&quot;})
+
+</code></pre>
+
+<p>Note the form of the <code>mycommand</code> outputfunction. This explicitly defines the arguments and keyword arguments for the function. In the case of the <code>text</code> and <code>prompt</code> calls we just specify a string - this works too: The system will convert this into a single argument for us later in the message path.</p>
+<blockquote>
+<p>Note: The <code>msg</code> method sits on your Object- and Account typeclasses. It means you can easily override <code>msg</code> and make custom- or per-object modifications to the flow of data as it passes through.</p>
+</blockquote>
+<h3 id="session">Session<a class="headerlink" href="#session" title="Permanent link">&para;</a></h3>
+<p>Nothing is processed on the Session, it just serves as a gathering points for all different <code>msg</code>. It immediately passes the data on to ...</p>
+<h3 id="serversessionhandler_1">ServerSessionHandler<a class="headerlink" href="#serversessionhandler_1" title="Permanent link">&para;</a></h3>
+<p>In the <em>ServerSessionhandler</em>, the keywords from the <code>msg</code> method are collated into one or more <em>outputcommands</em> on a standardized form (identical to inputcommands):</p>
+<pre><code>    (commandname, (args), {kwargs})
+</code></pre>
+
+<p>This will intelligently convert different input to the same form. So <code>msg("Hello")</code> will end up as an outputcommand <code>("text", ("Hello",), {})</code>.</p>
+<p>This is also the point where <a href="https://github.com/evennia/evennia/wiki/TextTags#inline-functions">Inlinefuncs</a> are parsed, depending on the session to receive the data. Said data is pickled together with the Session id then sent over the AMP bridge.</p>
+<h3 id="portalsessionhandler_1">PortalSessionHandler<a class="headerlink" href="#portalsessionhandler_1" title="Permanent link">&para;</a></h3>
+<p>After the AMP connection has unpickled the data and paired the session id to the matching PortalSession, the handler next determines if this Session has a suitable method for handling the outputcommand.</p>
+<p>The situation is analogous to how inputfuncs work, except that protocols are fixed things that don't need a plugin infrastructure like the inputfuncs are handled. So instead of an "outputfunc", the handler looks for methods on the PortalSession with names of the form <code>send_&lt;commandname&gt;</code>.</p>
+<p>For example, the common sending of text expects a PortalSession method <code>send_text</code>. This will be called as <code>send_text(*("Hello",), **{})</code>. If the "prompt" outputfunction was used, send_prompt is called. In all other cases the <code>send_default(cmdname, *args, **kwargs)</code> will be called - this is the case for all client-custom outputcommands, like when wanting to tell the client to update a graphic or play a sound.</p>
+<h3 id="portalsession">PortalSession<a class="headerlink" href="#portalsession" title="Permanent link">&para;</a></h3>
+<p>At this point it is up to the session to convert the command into a form understood by this particular protocol. For telnet, <code>send_text</code> will just send the argument as a string (since that is what telnet clients expect when "text" is coming). If <code>send_default</code> was called (basically everything that is not traditional text or a prompt), it will pack the data as an GMCP or MSDP command packet if the telnet client supports either (otherwise it won't send at all). If sending to the webclient, the data will get packed into a JSON structure at all times.</p>
+<h3 id="client_1">Client<a class="headerlink" href="#client_1" title="Permanent link">&para;</a></h3>
+<p>Once arrived at the client, the outputcommand is handled in the way supported by the client (or it may be quietly ignored if not). "text" commands will be displayed in the main window while others may trigger changes in the GUI or play a sound etc.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

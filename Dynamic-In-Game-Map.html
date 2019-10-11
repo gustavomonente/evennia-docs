@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Dynamic In Game Map - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#introduction">Introduction</a></li>
+        <li class="main "><a href="#the-grid-of-rooms">The Grid of Rooms</a></li>
+        <li class="main "><a href="#concept">Concept</a></li>
+        <li class="main "><a href="#setting-up-the-map-display">Setting up the Map Display</a></li>
+        <li class="main "><a href="#building-the-mapper">Building the Mapper</a></li>
+        <li class="main "><a href="#using-the-map">Using the Map</a></li>
+        <li class="main "><a href="#final-comments">Final Comments</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Tutorial-for-making-a-dynamically-updating-map"></a></p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>An often desired feature in a MUD is to show an in-game map to help navigation. The <a href="Static-In-Game-Map">Static in-game map</a> tutorial solves this by creating a <em>static</em> map, meaning the map is pre-drawn once and for all - the rooms are then created to match that map. When walking around, parts of the static map is then cut out and displayed next to the room description.</p>
+<p>In this tutorial we'll instead do it the other way around; We will dynamically draw the map based on the relationships we find between already existing rooms.</p>
+<h2 id="the-grid-of-rooms">The Grid of Rooms<a class="headerlink" href="#the-grid-of-rooms" title="Permanent link">&para;</a></h2>
+<p>There are at least two requirements needed for this tutorial to work. </p>
+<ol>
+<li>The structure of your mud has to follow a logical layout. Evennia supports the layout of your world to be 'logically' impossible with rooms looping to themselves or exits leading to the other side of the map. Exits can also be named anything, from "jumping out the window" to "into the fifth dimension". This tutorial assumes you can only move in the cardinal directions (N, E, S and W).</li>
+<li>Rooms must be connected and linked together for the map to be generated correctly. Vanilla Evennia comes with a admin command <a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#tunnel-cmdtunnel">@tunnel</a> that allows a user to create rooms in the cardinal directions, but additional work is needed to assure that rooms are connected. For example, if you <code>@tunnel east</code> and then immediately do <code>@tunnel west</code> you'll find that you have created two completely stand-alone rooms. So care is needed if you want to create a "logical" layout. In this tutorial we assume you have such a grid of rooms that we can generate the map from. </li>
+</ol>
+<h2 id="concept">Concept<a class="headerlink" href="#concept" title="Permanent link">&para;</a></h2>
+<p>Before getting into the code, it is beneficial to understand and conceptualize how this is going to work. The idea is analogous to a worm that starts at your current position. It chooses a direction and 'walks' outward from it, mapping its route as it goes. Once it has traveled a pre-set distance it stops and starts over in another direction. An important note is that we want a system which is easily callable and not too complicated. Therefore we will wrap this entire code into a custom Python class (not a typeclass as this doesn't use any core objects from evennia itself).</p>
+<p>We are going to create something that displays like this when you type 'look':</p>
+<pre><code>    Hallway
+
+          [.]   [.]
+          [@][.][.][.][.]
+          [.]   [.]   [.]
+
+    The distant echoes of the forgotten
+    wail throughout the empty halls.
+
+    Exits: North, East, South
+</code></pre>
+
+<p>Your current location is defined by <code>[@]</code> while the <code>[.]</code>s are other rooms that the "worm" has seen since departing from your location.</p>
+<h2 id="setting-up-the-map-display">Setting up the Map Display<a class="headerlink" href="#setting-up-the-map-display" title="Permanent link">&para;</a></h2>
+<p>First we must define the components for displaying the map. For the "worm" to know what symbol to draw on the map we will have it check an Attribute on the room it visits called <code>sector_type</code>. For this tutorial we understand two symbols - a normal room and the room with us in it. We also define a fallback symbol for rooms without said Attribute - that way the map will still work even if we didn't prepare the room correctly. Assuming your game folder is named <code>mygame</code>, we create this code in <code>mygame/world/map.py.</code> </p>
+<pre><code class="python"># in mygame/world/map.py
+
+# the symbol is identified with a key &quot;sector_type&quot; on the 
+# Room. Keys None and &quot;you&quot; must always exist. 
+SYMBOLS = { None : ' . ', # for rooms without sector_type Attribute 
+            'you' : '[@]',
+            'SECT_INSIDE': '[.]' }
+</code></pre>
+
+<p>Since trying to access an unset Attribute returns <code>None</code>, this means rooms without the <code>sector_type</code> Atttribute will show as <code>.</code>. Next we start building the custom class <code>Map</code>. It will hold all methods we need.</p>
+<pre><code class="python"># in mygame/world/map.py
+
+class Map(object):
+
+    def __init__(self, caller, max_width=9, max_length=9):
+        self.caller = caller
+        self.max_width = max_width
+        self.max_length = max_length
+        self.worm_has_mapped = {}
+        self.curX = None
+        self.curY = None
+</code></pre>
+
+<ul>
+<li><code>self.caller</code> is normally your Character object, the one using the map.</li>
+<li><code>self.max_width/length</code> determine the max width and length of the map that will be generated. Note that it's important that these variables are set to <em>odd</em> numbers to make sure the display area has a center point. </li>
+<li><code>self.worm_has_mapped</code> is building off the worm analogy above. This dictionary will store all rooms the "worm" has mapped as well as its relative position within the grid. This is the most important variable as it acts as a 'checker' and 'address book' that is able to tell us where the worm has been and what it has mapped so far.</li>
+<li><code>self.curX/Y</code> are coordinates representing the worm's current location on the grid.</li>
+</ul>
+<p>Before any sort of mapping can actually be done we need to create an empty display area and do some sanity checks on it by using the following methods.</p>
+<pre><code class="python"># in mygame/world/map.py
+
+class Map(object):
+    # [... continued]
+
+    def create_grid(self):
+        # This method simply creates an empty grid/display area
+        # with the specified variables from __init__(self):
+        board = []
+        for row in range(self.max_width):
+            board.append([])
+            for column in range(self.max_length):
+                board[row].append('   ')
+        return board
+
+    def check_grid(self):
+        # this method simply checks the grid to make sure 
+        # that both max_l and max_w are odd numbers.
+        return True if self.max_length % 2 != 0 or self.max_width % 2 != 0\
+            else False
+</code></pre>
+
+<p>Before we can set our worm on its way, we need to know some of the computer science behind all this called 'Graph Traversing'. In Pseudo code what we are trying to accomplish is this:</p>
+<pre><code class="python"># pseudo code
+
+def draw_room_on_map(room, max_distance):
+    self.draw(room)
+
+    if max_distance == 0:
+        return
+
+    for exit in room.exits:
+        if self.has_drawn(exit.destination):             
+            # skip drawing if we already visited the destination
+            continue
+        else:
+            # first time here!
+            self.draw_room_on_map(exit.destination, max_distance - 1)
+</code></pre>
+
+<p>The beauty of Python is that our actual code of doing this doesn't differ much if at all from this Pseudo code example.</p>
+<ul>
+<li><code>max_distance</code> is a variable indicating to our Worm how many rooms AWAY from your current location will it map. Obviously the larger the number the more time it will take if your current location has many many rooms around you.</li>
+</ul>
+<p>The first hurdle here is what value to use for 'max_distance'. There is no reason for the worm to travel further than what is actually displayed to you. For example, if your current location is placed in the center of a display area of size <code>max_length = max_width = 9</code>, then the worm need only go <code>4</code> spaces in either direction:  </p>
+<pre><code>[.][.][.][.][@][.][.][.][.]
+ 4  3  2  1  0  1  2  3  4   
+</code></pre>
+
+<p>The max_distance can be set dynamically based on the size of the display area. As your width/length changes it becomes a simple algebraic linear relationship which is simply <code>max_distance = (min(max_width, max_length) -1) / 2</code>. </p>
+<h2 id="building-the-mapper">Building the Mapper<a class="headerlink" href="#building-the-mapper" title="Permanent link">&para;</a></h2>
+<p>Now we can start to fill our Map object with some methods. We are still missing a few methods that are very important:</p>
+<ul>
+<li><code>self.draw(self, room)</code> - responsible for actually drawing room to grid.</li>
+<li><code>self.has_drawn(self, room)</code> - checks to see if the room has been mapped and worm has already been here.</li>
+<li><code>self.median(self, number)</code> - a simple utility method that finds the median (middle point) from 0, n</li>
+<li><code>self.update_pos(self, room, exit_name)</code> - updates the worm's physical position by reassigning self.curX/Y. .accordingly</li>
+<li><code>self.start_loc_on_grid(self)</code> - the very first initial draw on the grid representing your location in the middle of the grid</li>
+<li>'self.show_map<code>- after everything is done convert the map into a readable string</code></li>
+<li><code>self.draw_room_on_map(self, room, max_distance)</code> - the main method that ties it all together.`</li>
+</ul>
+<p>Now that we know which methods we need, let's refine our initial <code>__init__(self)</code> to pass some conditional statements and set it up to start building the display. </p>
+<pre><code class="python">#mygame/world/map.py
+
+class Map(object):
+
+    def __init__(self, caller, max_width=9, max_length=9):
+        self.caller = caller
+        self.max_width = max_width
+        self.max_length = max_length
+        self.worm_has_mapped = {}
+        self.curX = None
+        self.curY = None
+
+        if self.check_grid():
+            # we have to store the grid into a variable
+            self.grid = self.create_grid()
+            # we use the algebraic relationship
+            self.draw_room_on_map(caller.location, 
+                                  ((min(max_width, max_length) -1 ) / 2)
+
+</code></pre>
+
+<p>Here we check to see if the parameters for the grid are okay, then we create an empty canvas and map our initial location as the first room!</p>
+<p>As mentioned above, the code for the <code>self.draw_room_on_map()</code> is not much different than the Pseudo code. The method is shown below:</p>
+<pre><code class="python"># in mygame/world/map.py, in the Map class
+
+def draw_room_on_map(self, room, max_distance):
+    self.draw(room)
+
+    if max_distance == 0:
+        return
+
+    for exit in room.exits:
+        if exit.name not in (&quot;north&quot;, &quot;east&quot;, &quot;west&quot;, &quot;south&quot;):
+            # we only map in the cardinal directions. Mapping up/down would be
+            # an interesting learning project for someone who wanted to try it.
+            continue
+        if self.has_drawn(exit.destination): 
+            # we've been to the destination already, skip ahead.
+            continue
+
+        self.update_pos(room, exit.name.lower())
+        self.draw_room_on_map(exit.destination, max_distance - 1)
+</code></pre>
+
+<p>The first thing the "worm" does is to draw your current location in <code>self.draw</code>. Lets define that...</p>
+<pre><code class="python">#in mygame/word/map.py, in the Map class 
+
+def draw(self, room):
+    # draw initial ch location on map first!
+    if room == self.caller.location:
+        self.start_loc_on_grid()
+        self.worm_has_mapped[room] = [self.curX, self.curY]
+    else:
+        # map all other rooms
+        self.worm_has_mapped[room] = [self.curX, self.curY]
+        # this will use the sector_type Attribute or None if not set.
+        self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
+</code></pre>
+
+<p>In <code>self.start_loc_on_grid()</code>:</p>
+<pre><code class="python">def median(self, num):
+    lst = sorted(range(0, num))
+    n = len(lst)
+    m = n -1
+    return (lst[n//2] + lst[m//2]) / 2.0
+
+def start_loc_on_grid(self):
+    x = self.median(self.max_width)
+    y = self.median(self.max_length)
+    # x and y are floats by default, can't index lists with float types
+    x, y = int(x), int(y) 
+
+    self.grid[x][y] = SYMBOLS['you']
+    self.curX, self.curY = x, y # updating worms current location
+</code></pre>
+
+<p>After the system has drawn the current map it checks to see if the <code>max_distance</code> is <code>0</code> (since this is the inital start phase it is not). Now we handle the iteration once we have each individual exit in the room. The first thing it does is check if the room the Worm is in has been mapped already.. lets define that...</p>
+<pre><code class="python">def has_drawn(self, room):
+    return True if room in self.worm_has_mapped.keys() else False
+</code></pre>
+
+<p>If <code>has_drawn</code> returns <code>False</code> that means the worm has found a room that hasn't been mapped yet. It will then 'move' there. The self.curX/Y sort of lags behind, so we have to make sure to track the position of the worm; we do this in <code>self.update_pos()</code> below. </p>
+<pre><code class="python">def update_pos(self, room, exit_name):
+    # this ensures the coordinates stays up to date 
+    # to where the worm is currently at.
+    self.curX, self.curY = \
+      self.worm_has_mapped[room][0], self.worm_has_mapped[room][1]
+
+    # now we have to actually move the pointer 
+    # variables depending on which 'exit' it found
+    if exit_name == 'east':
+        self.curY += 1
+    elif exit_name == 'west':
+        self.curY -= 1
+    elif exit_name == 'north':
+        self.curX -= 1
+    elif exit_name == 'south':
+        self.curX += 1
+</code></pre>
+
+<p>Once the system updates the position of the worm it feeds the new room back into the original <code>draw_room_on_map()</code> and starts the process all over again..</p>
+<p>That is essentially the entire thing. The final method is to bring it all together and make a nice presentational string out of it using the <code>self.show_map()</code> method.</p>
+<pre><code class="python">def show_map(self):
+    map_string = &quot;&quot;
+    for row in self.grid:
+        map_string += &quot; &quot;.join(row)
+        map_string += &quot;\n&quot;
+
+    return map_string
+</code></pre>
+
+<h2 id="using-the-map">Using the Map<a class="headerlink" href="#using-the-map" title="Permanent link">&para;</a></h2>
+<p>In order for the map to get triggered we store it on the Room typeclass. If we put it in <code>return_appearance</code> we will get the map back every time we look at the room. </p>
+<blockquote>
+<p><code>return_appearance</code> is a default Evennia hook available on all objects; it is called e.g. by the <code>look</code> command to get the description of something (the room in this case). </p>
+</blockquote>
+<pre><code class="python"># in mygame/typeclasses/rooms.py
+
+from evennia import DefaultRoom
+from world.map import Map
+
+class Room(DefaultRoom):
+
+    def return_appearance(self, looker):
+        # [...]
+        string = &quot;%s\n&quot; % Map(looker).show_map()
+        # Add all the normal stuff like room description, 
+        # contents, exits etc. 
+        string += &quot;\n&quot; + super().return_appearance(looker)
+        return string 
+</code></pre>
+
+<p>Obviously this method of generating maps doesn't take into account of any doors or exits that are hidden.. etc.. but hopefully it serves as a good base to start with. Like previously mentioned, it is very important to have a solid foundation on rooms before implementing this. You can try this on vanilla evennia by using @tunnel and essentially you can just create a long straight/edgy non-looping rooms that will show on your in-game map. </p>
+<p>The above example will display the map above the room description. You could also use an <a href="https://github.com/evennia/evennia/wiki/evennia.utils.evtable">EvTable</a> to place description and map next to each other. Some other things you can do is to have a <a href="Commands.html">Command</a> that displays with a larger radius, maybe with a legend and other features. </p>
+<p>Below is the whole <code>map.py</code> for your reference. You need to update your <code>Room</code> typeclass (see above) to actually call it. Remember that to see different symbols for a location you also need to set the <code>sector_type</code> Attribute on the room to one of the keys in the <code>SYMBOLS</code> dictionary. So in this example, to make a room be mapped as <code>[.]</code> you would set the room's <code>sector_type</code> to <code>"SECT_INSIDE"</code>. Try it out with <code>@set here/sector_type = "SECT_INSIDE"</code>. If you wanted all new rooms to have a given sector symbol, you could change the default in the <code>SYMBOLS´ dictionary below, or you could add the Attribute in the Room's</code>at_object_creation` method.</p>
+<pre><code class="python">#mygame/world/map.py
+
+# These are keys set with the Attribute sector_type on the room.
+# The keys None and &quot;you&quot; must always exist.
+SYMBOLS = { None : ' . ',  # for rooms without a sector_type attr
+            'you' : '[@]', 
+            'SECT_INSIDE': '[.]' }
+
+class Map(object):
+
+    def __init__(self, caller, max_width=9, max_length=9):
+        self.caller = caller
+        self.max_width = max_width
+        self.max_length = max_length
+        self.worm_has_mapped = {}
+        self.curX = None
+        self.curY = None
+
+        if self.check_grid():
+            # we actually have to store the grid into a variable
+            self.grid = self.create_grid()
+            self.draw_room_on_map(caller.location, 
+                                 ((min(max_width, max_length) -1 ) / 2))
+
+    def update_pos(self, room, exit_name):
+        # this ensures the pointer variables always 
+        # stays up to date to where the worm is currently at.
+        self.curX, self.curY = \
+           self.worm_has_mapped[room][0], self.worm_has_mapped[room][1]
+
+        # now we have to actually move the pointer 
+        # variables depending on which 'exit' it found
+        if exit_name == 'east':
+            self.curY += 1
+        elif exit_name == 'west':
+            self.curY -= 1
+        elif exit_name == 'north':
+            self.curX -= 1
+        elif exit_name == 'south':
+            self.curX += 1
+
+    def draw_room_on_map(self, room, max_distance):
+        self.draw(room)
+
+        if max_distance == 0:
+            return
+
+        for exit in room.exits:
+            if exit.name not in (&quot;north&quot;, &quot;east&quot;, &quot;west&quot;, &quot;south&quot;):
+                # we only map in the cardinal directions. Mapping up/down would be
+                # an interesting learning project for someone who wanted to try it.
+                continue
+            if self.has_drawn(exit.destination): 
+                # we've been to the destination already, skip ahead.
+                continue
+
+            self.update_pos(room, exit.name.lower())
+            self.draw_room_on_map(exit.destination, max_distance - 1)
+
+    def draw(self, room):
+        # draw initial caller location on map first!
+        if room == self.caller.location:
+            self.start_loc_on_grid()
+            self.worm_has_mapped[room] = [self.curX, self.curY]
+        else:
+            # map all other rooms
+            self.worm_has_mapped[room] = [self.curX, self.curY]
+            # this will use the sector_type Attribute or None if not set.
+            self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]      
+
+    def median(self, num):
+        lst = sorted(range(0, num))
+        n = len(lst)
+        m = n -1
+        return (lst[n//2] + lst[m//2]) / 2.0
+
+    def start_loc_on_grid(self):
+        x = self.median(self.max_width)
+        y = self.median(self.max_length)
+        # x and y are floats by default, can't index lists with float types
+        x, y = int(x), int(y) 
+
+        self.grid[x][y] = SYMBOLS['you']
+        self.curX, self.curY = x, y # updating worms current location
+
+
+    def has_drawn(self, room):
+        return True if room in self.worm_has_mapped.keys() else False
+
+
+    def create_grid(self):
+        # This method simply creates an empty grid 
+        # with the specified variables from __init__(self):
+        board = []
+        for row in range(self.max_width):
+            board.append([])
+            for column in range(self.max_length):
+                board[row].append('   ')
+        return board
+
+    def check_grid(self):
+        # this method simply checks the grid to make sure 
+        # both max_l and max_w are odd numbers
+        return True if self.max_length % 2 != 0 or \
+                    self.max_width % 2 != 0 else False
+
+    def show_map(self):
+        map_string = &quot;&quot;
+        for row in self.grid:
+            map_string += &quot; &quot;.join(row)
+            map_string += &quot;\n&quot;
+
+        return map_string
+</code></pre>
+
+<h2 id="final-comments">Final Comments<a class="headerlink" href="#final-comments" title="Permanent link">&para;</a></h2>
+<p>The Dynamic map could be expanded with further capabilities. For example, it could mark exits or allow NE, SE etc directions as well. It could have colors for different terrain types. One could also look into up/down directions and figure out how to display that in a good way. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Command Prompt - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#sending-a-prompt">Sending a prompt</a></li>
+        <li class="main "><a href="#a-prompt-sent-with-every-command">A prompt sent with every command</a></li>
+            <li><a href="#modifying-default-commands">Modifying default commands</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-little-hint-for-how-to-add-a-command-prompt-for-players-to-see."></a></p>
+<p>A <em>prompt</em> is quite common in MUDs. The prompt display useful details about your character that you are likely to want to keep tabs on at all times, such as health, magical power etc. It might also show things like in-game time, weather and so on. Many modern MUD clients (including Evennia's own webclient) allows for identifying the prompt and have it appear in a correct location (usually just above the input line). Usually it will remain like that until it is explicitly updated. </p>
+<h2 id="sending-a-prompt">Sending a prompt<a class="headerlink" href="#sending-a-prompt" title="Permanent link">&para;</a></h2>
+<p>A prompt is sent using the  <code>prompt</code> keyword to the <code>msg()</code> method on objects. The prompt will be sent without any line breaks. </p>
+<pre><code class="python">    self.msg(prompt=&quot;HP: 5, MP: 2, SP: 8&quot;)
+</code></pre>
+
+<p>You can combine the sending of normal text with the sending (updating of the prompt):</p>
+<pre><code class="python">    self.msg(&quot;This is a text&quot;, prompt=&quot;This is a prompt&quot;)
+</code></pre>
+
+<p>You can update the prompt on demand, this is normally done using <a href="OOB.html">OOB</a>-tracking of the relevant Attributes (like the character's health). You could also make sure that attacking commands update the prompt when they cause a change in health, for example. </p>
+<p>Here is a simple example of the prompt sent/updated from a command class: </p>
+<pre><code class="python">    from evennia import Command
+
+    class CmdDiagnose(Command):
+        &quot;&quot;&quot;
+        see how hurt your are
+
+        Usage: 
+          diagnose [target]
+
+        This will give an estimate of the target's health. Also
+        the target's prompt will be updated. 
+        &quot;&quot;&quot; 
+        key = &quot;diagnose&quot;
+
+        def func(self):
+            if not self.args:
+                target = self.caller
+            else:
+                target = self.search(self.args)
+                if not target:
+                    return
+            # try to get health, mana and stamina
+            hp = target.db.hp
+            mp = target.db.mp
+            sp = target.db.sp
+
+            if None in (hp, mp, sp):
+                # Attributes not defined          
+                self.caller.msg(&quot;Not a valid target!&quot;)
+                return 
+
+            text = &quot;You diagnose %s as having &quot; \
+                   &quot;%i health, %i mana and %i stamina.&quot; \
+                   % (hp, mp, sp)
+            prompt = &quot;%i HP, %i MP, %i SP&quot; % (hp, mp, sp)
+            self.caller.msg(text, prompt=prompt)
+</code></pre>
+
+<h2 id="a-prompt-sent-with-every-command">A prompt sent with every command<a class="headerlink" href="#a-prompt-sent-with-every-command" title="Permanent link">&para;</a></h2>
+<p>The prompt sent as described above uses a standard telnet instruction (the Evennia web client gets a special flag). Most MUD telnet clients will understand and allow users to catch this and keep the prompt in place until it updates. So <em>in principle</em> you'd not need to update the prompt every command. </p>
+<p>However, with a varying user base it can be unclear which clients are used and which skill level the users have. So sending a prompt with every command is a safe catch-all. You don't need to manually go in and edit every command you have though. Instead you edit the base command class for your custom commands (like <code>MuxCommand</code> in your <code>mygame/commands/command.py</code> folder) and overload the <code>at_post_cmd()</code> hook. This hook is always called <em>after</em> the main <code>func()</code> method of the Command.</p>
+<pre><code class="python">from evennia import default_cmds
+
+class MuxCommand(default_cmds.MuxCommand):
+    # ...
+    def at_post_cmd(self):
+        &quot;called after self.func().&quot;
+        caller = self.caller        
+        prompt = &quot;%i HP, %i MP, %i SP&quot; % (caller.db.hp, 
+                                          caller.db.mp, 
+                                          caller.db.sp)
+        caller.msg(prompt=prompt)
+
+</code></pre>
+
+<h3 id="modifying-default-commands">Modifying default commands<a class="headerlink" href="#modifying-default-commands" title="Permanent link">&para;</a></h3>
+<p>If you want to add something small like this to Evennia's default commands without modifying them directly the easiest way is to just wrap those with a multiple inheritance to your own base class: </p>
+<pre><code class="python"># in (for example) mygame/commands/mycommands.py
+
+from evennia import default_cmds
+# our custom MuxCommand with at_post_cmd hook
+from commands.command import MuxCommand
+
+# overloading the look command
+class CmdLook(default_cmds.CmdLook, MuxCommand):
+    pass
+</code></pre>
+
+<p>The result of this is that the hooks from your custom <code>MuxCommand</code> will be mixed into the default <code>CmdLook</code> through multiple inheritance. Next you just add this to your default command set: </p>
+<pre><code class="python"># in mygame/commands/default_cmdsets.py
+
+from evennia import default_cmds
+from commands import mycommands
+
+class CharacterCmdSet(default_cmds.CharacterCmdSet):
+    # ...
+    def at_cmdset_creation(self):
+        # ...
+        self.add(mycommands.CmdLook())
+</code></pre>
+
+<p>This will automatically replace the default <code>look</code> command in your game with your own version. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

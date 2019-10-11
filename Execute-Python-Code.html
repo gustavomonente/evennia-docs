@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Execute Python Code - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#available-variables">Available variables</a></li>
+        <li class="main "><a href="#returning-output">Returning output</a></li>
+        <li class="main "><a href="#finding-objects">Finding objects</a></li>
+        <li class="main "><a href="#testing-code-outside-the-game">Testing code outside the game</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="How-to-run-snippets-of-Python-code-from-inside-the-game,-for-testing-and-experimenting."></a></p>
+<p>The <code>@py</code> command supplied with the default command set of Evennia allows you to execute Python commands directly from inside the game.  An alias to <code>@py</code> is simply "<code>!</code>". <em>Access to the <code>@py</code> command should be severely restricted</em>. This is no joke - being able to execute arbitrary Python code on the server is not something you should entrust to just anybody.</p>
+<pre><code>@py 1+2 
+&lt;&lt;&lt; 3
+</code></pre>
+<h2 id="available-variables">Available variables<a class="headerlink" href="#available-variables" title="Permanent link">&para;</a></h2>
+<p>A few local variables are made available when running <code>@py</code>. These offer entry into the running system.</p>
+<ul>
+<li><strong>self</strong> / <strong>me</strong> - the calling object (i.e. you)</li>
+<li><strong>here</strong> - the current caller's location</li>
+<li><strong>obj</strong> - a dummy <a href="Objects.html">Object</a> instance</li>
+<li><strong>evennia</strong> - Evennia's <a href="evennia-API">flat API</a> - through this you can access all of Evennia.</li>
+</ul>
+<p>For accessing other objects in the same room you need to use <code>self.search(name)</code>. For objects in other locations, use one of the <code>evennia.search_*</code> methods. See <a href="https://github.com/evennia/evennia/wiki/Execute%20Python%20Code#finding-objects">below</a>.</p>
+<h2 id="returning-output">Returning output<a class="headerlink" href="#returning-output" title="Permanent link">&para;</a></h2>
+<p>This is an example where we import and test one of Evennia's utilities found in <code>src/utils/utils.py</code>, but also accessible through <code>ev.utils</code>:</p>
+<pre><code>@py from ev import utils; utils.time_format(33333)
+&lt;&lt;&lt; Done.
+</code></pre>
+<p>Note that we didn't get any return value, all we where told is that the code finished executing without error. This is often the case in more complex pieces of code which has no single obvious return value.  To see the output from the <code>time_format()</code> function we need to tell the system to echo it to us explicitly with <code>self.msg()</code>.</p>
+<pre><code>@py from ev import utils; self.msg(str(utils.time_format(33333)))
+09:15
+&lt;&lt;&lt; Done.
+</code></pre>
+<blockquote>
+<p>Warning: When using the <code>msg</code> function wrap our argument in <code>str()</code> to convert it into a string above. This is not strictly necessary for most types of data (Evennia will usually convert to a string behind the scenes for you). But for <em>lists</em> and <em>tuples</em> you will be confused by the output if you don't wrap them in <code>str()</code>: only the first item of the iterable will be returned. This is because doing <code>msg(text)</code> is actually just a convenience shortcut; the full argument that <code>msg</code> accepts is something called an <em>outputfunc</em> on the form <code>(cmdname, (args), {kwargs})</code> (see <a href="https://github.com/evennia/evennia/wiki/Messagepath">the message path</a> for more info). Sending a list/tuple confuses Evennia to think you are sending such a structure. Converting it to a string however makes it clear it should just be displayed as-is. </p>
+</blockquote>
+<p>If you were to use Python's standard <code>print</code>, you will see the result in your current <code>stdout</code> (your terminal by default, otherwise your log file).</p>
+<h2 id="finding-objects">Finding objects<a class="headerlink" href="#finding-objects" title="Permanent link">&para;</a></h2>
+<p>A common use for <code>@py</code> is to explore objects in the database, for debugging and performing specific operations that are not covered by a particular command. </p>
+<p>Locating an object is best done using <code>self.search()</code>:</p>
+<pre><code>@py self.search("red_ball")
+&lt;&lt;&lt; Ball
+
+@py self.search("red_ball").db.color = "red"
+&lt;&lt;&lt; Done.
+
+@py self.search("red_ball").db.color
+&lt;&lt;&lt; red
+</code></pre>
+<p><code>self.search()</code> is by far the most used case, but you can also search other database tables for other Evennia entities like scripts or configuration entities. To do this you can use the generic search entries found in <code>ev.search_*</code>.</p>
+<pre><code>@py evennia.search_script("sys_game_time")
+&lt;&lt;&lt; [&lt;src.utils.gametime.GameTime object at 0x852be2c&gt;]
+</code></pre>
+<p>(Note that since this becomes a simple statement, we don't have to wrap it in <code>self.msg()</code> to get the output). You can also use the database model managers directly (accessible through the <code>objects</code> properties of database models or as <code>evennia.managers.*</code>). This is a bit more flexible since it gives you access to the full range of database search methods defined in each manager.</p>
+<pre><code>@py evennia.managers.scripts.script_search("sys_game_time")
+&lt;&lt;&lt; [&lt;src.utils.gametime.GameTime object at 0x852be2c&gt;]
+</code></pre>
+<p>The managers are useful for all sorts of database studies.</p>
+<pre><code>@py ev.managers.configvalues.all()
+&lt;&lt;&lt; [&lt;ConfigValue: default_home]&gt;, &lt;ConfigValue:site_name&gt;, ...]
+</code></pre>
+<h2 id="testing-code-outside-the-game">Testing code outside the game<a class="headerlink" href="#testing-code-outside-the-game" title="Permanent link">&para;</a></h2>
+<p><code>@py</code> has the advantage of operating inside a running server (sharing the same process), where you can test things in real time. Much of this <em>can</em> be done from the outside too though. </p>
+<p>In a terminal, cd to the top of your game directory (this bit is important since we need access to your config file) and run</p>
+<pre><code>evennia shell
+</code></pre>
+<p>Your default Python interpreter will start up, configured to be able to work with and import all modules of your Evennia installation. From here you can explore the database and test-run individual modules as desired.</p>
+<p>It's recommended that you get a more fully featured Python interpreter like <a href="http://ipython.scipy.org/moin/">iPython</a>. If you use a virtual environment, you can just get it with <code>pip install ipython</code>. IPython allows you to better work over several lines, and also has a lot of other editing features, such as tab-completion and <code>__doc__</code>-string reading.</p>
+<pre><code>$ evennia shell
+
+IPython 0.10 -- An enhanced Interactive Python
+...
+
+In [1]: import evennia
+In [2]: evennia.managers.objects.all()
+Out[3]: [&lt;ObjectDB: Harry&gt;, &lt;ObjectDB: Limbo&gt;, ...]
+</code></pre>
+<p>See the page about the <a href="Evennia-API">Evennia-API</a> for more things to explore. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

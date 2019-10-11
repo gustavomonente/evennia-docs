@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Bootstrap Components and Utilities - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#general-styling">General Styling</a></li>
+            <li><a href="#color">Color</a></li>
+            <li><a href="#borders">Borders</a></li>
+            <li><a href="#spacing">Spacing</a></li>
+        <li class="main "><a href="#components">Components</a></li>
+            <li><a href="#buttons">Buttons</a></li>
+            <li><a href="#cards">Cards</a></li>
+            <li><a href="#jumbotron">Jumbotron</a></li>
+            <li><a href="#forms">Forms</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>Bootstrap provides many utilities and components you can use when customizing Evennia's web presence. We'll go over a few examples here that you might find useful.</p>
+<blockquote>
+<p>Please take a look at either <a href="https://github.com/evennia/evennia/wiki/Add-a-simple-new-web-page">the basic web tutorial</a> or <a href="https://github.com/evennia/evennia/wiki/Web-Character-View-Tutorial">the web character view tutorial</a>
+to get a feel for how to add pages to Evennia's website to test these examples.</p>
+</blockquote>
+<h2 id="general-styling">General Styling<a class="headerlink" href="#general-styling" title="Permanent link">&para;</a></h2>
+<p>Bootstrap provides base styles for your site. These can be customized through CSS, but the default styles are intended to provide a consistent, clean look for sites.</p>
+<h3 id="color">Color<a class="headerlink" href="#color" title="Permanent link">&para;</a></h3>
+<p>Most elements can be styled with default colors. <a href="https://getbootstrap.com/docs/4.0/utilities/colors/">Take a look at the documentation</a> to learn more about these colors - suffice to say, adding a class of text-<em> or bg-</em>, for instance, text-primary, sets the text color or background color.</p>
+<h3 id="borders">Borders<a class="headerlink" href="#borders" title="Permanent link">&para;</a></h3>
+<p>Simply adding a class of 'border' to an element adds a border to the element. For more in-depth info, please <a href="https://getbootstrap.com/docs/4.0/utilities/borders/">read the documentation on borders.</a>.</p>
+<pre><code>&lt;span class=&quot;border border-dark&quot;&gt;&lt;/span&gt;
+</code></pre>
+
+<p>You can also easily round corners just by adding a class.</p>
+<pre><code>&lt;img src=&quot;...&quot; class=&quot;rounded&quot; /&gt;
+</code></pre>
+
+<h3 id="spacing">Spacing<a class="headerlink" href="#spacing" title="Permanent link">&para;</a></h3>
+<p>Bootstrap provides classes to easily add responsive margin and padding. Most of the time, you might like to add margins or padding through CSS itself - however these classes are used in the default Evennia site. <a href="https://getbootstrap.com/docs/4.0/utilities/spacing/">Take a look at the docs</a> to learn more.</p>
+<hr />
+<h2 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h2>
+<h3 id="buttons">Buttons<a class="headerlink" href="#buttons" title="Permanent link">&para;</a></h3>
+<p><a href="https://getbootstrap.com/docs/4.0/components/buttons/">Buttons</a> in Bootstrap are very easy to use - button styling can be added to <code>&lt;button&gt;</code>, <code>&lt;a&gt;</code>, and <code>&lt;input&gt;</code> elements.</p>
+<pre><code>&lt;a class=&quot;btn btn-primary&quot; href=&quot;#&quot; role=&quot;button&quot;&gt;I'm a Button&lt;/a&gt;
+&lt;button class=&quot;btn btn-primary&quot; type=&quot;submit&quot;&gt;Me too!&lt;/button&gt;
+&lt;input class=&quot;btn btn-primary&quot; type=&quot;button&quot; value=&quot;Button&quot;&gt;
+&lt;input class=&quot;btn btn-primary&quot; type=&quot;submit&quot; value=&quot;Also a Button&quot;&gt;
+&lt;input class=&quot;btn btn-primary&quot; type=&quot;reset&quot; value=&quot;Button as Well&quot;&gt;
+</code></pre>
+
+<h3 id="cards">Cards<a class="headerlink" href="#cards" title="Permanent link">&para;</a></h3>
+<p><a href="https://getbootstrap.com/docs/4.0/components/card/">Cards</a> provide a container for other elements that stands out from the rest of the page. The "Accounts", "Recently Connected", and "Database Stats" on the default webpage are all in cards. Cards provide quite a bit of formatting options - the following is a simple example, but read the documentation or look at the site's source for more.</p>
+<pre><code>&lt;div class=&quot;card&quot;&gt;
+  &lt;div class=&quot;card-body&quot;&gt;
+    &lt;h4 class=&quot;card-title&quot;&gt;Card title&lt;/h4&gt;
+    &lt;h6 class=&quot;card-subtitle mb-2 text-muted&quot;&gt;Card subtitle&lt;/h6&gt;
+    &lt;p class=&quot;card-text&quot;&gt;Fancy, isn't it?&lt;/p&gt;
+    &lt;a href=&quot;#&quot; class=&quot;card-link&quot;&gt;Card link&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<h3 id="jumbotron">Jumbotron<a class="headerlink" href="#jumbotron" title="Permanent link">&para;</a></h3>
+<p><a href="https://getbootstrap.com/docs/4.0/components/jumbotron/">Jumbotrons</a> are useful for featuring an image or tagline for your game. They can flow with the rest of your content or take up the full width of the page - Evennia's base site uses the former.</p>
+<pre><code>&lt;div class=&quot;jumbotron jumbotron-fluid&quot;&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;h1 class=&quot;display-3&quot;&gt;Full Width Jumbotron&lt;/h1&gt;
+    &lt;p class=&quot;lead&quot;&gt;Look at the source of the default Evennia page for a regular Jumbotron&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<h3 id="forms">Forms<a class="headerlink" href="#forms" title="Permanent link">&para;</a></h3>
+<p><a href="https://getbootstrap.com/docs/4.0/components/forms/">Forms</a> are highly customizable with Bootstrap. For a more in-depth look at how to use forms and their styles in your own Evennia site, please read over <a href="https://github.com/evennia/evennia/wiki/Web-Character-Generation">the web character gen tutorial.</a></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

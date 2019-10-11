@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Batch Command Processor - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#basic-usage">Basic Usage</a></li>
+        <li class="main "><a href="#the-batch-file">The batch file</a></li>
+        <li class="main "><a href="#interactive-mode">Interactive mode</a></li>
+        <li class="main "><a href="#limitations-and-caveats">Limitations and Caveats</a></li>
+        <li class="main "><a href="#assorted-notes">Assorted notes</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Running-building-game-commands-from-a-text-file."></a></p>
+<p>For an introduction and motivation to using batch processors, see <a href="Batch-Processors">here</a>. This page describes the Batch-<em>command</em> processor. The Batch-<em>code</em> one is covered <a href="Batch-Code-Processor">here</a>.</p>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>The batch-command processor is a superuser-only function, invoked by </p>
+<pre><code> &gt; @batchcommand path.to.batchcmdfile
+</code></pre>
+<p>Where <code>path.to.batchcmdfile</code> is the path to a <em>batch-command file</em> with the "<code>.ev</code>" file ending. This path is given like a python path relative to a folder you define to hold your batch files, set with <code>BATCH_IMPORT_PATH</code> in your settings. Default folder is (assuming your game is in the <code>mygame</code> folder) <code>mygame/world</code>. So if you want to run the example batch file in <code>mygame/world/batch_cmds.ev</code>, you could use</p>
+<pre><code> &gt; @batchcommand batch_cmds
+</code></pre>
+<p>A batch-command file contains a list of Evennia in-game commands separated by comments. The processor will run the batch file from beginning to end. Note that <em>it will not stop if commands in it fail</em> (there is no universal way for the processor to know what a failure looks like for all different commands). So keep a close watch on the output, or use <em>Interactive mode</em> (see below) to run the file in a more controlled, gradual manner. </p>
+<h2 id="the-batch-file">The batch file<a class="headerlink" href="#the-batch-file" title="Permanent link">&para;</a></h2>
+<p>The batch file is a simple plain-text file containing Evennia commands. Just like you would write them in-game, except you have more freedom with line breaks. </p>
+<p>Here are the rules of syntax of an <code>*.ev</code> file. You'll find it's really, really simple:</p>
+<ul>
+<li>All lines having the <code>#</code> (hash)-symbol <em>as the first one on the line</em> are considered <em>comments</em>. All non-comment lines are treated as a command and/or their arguments.</li>
+<li>Comment lines have an actual function -- they mark the <em>end of the previous command definition</em>. So never put two commands directly after one another in the file - separate them with a comment, or the second of the two will be considered an argument to the first one. Besides, using plenty of comments is good practice anyway.</li>
+<li>A line that starts with the word <code>#INSERT</code> is a comment line but also signifies a special instruction. The syntax is <code>#INSERT &lt;path.batchfile&gt;</code> and tries to import a given batch-cmd file into this one. The inserted batch file (file ending <code>.ev</code>) will run normally from the point of the <code>#INSERT</code> instruction.</li>
+<li>Extra whitespace in a command definition is <em>ignored</em>.  - A completely empty line translates in to a line break in texts. Two empty lines thus means a new paragraph (this is obviously only relevant for commands accepting such formatting, such as the <code>@desc</code> command).</li>
+<li>The very last command in the file is not required to end with a comment.</li>
+<li>You <em>cannot</em> nest another <code>@batchcommand</code> statement into your batch file. If you want to link many batch-files together, use the <code>#INSERT</code> batch instruction instead. You also cannot launch the <code>@batchcode</code> command from your batch file, the two batch processors are not compatible.</li>
+</ul>
+<p>Below is a version of the example file found in <code>evennia/contrib/tutorial_examples/batch_cmds.ev</code>. </p>
+<pre><code class="bash">    #
+    # This is an example batch build file for Evennia. 
+    #
+
+    # This creates a red button
+    @create button:tutorial_examples.red_button.RedButton
+    # (This comment ends input for @create)
+    # Next command. Let's create something. 
+    @set button/desc = 
+      This is a large red button. Now and then 
+      it flashes in an evil, yet strangely tantalizing way. 
+
+      A big sign sits next to it. It says:
+
+
+    -----------
+
+     Press me! 
+
+    -----------
+
+
+      ... It really begs to be pressed! You 
+    know you want to! 
+
+    # This inserts the commands from another batch-cmd file named
+    # batch_insert_file.ev.
+    #INSERT examples.batch_insert_file
+
+
+    # (This ends the @set command). Note that single line breaks 
+    # and extra whitespace in the argument are ignored. Empty lines 
+    # translate into line breaks in the output.
+    # Now let's place the button where it belongs (let's say limbo #2 is 
+    # the evil lair in our example)
+    @teleport #2
+    # (This comments ends the @teleport command.) 
+    # Now we drop it so others can see it. 
+    # The very last command in the file needs not be ended with #.
+    drop button
+</code></pre>
+
+<p>To test this, run <code>@batchcommand</code> on the file: </p>
+<pre><code>&gt; @batchcommand contrib.tutorial_examples.batch_cmds
+</code></pre>
+<p>A button will be created, described and dropped in Limbo. All commands will be executed by the user calling the command. </p>
+<blockquote>
+<p>Note that if you interact with the button, you might find that its description changes, loosing your custom-set description above. This is just the way this particular object works.</p>
+</blockquote>
+<h2 id="interactive-mode">Interactive mode<a class="headerlink" href="#interactive-mode" title="Permanent link">&para;</a></h2>
+<p>Interactive mode allows you to more step-wise control over how the batch file is executed. This is useful for debugging and also if you have a large batch file and is only updating a small part of it -- running the entire file again would be a waste of time (and in the case of <code>@create</code>-ing objects you would to end up with multiple copies of same-named objects, for example). Use <code>@batchcommand</code> with the <code>/interactive</code> flag to enter interactive mode. </p>
+<pre><code> &gt; @batchcommand/interactive tutorial_examples.batch_cmds
+</code></pre>
+<p>You will see this:</p>
+<pre><code>01/04: @create button:tutorial_examples.red_button.RedButton  (hh for help)
+</code></pre>
+<p>This shows that you are on the <code>@create</code> command, the first out of only four commands in this batch file. Observe that the command <code>@create</code> has <em>not</em> been actually processed at this point!</p>
+<p>To take a look at the full command you are about to run, use <code>ll</code> (a batch-processor version of <code>look</code>). Use <code>pp</code> to actually process the current command (this will actually <code>@create</code> the button) -- and make sure it worked as planned. Use <code>nn</code> (next) to go to the next command.  Use <code>hh</code> for a list of commands.</p>
+<p>If there are errors, fix them in the batch file, then use <code>rr</code> to reload the file. You will still be at the same command and can rerun it easily with <code>pp</code> as needed. This makes for a simple debug cycle. It also allows you to rerun individual troublesome commands - as mentioned, in a large batch file this can be very useful. Do note that in many cases, commands depend on the previous ones (e.g. if <code>@create</code> in the example above had failed, the following commands would have had nothing to operate on).</p>
+<p>Use <code>nn</code> and <code>bb</code> (next and back) to step through the file; e.g. <code>nn 12</code> will jump 12 steps forward (without processing any command in between). All normal commands of Evennia should work too while working in interactive mode. </p>
+<h2 id="limitations-and-caveats">Limitations and Caveats<a class="headerlink" href="#limitations-and-caveats" title="Permanent link">&para;</a></h2>
+<p>The batch-command processor is great for automating smaller builds or for testing new commands and objects repeatedly without having to write so much. There are several caveats you have to be aware of when using the batch-command processor for building larger, complex worlds though. </p>
+<p>The main issue is that when you run a batch-command script you (<em>you</em>, as in your superuser character) are actually moving around in the game creating and building rooms in sequence, just as if you had been entering those commands manually, one by one. You have to take this into account when creating the file, so that you can 'walk' (or teleport) to the right places in order. </p>
+<p>This also means there are several pitfalls when designing and adding certain types of objects. Here are some examples: </p>
+<ul>
+<li><em>Rooms that change your <a href="Command-Sets">Command Set</a></em>: Imagine that you build a 'dark' room, which severely limits the cmdsets of those entering it (maybe you have to find the light switch to proceed). In your batch script you would create this room, then teleport to it - and promptly be shifted into the dark state where none of your normal build commands work ...</li>
+<li><em>Auto-teleportation</em>: Rooms that automatically teleport those that enter them to another place (like a trap room, for example). You would be teleported away too.</li>
+<li><em>Mobiles</em>: If you add aggressive mobs, they might attack you, drawing you into combat. If they have AI they might even follow you around when building - or they might move away from you before you've had time to finish describing and equipping them!</li>
+</ul>
+<p>The solution to all these is to plan ahead. Make sure that superusers are never affected by whatever effects are in play. Add an on/off switch to objects and make sure it's always set to <em>off</em> upon creation. It's all doable, one just needs to keep it in mind. </p>
+<h2 id="assorted-notes">Assorted notes<a class="headerlink" href="#assorted-notes" title="Permanent link">&para;</a></h2>
+<p>The fact that you build as 'yourself' can also be considered an advantage however, should you ever decide to change the default command to allow others than superusers to call the processor. Since normal access-checks are still performed, a malevolent builder with access to the processor should not be able to do all that much damage (this is the main drawback of the <a href="batch-code-processor">Batch Code Processor</a>)</p>
+<ul>
+<li><a href="https://www.gnu.org/software/emacs/">GNU Emacs</a> users might find it interesting to use emacs' <em>evennia mode</em>. This is an Emacs major mode found in <code>evennia/utils/evennia-mode.el</code>. It offers correct syntax highlighting and indentation with <code>&lt;tab&gt;</code> when editing <code>.ev</code> files in Emacs. See the header of that file for installation instructions.</li>
+<li><a href="http://www.vim.org/">VIM</a> users can use amfl's <a href="https://github.com/amfl/vim-evennia">vim-evennia</a> mode instead, see its readme for install instructions.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Quirks - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#forgetting-to-use-reload-to-see-changes-to-your-typeclasses">Forgetting to use @reload to see changes to your typeclasses</a></li>
+        <li class="main "><a href="#web-admin-to-create-new-account">Web admin to create new Account</a></li>
+        <li class="main "><a href="#mutable-attributes-and-their-connection-to-the-database">Mutable attributes and their connection to the database</a></li>
+        <li class="main "><a href="#commands-are-matched-by-name-or-alias">Commands are matched by name or alias</a></li>
+        <li class="main "><a href="#objects-turning-to-defaultobject">Objects turning to DefaultObject</a></li>
+        <li class="main "><a href="#known-upstream-bugs">Known upstream bugs</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Some-less-than-intuitive-things-we-know-people-have-trouble-getting-their-heads-around."></a></p>
+<p>This is a list of various quirks or common stumbling blocks that people often ask about or report when using (or trying to use) Evennia. They are not bugs.</p>
+<h3 id="forgetting-to-use-reload-to-see-changes-to-your-typeclasses">Forgetting to use @reload to see changes to your typeclasses<a class="headerlink" href="#forgetting-to-use-reload-to-see-changes-to-your-typeclasses" title="Permanent link">&para;</a></h3>
+<p>Firstly: Reloading the server is a safe and usually quick operation which will <em>not</em> disconnect any accounts.</p>
+<p>New users tend to forget this step. When editing source code (such as when tweaking typeclasses and commands or adding new commands to command sets) you need to either use the in-game <code>@reload</code> command or, from the command line do <code>python evennia.py reload</code> before you see your changes. </p>
+<h3 id="web-admin-to-create-new-account">Web admin to create new Account<a class="headerlink" href="#web-admin-to-create-new-account" title="Permanent link">&para;</a></h3>
+<p>If you use the default login system and are trying to use the Web admin to create a new Player account, you need to consider which <code>MULTIACCOUNT_MODE</code> you are in. If you are in <code>MULTIACCOUNT_MODE</code> <code>0</code> or <code>1</code>, the login system expects each Account to also have a Character object named the same as the Account - there is no character creation screen by default. If using the normal mud login screen, a Character with the same name is automatically created and connected to your Account. From the web interface you must do this manually. </p>
+<p>So, when creating the Account, make sure to also create the Character <em>from the same form</em> as you create the Account from. This should set everything up for you. Otherwise you need to manually set the "account" property on the Character and the "character" property on the Account to point to each other. You must also set the lockstring of the Character to allow the Account to "puppet" this particular character.</p>
+<h3 id="mutable-attributes-and-their-connection-to-the-database">Mutable attributes and their connection to the database<a class="headerlink" href="#mutable-attributes-and-their-connection-to-the-database" title="Permanent link">&para;</a></h3>
+<p>When storing a mutable object (usually a list or a dictionary) in an Attribute</p>
+<pre><code class="python">     object.db.mylist = [1,2,3] 
+</code></pre>
+
+<p>you should know that the connection to the database is retained also if you later extract that Attribute into another variable (what is stored and retrieved is actually a <code>PackedList</code> or a <code>PackedDict</code> that works just like their namesakes except they save themselves to the database when changed). So if you do </p>
+<pre><code class="python">     alist = object.db.mylist
+     alist.append(4)
+</code></pre>
+
+<p>this updates the database behind the scenes, so both <code>alist</code> and <code>object.db.mylist</code> are now <code>[1,2,3,4]</code></p>
+<p>If you don't want this, Evennia provides a way to stably disconnect the mutable from the database by use of <code>evennia.utils.dbserialize.deserialize</code>: </p>
+<pre><code class="python">     from evennia.utils.dbserialize import deserialize
+
+     blist = deserialize(object.db.mylist)
+     blist.append(4)
+</code></pre>
+
+<p>The property <code>blist</code> is now <code>[1,2,3,4]</code> whereas <code>object.db.mylist</code> remains unchanged. If you want to update the database you'd need to explicitly re-assign the updated data to the <code>mylist</code> Attribute.</p>
+<h3 id="commands-are-matched-by-name-or-alias">Commands are matched by name <em>or</em> alias<a class="headerlink" href="#commands-are-matched-by-name-or-alias" title="Permanent link">&para;</a></h3>
+<p>When merging <a href="Commands.html">command sets</a> it's important to remember that command objects are identified <em>both</em> by key <em>or</em> alias. So if you have a command with a key <code>look</code> and an alias <code>ls</code>, introducing another command with a key <code>ls</code> will be assumed by the system to be <em>identical</em> to the first one. This usually means merging cmdsets will overload one of them depending on priority. Whereas this is logical once you know how command objects are handled, it may be confusing if you are just looking at the command strings thinking they are parsed as-is.</p>
+<h3 id="objects-turning-to-defaultobject">Objects turning to <code>DefaultObject</code><a class="headerlink" href="#objects-turning-to-defaultobject" title="Permanent link">&para;</a></h3>
+<p>A common confusing error for new developers is finding that one or more objects in-game are suddenly of the type <code>DefaultObject</code> rather than the typeclass you wanted it to be. This happens when you introduce a critical Syntax error to the module holding your custom class. Since such a module is not valid Python, Evennia can't load it at all to get to the typeclasses within. To keep on running, Evennia will solve this by printing the full traceback to the terminal/console and temporarily fall back to the safe <code>DefaultObject</code> until you fix the problem and reload. Most errors of this kind will be caught by any good text editors. Keep an eye on the terminal/console during a reload to catch such errors - you may have to scroll up if your window is small.</p>
+<h3 id="known-upstream-bugs">Known upstream bugs<a class="headerlink" href="#known-upstream-bugs" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>There is currently (Autumn 2017) a bug in the <code>zope.interface</code> installer on some Linux Ubuntu distributions (notably Ubuntu 16.04 LTS). Zope is a dependency of Twisted. The error manifests in the server not starting with an error that <code>zope.interface</code> is not found even though <code>pip list</code> shows it's installed. The reason is a missing empty <code>__init__.py</code> file at the root of the zope package. If the virtualenv is named "evenv" as suggested in the <a href="Getting-Started">Getting Started</a> instructions, use the following command to fix it: </p>
+<p><code>shell
+touch evenv/local/lib/python2.7/site-packages/zope/__init__.py</code></p>
+<p>This will create the missing file and things should henceforth work correctly.</p>
+</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

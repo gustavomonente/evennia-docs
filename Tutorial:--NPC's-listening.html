@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Tutorial:  NPC's listening - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#assorted-notes">Assorted notes</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-tutorial-on-making-NPC's-do-things-(like-reply)-when-a-character-says-something"></a>)</p>
+<p>This tutorial shows the implementation of an NPC object that responds to characters speaking in their location. In this example the NPC parrots what is said, but any actions could be triggered this way.</p>
+<p>It is assumed that you already know how to create custom room and character typeclasses, please see the <a href="https://github.com/evennia/evennia/wiki/Tutorial%20for%20basic%20MUSH%20like%20game">Basic Game tutorial</a> if you haven't already done this.</p>
+<p>What we will need is simply a new NPC typeclass that can react when someone speaks.</p>
+<pre><code class="python"># mygame/typeclasses/npc.py
+
+from characters import Character
+class Npc(Character):
+    &quot;&quot;&quot;
+    A NPC typeclass which extends the character class.
+    &quot;&quot;&quot;
+    def at_heard_say(self, message, from_obj):
+        &quot;&quot;&quot;
+        A simple listener and response. This makes it easy to change for
+        subclasses of NPCs reacting differently to says.       
+
+        &quot;&quot;&quot; 
+        # message will be on the form `&lt;Person&gt; says, &quot;say_text&quot;`
+        # we want to get only say_text without the quotes and any spaces
+        message = message.split('says, ')[1].strip(' &quot;')
+
+        # we'll make use of this in .msg() below
+        return &quot;%s said: '%s'&quot; % (from_obj, message)
+</code></pre>
+
+<p>When someone in the room speaks to this NPC, its <code>msg</code> method will be called. We will modify the NPCs <code>.msg</code> method to catch says so the NPC can respond. </p>
+<pre><code class="python"># mygame/typeclasses/npc.py
+
+from characters import Character
+class Npc(Character):
+
+    # [at_heard_say() goes here]
+
+    def msg(self, text=None, from_obj=None, **kwargs):
+        &quot;Custom msg() method reacting to say.&quot;
+
+        if from_obj != self:
+            # make sure to not repeat what we ourselves said or we'll create a loop
+            try:
+                # if text comes from a say, `text` is `('say_text', {'type': 'say'})`
+                say_text, is_say = text[0], text[1]['type'] == 'say'
+            except Exception:
+                is_say = False
+            if is_say:
+                # First get the response (if any)
+                response = self.at_heard_say(say_text, from_obj)
+                # If there is a response
+                if response != None:
+                    # speak ourselves, using the return
+                    self.execute_cmd(&quot;say %s&quot; % response)   
+
+        # this is needed if anyone ever puppets this NPC - without it you would never
+        # get any feedback from the server (not even the results of look)
+        super().msg(text=text, from_obj=from_obj, **kwargs) 
+</code></pre>
+
+<p>So if the NPC gets a say and that say is not coming from the NPC itself, it will echo it using the <code>at_heard_say</code> hook. Some things of note in the above example:</p>
+<ul>
+<li>The <code>text</code> input can be on many different forms depending on where this <code>msg</code> is called from. Instead of trying to analyze <code>text</code> in detail with a range of <code>if</code> statements we just assume the form we want and catch the error if it does not match. This simplifies the code considerably. It's called 'leap before you look' and is a Python paradigm that may feel unfamiliar if you are used to other languages. Here we 'swallow' the error silently, which is fine when the code checked is simple. If not we may want to import <code>evennia.logger.log_trace</code> and add <code>log_trace()</code> in the <code>except</code> clause. </li>
+<li>We use <code>execute_cmd</code> to fire the <code>say</code> command back. We could also have called <code>self.location.msg_contents</code>  directly but using the Command makes sure all hooks are called (so those seeing the NPC's <code>say</code> can in turn react if they want).  </li>
+<li>Note the comments about <code>super</code> at the end. This will trigger the 'default' <code>msg</code> (in the parent class) as well. It's not really necessary as long as no one puppets the NPC (by <code>@ic &lt;npcname&gt;</code>) but it's wise to keep in there since the puppeting player will be totally blind if <code>msg()</code> is never returning anything to them!</li>
+</ul>
+<p>Now that's done, let's create an NPC and see what it has to say for itself.</p>
+<pre><code>@reload
+@create/drop Guild Master:npc.Npc
+</code></pre>
+
+<p>(you could also give the path as <code>typeclasses.npc.Npc</code>, but Evennia will look into the <code>typeclasses</code> folder automatically so this is a little shorter). </p>
+<pre><code>&gt; say hi
+You say, "hi"
+Guild Master says, "Anna said: 'hi'"
+</code></pre>
+<h2 id="assorted-notes">Assorted notes<a class="headerlink" href="#assorted-notes" title="Permanent link">&para;</a></h2>
+<p>There are many ways to implement this kind of functionality. An alternative example to overriding <code>msg</code> would be to modify the <code>at_say</code> hook on the <em>Character</em> instead. It could detect that it's sending to an NPC and call the <code>at_heard_say</code> hook directly. </p>
+<p>While the tutorial solution has the advantage of being contained only within the NPC class, combining this with using the Character class gives more direct control over how the NPC will react. Which way to go depends on the design requirements of your particular game. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

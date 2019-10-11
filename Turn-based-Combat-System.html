@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Turn based Combat System - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#overview-of-combat-system-concepts">Overview of combat system concepts</a></li>
+        <li class="main "><a href="#tutorial-overview">Tutorial overview</a></li>
+        <li class="main "><a href="#the-combat-handler">The combat handler</a></li>
+        <li class="main "><a href="#combat-commands">Combat commands</a></li>
+        <li class="main "><a href="#rules-module">Rules module</a></li>
+        <li class="main "><a href="#combat-initiator-command">Combat initiator command</a></li>
+        <li class="main "><a href="#expanding-the-example">Expanding the example</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Describes-how-to-build-a-combat-system-from-scratch"></a></p>
+<p>This tutorial gives an example of a full, if simplified, combat system for Evennia. It was inspired by the discussions held on the <a href="https://groups.google.com/forum/#!msg/evennia/wnJNM2sXSfs/-dbLRrgWnYMJ">mailing list</a>.</p>
+<h2 id="overview-of-combat-system-concepts">Overview of combat system concepts<a class="headerlink" href="#overview-of-combat-system-concepts" title="Permanent link">&para;</a></h2>
+<p>Most MUDs will use some sort of combat system. There are several main variations:</p>
+<ul>
+<li><em>Freeform</em> - the simplest form of combat to implement, common to MUSH-style roleplaying games. This means the system only supplies dice rollers or maybe commands to compare skills and spit out the result. Dice rolls are done to resolve combat according to the rules of the game and to direct the scene. A game master may be required to resolve rule disputes. </li>
+<li><em>Twitch</em> - This is the traditional MUD hack&amp;slash style combat. In a twitch system there is often no difference between your normal "move-around-and-explore mode" and the "combat mode". You enter an attack command and the system will calculate if the attack hits and how much damage was caused. Normally attack commands have some sort of timeout or notion of recovery/balance to reduce the advantage of spamming or client scripting. Whereas the simplest systems just means entering <code>kill &lt;target&gt;</code> over and over, more sophisticated twitch systems include anything from defensive stances to tactical positioning. </li>
+<li><em>Turn-based</em> - a turn based system means that the system pauses to make sure all combatants can choose their actions before continuing. In some systems, such entered actions happen immediately (like twitch-based) whereas in others the resolution happens simultaneously at the end of the turn. The disadvantage of a turn-based system is that the game must switch to a "combat mode" and one also needs to take special care of how to handle new combatants and the passage of time. The advantage is that success is not dependent on typing speed or of setting up quick client macros. This potentially allows for emoting as part of combat which is an advantage for roleplay-heavy games. </li>
+</ul>
+<p>To implement a freeform combat system all you need is a dice roller and a roleplaying rulebook. See <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/dice.py">contrib/dice.py</a> for an example dice roller. To implement at twitch-based system you basically need a few combat <a href="Commands.html">commands</a>, possibly ones with a <a href="Command-Cooldown">cooldown</a>. You also need a <a href="Implementing-a-game-rule-system">game rule module</a> that makes use of it. We will focus on the turn-based variety here. </p>
+<h2 id="tutorial-overview">Tutorial overview<a class="headerlink" href="#tutorial-overview" title="Permanent link">&para;</a></h2>
+<p>This tutorial will implement the slightly more complex turn-based combat system. Our example has the following properties: </p>
+<ul>
+<li>Combat is initiated with <code>attack &lt;target&gt;</code>, this initiates the combat mode.</li>
+<li>Characters may join an ongoing battle using <code>attack &lt;target&gt;</code> against a character already in combat.</li>
+<li>Each turn every combating character will get to enter two commands, their internal order matters and they are compared one-to-one in the order given by each combatant.  Use of <code>say</code> and <code>pose</code> is free. </li>
+<li>The commands are (in our example) simple; they can either <code>hit &lt;target&gt;</code>, <code>feint &lt;target&gt;</code> or <code>parry &lt;target&gt;</code>. They can also <code>defend</code>, a generic passive defense. Finally they may choose to <code>disengage/flee</code>. </li>
+<li>When attacking we use a classic <a href="https://en.wikipedia.org/wiki/Rock-paper-scissors">rock-paper-scissors</a> mechanic to determine success: <code>hit</code> defeats <code>feint</code>, which defeats <code>parry</code> which defeats <code>hit</code>. <code>defend</code> is a general passive action that has a percentage chance to win against <code>hit</code> (only).</li>
+<li><code>disengage/flee</code> must be entered two times in a row and will only succeed if there is no <code>hit</code> against them in that time. If so they will leave combat mode.</li>
+<li>Once every player has entered two commands, all commands are resolved in order and the result is reported. A new turn then begins.</li>
+<li>If players are too slow the turn will time out and any unset commands will be set to <code>defend</code>. </li>
+</ul>
+<p>For creating the combat system we will need the following components:</p>
+<ul>
+<li>A combat handler. This is the main mechanic of the system. This is a <a href="Scripts.html">Script</a> object created for each combat.  It is not assigned to a specific object but is shared by the combating characters and handles all the combat information. Since Scripts are database entities it also means that the combat will not be affected by a server reload.</li>
+<li>A combat <a href="Command-Sets">command set</a> with the relevant commands needed for combat, such as the various attack/defend options and the <code>flee/disengage</code> command to leave the combat mode.</li>
+<li>A rule resolution system. The basics of making such a module is described in the <a href="Implementing-a-game-rule-system">rule system tutorial</a>. We will only sketch such a module here for our end-turn combat resolution.</li>
+<li>An <code>attack</code> <a href="Commands.html">command</a> for initiating the combat mode. This is added to the default command set. It will create the combat handler and add the character(s) to it. It will also assign the combat command set to the characters. </li>
+</ul>
+<h2 id="the-combat-handler">The combat handler<a class="headerlink" href="#the-combat-handler" title="Permanent link">&para;</a></h2>
+<p>The <em>combat handler</em> is implemented as a stand-alone <a href="Scripts.html">Script</a>.  This Script is created when the first Character decides to attack another and is deleted when no one is fighting any more. Each handler represents one instance of combat and one combat only. Each instance of combat can hold any number of characters but each character can only be part of one combat at a time (a player would need to disengage from the first combat before they could join another). </p>
+<p>The reason we don't store this Script "on" any specific character is because any character may leave the combat at any time. Instead the script holds references to all characters involved in the combat.  Vice-versa, all characters holds a back-reference to the current combat handler. While we don't use this very much here this might allow the combat commands on the characters to access and update the combat handler state directly. </p>
+<p><em>Note: Another way to implement a combat handler would be to use a normal Python object and handle time-keeping with the <a href="TickerHandler.html">TickerHandler</a>. This would require either adding custom hook methods on the character or to implement a custom child of the TickerHandler class to track turns. Whereas the TickerHandler is easy to use, a Script offers more power in this case.</em></p>
+<p>Here is a basic combat handler. Assuming our game folder is named <code>mygame</code>, we store it in <code>mygame/typeclasses/combat_handler.py</code>:</p>
+<pre><code class="python"># mygame/typeclasses/combat_handler.py
+
+import random
+from evennia import DefaultScript
+from world.rules import resolve_combat
+
+class CombatHandler(DefaultScript):
+    &quot;&quot;&quot;
+    This implements the combat handler.
+    &quot;&quot;&quot;
+
+    # standard Script hooks 
+
+    def at_script_creation(self):
+        &quot;Called when script is first created&quot;
+
+        self.key = &quot;combat_handler_%i&quot; % random.randint(1, 1000)
+        self.desc = &quot;handles combat&quot;
+        self.interval = 60 * 2  # two minute timeout
+        self.start_delay = True
+        self.persistent = True   
+
+        # store all combatants
+        self.db.characters = {}
+        # store all actions for each turn
+        self.db.turn_actions = {}
+        # number of actions entered per combatant
+        self.db.action_count = {}
+
+    def _init_character(self, character):
+        &quot;&quot;&quot;
+        This initializes handler back-reference 
+        and combat cmdset on a character
+        &quot;&quot;&quot;
+        character.ndb.combat_handler = self
+        character.cmdset.add(&quot;commands.combat.CombatCmdSet&quot;)
+
+    def _cleanup_character(self, character):
+        &quot;&quot;&quot;
+        Remove character from handler and clean 
+        it of the back-reference and cmdset
+        &quot;&quot;&quot;
+        dbref = character.id 
+        del self.db.characters[dbref]
+        del self.db.turn_actions[dbref]
+        del self.db.action_count[dbref]        
+        del character.ndb.combat_handler
+        character.cmdset.delete(&quot;commands.combat.CombatCmdSet&quot;)
+
+    def at_start(self):
+        &quot;&quot;&quot;
+        This is called on first start but also when the script is restarted
+        after a server reboot. We need to re-assign this combat handler to 
+        all characters as well as re-assign the cmdset.
+        &quot;&quot;&quot;
+        for character in self.db.characters.values():
+            self._init_character(character)
+
+    def at_stop(self):
+        &quot;Called just before the script is stopped/destroyed.&quot;
+        for character in list(self.db.characters.values()):
+            # note: the list() call above disconnects list from database
+            self._cleanup_character(character)
+
+    def at_repeat(self):
+        &quot;&quot;&quot;
+        This is called every self.interval seconds (turn timeout) or 
+        when force_repeat is called (because everyone has entered their 
+        commands). We know this by checking the existence of the
+        `normal_turn_end` NAttribute, set just before calling 
+        force_repeat.
+
+        &quot;&quot;&quot;
+        if self.ndb.normal_turn_end:
+            # we get here because the turn ended normally
+            # (force_repeat was called) - no msg output
+            del self.ndb.normal_turn_end
+        else:        
+            # turn timeout
+            self.msg_all(&quot;Turn timer timed out. Continuing.&quot;)
+        self.end_turn()
+
+    # Combat-handler methods
+
+    def add_character(self, character):
+        &quot;Add combatant to handler&quot;
+        dbref = character.id
+        self.db.characters[dbref] = character        
+        self.db.action_count[dbref] = 0
+        self.db.turn_actions[dbref] = [(&quot;defend&quot;, character, None),
+                                       (&quot;defend&quot;, character, None)]
+        # set up back-reference
+        self._init_character(character)
+
+    def remove_character(self, character):
+        &quot;Remove combatant from handler&quot;
+        if character.id in self.db.characters:
+            self._cleanup_character(character)
+        if not self.db.characters:
+            # if no more characters in battle, kill this handler
+            self.stop()
+
+    def msg_all(self, message):
+        &quot;Send message to all combatants&quot;
+        for character in self.db.characters.values():
+            character.msg(message)
+
+    def add_action(self, action, character, target):
+        &quot;&quot;&quot;
+        Called by combat commands to register an action with the handler.
+
+         action - string identifying the action, like &quot;hit&quot; or &quot;parry&quot;
+         character - the character performing the action
+         target - the target character or None
+
+        actions are stored in a dictionary keyed to each character, each
+        of which holds a list of max 2 actions. An action is stored as
+        a tuple (character, action, target). 
+        &quot;&quot;&quot;
+        dbref = character.id
+        count = self.db.action_count[dbref]
+        if 0 &lt;= count &lt;= 1: # only allow 2 actions            
+            self.db.turn_actions[dbref][count] = (action, character, target)
+        else:        
+            # report if we already used too many actions
+            return False
+        self.db.action_count[dbref] += 1
+        return True
+
+    def check_end_turn(self):
+        &quot;&quot;&quot;
+        Called by the command to eventually trigger 
+        the resolution of the turn. We check if everyone
+        has added all their actions; if so we call force the
+        script to repeat immediately (which will call
+        `self.at_repeat()` while resetting all timers). 
+        &quot;&quot;&quot;
+        if all(count &gt; 1 for count in self.db.action_count.values()):
+            self.ndb.normal_turn_end = True
+            self.force_repeat() 
+
+    def end_turn(self):
+        &quot;&quot;&quot;
+        This resolves all actions by calling the rules module. 
+        It then resets everything and starts the next turn. It
+        is called by at_repeat().
+        &quot;&quot;&quot;        
+        resolve_combat(self, self.db.turn_actions)
+
+        if len(self.db.characters) &lt; 2:
+            # less than 2 characters in battle, kill this handler
+            self.msg_all(&quot;Combat has ended&quot;)
+            self.stop()
+        else:
+            # reset counters before next turn
+            for character in self.db.characters.values():
+                self.db.characters[character.id] = character
+                self.db.action_count[character.id] = 0
+                self.db.turn_actions[character.id] = [(&quot;defend&quot;, character, None),
+                                                  (&quot;defend&quot;, character, None)]
+            self.msg_all(&quot;Next turn begins ...&quot;)
+</code></pre>
+
+<p>This implements all the useful properties of our combat handler. This Script will survive a reboot and will automatically re-assert itself when it comes back online. Even the current state of the combat should be unaffected since it is saved in Attributes at every turn. An important part to note is the use of the Script's standard <code>at_repeat</code> hook and the <code>force_repeat</code> method to end each turn. This allows for everything to go through the same mechanisms with minimal repetition of code.  </p>
+<p>What is not present in this handler is a way for players to view the actions they set or to change their actions once they have been added (but before the last one has added theirs). We leave this as an exercise.</p>
+<h2 id="combat-commands">Combat commands<a class="headerlink" href="#combat-commands" title="Permanent link">&para;</a></h2>
+<p>Our combat commands - the commands that are to be available to us during the combat - are (in our example) very simple. In a full implementation the commands available might be determined by the weapon(s) held by the player or by which skills they know. </p>
+<p>We create them in <code>mygame/commands/combat.py</code>.</p>
+<pre><code class="python"># mygame/commands/combat.py
+
+from evennia import Command
+
+class CmdHit(Command):
+    &quot;&quot;&quot;
+    hit an enemy
+
+    Usage:
+      hit &lt;target&gt;
+
+    Strikes the given enemy with your current weapon.
+    &quot;&quot;&quot;
+    key = &quot;hit&quot;
+    aliases = [&quot;strike&quot;, &quot;slash&quot;]
+    help_category = &quot;combat&quot;
+
+    def func(self):
+        &quot;Implements the command&quot;
+        if not self.args:
+            self.caller.msg(&quot;Usage: hit &lt;target&gt;&quot;)
+            return 
+        target = self.caller.search(self.args)
+        if not target:
+            return
+        ok = self.caller.ndb.combat_handler.add_action(&quot;hit&quot;, 
+                                                       self.caller, 
+                                                       target) 
+        if ok:
+            self.caller.msg(&quot;You add 'hit' to the combat queue&quot;)
+        else:
+            self.caller.msg(&quot;You can only queue two actions per turn!&quot;)
+
+        # tell the handler to check if turn is over
+        self.caller.ndb.combat_handler.check_end_turn()
+</code></pre>
+
+<p>The other commands <code>CmdParry</code>, <code>CmdFeint</code>, <code>CmdDefend</code> and <code>CmdDisengage</code> look basically the same. We should also add a custom <code>help</code> command to list all the available combat commands and what they do. </p>
+<p>We just need to put them all in a cmdset. We do this at the end of the same module:</p>
+<pre><code class="python"># mygame/commands/combat.py
+
+from evennia import CmdSet
+from evennia import default_cmds
+
+class CombatCmdSet(CmdSet):
+    key = &quot;combat_cmdset&quot;
+    mergetype = &quot;Replace&quot;
+    priority = 10 
+    no_exits = True
+
+    def at_cmdset_creation(self):
+        self.add(CmdHit())
+        self.add(CmdParry())
+        self.add(CmdFeint())
+        self.add(CmdDefend())
+        self.add(CmdDisengage())    
+        self.add(CmdHelp())
+        self.add(default_cmds.CmdPose())
+        self.add(default_cmds.CmdSay())
+</code></pre>
+
+<h2 id="rules-module">Rules module<a class="headerlink" href="#rules-module" title="Permanent link">&para;</a></h2>
+<p>A general way to implement a rule module is found in the <a href="Implementing-a-game-rule-system">rule system tutorial</a>. Proper resolution would likely require us to change our Characters to store things like strength, weapon skills and so on. So for this example we will settle for a very simplistic rock-paper-scissors kind of setup with some randomness thrown in. We will not deal with damage here but just announce the results of each turn. In a real system the Character objects would hold stats to affect their skills, their chosen weapon affect the choices, they would be able to lose health etc.</p>
+<p>Within each turn, there are "sub-turns", each consisting of one action per character. The actions within each sub-turn happens simultaneously and only once they have all been resolved we move on to the next sub-turn (or end the full turn). </p>
+<p><em>Note: In our simple example the sub-turns don't affect each other (except for <code>disengage/flee</code>), nor do any effects carry over between turns. The real power of a turn-based system would be to add real tactical possibilities here though; For example if your hit got parried you could be out of balance and your next action would be at a disadvantage. A successful feint would open up for a subsequent attack and so on ...</em> </p>
+<p>Our rock-paper-scissor setup works like this: </p>
+<ul>
+<li><code>hit</code> beats <code>feint</code> and <code>flee/disengage</code>. It has a random chance to fail against <code>defend</code>. </li>
+<li><code>parry</code> beats <code>hit</code>.</li>
+<li><code>feint</code> beats <code>parry</code> and is then counted as a <code>hit</code>.</li>
+<li><code>defend</code> does nothing but has a chance to beat <code>hit</code>.</li>
+<li><code>flee/disengage</code> must succeed two times in a row (i.e. not beaten by a <code>hit</code> once during the turn). If so the character leaves combat.</li>
+</ul>
+<pre><code class="python"># mygame/world/rules.py
+
+import random
+
+# messages 
+
+def resolve_combat(combat_handler, actiondict):
+    &quot;&quot;&quot;
+    This is called by the combat handler
+    actiondict is a dictionary with a list of two actions
+    for each character:
+    {char.id:[(action1, char, target), (action2, char, target)], ...}
+    &quot;&quot;&quot;
+    flee = {} # track number of flee commands per character
+    for isub in range(2):
+        # loop over sub-turns
+        messages = []
+        for subturn in (sub[isub] for sub in actiondict.values()):
+            # for each character, resolve the sub-turn
+            action, char, target = subturn
+            if target:
+                taction, tchar, ttarget = actiondict[target.id][isub]
+            if action == &quot;hit&quot;:
+                if taction == &quot;parry&quot; and ttarget == char:
+                    msg = &quot;%s tries to hit %s, but %s parries the attack!&quot;
+                    messages.append(msg % (char, tchar, tchar))
+                elif taction == &quot;defend&quot; and random.random() &lt; 0.5:
+                    msg = &quot;%s defends against the attack by %s.&quot;
+                    messages.append(msg % (tchar, char))
+                elif taction == &quot;flee&quot;:
+                    msg = &quot;%s stops %s from disengaging, with a hit!&quot;
+                    flee[tchar] = -2
+                    messages.append(msg % (char, tchar))
+                else:
+                    msg = &quot;%s hits %s, bypassing their %s!&quot;
+                    messages.append(msg % (char, tchar, taction))
+            elif action == &quot;parry&quot;:
+                if taction == &quot;hit&quot;:
+                    msg = &quot;%s parries the attack by %s.&quot;
+                    messages.append(msg % (char, tchar))
+                elif taction == &quot;feint&quot;:
+                    msg = &quot;%s tries to parry, but %s feints and hits!&quot;
+                    messages.append(msg % (char, tchar))
+                else:
+                    msg = &quot;%s parries to no avail.&quot;
+                    messages.append(msg % char)
+            elif action == &quot;feint&quot;:
+                if taction == &quot;parry&quot;:
+                    msg = &quot;%s feints past %s's parry, landing a hit!&quot;
+                    messages.append(msg % (char, tchar))
+                elif taction == &quot;hit&quot;:
+                    msg = &quot;%s feints but is defeated by %s hit!&quot;
+                    messages.append(msg % (char, tchar))
+                else:
+                    msg = &quot;%s feints to no avail.&quot;
+                    messages.append(msg % char)
+            elif action == &quot;defend&quot;:
+                msg = &quot;%s defends.&quot;
+                messages.append(msg % char)
+            elif action == &quot;flee&quot;:
+                if char in flee:
+                    flee[char] += 1
+                else:
+                    flee[char] = 1
+                    msg = &quot;%s tries to disengage (two subsequent turns needed)&quot;
+                    messages.append(msg % char)
+
+        # echo results of each subturn
+        combat_handler.msg_all(&quot;\n&quot;.join(messages))
+
+    # at the end of both sub-turns, test if anyone fled
+    msg = &quot;%s withdraws from combat.&quot;
+    for (char, fleevalue) in flee.items():
+        if fleevalue == 2:
+            combat_handler.msg_all(msg % char)
+            combat_handler.remove_character(char)
+</code></pre>
+
+<p>To make it simple (and to save space), this example rule module actually resolves each interchange twice - first when it gets to each character and then again when handling the target. Also, since we use the combat handler's <code>msg_all</code> method here, the system will get pretty spammy. To clean it up, one could imagine tracking all the possible interactions to make sure each pair is only handled and reported once.</p>
+<h2 id="combat-initiator-command">Combat initiator command<a class="headerlink" href="#combat-initiator-command" title="Permanent link">&para;</a></h2>
+<p>This is the last component we need, a command to initiate combat. This will tie everything together. We store this with the other combat commands.</p>
+<pre><code class="python"># mygame/commands/combat.py
+
+from evennia import create_script
+
+class CmdAttack(Command):
+    &quot;&quot;&quot;
+    initiates combat
+
+    Usage:
+      attack &lt;target&gt;
+
+    This will initiate combat with &lt;target&gt;. If &lt;target is
+    already in combat, you will join the combat. 
+    &quot;&quot;&quot;
+    key = &quot;attack&quot;
+    help_category = &quot;General&quot;
+
+    def func(self):
+        &quot;Handle command&quot;
+        if not self.args:
+            self.caller.msg(&quot;Usage: attack &lt;target&gt;&quot;)            
+            return
+        target = self.caller.search(self.args)
+        if not target:
+            return
+        # set up combat
+        if target.ndb.combat_handler:
+            # target is already in combat - join it            
+            target.ndb.combat_handler.add_character(self.caller)
+            target.ndb.combat_handler.msg_all(&quot;%s joins combat!&quot; % self.caller)
+        else:
+            # create a new combat handler
+            chandler = create_script(&quot;combat_handler.CombatHandler&quot;)
+            chandler.add_character(self.caller)
+            chandler.add_character(target)
+            self.caller.msg(&quot;You attack %s! You are in combat.&quot; % target)
+            target.msg(&quot;%s attacks you! You are in combat.&quot; % self.caller)       
+</code></pre>
+
+<p>The <code>attack</code> command will not go into the combat cmdset but rather into the default cmdset. See e.g. the <a href="Adding-Command-Tutorial">Adding Command Tutorial</a> if you are unsure about how to do this. </p>
+<h2 id="expanding-the-example">Expanding the example<a class="headerlink" href="#expanding-the-example" title="Permanent link">&para;</a></h2>
+<p>At this point you should have a simple but flexible turn-based combat system. We have taken several shortcuts and simplifications in this example. The output to the players is likely too verbose during combat and too limited when it comes to informing about things surrounding it. Methods for changing your commands or list them, view who is in combat etc is likely needed - this will require play testing for each game and style. There is also currently no information displayed for other people happening to be in the same room as the combat - some less detailed information should probably be echoed to the room to
+show others what's going on.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

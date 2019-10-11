@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Building Quickstart - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#stepping-down-from-godhood">Stepping Down From Godhood</a></li>
+        <li class="main "><a href="#creating-an-object">Creating an Object</a></li>
+        <li class="main "><a href="#get-a-personality">Get a Personality</a></li>
+        <li class="main "><a href="#pushing-your-buttons">Pushing Your Buttons</a></li>
+        <li class="main "><a href="#making-yourself-a-house">Making Yourself a House</a></li>
+        <li class="main "><a href="#reshuffling-the-world">Reshuffling the World</a></li>
+        <li class="main "><a href="#adding-a-help-entry">Adding a Help Entry</a></li>
+        <li class="main "><a href="#adding-a-world">Adding a World</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Introduces-some-basic-commands-and-builds-some-example-objects."></a></p>
+<p>The <a href="Default-Command-Help">default command</a> definitions coming with Evennia
+follows a style <a href="Using-MUX-as-a-Standard">similar</a> to that of MUX, so the
+commands should be familiar if you used any such code bases before. </p>
+<blockquote>
+<p>Throughout the larger documentation you may come across commands prefixed
+with <code>@</code>. This is just an optional marker used in some places to make a
+command stand out. Evennia defaults to ignoring the use of <code>@</code> in front of
+your command (so entering <code>dig</code> is the same as entering <code>@dig</code>).</p>
+</blockquote>
+<p>The default commands have the following style (where <code>[...]</code> marks optional parts):</p>
+<pre><code> command[/switch/switch...] [arguments ...]
+</code></pre>
+<p>A <em>switch</em> is a special, optional flag to the command to make it behave differently. It is always put directly after the command name, and begins with a forward slash (<code>/</code>). The <em>arguments</em> are one or more inputs to the commands. It's common to use an equal sign (<code>=</code>) when assigning something to an object. </p>
+<p>Below are some examples of commands you can try when logged in to the game. Use <code>help &lt;command&gt;</code> for learning more about each command and their detailed options.</p>
+<h2 id="stepping-down-from-godhood">Stepping Down From Godhood<a class="headerlink" href="#stepping-down-from-godhood" title="Permanent link">&para;</a></h2>
+<p>If you just installed Evennia, your very first player account is called user #1, also known as the <em>superuser</em> or <em>god user</em>. This user is very powerful, so powerful that it will override many game restrictions such as locks. This can be useful, but it also hides some functionality that you might want to test. </p>
+<p>To temporarily step down from your superuser position you can use the <code>quell</code> command in-game:</p>
+<pre><code>quell
+</code></pre>
+<p>This will make you start using the permission of your current character's level instead of your superuser level. If you didn't change any settings your game Character should have an <em>Developer</em> level permission - high as can be without bypassing locks like the superuser does. This will work fine for the examples on this page. Use <code>unquell</code> to get back to superuser status again afterwards. </p>
+<h2 id="creating-an-object">Creating an Object<a class="headerlink" href="#creating-an-object" title="Permanent link">&para;</a></h2>
+<p>Basic objects can be anything -- swords, flowers and non-player characters. They are created using the <code>create</code> command: </p>
+<pre><code>create box
+</code></pre>
+<p>This created a new 'box' (of the default object type) in your inventory. Use the command <code>inventory</code> (or <code>i</code>) to see it. Now, 'box' is a rather short name, let's rename it and tack on a few aliases.</p>
+<pre><code>name box = very large box;box;very;crate
+</code></pre>
+<p>We now renamed the box to <em>very large box</em> (and this is what we will see when looking at it), but we will also recognize it by any of the other names we give - like <em>crate</em> or simply <em>box</em> as before. We could have given these aliases directly after the name in the <code>create</code> command, this is true for all creation commands - you can always tag on a list of <code>;</code>-separated aliases to the name of your new object. If you had wanted to not change the name itself, but to only add aliases, you could have used the <code>alias</code> command. </p>
+<p>We are currently carrying the box. Let's drop it (there is also a short cut to create and drop in one go by using the <code>/drop</code> switch, for example <code>create/drop box</code>). </p>
+<pre><code>drop box
+</code></pre>
+<p>Hey presto - there it is on the ground, in all its normality.</p>
+<pre><code>examine box
+</code></pre>
+<p>This will show some technical details about the box object. For now we will ignore what this information means. </p>
+<p>Try to <code>look</code> at the box to see the (default) description. </p>
+<pre><code>look box
+You see nothing special.
+</code></pre>
+<p>The description you get is not very exciting. Let's add some flavor.</p>
+<pre><code>describe box = This is a large and very heavy box.
+</code></pre>
+<p>If you try the <code>get</code> command we will pick up the box. So far so good, but if we really want this to be a large and heavy box, people should <em>not</em> be able to run off with it that easily. To prevent this we need to lock it down. This is done by assigning a <em>Lock</em>  to it. Make sure the box was dropped in the room, then try this: </p>
+<pre><code>lock box = get:false()
+</code></pre>
+<p>Locks represent a rather <a href="Locks.html">big topic</a>, but for now that will do what we want. This will lock the box so noone can lift it. The exception is superusers, they override all locks and will pick it up anyway. Make sure you are quelling your superuser powers and try to get the box now:</p>
+<pre><code>&gt; get box
+You can't get that.
+</code></pre>
+<p>Think thís default error message looks dull? The <code>get</code> command looks for an <a href="Attributes.html">Attribute</a> named <code>get_err_msg</code> for returning a nicer error message (we just happen to know this, you would need to peek into the <a href="https://github.com/evennia/evennia/blob/master/evennia/commands/default/general.py#L235">code</a> for the <code>get</code> command to find out.). You set attributes using the <code>set</code> command:</p>
+<pre><code>set box/get_err_msg = It's way too heavy for you to lift.
+</code></pre>
+<p>Try to get it now and you should see a nicer error message echoed back to you.</p>
+<p>You create new Commands (or modify existing ones) in Python outside the game. See the <a href="https://github.com/evennia/evennia/wiki/Adding%20Command%20Tutorial">Adding Commands tutorial</a> for help with creating your first own Command.</p>
+<h2 id="get-a-personality">Get a Personality<a class="headerlink" href="#get-a-personality" title="Permanent link">&para;</a></h2>
+<p><a href="Scripts.html">Scripts</a> are powerful out-of-character objects useful for many "under the hood" things. One of their optional abilities is to do things on a timer. To try out a first script, let's put one on ourselves. There is an example script in <code>evennia/contrib/tutorial_examples/bodyfunctions.py</code> that is called <code>BodyFunctions</code>. To add this to us we will use the <code>script</code> command:</p>
+<pre><code>script self = tutorial_examples.bodyfunctions.BodyFunctions
+</code></pre>
+<p>(note that you don't have to give the full path as long as you are pointing to a place inside the <code>contrib</code> directory, it's one of the places Evennia looks for Scripts). Wait a while and you will notice yourself starting making random observations.</p>
+<pre><code>script self
+</code></pre>
+<p>This will show details about scripts on yourself (also <code>examine</code> works). You will see how long it is until it "fires" next. Don't be alarmed if nothing happens when the countdown reaches zero - this particular script has a randomizer to determine if it will say something or not. So you will not see output every time it fires. </p>
+<p>When you are tired of your character's "insights", kill the script with</p>
+<pre><code>script/stop self = tutorial_examples.bodyfunctions.BodyFunctions
+</code></pre>
+<p>You create your own scripts in Python, outside the game; the path you give to <code>script</code> is literally the Python path to your script file. The <a href="Scripts.html">Scripts</a> page explains more details.</p>
+<h2 id="pushing-your-buttons">Pushing Your Buttons<a class="headerlink" href="#pushing-your-buttons" title="Permanent link">&para;</a></h2>
+<p>If we get back to the box we made, there is only so much fun you can do with it at this point. It's just a dumb generic object. If you renamed it to <code>stone</code> and changed its description noone would be the wiser. However, with the combined use of custom <a href="Typeclasses.html">Typeclasses</a>, <a href="Scripts.html">Scripts</a> and object-based <a href="Commands.html">Commands</a>, you could expand it and other items to be as unique, complex and interactive as you want. </p>
+<p>Let's take an example. So far we have only created objects that use the default object typeclass named simply <code>Object</code>. Let's create an object that is a little more interesting. Under <code>evennia/contrib/tutorial_examples</code> there is a module <code>red_button.py</code>.  It contains the enigmatic <code>RedButton</code> typeclass.</p>
+<p>Let's make us one of <em>those</em>!</p>
+<pre><code>create/drop button:tutorial_examples.red_button.RedButton
+</code></pre>
+<p>We import the RedButton python class the same way you would import it in Python except Evennia makes sure to look in<code>evennia/contrib/</code> so you don't have to write the full path every time. There you go - one red button. </p>
+<p>The RedButton is an example object intended to show off a few of Evennia's features. You will find that the <a href="Typeclasses.html">Typeclass</a> and <a href="Commands.html">Commands</a> controlling it are inside <code>evennia/contrib/tutorial_examples/</code>.</p>
+<p>If you wait for a while (make sure you dropped it!) the button will blink invitingly. Why don't you try to push it ...? Surely a big red button is meant to be pushed. You know you want to. </p>
+<h2 id="making-yourself-a-house">Making Yourself a House<a class="headerlink" href="#making-yourself-a-house" title="Permanent link">&para;</a></h2>
+<p>The main command for shaping the game world is <code>dig</code>. For example, if you are standing in Limbo you can dig a route to your new house location like this: </p>
+<pre><code>dig house = large red door;door;in,to the outside;out
+</code></pre>
+<p>This will create a new room named 'house'. Spaces at the start/end of names and aliases are ignored so you could put more air if you wanted.  This call will directly create an exit from your current location named 'large red door' and a corresponding exit named 'to the outside' in the house room leading back to Limbo. We also define a few aliases to those exits, so people don't have to write the full thing all the time. </p>
+<p>If you wanted to use normal compass directions (north, west, southwest etc), you could do that with <code>dig</code> too. But Evennia also has a limited version of <code>dig</code> that helps for compass directions (and also up/down and in/out). It's called <code>tunnel</code>:</p>
+<pre><code>tunnel sw = cliff
+</code></pre>
+<p>This will create a new room "cliff" with an exit "southwest" leading there and a path "northeast" leading back from the cliff to your current location. </p>
+<p>You can create new exits from where you are using the <code>open</code> command: </p>
+<pre><code>open north;n = house
+</code></pre>
+<p>This opens an exit <code>north</code> (with an alias <code>n</code>) to the previously created room <code>house</code>.</p>
+<p>If you have many rooms named <code>house</code> you will get a list of matches and have to select which one you want to link to. You can also give its database (#dbref) number, which is unique to every object. This can be found with the <code>examine</code> command or by looking at the latest constructions with <code>objects</code>.</p>
+<p>Follow the north exit to your 'house' or <code>teleport</code> to it:</p>
+<pre><code>north
+</code></pre>
+<p>or:</p>
+<pre><code>teleport house
+</code></pre>
+<p>To manually open an exit back to Limbo (if you didn't do so with the <code>dig</code> command):</p>
+<pre><code>open door = limbo
+</code></pre>
+<p>(or give limbo's dbref which is #2)</p>
+<h2 id="reshuffling-the-world">Reshuffling the World<a class="headerlink" href="#reshuffling-the-world" title="Permanent link">&para;</a></h2>
+<p>You can find things using the <code>find</code> command. Assuming you are back at <code>Limbo</code>, let's teleport the <em>large box to our house</em>.</p>
+<pre><code>&gt; teleport box = house
+very large box is leaving Limbo, heading for house.
+Teleported very large box -&gt; house.
+</code></pre>
+<p>We can still find the box by using find: </p>
+<pre><code>&gt; find box
+One Match(#1-#8):
+very large box(#8) - src.objects.objects.Object
+</code></pre>
+<p>Knowing the <code>#dbref</code> of the box (#8 in this example), you can grab the box and get it back here without actually yourself going to <code>house</code> first: </p>
+<pre><code>teleport #8 = here
+</code></pre>
+<p>(You can usually use <code>here</code> to refer to your current location. To refer to yourself you can use <code>self</code> or <code>me</code>). The box should now be back in Limbo with you. </p>
+<p>We are getting tired of the box. Let's destroy it.</p>
+<pre><code>destroy box
+</code></pre>
+<p>You can destroy many objects in one go by giving a comma-separated list of objects (or their #dbrefs, if they are not in the same location) to the command. </p>
+<h2 id="adding-a-help-entry">Adding a Help Entry<a class="headerlink" href="#adding-a-help-entry" title="Permanent link">&para;</a></h2>
+<p>An important part of building is keeping the help files updated. You can add, delete and append to existing help entries using the <code>sethelp</code> command.</p>
+<pre><code>sethelp/add MyTopic = This help topic is about ...
+</code></pre>
+<h2 id="adding-a-world">Adding a World<a class="headerlink" href="#adding-a-world" title="Permanent link">&para;</a></h2>
+<p>After this brief introduction to building you may be ready to see a more fleshed-out example. Evennia comes with a tutorial world for you to explore. </p>
+<p>First you need to switch back to <em>superuser</em> by using the <code>unquell</code> command. Next, place yourself in <code>Limbo</code> and run the following command:</p>
+<pre><code>batchcommand tutorial_world.build
+</code></pre>
+<p>This will take a while (be patient and don't re-run the command). You will see all the commands used to build the world scroll by as the world is built for you. </p>
+<p>You will end up with a new exit from Limbo named <em>tutorial</em>. Apart from being a little solo-adventure in its own right, the tutorial world is a good source for learning Evennia building (and coding). </p>
+<p>Read <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/tutorial_world/build.ev">the batch file</a> to see exactly how it's built, step by step. See also more info about the tutorial world <a href="Tutorial-World-Introduction">here</a>.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

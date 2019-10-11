@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Help System - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#viewing-the-help-database">Viewing the help database</a></li>
+        <li class="main "><a href="#command-auto-help-system">Command Auto-help system</a></li>
+        <li class="main "><a href="#database-help-entries">Database help entries</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="How-to-use-and-add-help-files-to-the-game."></a></p>
+<p>An important part of Evennia is the online help system. This allows the players and staff alike to learn how to use the game's commands as well as other information pertinent to the game. The help system has many different aspects, from the normal editing of help entries from inside the game, to auto-generated help entries during code development using the <em>auto-help system</em>.</p>
+<h2 id="viewing-the-help-database">Viewing the help database<a class="headerlink" href="#viewing-the-help-database" title="Permanent link">&para;</a></h2>
+<p>The main command is <code>help</code>: </p>
+<pre><code> help [searchstring]
+</code></pre>
+<p>This will show a list of help entries, ordered after categories. You will find two sections, <em>Command help entries</em> and <em>Other help entries</em> (initially you will only have the first one). You can use help to get more info about an entry; you can also give partial matches to get suggestions. If you give category names you will only be shown the topics in that category. </p>
+<h2 id="command-auto-help-system">Command Auto-help system<a class="headerlink" href="#command-auto-help-system" title="Permanent link">&para;</a></h2>
+<p>A common item that requires help entries are in-game commands. Keeping these entries up-to-date with the actual source code functionality can be a chore. Evennia's commands are therefore auto-documenting straight from the sources through its <em>auto-help system</em>.  Only commands that you and your character can actually currently use are picked up by the auto-help system. That means an admin will see a considerably larger amount of help topics than a normal player when using the default <code>help</code> command. </p>
+<p>The auto-help system uses the <code>__doc__</code> strings of your command classes and formats this to a nice-looking help entry. This makes for a very easy way to keep the help updated - just document your commands well and updating the help file is just a <code>@reload</code> away.  There is no need to manually create and maintain help database entries for commands; as long as you keep the docstrings updated your help will be dynamically updated for you as well.</p>
+<p>Example (from a module with command definitions): </p>
+<pre><code class="python">    class CmdMyCmd(Command):
+       &quot;&quot;&quot;
+       mycmd - my very own command
+
+       Usage: 
+         mycmd[/switches] &lt;args&gt;
+
+       Switches:
+         test - test the command
+         run  - do something else
+
+       This is my own command that does this and that.
+
+       &quot;&quot;&quot;
+       # [...]
+
+       help_category = &quot;General&quot;    # default
+       auto_help = True             # default
+
+       # [...]
+</code></pre>
+
+<p>The text at the very top of the command class definition is the class' <code>__doc__</code>-string and will be shown to users looking for help. Try to use a consistent format - all default commands are using the structure shown above. </p>
+<p>You should also supply the <code>help_category</code> class property if you can; this helps to group help entries together for people to more easily find them. See the <code>help</code> command in-game to see the default categories. If you don't specify the category, "General" is assumed. </p>
+<p>If you don't want your command to be picked up by the auto-help system at all (like if you want to write its docs manually using the info in the next section or you use a <a href="Command-Sets">cmdset</a> that has its own help functionality) you can explicitly set <code>auto_help</code> class property to <code>False</code> in your command definition.</p>
+<p>Alternatively, you can keep the advantages of <em>auto-help</em> in commands, but control the display of command helps.  You can do so by overriding the command's <code>get_help()</code> method.  By default, this method will return the class docstring.  You could modify it to add custom behavior:  the text returned by this method will be displayed to the character asking for help in this command.</p>
+<h2 id="database-help-entries">Database help entries<a class="headerlink" href="#database-help-entries" title="Permanent link">&para;</a></h2>
+<p>These are all help entries not involving commands (this is handled automatically by the <a href="#command-auto-help-system">Command Auto-help system</a>).  Non-automatic help entries describe how your particular game is played - its rules, world descriptions and so on.</p>
+<p>A help entry consists of four parts: </p>
+<ul>
+<li>The <em>topic</em>. This is the name of the help entry. This is what players search for when they are looking for help. The topic can contain spaces and also partial matches will be found.</li>
+<li>The <em>help category</em>. Examples are <em>Administration</em>, <em>Building</em>, <em>Comms</em> or <em>General</em>. This is an overall grouping of similar help topics, used by the engine to give a better overview.</li>
+<li>The <em>text</em> - the help text itself, of any length.</li>
+<li>locks - a <a href="Locks.html">lock definition</a>. This can be used to limit access to this help entry, maybe because it's staff-only or otherwise meant to be restricted. Help commands check for <code>access_type</code>s <code>view</code> and <code>edit</code>. An example of a lock string would be <code>view:perm(Builders)</code>.</li>
+</ul>
+<p>You can create new help entries in code by using <code>evennia.create_help_entry()</code>.</p>
+<pre><code class="python">from evennia import create_help_entry
+entry = create_help_entry(&quot;emote&quot;, 
+                &quot;Emoting is important because ...&quot;, 
+                category=&quot;Roleplaying&quot;, locks=&quot;view:all()&quot;)
+</code></pre>
+
+<p>From inside the game those with the right permissions can use the <code>@sethelp</code> command to add and modify help entries. </p>
+<pre><code>&gt; @sethelp/add emote = The emote command is ...
+</code></pre>
+<p>Using <code>@sethelp</code> you can add, delete and append text to existing entries. By default new entries will go in the <em>General</em> help category. You can change this using a different form of the <code>@sethelp</code> command:</p>
+<pre><code>&gt; @sethelp/add emote, Roleplaying = Emoting is important because ...
+</code></pre>
+<p>If the category <em>Roleplaying</em> did not already exist, it is created and will appear in the help index. </p>
+<p>You can, finally, define a lock for the help entry by following the category with a <a href="Locks.html">lock definition</a>: </p>
+<pre><code>&gt; @sethelp/add emote, Roleplaying, view:all() = Emoting is ...
+</code></pre></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

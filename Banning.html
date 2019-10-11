@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Banning - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#creating-a-ban">Creating a ban</a></li>
+            <li><a href="#name-ban">Name ban</a></li>
+            <li><a href="#ip-ban">IP ban</a></li>
+        <li class="main "><a href="#booting">Booting</a></li>
+            <li><a href="#lifting-a-ban">Lifting a ban</a></li>
+        <li class="main "><a href="#summary-of-abuse-handling-tools">Summary of abuse-handling tools</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="How-to-get-rid-of-unwanted-players."></a></p>
+<p>Whether due to abuse, blatant breaking of your rules, or some other reason, you will eventually find
+no other recourse but to kick out a particularly troublesome player. The default command set has
+admin tools to handle this, primarily <code>@ban</code>, <code>@unban</code>, and <code>@boot</code>. </p>
+<h2 id="creating-a-ban">Creating a ban<a class="headerlink" href="#creating-a-ban" title="Permanent link">&para;</a></h2>
+<p>Say we have a troublesome player "YouSuck" - this is a person that refuses common courtesy - an abusive
+and spammy account that is clearly created by some bored internet hooligan only to cause grief. You
+have tried to be nice. Now you just want this troll gone. </p>
+<h3 id="name-ban">Name ban<a class="headerlink" href="#name-ban" title="Permanent link">&para;</a></h3>
+<p>The easiest recourse is to block the account YouSuck from ever connecting again. </p>
+<pre><code> @ban YouSuck
+</code></pre>
+<p>This will lock the name YouSuck (as well as 'yousuck' and any other capitalization combination), and next time they try to log in with this name the server will not let them! </p>
+<p>You can also give a reason so you remember later why this was a good thing (the banned account will never see this)</p>
+<pre><code> @ban YouSuck:This is just a troll.
+</code></pre>
+<p>If you are sure this is just a spam account, you might even consider deleting the player account outright: </p>
+<pre><code> @delaccount YouSuck
+</code></pre>
+<p>Generally, banning the name is the easier and safer way to stop the use of an account -- if you change your mind you can always remove the block later whereas a deletion is permanent. </p>
+<h3 id="ip-ban">IP ban<a class="headerlink" href="#ip-ban" title="Permanent link">&para;</a></h3>
+<p>Just because you block YouSuck's name might not mean the trolling human behind that account gives up. They can just create a new account YouSuckMore and be back at it. One way to make things harder for them is to tell the server to not allow connections from their particular IP address.</p>
+<p>First, when the offending account is online, check which IP address they use. This you can do with the <code>who</code> command, which will show you something like this: </p>
+<pre><code> Account Name     On for     Idle     Room     Cmds     Host          
+ YouSuckMore      01:12      2m       22       212      237.333.0.223
+</code></pre>
+<p>The "Host" bit is the IP address from which the account is connecting. Use this to define the ban instead of the name: </p>
+<pre><code> @ban 237.333.0.223
+</code></pre>
+<p>This will stop YouSuckMore connecting from their computer. Note however that IP address might change easily - either due to how the player's Internet Service Provider operates or by the user simply changing computers. You can make a more general ban by putting asterisks <code>*</code> as wildcards for the groups of three digits in the address. So if you figure out that !YouSuckMore mainly connects from 237.333.0.223, 237.333.0.225, and 237.333.0.256 (only changes in their subnet), it might be an idea to put down a ban like this to include any number in that subnet: </p>
+<pre><code> @ban 237.333.0.*
+</code></pre>
+<p>You should combine the IP ban with a name-ban too of course, so the account YouSuckMore is truly locked regardless of where they connect from. </p>
+<p>Be careful with too general IP bans however (more asterisks above). If you are unlucky you could be blocking out innocent players who just happen to connect from the same subnet as the offender. </p>
+<h2 id="booting">Booting<a class="headerlink" href="#booting" title="Permanent link">&para;</a></h2>
+<p>YouSuck is not really noticing all this banning yet though - and won't until having logged out and trying to log back in again. Let's help the troll along. </p>
+<pre><code> @boot YouSuck
+</code></pre>
+<p>Good riddance. You can give a reason for booting too (to be echoed to the player before getting kicked out).</p>
+<pre><code> @boot YouSuck:Go troll somewhere else.
+</code></pre>
+<h3 id="lifting-a-ban">Lifting a ban<a class="headerlink" href="#lifting-a-ban" title="Permanent link">&para;</a></h3>
+<p>Use the <code>@unban</code> (or <code>@ban</code>) command without any arguments and you will see a list of all currently active bans: </p>
+<pre><code>Active bans
+id   name/ip       date                      reason 
+1    yousuck       Fri Jan 3 23:00:22 2020   This is just a Troll.
+2    237.333.0.*   Fri Jan 3 23:01:03 2020   YouSuck's IP.
+</code></pre>
+<p>Use the <code>id</code> from this list to find out which ban to lift.</p>
+<pre><code> @unban 2
+
+Cleared ban 2: 237.333.0.*
+</code></pre>
+<h2 id="summary-of-abuse-handling-tools">Summary of abuse-handling tools<a class="headerlink" href="#summary-of-abuse-handling-tools" title="Permanent link">&para;</a></h2>
+<p>Below are other useful commands for dealing with annoying players.</p>
+<ul>
+<li><strong>who</strong> -- (as admin) Find the IP of a account. Note that one account can be connected to from multiple IPs depending on what you allow in your settings.</li>
+<li><strong>examine/account thomas</strong> -- Get all details about an account. You can also use <code>*thomas</code> to get the account. If not given, you will get the <em>Object</em> thomas if it exists in the same location, which is not what you want in this case.</li>
+<li><strong>boot thomas</strong>  -- Boot all sessions of the given account name.</li>
+<li><strong>boot 23</strong> -- Boot one specific client session/IP by its unique id.</li>
+<li><strong>ban</strong> -- List all bans (listed with ids)</li>
+<li><strong>ban thomas</strong> -- Ban the user with the given account name</li>
+<li><strong>ban/ip <code>134.233.2.111</code></strong> -- Ban by IP</li>
+<li><strong>ban/ip <code>134.233.2.*</code></strong> -- Widen IP ban</li>
+<li><strong>ban/ip <code>134.233.*.*</code></strong> -- Even wider IP ban</li>
+<li>
+<p><strong>unban 34</strong> -- Remove ban with id #34</p>
+</li>
+<li>
+<p><strong>cboot mychannel = thomas</strong> -- Boot a subscriber from a channel you control</p>
+</li>
+<li><strong>clock mychannel = control:perm(Admin);listen:all();send:all()</strong> -- Fine control of access to your channel using <a href="https://github.com/evennia/evennia/wiki/Locks">lock definitions</a>.</li>
+</ul>
+<p>Locking a specific command (like <code>page</code>) is accomplished like so: 
+1. Examine the source of the command. <a href="https://github.com/evennia/evennia/blob/master/evennia/commands/default/comms.py#L686">The default <code>page</code> command class</a> has the lock string <strong>"cmd:not pperm(page_banned)"</strong>. This means that unless the player has the 'permission' "page_banned" they can use this command. You can assign any lock string to allow finer customization in your commands. You might look for the value of an <a href="https://github.com/evennia/evennia/wiki/Attributes">Attribute</a> or <a href="https://github.com/evennia/evennia/wiki/Tags">Tag</a>, your current location etc.
+2. <strong>perm/account thomas = page_banned</strong> -- Give the account the 'permission' which causes (in this case) the lock to fail. </p>
+<ul>
+<li>
+<p><strong>perm/del/account thomas = page_banned</strong> -- Remove the given permission</p>
+</li>
+<li>
+<p><strong>tel thomas = jail</strong> -- Teleport a player to a specified location or #dbref</p>
+</li>
+<li><strong>type thomas = FlowerPot</strong> -- Turn an annoying player into a flower pot (assuming you have a <code>FlowerPot</code> typeclass ready)</li>
+<li><strong>userpassword thomas = fooBarFoo</strong> -- Change a user's password</li>
+<li>
+<p><strong>delaccount thomas</strong> -- Delete a player account (not recommended, use <strong>ban</strong> instead)</p>
+</li>
+<li>
+<p><strong>server</strong> -- Show server statistics, such as CPU load, memory usage, and how many objects are cached</p>
+</li>
+<li><strong>time</strong> -- Gives server uptime, runtime, etc</li>
+<li><strong>reload</strong> -- Reloads the server without disconnecting anyone</li>
+<li><strong>reset</strong> -- Restarts the server, kicking all connections</li>
+<li><strong>shutdown</strong> -- Stops the server cold without it auto-starting again</li>
+<li><strong>py</strong> -- Executes raw Python code, allows for direct inspection of the database and account objects on the fly. For advanced users.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

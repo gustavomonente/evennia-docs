@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Directory Overview - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#the-game-directory">The Game directory</a></li>
+        <li class="main "><a href="#evennia-library-layout">Evennia library layout:</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Shows-where-everything-is-in-the-codebase."></a></p>
+<p>This is an overview of the directories relevant to Evennia coding. </p>
+<h2 id="the-game-directory">The Game directory<a class="headerlink" href="#the-game-directory" title="Permanent link">&para;</a></h2>
+<p>The game directory is created with <code>evennia --init &lt;name&gt;</code>. In the Evennia documentation we always assume it's called <code>mygame</code>. Apart from the <code>server/</code> subfolder within, you could reorganize this folder if you preferred a different code structure for your game.</p>
+<ul>
+<li><code>mygame/</code></li>
+<li><code>commands/</code> - Overload default <a href="Commands.html">Commands</a> or add your own Commands/<a href="Command-Sets">Command sets</a> here.</li>
+<li><code>server</code>/  - The structure of this folder should not change since Evennia expects it.  <ul>
+<li><a href="https://github.com/evennia/evennia/tree/master/evennia/game_template/server"><code>conf/</code></a> - All server configuration files sits here. The most important file is <code>settings.py</code>. </li>
+<li><code>logs/</code> - Portal log files are stored here (Server is logging to the terminal by default)</li>
+</ul>
+</li>
+<li><code>typeclasses/</code> - this folder contains empty templates for overloading default game entities of Evennia. Evennia will automatically use the changes in those templates for the game entities it creates. </li>
+<li><code>web/</code> - This holds the <a href="Web-features">Web features</a> of your game. </li>
+<li><code>world/</code> - this is a "miscellaneous" folder holding everything related to the world you are building, such as build scripts and rules modules that don't fit with one of the other folders.  </li>
+</ul>
+<h2 id="evennia-library-layout">Evennia library layout:<a class="headerlink" href="#evennia-library-layout" title="Permanent link">&para;</a></h2>
+<p>If you cloned the GIT repo following the instructions, you will have a folder named <code>evennia</code>. The top level of it contains Python package specific stuff such as a readme file, <code>setup.py</code> etc. It also has two subfolders<code>bin/</code> and <code>evennia/</code> (again).  </p>
+<p>The <code>bin/</code> directory holds OS-specific binaries that will be used when installing Evennia with <code>pip</code> as per the <a href="Getting-Started">Getting started</a> instructions. The library itself is in the <code>evennia</code> subfolder. From your code you will access this subfolder simply by <code>import evennia</code>. </p>
+<ul>
+<li>evennia</li>
+<li><a href="Evennia-API"><code>__init__.py</code></a> - The "flat API" of Evennia resides here. </li>
+<li><a href="Commands"><code>commands/</code></a> - The command parser and handler.<ul>
+<li><code>default/</code> - The <a href="Default-Command-Help">default commands</a> and cmdsets. </li>
+</ul>
+</li>
+<li><a href="Communications"><code>comms/</code></a> - Systems for communicating in-game. </li>
+<li><code>contrib/</code> - Optional plugins too game-specific for core Evennia.</li>
+<li><code>game_template/</code> - Copied to become the "game directory" when using <code>evennia --init</code>. </li>
+<li><a href="Help-System"><code>help/</code></a> - Handles the storage and  creation of help entries.</li>
+<li><code>locale/</code> - Language files (<a href="Internationalization.html">i18n</a>).</li>
+<li><a href="Locks"><code>locks/</code></a> - Lock system for restricting access to in-game entities.</li>
+<li><a href="Objects"><code>objects/</code></a> - In-game entities (all types of items and Characters).</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Spawner-and-Prototypes"><code>prototypes/</code></a> - Object Prototype/spawning system and OLC menu</li>
+<li><a href="Accounts"><code>accounts/</code></a> - Out-of-game Session-controlled entities (accounts, bots etc)</li>
+<li><a href="Scripts"><code>scripts/</code></a> - Out-of-game entities equivalence to Objects, also with timer support. </li>
+<li><a href="Portal-and-Server"><code>server/</code></a> - Core server code and Session handling. <ul>
+<li><code>portal/</code> - Portal proxy and connection protocols.</li>
+</ul>
+</li>
+<li><a href="Server-Conf#Settings-file"><code>settings_default.py</code></a> - Root settings of Evennia. Copy settings from here to <code>mygame/server/settings.py</code> file. </li>
+<li><a href="Typeclasses"><code>typeclasses/</code></a> - Abstract classes for the typeclass storage and database system.</li>
+<li><a href="Coding-Utils"><code>utils/</code></a> - Various miscellaneous useful coding resources.</li>
+<li><a href="Web-Features"><code>web/</code></a> - Web resources and webserver. Partly copied into game directory on initialization.</li>
+</ul>
+<p>All directories contain files ending in <code>.py</code>. These are Python <em>modules</em> and are the basic units of Python code. The roots of directories also have (usually empty) files named <code>__init__.py</code>. These are required by Python so as to be able to find and import modules in other directories. When you have run Evennia at least once you will find that there will also be <code>.pyc</code> files appearing, these are pre-compiled binary versions of the <code>.py</code> files to speed up execution.</p>
+<p>The root of the <code>evennia</code> folder has an <code>__init__.py</code> file containing the "<a href="evennia-API">flat API</a>". This holds shortcuts to various subfolders in the evennia library. It is provided to make it easier to find things; it allows you to just import <code>evennia</code> and access things from that rather than having to import from their actual locations inside the source tree. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

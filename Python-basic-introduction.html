@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Python basic introduction - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#evennia-hello-world">Evennia Hello world</a></li>
+        <li class="main "><a href="#importing-modules">Importing modules</a></li>
+        <li class="main "><a href="#parsing-python-errors">Parsing Python errors</a></li>
+        <li class="main "><a href="#our-first-function">Our first function</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>This is the first part of our beginner's guide to the basics of using Python with Evennia. It's aimed at you with limited or no programming/Python experience. But also if you are an experienced programmer new to Evennia or Python you might still pick up a thing or two. It is by necessity brief and low on detail. There are countless Python guides and tutorials, books and videos out there for learning more in-depth - use them!</p>
+<p><strong>Contents:</strong>
+- <a href="#evennia-hello-world">Evennia Hello world</a>
+- <a href="#importing-modules">Importing modules</a>
+- <a href="#parsing-python-errors">Parsing Python errors</a>
+- <a href="#our-first-function">Our first function</a>
+- (continued in <a href="Python-basic-tutorial-part-two">part 2</a>)</p>
+<p>This quickstart assumes you have <a href="Getting-Started">gotten Evennia started</a>. You should make sure that you are able to see the output from the server in the console from which you started it. Log into the game either with a mud client on <code>localhost:4000</code> or by pointing a web browser to <code>localhost:4001/webclient</code>. Log in as your superuser (the user you created during install).</p>
+<p>Below, lines starting with a single <code>&gt;</code> means command input.</p>
+<h3 id="evennia-hello-world">Evennia Hello world<a class="headerlink" href="#evennia-hello-world" title="Permanent link">&para;</a></h3>
+<p>The <code>@py</code> (or <code>!</code> which is an alias) command allows you as a superuser to run raw Python from in-game. From the game's input line, enter the following:</p>
+<pre><code class="python">&gt; @py print(&quot;Hello World!&quot;)
+</code></pre>
+
+<p>You won't see any return in Evennia though, instead you will just see:</p>
+<pre><code>&gt;&gt;&gt; print(&quot;Hello world!&quot;)
+None
+</code></pre>
+
+<p>To understand what is going on: some extra info: The <code>print(...)</code> <em>function</em> is the basic, in-built way to output text in Python. The quotes <code>"..."</code> means you are inputing a <em>string</em> (i.e. text). You could also have used single-quotes <code>'...'</code>, Python accepts both.</p>
+<p>The first return line (with <code>&gt;&gt;&gt;</code>) is just <code>@py</code> echoing what you input (we won't include that in the examples henceforth) and the last line just says the <code>@py</code> command finished.</p>
+<p>Where is our hello world? In Evennia, <code>print</code> does not print in-game. Instead it prints to the log. Open a terminal (or go back to the terminal you started Evennia in), make sure your <code>virtualenv</code> is active and that you are standing in your game directory (the one created with <code>evennia --init</code> during installation). Enter</p>
+<pre><code>evennia -l
+</code></pre>
+
+<p>to start tailing the log in the terminal (use <code>Ctrl-C</code> if you need to exit later). If you look towards the end you will find the print output next to the log time stamp:</p>
+<pre><code>2017-05-07T20:20:16+0000 [stdout#info] Hello world!
+</code></pre>
+
+<p>As a game dev it is important to look at the console output when working in Evennia - many errors will only appear with full details here. You may sometimes have to scroll up in the history if you miss it.</p>
+<p>To show the greeting in-game, try the following instead:</p>
+<pre><code class="python">&gt; @py me.msg(&quot;Hello world!&quot;)
+    Hello world!
+    None
+</code></pre>
+
+<p>Ignore the last <code>None</code>, that's just a return from the <code>@py</code> command itself we don't need to care about for now. The <code>me</code> is something uniquely available in the <code>@py</code> command (we could also use <code>self</code>, it's an alias). It represents "us", the ones calling the <code>@py</code> command. The <code>me</code> is an example of an <em>Object instance</em>. Objects are fundamental in Python and Evennia. The <code>me</code> object not only represents the character we play in the game, it also contains a lot of useful resources for doing things with that Object. One such resource is <code>msg</code>. <code>msg</code> works like <code>print</code> except it sends the text to the object it is attached to instead of to the console log.</p>
+<p>You access an Object's resources by using the full-stop character <code>.</code>. So <code>self.msg</code> accesses the <code>msg</code> resource and then we call it like we did print, with our "Hello World!" greeting in parentheses.</p>
+<blockquote>
+<p>Important: something like <code>print(...)</code> we refer to as a <em>function</em>, while <code>msg(...)</code> which sits on an object is called a <em>method</em>.</p>
+</blockquote>
+<p>You can try printing other things. Also try to include <code>|r</code> at the start of your string to make the output red in-game. Use <code>@color</code> to learn more color tags.</p>
+<h3 id="importing-modules">Importing modules<a class="headerlink" href="#importing-modules" title="Permanent link">&para;</a></h3>
+<p>Keep your game running, then open a text editor of your choice. If your game folder is called <code>mygame</code>, create a new text file <code>test.py</code> in the subfolder <code>mygame/world</code>. This is how the file structure should look:</p>
+<pre><code>mygame/
+    world/
+        test.py
+</code></pre>
+
+<p>For now, only add one line to <code>test.py</code>:</p>
+<pre><code class="python">print(&quot;Hello World!&quot;)
+</code></pre>
+
+<p>Don't forget to save the file. A file with the ending <code>.py</code> is referred to as a Python <em>module</em>. To use this in-game we have to <em>import</em> it. Try this:</p>
+<pre><code class="python">&gt; @py import world.test
+</code></pre>
+
+<p>If you make some error (we'll cover how to handle errors below) you may need to run the <code>@reload</code> command for your changes to take effect.</p>
+<p>Think of the period <code>.</code> as replacing <code>/</code> (or <code>\</code> for Windows) in your path. The <code>.py</code> ending of <code>test.py</code> is never included in this "Python-path", but only files with that ending can be imported this way. Where is <code>mygame</code> in that Python-path? The answer is that Evennia has already told Python that your <code>mygame</code> folder is a good place to look for imports. So we don't include <code>mygame</code> in the path - Evennia handles this for us.</p>
+<p>When you import the module, the top "level" of it will execute. In this case, it will immediately print "Hello World" to the console window.</p>
+<blockquote>
+<p>If you look in the folder you'll also often find new files ending with <code>.pyc</code>. These are compiled Python binaries that Python auto-creates when running code. Just ignore them, you should never edit those anyway.</p>
+</blockquote>
+<p>Now try to run this a second time:</p>
+<pre><code class="python">&gt; @py import world.test
+</code></pre>
+
+<p>You will <em>not</em> see any output in the log this second time or any subsequent times! This is not a bug. Rather it is because Python is being clever - it stores all imported modules and to be efficient it will avoid importing them more than once. So your <code>print</code> will only run the first time. To see it again you need to <code>@reload</code> first, so Python forgets about the module and has to import it again.</p>
+<p>We'll get back to importing code in the second part of this tutorial. For now, let's press on.</p>
+<h3 id="parsing-python-errors">Parsing Python errors<a class="headerlink" href="#parsing-python-errors" title="Permanent link">&para;</a></h3>
+<p>Next, erase the single <code>print</code> statement you had in <code>test.py</code> and replace it with this instead:</p>
+<pre><code class="python">me.msg(&quot;Hello World!&quot;)
+</code></pre>
+
+<p>As you recall we used this from <code>@py</code> earlier - it echoed "Hello World!" in-game. Save your file and <code>@reload</code> your server in-game - this makes sure Evennia sees the new version of your code. Try to import it from <code>@py</code> in the same way as earlier:</p>
+<pre><code class="python">&gt; @py import world.test
+</code></pre>
+
+<p>No go - this time you get an error!</p>
+<pre><code class="python">File &quot;./world/test.py&quot;, line 1, in &lt;module&gt;
+    me.msg(&quot;Hello world!&quot;)
+NameError: name 'me' is not defined
+</code></pre>
+
+<p>This is called a <em>traceback</em>. Python's errors are very friendly and will most of the time tell you exactly what and where things are wrong. It's important that you learn to parse tracebacks so you can fix your code. Let's look at this one. A traceback is to be read from the bottom up. The last line is the error Python balked at, while the two lines above it details exactly where that error was encountered.</p>
+<ol>
+<li>An error of type <code>NameError</code> is the problem ...</li>
+<li>... more specifically it is due to the variable <code>me</code> not being defined.</li>
+<li>This happened on the line <code>me.msg("Hello world!")</code> ...</li>
+<li>... which is on line <code>1</code> of the file <code>./world/test.py</code>.</li>
+</ol>
+<p>In our case the traceback is short. There may be many more lines above it, tracking just how different modules called each other until it got to the faulty line. That can sometimes be useful information, but reading from the bottom is always a good start.</p>
+<p>The <code>NameError</code> we see here is due to a module being its own isolated thing. It knows nothing about the environment into which it is imported. It knew what <code>print</code> is because that is a special <a href="https://docs.python.org/2.5/ref/keywords.html">reserved Python keyword</a>. But <code>me</code> is <em>not</em> such a reserved word. As far as the module is concerned <code>me</code> is just there out of nowhere. Hence the <code>NameError</code>.</p>
+<h3 id="our-first-function">Our first function<a class="headerlink" href="#our-first-function" title="Permanent link">&para;</a></h3>
+<p>Let's see if we can resolve that <code>NameError</code> from the previous section. We know that <code>me</code> is defined at the time we use the <code>@py</code> command because if we do <code>@py me.msg("Hello World!")</code> directly in-game it works fine. What if we could <em>send</em> that <code>me</code> to the <code>test.py</code> module so it knows what it is? One way to do this is with a <em>function</em>.</p>
+<p>Change your <code>mygame/world/test.py</code> file to look like this:</p>
+<pre><code class="python">def hello_world(who):
+    who.msg(&quot;Hello World!&quot;)
+</code></pre>
+
+<p>Now that we are moving onto multi-line Python code, there are some important things to remember:</p>
+<ul>
+<li>Capitalization matters in Python. It must be <code>def</code> and not <code>DEF</code>, <code>who</code> is not the same as <code>Who</code> etc.</li>
+<li>Indentation matters in Python. The second line must be indented or it's not valid code. You should also use a consistent indentation length. We <em>strongly</em> recommend that you set up your editor to always indent <em>4 spaces</em> (<strong>not</strong> a single tab-character) when you press the TAB key - it will make your life a lot easier.</li>
+<li><code>def</code> is short for "define" and defines a <em>function</em> (or a <em>method</em>, if sitting on an object). This is a <a href="https://docs.python.org/2.5/ref/keywords.html">reserved Python keyword</a>; try not to use these words anywhere else.</li>
+<li>A function name can not have spaces but otherwise we could have called it almost anything. We call it <code>hello_world</code>. Evennia follows <a href="https://github.com/evennia/evennia/blob/master/CODING_STYLE.md#a-quick-list-of-code-style-points">Python's standard naming style</a> with lowercase letters and underscores. Use this style for now.</li>
+<li><code>who</code> is what we call the <em>argument</em> to our function. Arguments are variables we pass to the function. We could have named it anything and we could also have multiple arguments separated by commas. What <code>who</code> is depends on what we pass to this function when we <em>call</em> it later (hint: we'll pass <code>me</code> to it).</li>
+<li>The colon (<code>:</code>) at the end of the first line indicates that the header of the function is complete.</li>
+<li>The indentation marks the beginning of the actual operating code of the function (the function's <em>body</em>). If we wanted more lines to belong to this function those lines would all have to have to start at this indentation level.</li>
+<li>In the function body we take the <code>who</code> argument and treat it as we would have treated <code>me</code> earlier - we expect it to have a <code>.msg</code> method we can use to send "Hello World" to.</li>
+</ul>
+<p>First, <code>@reload</code> your game to make it aware of the updated Python module. Now we have defined our first function, let's use it.</p>
+<pre><code class="python">&gt; @reload
+&gt; @py import world.test
+Done (use self.msg() if you want to catch output)
+</code></pre>
+
+<p>Nothing happened except the normal output from <code>@py</code>. That is because the function in our module won't do anything just by importing it. It will only act when we <em>call</em> it. We will need to enter the module we just imported and do so.</p>
+<pre><code class="python">&gt; @py import world.test ; world.test.hello_world(me)
+Hello world!
+Done (use self.msg() if you want to catch output)
+</code></pre>
+
+<p>There is our "Hello World"! The <code>;</code> is the way to put multiple Python-statements on one line.</p>
+<blockquote>
+<p>Some MUD clients use <code>;</code> for their own purposes to separate client-inputs. If so you'll get a <code>NameError</code> stating that <code>world</code> is not defined. Check so you understand why this is! Change the use of <code>;</code> in your client or use the Evennia web client if this is a problem.</p>
+</blockquote>
+<p>In the second statement we access the module path we imported (<code>world.test</code>) and reach for the <code>hello_world</code> function within. We <em>call</em> the function with <code>me</code>, which becomes the <code>who</code> variable we use inside the <code>hello_function</code>.</p>
+<blockquote>
+<p>As an exercise, try to pass something else into <code>hello_world</code>. Try for example to pass <em>who</em> as the number <code>5</code> or the simple string <code>"foo"</code>. You'll get errors that they don't have the attribute <code>msg</code>. As we've seen, <code>me</code> <em>does</em> make <code>msg</code> available which is why it works (you'll learn more about Objects like <code>me</code> in the next part of this tutorial). If you are familiar with other programming languages you may be tempted to start <em>validating</em> <code>who</code> to make sure it works as expected. This is usually not recommended in Python which suggests it's better to <a href="https://docs.python.org/2/tutorial/errors.html">handle</a> the error if it happens rather than to make a lot of code to prevent it from happening. See also <a href="https://en.wikipedia.org/wiki/Duck_typing">duck typing</a>.</p>
+</blockquote>
+<p>This tutorial is continued in <a href="Python-basic-tutorial-part-two">Part 2</a>, where we'll start learning about objects and to explore the Evennia library.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

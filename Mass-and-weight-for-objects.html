@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Mass and weight for objects - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#objects">Objects</a></li>
+        <li class="main "><a href="#characters-and-rooms">Characters and rooms</a></li>
+        <li class="main "><a href="#inventory">Inventory</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-tutorial-on-how-to-add-mass-attributes-to-objects-and-calculate-total-weight-of-object-and-its-contents."></a></p>
+<p>An easy addition to add dynamic variety to your world objects is to give them some mass.  Why mass
+and not weight? Weight varies in setting; for example things on the Moon weigh 1/6 as much.  On
+Earth's surface and in most environments, no relative weight factor is needed.</p>
+<p>In most settings, mass can be used as weight to spring a pressure plate trap or a floor giving way,
+determine a character's burden weight for travel speed...   The total mass of an object can
+contribute to the force of a weapon swing, or a speeding meteor to give it a potential striking
+force.</p>
+<h4 id="objects">Objects<a class="headerlink" href="#objects" title="Permanent link">&para;</a></h4>
+<p>Now that we have reasons for keeping track of object mass, let's look at the default object class
+inside your mygame/typeclasses/objects.py and see how easy it is to total up mass from an object and
+its contents.</p>
+<pre><code class="python"># inside your mygame/typeclasses/objects.py
+
+class Object(DefaultObject):
+# [...]
+    def get_mass(self):
+        mass = self.attributes.get('mass', 1) # Default objects have 1 unit mass.
+        return mass + sum(obj.get_mass() for obj in self.contents)
+</code></pre>
+
+<p>Adding the <code>get_mass</code> definition to the objects you want to sum up the masses for is done with
+Python's "sum" function which operates on all the contents, in this case by summing them to
+return a total mass value.</p>
+<p>If you only wanted specific object types to have mass or have the new object type in a different
+module, see <a class="wikilink" href="/Adding-Object-Typeclass-Tutorial.html">Adding-Object-Typeclass-Tutorial</a> with its Heavy class object. You could set the
+default for Heavy types to something much larger than 1 gram or whatever unit you want to use.  Any
+non-default mass would be stored on the <code>mass</code> <a class="wikilink" href="/Attributes.html">Attributes</a> of the objects.</p>
+<h4 id="characters-and-rooms">Characters and rooms<a class="headerlink" href="#characters-and-rooms" title="Permanent link">&para;</a></h4>
+<p>You can add a <code>get_mass</code> definition to characters and rooms, also.</p>
+<p>If you were in a one metric-ton elevator with four other friends also wearing armor and carrying gold bricks, you might wonder if this elevator's going to move, and how fast.</p>
+<p>Assuming the unit is grams and the elevator itself weights 1,000 kilograms, it would already be
+<code>@set elevator/mass=1000000</code>, we're <code>@set me/mass=85000</code> and our armor is <code>@set armor/mass=50000</code>.
+We're each carrying 20 gold bars each <code>@set gold bar/mass=12400</code> then step into the elevator and see
+the following message in the elevator's appearance: <code>Elevator weight and contents should not exceed
+3 metric tons.</code> Are we safe?  Maybe not if you consider dynamic loading. But at rest:</p>
+<pre><code class="python"># Elevator object knows when it checks itself:
+if self.get_mass() &lt; 3000000:
+    pass  # Elevator functions as normal.
+else:
+    pass  # Danger! Alarm sounds, cable snaps, elevator stops...
+</code></pre>
+
+<h4 id="inventory">Inventory<a class="headerlink" href="#inventory" title="Permanent link">&para;</a></h4>
+<p>Example of listing mass of items in your inventory:</p>
+<pre><code class="python">class CmdInventory(MuxCommand):
+    &quot;&quot;&quot;
+    view inventory
+    Usage:
+      inventory
+      inv
+    Switches:
+      /weight to display all available channels.
+    Shows your inventory: carrying, wielding, wearing, obscuring.
+    &quot;&quot;&quot;
+
+    key = &quot;inventory&quot;
+    aliases = [&quot;inv&quot;, &quot;i&quot;]
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        &quot;check inventory&quot;
+        items = self.caller.contents
+        if not items:
+            string = &quot;You are not carrying anything.&quot;
+        else:
+            table = prettytable.PrettyTable([&quot;name&quot;, &quot;desc&quot;])
+            table.header = False
+            table.border = False
+            for item in items:
+                second = item.get_mass() \
+                        if 'weight' in self.switches else item.db.desc
+                table.add_row([&quot;%s&quot; % item.get_display_name(self.caller.sessions),
+                               second and second or &quot;&quot;])
+            string = &quot;|wYou are carrying:\n%s&quot; % table
+        self.caller.msg(string)
+
+</code></pre></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

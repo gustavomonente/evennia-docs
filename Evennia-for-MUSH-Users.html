@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Evennia for MUSH Users - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#developers-vs-players">Developers vs Players</a></li>
+        <li class="main "><a href="#collaborating-on-a-game-python-vs-softcode">Collaborating on a game - Python vs Softcode</a></li>
+        <li class="main "><a href="#parent-vs-typeclass-and-spawn">@parent vs @typeclass and @spawn</a></li>
+        <li class="main "><a href="#a-first-step-making-things-more-familiar">A first step making things more familiar</a></li>
+            <li><a href="#activating-a-multi-descer">Activating a multi-descer</a></li>
+            <li><a href="#customizing-the-multidescer-syntax">Customizing the multidescer syntax</a></li>
+        <li class="main "><a href="#next-steps">Next steps</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Soft-introduction-of-Evennia-for-MUSH-users"></a>
+<em>This page is adopted from an article originally posted for the MUSH community <a href="http://musoapbox.net/topic/1150/evennia-for-mushers">here on musoapbox.net</a>.</em></p>
+<p><a href="https://en.wikipedia.org/wiki/MUSH">MUSH</a>es are text multiplayer games traditionally used for heavily roleplay-focused game styles. They are often (but not always) utilizing game masters and human oversight over code automation. MUSHes are traditionally built on the TinyMUSH-family of game servers, like PennMUSH, TinyMUSH, TinyMUX and RhostMUSH. Also their siblings <a href="https://en.wikipedia.org/wiki/TinyMUCK">MUCK</a> and <a href="https://en.wikipedia.org/wiki/MOO">MOO</a> are often mentioned together with MUSH since they all inherit from the same <a href="https://en.wikipedia.org/wiki/MUD_trees#TinyMUD_family_tree">TinyMUD</a> base. A major feature is the ability to modify and program the game world from inside the game by using a custom scripting language. We will refer to this online scripting as <em>softcode</em> here. </p>
+<p>Evennia works quite differently from a MUSH both in its overall design and under the hood. The same things are achievable, just in a different way. Here are some fundamental differences to keep in mind if you are coming from the MUSH world. </p>
+<h2 id="developers-vs-players">Developers vs Players<a class="headerlink" href="#developers-vs-players" title="Permanent link">&para;</a></h2>
+<p>In MUSH, users tend to code and expand all aspects of the game from inside it using softcode. A MUSH can thus be said to be managed solely by <em>Players</em> with different levels of access. Evennia on the other hand, differentiates between the role of the <em>Player</em> and the <em>Developer</em>.</p>
+<ul>
+<li>An Evennia <em>Developer</em> works in Python from <em>outside</em> the game, in what MUSH would consider “hardcode”. Developers implement larger-scale code changes and can fundamentally change how the game works. They then load their changes into the running Evennia server. Such changes will usually not drop any connected players.</li>
+<li>An Evennia <em>Player</em> operates from <em>inside</em> the game. Some staff-level players are likely to double as developers. Depending on access level, players can modify and expand the game's world by digging new rooms, creating new objects, alias commands, customize their experience and so on. Trusted staff may get access to Python via the <code>@py</code> command, but this would be a security risk for normal Players to use. So the <em>Player</em> usually operates by making use of the tools prepared for them by the <em>Developer</em> - tools that can be as rigid or flexible as the developer desires.</li>
+</ul>
+<h2 id="collaborating-on-a-game-python-vs-softcode">Collaborating on a game - Python vs Softcode<a class="headerlink" href="#collaborating-on-a-game-python-vs-softcode" title="Permanent link">&para;</a></h2>
+<p>For a <em>Player</em>, collaborating on a game need not be too different between MUSH and Evennia. The building and description of the game world can still happen mostly in-game using build commands, using text tags and <a href="https://github.com/evennia/evennia/wiki/TextTags#inline-functions">inline functions</a> to prettify and customize the experience. Evennia offers external ways to build a world but those are optional. There is also nothing <em>in principle</em> stopping a Developer from offering a softcode-like language to Players if that is deemed necessary. </p>
+<p>For <em>Developers</em> of the game, the difference is larger: Code is mainly written outside the game in Python modules rather than in-game on the command line. Python is a very popular and well-supported language with tons of documentation and help to be found. The Python standard library is also a great help for not having to reinvent the wheel. But that said, while Python is considered one of the easier languages to learn and use it is undoubtedly very different from MUSH softcode. </p>
+<p>While softcode allows collaboration in-game, Evennia's external coding instead opens up the possibility for collaboration using professional version control tools and bug tracking using websites like github (or bitbucket for a free private repo). Source code can be written in proper text editors and IDEs with refactoring, syntax highlighting and all other conveniences. In short, collaborative development of an Evennia game is done in the same way most professional collaborative development is done in the world, meaning all the best tools can be used.</p>
+<h2 id="parent-vs-typeclass-and-spawn"><code>@parent</code> vs <code>@typeclass</code> and <code>@spawn</code><a class="headerlink" href="#parent-vs-typeclass-and-spawn" title="Permanent link">&para;</a></h2>
+<p>Inheritance works differently in Python than in softcode. Evennia has no concept of a "master object" that other objects inherit from. There is in fact no reason at all to introduce "virtual objects" in the game world - code and data are kept separate from one another. </p>
+<p>In Python (which is an <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented</a> language) one instead creates <em>classes</em> - these are like blueprints from which you spawn any number of <em>object instances</em>. Evennia also adds the extra feature that every instance is persistent in the database (this means no SQL is ever needed). To take one example, a unique  character in Evennia is an instances of the class <code>Character</code>.  </p>
+<p>One parallel to MUSH's <code>@parent</code> command may be Evennia's <code>@typeclass</code> command, which changes which class an already existing object is an instance of. This way you can literally turn a <code>Character</code> into a <code>Flowerpot</code> on the spot.  </p>
+<p>if you are new to object oriented design it's important to note that all object instances of a class does <em>not</em> have to be identical. If they did, all Characters would be named the same. Evennia allows to customize individual objects in many different ways. One way is through <em>Attributes</em>, which are database-bound properties that can be linked to any object. For example, you could have an <code>Orc</code> class that defines all the stuff an Orc should be able to do (probably in turn inheriting from some  <code>Monster</code> class shared by all monsters). Setting different Attributes on different instances (different strength, equipment, looks etc) would make each Orc unique despite all sharing the same class.</p>
+<p>The <code>@spawn</code> command allows one to conveniently choose between different "sets" of Attributes to put on each new Orc (like the "warrior" set or "shaman" set) . Such sets can even inherit one another which is again somewhat remniscent at least of the <em>effect</em> of  <code>@parent</code> and the object-based inheritance of MUSH.</p>
+<p>There are other differences for sure, but that should give some feel for things. Enough with the theory. Let's get down to more practical  matters next. To install, see the <a href="Getting-Started">Getting Started instructions</a>.</p>
+<h2 id="a-first-step-making-things-more-familiar">A first step making things more familiar<a class="headerlink" href="#a-first-step-making-things-more-familiar" title="Permanent link">&para;</a></h2>
+<p>We will here give two examples of customizing Evennia to be more familiar to a MUSH <em>Player</em>.</p>
+<h3 id="activating-a-multi-descer">Activating a multi-descer<a class="headerlink" href="#activating-a-multi-descer" title="Permanent link">&para;</a></h3>
+<p>By default Evennia’s <code>desc</code> command updates your description and that’s it. There is a more feature-rich optional “multi-descer” in <code>evennia/contrib/multidesc.py</code> though. This alternative allows for managing and combining a multitude of keyed descriptions. </p>
+<p>To activate the multi-descer, <code>cd</code> to your game folder and into the <code>commands</code> sub-folder. There you’ll find the file <code>default_cmdsets.py</code>. In Python lingo all <code>*.py</code> files are called <em>modules</em>. Open the module in a text editor. We won’t go into Evennia in-game <em>Commands</em> and <em>Command sets</em> further here, but suffice to say Evennia allows you to change which commands (or versions of commands) are available to the player from moment to moment depending on circumstance.</p>
+<p>Add two new lines to the module as seen below:</p>
+<pre><code class="python"># the file mygame/commands/default_cmdsets.py
+# [...] 
+
+from evennia.contrib import multidescer   # &lt;- added now
+
+class CharacterCmdSet(default_cmds.CharacterCmdSet):
+    &quot;&quot;&quot;
+    The CharacterCmdSet contains general in-game commands like look,
+    get etc available on in-game Character objects. It is merged with
+    the AccountCmdSet when an Account puppets a Character.
+    &quot;&quot;&quot;
+    key = &quot;DefaultCharacter&quot;
+
+    def at_cmdset_creation(self):
+        &quot;&quot;&quot;
+        Populates the cmdset
+        &quot;&quot;&quot;
+        super().at_cmdset_creation()
+        #
+        # any commands you add below will overload the default ones.
+        #
+        self.add(multidescer.CmdMultiDesc())      # &lt;- added now 
+# [...]
+</code></pre>
+
+<p>Note that Python cares about indentation, so make sure to indent with the same number of spaces as shown above! </p>
+<p>So what happens above? We <a href="http://www.linuxtopia.org/online_books/programming_books/python_programming/python_ch28s03.html">import the module</a> <code>evennia/contrib/multidescer.py</code> at the top. Once imported we can access stuff inside that module using full stop (<code>.</code>). The multidescer is defined as a class <code>CmdMultiDesc</code> (we could find this out by opening said module in a text editor). At the bottom we create a new instance of this class and add it to the <code>CharacterCmdSet</code> class. For the sake of this tutorial we only need to know that <code>CharacterCmdSet</code> contains all commands that should be be available to the <code>Character</code> by default. </p>
+<p>This whole thing will be triggered when the command set is first created, which happens on server start. So we need to reload Evennia with <code>@reload</code> - no one will be disconnected by doing this. If all went well you should now be able to use <code>desc</code> (or <code>+desc</code>) and find that you have more possibilities:</p>
+<pre><code class="text">&gt; help +desc                  # get help on the command
+&gt; +desc eyes = His eyes are blue. 
+&gt; +desc basic = A big guy.
+&gt; +desc/set basic + + eyes    # we add an extra space between
+&gt; look me
+A big guy. His eyes are blue.
+</code></pre>
+
+<p>If there are errors,  a <em>traceback</em> will show in the server log - several lines of text showing where the error occurred. Find where the error is by locating the line number related to the <code>default_cmdsets.py</code> file (it's the only one you've changed so far). Most likely you mis-spelled something or missed the indentation. Fix it and either <code>@reload</code> again or run <code>evennia start</code> as needed. </p>
+<h3 id="customizing-the-multidescer-syntax">Customizing the multidescer syntax<a class="headerlink" href="#customizing-the-multidescer-syntax" title="Permanent link">&para;</a></h3>
+<p>As seen above the multidescer uses syntax like this  (where <code>|/</code> are Evennia's tags for line breaks) : </p>
+<pre><code class="text">&gt; +desc/set basic + |/|/ + cape + footwear + |/|/ + attitude 
+</code></pre>
+
+<p>This use of <code>+</code> was prescribed by the <em>Developer</em> that coded this <code>+desc</code> command. What if the <em>Player</em> doesn’t like this syntax though? Do players need to pester the dev to change it? Not necessarily. While Evennia does not allow the player to build their own multi-descer on the command line, it does allow for <em>re-mapping</em> the command syntax to one they prefer. This is done using the <code>nick</code> command. </p>
+<p>Here’s a nick that changes how to input the command above: </p>
+<pre><code class="text">&gt; nick setdesc $1 $2 $3 $4 = +desc/set $1 + |/|/ + $2 + $3 + |/|/ + $4
+</code></pre>
+
+<p>The string on the left will be matched against your input and if matching, it will be replaced with the string on the right. The <code>$</code>-type tags will store space-separated arguments and put them into the replacement. The nick allows <a href="http://www.linfo.org/wildcard.html">shell-like wildcards</a>, so you can use <code>*</code>, <code>?</code>, <code>[...]</code>, <code>[!...]</code> etc to match parts of the input. </p>
+<p>The same description as before can now be set as </p>
+<pre><code class="text">&gt; setdesc basic cape footwear attitude 
+</code></pre>
+
+<p>With the <code>nick</code> functionality players can mitigate a lot of syntax dislikes even without the developer changing the underlying Python code.</p>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<p>If you are a <em>Developer</em> and are interested in making a more MUSH-like Evennia game, a good start is to look into the Evennia <a href="https://github.com/evennia/evennia/wiki/Tutorial%20for%20basic%20MUSH%20like%20game">Tutorial for a first MUSH-like game</a>. That steps through building a simple little game from scratch and helps to acquaint you with the various corners of Evennia. There is also the <a href="https://github.com/evennia/evennia/wiki/Evennia%20for%20roleplaying%20sessions">Tutorial for running roleplaying sessions</a> that can be of interest. </p>
+<p>An important aspect of making things more familiar for <em>Players</em> is adding new and tweaking existing commands. How this is done is covered by the <a href="https://github.com/evennia/evennia/wiki/Adding%20Command%20Tutorial">Tutorial on adding new commands</a>. You may also find it useful to shop through the <code>evennia/contrib/</code> folder. The <a href="https://github.com/evennia/evennia/wiki/Tutorial%20World%20Introduction">Tutorial world</a> is a small single-player quest you can try (it’s not very MUSH-like but it does show many Evennia concepts in action). Beyond that there are <a href="https://github.com/evennia/evennia/wiki/Tutorials">many more tutorials</a> to try out. If you feel you want a more visual overview you can also look at <a href="https://evennia.blogspot.se/2016/05/evennia-in-pictures.html">Evennia in pictures</a>.</p>
+<p>… And of course, if you need further help you can always drop into the <a href="http://webchat.freenode.net/?channels=evennia&amp;uio=MT1mYWxzZSY5PXRydWUmMTE9MTk1JjEyPXRydWUbb">Evennia chatroom</a> or post a question in our <a href="https://groups.google.com/forum/#%21forum/evennia">forum/mailing list</a>!</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>API refactoring - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#griatch-aug-13-2019">Griatch (Aug 13, 2019)</a></li>
+        <li class="main "><a href="#griatch-sept-2-2019">Griatch (Sept 2, 2019)</a></li>
+        <li class="main "><a href="#johnny">Johnny</a></li>
+            <li><a href="#reduce-usage-of-optionalpositional-arguments-aug-29-2019">Reduce usage of optional/positional arguments (Aug 29, 2019)</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>Building up to Evennia 1.0 and beyond, it's time to comb through the Evennia API for old cruft. This whitepage is for anyone interested to contribute with their views on what part of the API needs refactoring, cleanup or clarification (or extension!)</p>
+<p>Note that this is not a forum. To keep things clean, each opinion text should ideally present a clear argument or lay out a suggestion. Asking for clarification and any side-discussions should be held in chat or forum.</p>
+<hr />
+<h3 id="griatch-aug-13-2019">Griatch (Aug 13, 2019)<a class="headerlink" href="#griatch-aug-13-2019" title="Permanent link">&para;</a></h3>
+<p>This is how to enter an opinion. Use any markdown needed but stay within your section. Also remember to copy your text to the clipboard before saving since if someone else edited the wiki in the meantime you'll have to start over. </p>
+<h3 id="griatch-sept-2-2019">Griatch (Sept 2, 2019)<a class="headerlink" href="#griatch-sept-2-2019" title="Permanent link">&para;</a></h3>
+<p>I don't agree with removing explicit keywords as suggested by <a href="https://github.com/evennia/evennia/wiki/API-refactoring/_edit#reduce-usage-of-optionalpositional-arguments-aug-29-2019">Johnny on Aug 29 below</a>. Overriding such a method can still be done by <code>get(self, **kwargs)</code> if so desired, making the kwargs explicit helps IMO readability of the API. If just giving a generic <code>**kwargs</code>, one must read the docstring or even the code to see which keywords are valid. </p>
+<p>On the other hand, I think it makes sense to as a standard offer an extra <code>**kwargs</code> at the end of arg-lists for common methods that are expected to be over-ridden. This make the API more flexible by hinting to the dev that they could expand their own over-ridden implementation with their own keyword arguments if so desired.</p>
+<hr />
+<h3 id="johnny">Johnny<a class="headerlink" href="#johnny" title="Permanent link">&para;</a></h3>
+<h4 id="reduce-usage-of-optionalpositional-arguments-aug-29-2019">Reduce usage of optional/positional arguments (Aug 29, 2019)<a class="headerlink" href="#reduce-usage-of-optionalpositional-arguments-aug-29-2019" title="Permanent link">&para;</a></h4>
+<pre><code># AttributeHandler
+def get(self, key=None, default=None, category=None, return_obj=False,
+            strattr=False, raise_exception=False, accessing_obj=None,
+            default_access=True, return_list=False):
+</code></pre>
+
+<p>Many classes have methods requiring lengthy positional argument lists, which are tedious and error-prone to extend and override especially in cases where not all arguments are even required. It would be useful if arguments were reserved for required inputs and anything else relegated to kwargs for easier passthrough on extension.</p>
+<hr /></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

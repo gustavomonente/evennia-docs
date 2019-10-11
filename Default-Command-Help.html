@@ -1,0 +1,2563 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Default Command Help - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#a-z">A-Z</a></li>
+        <li class="main "><a href="#a-z-by-source-file">A-Z by source file</a></li>
+        <li class="main "><a href="#command-details">Command details</a></li>
+            <li><a href="#accountpy">account.py</a></li>
+            <li><a href="#adminpy">admin.py</a></li>
+            <li><a href="#batchprocesspy">batchprocess.py</a></li>
+            <li><a href="#buildingpy">building.py</a></li>
+            <li><a href="#commspy">comms.py</a></li>
+            <li><a href="#generalpy">general.py</a></li>
+            <li><a href="#helppy">help.py</a></li>
+            <li><a href="#systempy">system.py</a></li>
+            <li><a href="#unloggedinpy">unloggedin.py</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Auto-generated-listing-of-default-Evennia-commands"></a></p>
+<blockquote>
+<p><em>This page is auto-generated. Do not modify - your changes will be lost. Report problems to the
+<a href="https://github.com/evennia/evennia/issues">issue tracker</a>.</em></p>
+</blockquote>
+<p>The full set of default Evennia commands currently contains 92 commands in 9 source
+files.  Our policy for adding default commands is outlined <a href="Using-Mux-as-a-Standard">here</a>. More
+information about how commands work can be found in the documentation for <a href="Commands.html">Commands</a>.</p>
+<h2 id="a-z">A-Z<a class="headerlink" href="#a-z" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki---unloggedin-look-command-cmdunconnectedlook"><code>__unloggedin_look_command</code></a> - look when in unlogged-in state</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-about-cmdabout">about</a> - show Evennia info</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-access-cmdaccess">access</a> - show your current game access</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-addcom-cmdaddcom">addcom</a> - add a channel alias and/or subscribe to a channel</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-alias-cmdsetobjalias">alias</a> - adding permanent aliases for object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-allcom-cmdallcom">allcom</a> - perform admin operations on all channels</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-ban-cmdban">ban</a> - ban an account from the server</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-batchcode-cmdbatchcode">batchcode</a> - build from batch-code file</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-batchcommands-cmdbatchcommands">batchcommands</a> - build from batch-command file</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-boot-cmdboot">boot</a> - kick an account from the server.</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-cboot-cmdcboot">cboot</a> - kick an account from a channel you control</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-ccreate-cmdchannelcreate">ccreate</a> - create a new channel</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-cdesc-cmdcdesc">cdesc</a> - describe a channel you control</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-cdestroy-cmdcdestroy">cdestroy</a> - destroy a channel you created</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-cemit-cmdcemit">cemit</a> - send an admin message to a channel you control</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-channels-cmdchannels">channels</a> - list all channels available to you</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-charcreate-cmdcharcreate">charcreate</a> - create a new character</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-chardelete-cmdchardelete">chardelete</a> - delete a character - this cannot be undone!</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-clock-cmdclock">clock</a> - change channel locks of a channel you control</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-cmdsets-cmdlistcmdsets">cmdsets</a> - list command sets defined on an object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-color-cmdcolortest">color</a> - testing which colors your client support</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-command-objmanipcommand">command</a> - This is a parent class for some of the defining objmanip commands</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-connect-cmdunconnectedconnect">connect</a> - connect to the game</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-copy-cmdcopy">copy</a> - copy an object and its properties</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-cpattr-cmdcpattr">cpattr</a> - copy attributes between objects</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-create-cmdunconnectedcreate">create</a> - create a new account account</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-create-cmdcreate">create</a> - create new objects</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-cwho-cmdcwho">cwho</a> - show who is listening to a channel</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-delcom-cmddelcom">delcom</a> - remove a channel alias and/or unsubscribe from channel</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-desc-cmddesc">desc</a> - describe an object or the current room.</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-destroy-cmddestroy">destroy</a> - permanently delete objects</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-dig-cmddig">dig</a> - build new rooms and connect them to the current location</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-drop-cmddrop">drop</a> - drop something</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-emit-cmdemit">emit</a> - admin command for emitting message to multiple objects</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-examine-cmdexamine">examine</a> - get detailed information about an object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-find-cmdfind">find</a> - search the database for objects</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-force-cmdforce">force</a> - forces an object to execute a command</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-get-cmdget">get</a> - pick up something</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-give-cmdgive">give</a> - give away something to someone</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-help-cmdhelp">help</a> - View help or a list of topics</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-help-cmdunconnectedhelp">help</a> - get help when in unconnected-in state</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-home-cmdhome">home</a> - move to your character's home location</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-ic-cmdic">ic</a> - control an object you have permission to puppet</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-inventory-cmdinventory">inventory</a> - view inventory</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-irc2chan-cmdirc2chan">irc2chan</a> - Link an evennia channel to an external IRC channel</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-link-cmdlink">link</a> - link existing rooms together with exits</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-lock-cmdlock">lock</a> - assign a lock definition to an object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-look-cmdooclook">look</a> - look while out-of-character</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-look-cmdlook">look</a> - look at location or object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-mvattr-cmdmvattr">mvattr</a> - move attributes between objects</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-name-cmdname">name</a> - change the name and/or aliases of an object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-nick-cmdnick">nick</a> - define a personal alias/nick by defining a string to</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-objects-cmdobjects">objects</a> - statistics on objects in the database</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-ooc-cmdooc">ooc</a> - stop puppeting and go ooc</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-open-cmdopen">open</a> - open a new exit from the current room</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-option-cmdoption">option</a> - Set an account option</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-page-cmdpage">page</a> - send a private message to another account</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-password-cmdpassword">password</a> - change your password</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-perm-cmdperm">perm</a> - set the permissions of an account/object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-pose-cmdpose">pose</a> - strike a pose</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-py-cmdpy">py</a> - execute a snippet of python code</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-quell-cmdquell">quell</a> - use character's permissions instead of account's</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-quit-cmdquit">quit</a> - quit the game</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-quit-cmdunconnectedquit">quit</a> - quit when in unlogged-in state</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-reload-cmdreload">reload</a> - reload the server</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-reset-cmdreset">reset</a> - reset and reboot the server</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-rss2chan-cmdrss2chan">rss2chan</a> - link an evennia channel to an external RSS feed</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-say-cmdsay">say</a> - speak as your character</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-script-cmdscript">script</a> - attach a script to an object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-scripts-cmdscripts">scripts</a> - list and manage all running scripts</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-server-cmdserverload">server</a> - show server load and memory statistics</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-service-cmdservice">service</a> - manage system services</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-sessions-cmdsessions">sessions</a> - check your connected session(s)</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-set-cmdsetattribute">set</a> - set attribute on an object or account</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-setdesc-cmdsetdesc">setdesc</a> - describe yourself</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-sethelp-cmdsethelp">sethelp</a> - Edit the help database.</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-sethome-cmdsethome">sethome</a> - set an object's home location</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-shutdown-cmdshutdown">shutdown</a> - stop the server completely</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-spawn-cmdspawn">spawn</a> - spawn objects from prototype</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-style-cmdstyle">style</a> - In-game style options</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-tag-cmdtag">tag</a> - handles the tags of an object</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-tel-cmdteleport">tel</a> - teleport object to another location</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-time-cmdtime">time</a> - show server time statistics</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-tunnel-cmdtunnel">tunnel</a> - create new rooms in cardinal directions only</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-typeclass-cmdtypeclass">typeclass</a> - set or change an object's typeclass</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-unban-cmdunban">unban</a> - remove a ban from an account</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-unlink-cmdunlink">unlink</a> - remove exit-connections between rooms</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-userpassword-cmdnewpassword">userpassword</a> - change the password of an account</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-wall-cmdwall">wall</a> - make an announcement to all</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-whisper-cmdwhisper">whisper</a> - Speak privately as your character to another</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-who-cmdwho">who</a> - list who is currently online</li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#wiki-wipe-cmdwipe">wipe</a> - clear all attributes from an object</li>
+</ul>
+<h2 id="a-z-by-source-file">A-Z by source file<a class="headerlink" href="#a-z-by-source-file" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#accountpy">account.py</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#adminpy">admin.py</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#batchprocesspy">batchprocess.py</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#buildingpy">building.py</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#commspy">comms.py</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#generalpy">general.py</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#helppy">help.py</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#systempy">system.py</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Default-Command-Help#unloggedinpy">unloggedin.py</a></li>
+</ul>
+<h2 id="command-details">Command details<a class="headerlink" href="#command-details" title="Permanent link">&para;</a></h2>
+<p>These are generated from the auto-documentation and are ordered by their source file location in
+<a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/">evennia/commands/default/</a></p>
+<h3 id="accountpy"><code>account.py</code><a class="headerlink" href="#accountpy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">View account.py source</a></p>
+<h4 id="charcreate-cmdcharcreate">charcreate (CmdCharCreate)<a class="headerlink" href="#charcreate-cmdcharcreate" title="Permanent link">&para;</a></h4>
+<pre><code>    create a new character
+
+    Usage:
+      charcreate &lt;charname&gt; [= desc]
+
+    Create a new character, optionally giving it a description. You
+    may use upper-case letters in the name - you will nevertheless
+    always be able to access your character using lower-case letters
+    if you want.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>charcreate</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:pperm(Player)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdCharCreate</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="chardelete-cmdchardelete">chardelete (CmdCharDelete)<a class="headerlink" href="#chardelete-cmdchardelete" title="Permanent link">&para;</a></h4>
+<pre><code>    delete a character - this cannot be undone!
+
+    Usage:
+        chardelete &lt;charname&gt;
+
+    Permanently deletes one of your characters.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>chardelete</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:pperm(Player)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdCharDelete</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="color-cmdcolortest">color (CmdColorTest)<a class="headerlink" href="#color-cmdcolortest" title="Permanent link">&para;</a></h4>
+<pre><code>    testing which colors your client support
+
+    Usage:
+      color ansi||xterm256
+
+    Prints a color map along with in-mud color codes to use to produce
+    them.  It also tests what is supported in your client. Choices are
+    16-color ansi (supported in most muds) or the 256-color xterm256
+    standard. No checking is done to determine your client supports
+    color - if not you will see rubbish appear.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>color</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdColorTest</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="ic-cmdic">ic (CmdIC)<a class="headerlink" href="#ic-cmdic" title="Permanent link">&para;</a></h4>
+<pre><code>    control an object you have permission to puppet
+
+    Usage:
+      ic &lt;character&gt;
+
+    Go in-character (IC) as a given Character.
+
+    This will attempt to &quot;become&quot; a different object assuming you have
+    the right to do so. Note that it's the ACCOUNT character that puppets
+    characters/objects and which needs to have the correct permission!
+
+    You cannot become an object that is already controlled by another
+    account. In principle &lt;character&gt; can be any in-game object as long
+    as you the account have access right to puppet it.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>ic</em></li>
+<li><strong>aliases:</strong> <em>puppet</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdIC</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="look-cmdooclook">look (CmdOOCLook)<a class="headerlink" href="#look-cmdooclook" title="Permanent link">&para;</a></h4>
+<pre><code>    look while out-of-character
+
+    Usage:
+      look
+
+    Look in the ooc state.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>look</em></li>
+<li><strong>aliases:</strong> <em>ls</em>, <em>l</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdOOCLook</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="ooc-cmdooc">ooc (CmdOOC)<a class="headerlink" href="#ooc-cmdooc" title="Permanent link">&para;</a></h4>
+<pre><code>    stop puppeting and go ooc
+
+    Usage:
+      ooc
+
+    Go out-of-character (OOC).
+
+    This will leave your current character and put you in a incorporeal OOC state.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>ooc</em></li>
+<li><strong>aliases:</strong> <em>unpuppet</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:pperm(Player)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdOOC</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="option-cmdoption">option (CmdOption)<a class="headerlink" href="#option-cmdoption" title="Permanent link">&para;</a></h4>
+<pre><code>    Set an account option
+
+    Usage:
+      option[/save] [name = value]
+
+    Switches:
+      save - Save the current option settings for future logins.
+      clear - Clear the saved options.
+
+    This command allows for viewing and setting client interface
+    settings. Note that saved options may not be able to be used if
+    later connecting with a client with different capabilities.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>option</em></li>
+<li><strong>aliases:</strong> <em>options</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdOption</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="password-cmdpassword">password (CmdPassword)<a class="headerlink" href="#password-cmdpassword" title="Permanent link">&para;</a></h4>
+<pre><code>    change your password
+
+    Usage:
+      password &lt;old password&gt; = &lt;new password&gt;
+
+    Changes your password. Make sure to pick a safe one.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>password</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:pperm(Player)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdPassword</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="quell-cmdquell">quell (CmdQuell)<a class="headerlink" href="#quell-cmdquell" title="Permanent link">&para;</a></h4>
+<pre><code>    use character's permissions instead of account's
+
+    Usage:
+      quell
+      unquell
+
+    Normally the permission level of the Account is used when puppeting a
+    Character/Object to determine access. This command will switch the lock
+    system to make use of the puppeted Object's permissions instead. This is
+    useful mainly for testing.
+    Hierarchical permission quelling only work downwards, thus an Account cannot
+    use a higher-permission Character to escalate their permission level.
+    Use the unquell command to revert back to normal operation.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>quell</em></li>
+<li><strong>aliases:</strong> <em>unquell</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:pperm(Player)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdQuell</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="quit-cmdquit">quit (CmdQuit)<a class="headerlink" href="#quit-cmdquit" title="Permanent link">&para;</a></h4>
+<pre><code>    quit the game
+
+    Usage:
+      quit
+
+    Switch:
+      all - disconnect all connected sessions
+
+    Gracefully disconnect your current session from the
+    game. Use the /all switch to disconnect from all sessions.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>quit</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdQuit</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="sessions-cmdsessions">sessions (CmdSessions)<a class="headerlink" href="#sessions-cmdsessions" title="Permanent link">&para;</a></h4>
+<pre><code>    check your connected session(s)
+
+    Usage:
+      sessions
+
+    Lists the sessions currently connected to your account.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>sessions</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdSessions</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultSession'</em> of class <code>SessionCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_session.py">cmdset_session.py</a>.</li>
+</ul>
+<h4 id="style-cmdstyle">style (CmdStyle)<a class="headerlink" href="#style-cmdstyle" title="Permanent link">&para;</a></h4>
+<pre><code>    In-game style options
+
+    Usage:
+      style
+      style &lt;option&gt; = &lt;value&gt;
+
+    Configure stylings for in-game display elements like table borders, help
+    entriest etc. Use without arguments to see all available options.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>style</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdStyle</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="who-cmdwho">who (CmdWho)<a class="headerlink" href="#who-cmdwho" title="Permanent link">&para;</a></h4>
+<pre><code>    list who is currently online
+
+    Usage:
+      who
+      doing
+
+    Shows who is currently online. Doing is an alias that limits info
+    also for those with all permissions.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>who</em></li>
+<li><strong>aliases:</strong> <em>doing</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdWho</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/account.py">account.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h3 id="adminpy"><code>admin.py</code><a class="headerlink" href="#adminpy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">View admin.py source</a></p>
+<h4 id="ban-cmdban">ban (CmdBan)<a class="headerlink" href="#ban-cmdban" title="Permanent link">&para;</a></h4>
+<pre><code>    ban an account from the server
+
+    Usage:
+      ban [&lt;name or ip&gt; [: reason]]
+
+    Without any arguments, shows numbered list of active bans.
+
+    This command bans a user from accessing the game. Supply an optional
+    reason to be able to later remember why the ban was put in place.
+
+    It is often preferable to ban an account from the server than to
+    delete an account with accounts/delete. If banned by name, that account
+    account can no longer be logged into.
+
+    IP (Internet Protocol) address banning allows blocking all access
+    from a specific address or subnet. Use an asterisk (*) as a
+    wildcard.
+
+    Examples:
+      ban thomas             - ban account 'thomas'
+      ban/ip 134.233.2.111   - ban specific ip address
+      ban/ip 134.233.2.*     - ban all in a subnet
+      ban/ip 134.233.*.*     - even wider ban
+
+    A single IP filter can be easy to circumvent by changing computers
+    or requesting a new IP address. Setting a wide IP block filter with
+    wildcards might be tempting, but remember that it may also
+    accidentally block innocent users connecting from the same country
+    or region.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>ban</em></li>
+<li><strong>aliases:</strong> <em>bans</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(ban) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Admin"</em></li>
+<li><strong>Source:</strong> class <code>CmdBan</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">admin.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="boot-cmdboot">boot (CmdBoot)<a class="headerlink" href="#boot-cmdboot" title="Permanent link">&para;</a></h4>
+<pre><code>    kick an account from the server.
+
+    Usage
+      boot[/switches] &lt;account obj&gt; [: reason]
+
+    Switches:
+      quiet - Silently boot without informing account
+      sid - boot by session id instead of name or dbref
+
+    Boot an account object from the server. If a reason is
+    supplied it will be echoed to the user unless /quiet is set.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>boot</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(boot) or perm(Admin)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Admin"</em></li>
+<li><strong>Source:</strong> class <code>CmdBoot</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">admin.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="emit-cmdemit">emit (CmdEmit)<a class="headerlink" href="#emit-cmdemit" title="Permanent link">&para;</a></h4>
+<pre><code>    admin command for emitting message to multiple objects
+
+    Usage:
+      emit[/switches] [&lt;obj&gt;, &lt;obj&gt;, ... =] &lt;message&gt;
+      remit           [&lt;obj&gt;, &lt;obj&gt;, ... =] &lt;message&gt;
+      pemit           [&lt;obj&gt;, &lt;obj&gt;, ... =] &lt;message&gt;
+
+    Switches:
+      room     -  limit emits to rooms only (default)
+      accounts -  limit emits to accounts only
+      contents -  send to the contents of matched objects too
+
+    Emits a message to the selected objects or to
+    your immediate surroundings. If the object is a room,
+    send to its contents. remit and pemit are just
+    limited forms of emit, for sending to rooms and
+    to accounts respectively.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>emit</em></li>
+<li><strong>aliases:</strong> <em>pemit</em>, <em>remit</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(emit) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Admin"</em></li>
+<li><strong>Source:</strong> class <code>CmdEmit</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">admin.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="force-cmdforce">force (CmdForce)<a class="headerlink" href="#force-cmdforce" title="Permanent link">&para;</a></h4>
+<pre><code>    forces an object to execute a command
+
+    Usage:
+        force &lt;object&gt;=&lt;command string&gt;
+
+    Example:
+        force bob=get stick
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>force</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(spawn) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdForce</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">admin.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="perm-cmdperm">perm (CmdPerm)<a class="headerlink" href="#perm-cmdperm" title="Permanent link">&para;</a></h4>
+<pre><code>    set the permissions of an account/object
+
+    Usage:
+      perm[/switch] &lt;object&gt; [= &lt;permission&gt;[,&lt;permission&gt;,...]]
+      perm[/switch] *&lt;account&gt; [= &lt;permission&gt;[,&lt;permission&gt;,...]]
+
+    Switches:
+      del     -  delete the given permission from &lt;object&gt; or &lt;account&gt;.
+      account -  set permission on an account (same as adding * to name)
+
+    This command sets/clears individual permission strings on an object
+    or account. If no permission is given, list all permissions on &lt;object&gt;.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>perm</em></li>
+<li><strong>aliases:</strong> <em>setperm</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(perm) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Admin"</em></li>
+<li><strong>Source:</strong> class <code>CmdPerm</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">admin.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="unban-cmdunban">unban (CmdUnban)<a class="headerlink" href="#unban-cmdunban" title="Permanent link">&para;</a></h4>
+<pre><code>    remove a ban from an account
+
+    Usage:
+      unban &lt;banid&gt;
+
+    This will clear an account name/ip ban previously set with the ban
+    command.  Use this command without an argument to view a numbered
+    list of bans. Use the numbers in this list to select which one to
+    unban.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>unban</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(unban) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Admin"</em></li>
+<li><strong>Source:</strong> class <code>CmdUnban</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">admin.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="userpassword-cmdnewpassword">userpassword (CmdNewPassword)<a class="headerlink" href="#userpassword-cmdnewpassword" title="Permanent link">&para;</a></h4>
+<pre><code>    change the password of an account
+
+    Usage:
+      userpassword &lt;user obj&gt; = &lt;new password&gt;
+
+    Set an account's password.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>userpassword</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(newpassword) or perm(Admin)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Admin"</em></li>
+<li><strong>Source:</strong> class <code>CmdNewPassword</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">admin.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="wall-cmdwall">wall (CmdWall)<a class="headerlink" href="#wall-cmdwall" title="Permanent link">&para;</a></h4>
+<pre><code>    make an announcement to all
+
+    Usage:
+      wall &lt;message&gt;
+
+    Announces a message to all connected sessions
+    including all currently unlogged in.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>wall</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(wall) or perm(Admin)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Admin"</em></li>
+<li><strong>Source:</strong> class <code>CmdWall</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/admin.py">admin.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h3 id="batchprocesspy"><code>batchprocess.py</code><a class="headerlink" href="#batchprocesspy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/batchprocess.py">View batchprocess.py source</a></p>
+<h4 id="batchcode-cmdbatchcode">batchcode (CmdBatchCode)<a class="headerlink" href="#batchcode-cmdbatchcode" title="Permanent link">&para;</a></h4>
+<pre><code>    build from batch-code file
+
+    Usage:
+     batchcode[/interactive] &lt;python path to file&gt;
+
+    Switch:
+       interactive - this mode will offer more control when
+                     executing the batch file, like stepping,
+                     skipping, reloading etc.
+       debug - auto-delete all objects that has been marked as
+               deletable in the script file (see example files for
+               syntax). This is useful so as to to not leave multiple
+               object copies behind when testing out the script.
+
+    Runs batches of commands from a batch-code text file (*.py).
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>batchcode</em></li>
+<li><strong>aliases:</strong> <em>batchcodes</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:superuser()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdBatchCode</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/batchprocess.py">batchprocess.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="batchcommands-cmdbatchcommands">batchcommands (CmdBatchCommands)<a class="headerlink" href="#batchcommands-cmdbatchcommands" title="Permanent link">&para;</a></h4>
+<pre><code>    build from batch-command file
+
+    Usage:
+     batchcommands[/interactive] &lt;python.path.to.file&gt;
+
+    Switch:
+       interactive - this mode will offer more control when
+                     executing the batch file, like stepping,
+                     skipping, reloading etc.
+
+    Runs batches of commands from a batch-cmd text file (*.ev).
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>batchcommands</em></li>
+<li><strong>aliases:</strong> <em>batchcommand</em>, <em>batchcmd</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(batchcommands) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdBatchCommands</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/batchprocess.py">batchprocess.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h3 id="buildingpy"><code>building.py</code><a class="headerlink" href="#buildingpy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">View building.py source</a></p>
+<h4 id="alias-cmdsetobjalias">alias (CmdSetObjAlias)<a class="headerlink" href="#alias-cmdsetobjalias" title="Permanent link">&para;</a></h4>
+<pre><code>    adding permanent aliases for object
+
+    Usage:
+      alias &lt;obj&gt; [= [alias[,alias,alias,...]]]
+      alias &lt;obj&gt; =
+      alias/category &lt;obj&gt; = [alias[,alias,...]:&lt;category&gt;
+
+    Switches:
+      category - requires ending input with :category, to store the
+        given aliases with the given category.
+
+    Assigns aliases to an object so it can be referenced by more
+    than one name. Assign empty to remove all aliases from object. If
+    assigning a category, all aliases given will be using this category.
+
+    Observe that this is not the same thing as personal aliases
+    created with the 'nick' command! Aliases set with alias are
+    changing the object in question, making those aliases usable
+    by everyone.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>alias</em></li>
+<li><strong>aliases:</strong> <em>setobjalias</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(setobjalias) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdSetObjAlias</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="cmdsets-cmdlistcmdsets">cmdsets (CmdListCmdSets)<a class="headerlink" href="#cmdsets-cmdlistcmdsets" title="Permanent link">&para;</a></h4>
+<pre><code>    list command sets defined on an object
+
+    Usage:
+      cmdsets &lt;obj&gt;
+
+    This displays all cmdsets assigned
+    to a user. Defaults to yourself.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>cmdsets</em></li>
+<li><strong>aliases:</strong> <em>listcmsets</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(listcmdsets) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdListCmdSets</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="command-objmanipcommand">command (ObjManipCommand)<a class="headerlink" href="#command-objmanipcommand" title="Permanent link">&para;</a></h4>
+<pre><code>    This is a parent class for some of the defining objmanip commands
+    since they tend to have some more variables to define new objects.
+
+    Each object definition can have several components. First is
+    always a name, followed by an optional alias list and finally an
+    some optional data, such as a typeclass or a location. A comma ','
+    separates different objects. Like this:
+
+        name1;alias;alias;alias:option, name2;alias;alias ...
+
+    Spaces between all components are stripped.
+
+    A second situation is attribute manipulation. Such commands
+    are simpler and offer combinations
+
+        objname/attr/attr/attr, objname/attr, ...
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>command</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>ObjManipCommand</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'<Unknown>'</em> of class <code>&lt;Unknown&gt;</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/"></a>.</li>
+</ul>
+<h4 id="copy-cmdcopy">copy (CmdCopy)<a class="headerlink" href="#copy-cmdcopy" title="Permanent link">&para;</a></h4>
+<pre><code>    copy an object and its properties
+
+    Usage:
+      copy[/reset] &lt;original obj&gt; [= &lt;new_name&gt;][;alias;alias..]
+      [:&lt;new_location&gt;] [,&lt;new_name2&gt; ...]
+
+    switch:
+      reset - make a 'clean' copy off the object, thus
+              removing any changes that might have been made to the original
+              since it was first created.
+
+    Create one or more copies of an object. If you don't supply any targets,
+    one exact copy of the original object will be created with the name *_copy.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>copy</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(copy) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdCopy</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="cpattr-cmdcpattr">cpattr (CmdCpAttr)<a class="headerlink" href="#cpattr-cmdcpattr" title="Permanent link">&para;</a></h4>
+<pre><code>    copy attributes between objects
+
+    Usage:
+      cpattr[/switch] &lt;obj&gt;/&lt;attr&gt; = &lt;obj1&gt;/&lt;attr1&gt; [,&lt;obj2&gt;/&lt;attr2&gt;,&lt;obj3&gt;/&lt;attr3&gt;,...]
+      cpattr[/switch] &lt;obj&gt;/&lt;attr&gt; = &lt;obj1&gt; [,&lt;obj2&gt;,&lt;obj3&gt;,...]
+      cpattr[/switch] &lt;attr&gt; = &lt;obj1&gt;/&lt;attr1&gt; [,&lt;obj2&gt;/&lt;attr2&gt;,&lt;obj3&gt;/&lt;attr3&gt;,...]
+      cpattr[/switch] &lt;attr&gt; = &lt;obj1&gt;[,&lt;obj2&gt;,&lt;obj3&gt;,...]
+
+    Switches:
+      move - delete the attribute from the source object after copying.
+
+    Example:
+      cpattr coolness = Anna/chillout, Anna/nicety, Tom/nicety
+      -&gt;
+      copies the coolness attribute (defined on yourself), to attributes
+      on Anna and Tom.
+
+    Copy the attribute one object to one or more attributes on another object.
+    If you don't supply a source object, yourself is used.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>cpattr</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(cpattr) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdCpAttr</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="create-cmdcreate">create (CmdCreate)<a class="headerlink" href="#create-cmdcreate" title="Permanent link">&para;</a></h4>
+<pre><code>    create new objects
+
+    Usage:
+      create[/drop] &lt;objname&gt;[;alias;alias...][:typeclass], &lt;objname&gt;...
+
+    switch:
+       drop - automatically drop the new object into your current
+              location (this is not echoed). This also sets the new
+              object's home to the current location rather than to you.
+
+    Creates one or more new objects. If typeclass is given, the object
+    is created as a child of this typeclass. The typeclass script is
+    assumed to be located under types/ and any further
+    directory structure is given in Python notation. So if you have a
+    correct typeclass 'RedButton' defined in
+    types/examples/red_button.py, you could create a new
+    object of this type like this:
+
+       create/drop button;red : examples.red_button.RedButton
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>create</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(create) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdCreate</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="desc-cmddesc">desc (CmdDesc)<a class="headerlink" href="#desc-cmddesc" title="Permanent link">&para;</a></h4>
+<pre><code>    describe an object or the current room.
+
+    Usage:
+      desc [&lt;obj&gt; =] &lt;description&gt;
+
+    Switches:
+      edit - Open up a line editor for more advanced editing.
+
+    Sets the &quot;desc&quot; attribute on an object. If an object is not given,
+    describe the current room.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>desc</em></li>
+<li><strong>aliases:</strong> <em>describe</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(desc) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdDesc</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="destroy-cmddestroy">destroy (CmdDestroy)<a class="headerlink" href="#destroy-cmddestroy" title="Permanent link">&para;</a></h4>
+<pre><code>    permanently delete objects
+
+    Usage:
+       destroy[/switches] [obj, obj2, obj3, [dbref-dbref], ...]
+
+    Switches:
+       override - The destroy command will usually avoid accidentally
+                  destroying account objects. This switch overrides this safety.
+       force - destroy without confirmation.
+    Examples:
+       destroy house, roof, door, 44-78
+       destroy 5-10, flower, 45
+       destroy/force north
+
+    Destroys one or many objects. If dbrefs are used, a range to delete can be
+    given, e.g. 4-10. Also the end points will be deleted. This command
+    displays a confirmation before destroying, to make sure of your choice.
+    You can specify the /force switch to bypass this confirmation.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>destroy</em></li>
+<li><strong>aliases:</strong> <em>del</em>, <em>delete</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(destroy) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdDestroy</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="dig-cmddig">dig (CmdDig)<a class="headerlink" href="#dig-cmddig" title="Permanent link">&para;</a></h4>
+<pre><code>    build new rooms and connect them to the current location
+
+    Usage:
+      dig[/switches] &lt;roomname&gt;[;alias;alias...][:typeclass]
+            [= &lt;exit_to_there&gt;[;alias][:typeclass]]
+               [, &lt;exit_to_here&gt;[;alias][:typeclass]]
+
+    Switches:
+       tel or teleport - move yourself to the new room
+
+    Examples:
+       dig kitchen = north;n, south;s
+       dig house:myrooms.MyHouseTypeclass
+       dig sheer cliff;cliff;sheer = climb up, climb down
+
+    This command is a convenient way to build rooms quickly; it creates the
+    new room and you can optionally set up exits back and forth between your
+    current room and the new one. You can add as many aliases as you
+    like to the name of the room and the exits in question; an example
+    would be 'north;no;n'.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>dig</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(dig) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdDig</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="examine-cmdexamine">examine (CmdExamine)<a class="headerlink" href="#examine-cmdexamine" title="Permanent link">&para;</a></h4>
+<pre><code>    get detailed information about an object
+
+    Usage:
+      examine [&lt;object&gt;[/attrname]]
+      examine [*&lt;account&gt;[/attrname]]
+
+    Switch:
+      account - examine an Account (same as adding *)
+      object - examine an Object (useful when OOC)
+
+    The examine command shows detailed game info about an
+    object and optionally a specific attribute on it.
+    If object is not specified, the current location is examined.
+
+    Append a * before the search string to examine an account.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>examine</em></li>
+<li><strong>aliases:</strong> <em>exam</em>, <em>ex</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(examine) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdExamine</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="find-cmdfind">find (CmdFind)<a class="headerlink" href="#find-cmdfind" title="Permanent link">&para;</a></h4>
+<pre><code>    search the database for objects
+
+    Usage:
+      find[/switches] &lt;name or dbref or *account&gt; [= dbrefmin[-dbrefmax]]
+      locate - this is a shorthand for using the /loc switch.
+
+    Switches:
+      room       - only look for rooms (location=None)
+      exit       - only look for exits (destination!=None)
+      char       - only look for characters (BASE_CHARACTER_TYPECLASS)
+      exact      - only exact matches are returned.
+      loc        - display object location if exists and match has one result
+      startswith - search for names starting with the string, rather than containing
+
+    Searches the database for an object of a particular name or exact #dbref.
+    Use *accountname to search for an account. The switches allows for
+    limiting object matches to certain game entities. Dbrefmin and dbrefmax
+    limits matches to within the given dbrefs range, or above/below if only
+    one is given.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>find</em></li>
+<li><strong>aliases:</strong> <em>search</em>, <em>locate</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(find) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdFind</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="link-cmdlink">link (CmdLink)<a class="headerlink" href="#link-cmdlink" title="Permanent link">&para;</a></h4>
+<pre><code>    link existing rooms together with exits
+
+    Usage:
+      link[/switches] &lt;object&gt; = &lt;target&gt;
+      link[/switches] &lt;object&gt; =
+      link[/switches] &lt;object&gt;
+
+    Switch:
+      twoway - connect two exits. For this to work, BOTH &lt;object&gt;
+               and &lt;target&gt; must be exit objects.
+
+    If &lt;object&gt; is an exit, set its destination to &lt;target&gt;. Two-way operation
+    instead sets the destination to the *locations* of the respective given
+    arguments.
+    The second form (a lone =) sets the destination to None (same as
+    the unlink command) and the third form (without =) just shows the
+    currently set destination.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>link</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(link) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdLink</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="lock-cmdlock">lock (CmdLock)<a class="headerlink" href="#lock-cmdlock" title="Permanent link">&para;</a></h4>
+<pre><code>    assign a lock definition to an object
+
+    Usage:
+      lock &lt;object or *account&gt;[ = &lt;lockstring&gt;]
+      or
+      lock[/switch] &lt;object or *account&gt;/&lt;access_type&gt;
+
+    Switch:
+      del - delete given access type
+      view - view lock associated with given access type (default)
+
+    If no lockstring is given, shows all locks on
+    object.
+
+    Lockstring is of the form
+       access_type:[NOT] func1(args)[ AND|OR][ NOT] func2(args) ...]
+    Where func1, func2 ... valid lockfuncs with or without arguments.
+    Separator expressions need not be capitalized.
+
+    For example:
+       'get: id(25) or perm(Admin)'
+    The 'get' lock access_type is checked e.g. by the 'get' command.
+    An object locked with this example lock will only be possible to pick up
+    by Admins or by an object with id=25.
+
+    You can add several access_types after one another by separating
+    them by ';', i.e:
+       'get:id(25); delete:perm(Builder)'
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>lock</em></li>
+<li><strong>aliases:</strong> <em>locks</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd: perm(locks) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdLock</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="mvattr-cmdmvattr">mvattr (CmdMvAttr)<a class="headerlink" href="#mvattr-cmdmvattr" title="Permanent link">&para;</a></h4>
+<pre><code>    move attributes between objects
+
+    Usage:
+      mvattr[/switch] &lt;obj&gt;/&lt;attr&gt; = &lt;obj1&gt;/&lt;attr1&gt; [,&lt;obj2&gt;/&lt;attr2&gt;,&lt;obj3&gt;/&lt;attr3&gt;,...]
+      mvattr[/switch] &lt;obj&gt;/&lt;attr&gt; = &lt;obj1&gt; [,&lt;obj2&gt;,&lt;obj3&gt;,...]
+      mvattr[/switch] &lt;attr&gt; = &lt;obj1&gt;/&lt;attr1&gt; [,&lt;obj2&gt;/&lt;attr2&gt;,&lt;obj3&gt;/&lt;attr3&gt;,...]
+      mvattr[/switch] &lt;attr&gt; = &lt;obj1&gt;[,&lt;obj2&gt;,&lt;obj3&gt;,...]
+
+    Switches:
+      copy - Don't delete the original after moving.
+
+    Move an attribute from one object to one or more attributes on another
+    object. If you don't supply a source object, yourself is used.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>mvattr</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(mvattr) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdMvAttr</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="name-cmdname">name (CmdName)<a class="headerlink" href="#name-cmdname" title="Permanent link">&para;</a></h4>
+<pre><code>    change the name and/or aliases of an object
+
+    Usage:
+      name &lt;obj&gt; = &lt;newname&gt;;alias1;alias2
+
+    Rename an object to something new. Use *obj to
+    rename an account.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>name</em></li>
+<li><strong>aliases:</strong> <em>rename</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(rename) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdName</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="open-cmdopen">open (CmdOpen)<a class="headerlink" href="#open-cmdopen" title="Permanent link">&para;</a></h4>
+<pre><code>    open a new exit from the current room
+
+    Usage:
+      open &lt;new exit&gt;[;alias;alias..][:typeclass] [,&lt;return exit&gt;[;alias;..][:typeclass]]] = &lt;destination&gt;
+
+    Handles the creation of exits. If a destination is given, the exit
+    will point there. The &lt;return exit&gt; argument sets up an exit at the
+    destination leading back to the current room. Destination name
+    can be given both as a #dbref and a name, if that name is globally
+    unique.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>open</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(open) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdOpen</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="script-cmdscript">script (CmdScript)<a class="headerlink" href="#script-cmdscript" title="Permanent link">&para;</a></h4>
+<pre><code>    attach a script to an object
+
+    Usage:
+      script[/switch] &lt;obj&gt; [= script_path or &lt;scriptkey&gt;]
+
+    Switches:
+      start - start all non-running scripts on object, or a given script only
+      stop - stop all scripts on objects, or a given script only
+
+    If no script path/key is given, lists all scripts active on the given
+    object.
+    Script path can be given from the base location for scripts as given in
+    settings. If adding a new script, it will be started automatically
+    (no /start switch is needed). Using the /start or /stop switches on an
+    object without specifying a script key/path will start/stop ALL scripts on
+    the object.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>script</em></li>
+<li><strong>aliases:</strong> <em>addscript</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(script) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdScript</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="set-cmdsetattribute">set (CmdSetAttribute)<a class="headerlink" href="#set-cmdsetattribute" title="Permanent link">&para;</a></h4>
+<pre><code>    set attribute on an object or account
+
+    Usage:
+      set &lt;obj&gt;/&lt;attr&gt; = &lt;value&gt;
+      set &lt;obj&gt;/&lt;attr&gt; =
+      set &lt;obj&gt;/&lt;attr&gt;
+      set *&lt;account&gt;/attr = &lt;value&gt;
+
+    Switch:
+        edit: Open the line editor (string values only)
+        script: If we're trying to set an attribute on a script
+        channel: If we're trying to set an attribute on a channel
+        account: If we're trying to set an attribute on an account
+        room: Setting an attribute on a room (global search)
+        exit: Setting an attribute on an exit (global search)
+        char: Setting an attribute on a character (global search)
+        character: Alias for char, as above.
+
+    Sets attributes on objects. The second example form above clears a
+    previously set attribute while the third form inspects the current value of
+    the attribute (if any). The last one (with the star) is a shortcut for
+    operatin on a player Account rather than an Object.
+
+    The most common data to save with this command are strings and
+    numbers. You can however also set Python primitives such as lists,
+    dictionaries and tuples on objects (this might be important for
+    the functionality of certain custom objects).  This is indicated
+    by you starting your value with one of |c'|n, |c&quot;|n, |c(|n, |c[|n
+    or |c{ |n.
+    Note that you should leave a space after starting a dictionary ('{ ')
+    so as to not confuse the dictionary start with a colour code like \{g.
+    Remember that if you use Python primitives like this, you must
+    write proper Python syntax too - notably you must include quotes
+    around your strings or you will get an error.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>set</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(set) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdSetAttribute</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="sethome-cmdsethome">sethome (CmdSetHome)<a class="headerlink" href="#sethome-cmdsethome" title="Permanent link">&para;</a></h4>
+<pre><code>    set an object's home location
+
+    Usage:
+      sethome &lt;obj&gt; [= &lt;home_location&gt;]
+      sethom &lt;obj&gt;
+
+    The &quot;home&quot; location is a &quot;safety&quot; location for objects; they
+    will be moved there if their current location ceases to exist. All
+    objects should always have a home location for this reason.
+    It is also a convenient target of the &quot;home&quot; command.
+
+    If no location is given, just view the object's home location.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>sethome</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(sethome) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdSetHome</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="spawn-cmdspawn">spawn (CmdSpawn)<a class="headerlink" href="#spawn-cmdspawn" title="Permanent link">&para;</a></h4>
+<pre><code>    spawn objects from prototype
+
+    Usage:
+      spawn[/noloc] &lt;prototype_key&gt;
+      spawn[/noloc] &lt;prototype_dict&gt;
+
+      spawn/search [prototype_keykey][;tag[,tag]]
+      spawn/list [tag, tag, ...]
+      spawn/show [&lt;prototype_key&gt;]
+      spawn/update &lt;prototype_key&gt;
+
+      spawn/save &lt;prototype_dict&gt;
+      spawn/edit [&lt;prototype_key&gt;]
+      olc     - equivalent to spawn/edit
+
+    Switches:
+      noloc - allow location to be None if not specified explicitly. Otherwise,
+              location will default to caller's current location.
+      search - search prototype by name or tags.
+      list - list available prototypes, optionally limit by tags.
+      show, examine - inspect prototype by key. If not given, acts like list.
+      save - save a prototype to the database. It will be listable by /list.
+      delete - remove a prototype from database, if allowed to.
+      update - find existing objects with the same prototype_key and update
+               them with latest version of given prototype. If given with /save,
+               will auto-update all objects with the old version of the prototype
+               without asking first.
+      edit, olc - create/manipulate prototype in a menu interface.
+
+    Example:
+      spawn GOBLIN
+      spawn {&quot;key&quot;:&quot;goblin&quot;, &quot;typeclass&quot;:&quot;monster.Monster&quot;, &quot;location&quot;:&quot;#2&quot;}
+      spawn/save {&quot;key&quot;: &quot;grunt&quot;, prototype: &quot;goblin&quot;};;mobs;edit:all()
+    
+    Dictionary keys:
+      |wprototype_parent  |n - name of parent prototype to use. Required if typeclass is
+                        not set. Can be a path or a list for multiple inheritance (inherits
+                        left to right). If set one of the parents must have a typeclass.
+      |wtypeclass  |n - string. Required if prototype_parent is not set.
+      |wkey        |n - string, the main object identifier
+      |wlocation   |n - this should be a valid object or #dbref
+      |whome       |n - valid object or #dbref
+      |wdestination|n - only valid for exits (object or dbref)
+      |wpermissions|n - string or list of permission strings
+      |wlocks      |n - a lock-string
+      |waliases    |n - string or list of strings.
+      |wndb_|n&lt;name&gt;  - value of a nattribute (ndb_ is stripped)
+
+      |wprototype_key|n   - name of this prototype. Unique. Used to store/retrieve from db
+                            and update existing prototyped objects if desired.
+      |wprototype_desc|n  - desc of this prototype. Used in listings
+      |wprototype_locks|n - locks of this prototype. Limits who may use prototype
+      |wprototype_tags|n  - tags of this prototype. Used to find prototype
+
+      any other keywords are interpreted as Attributes and their values.
+
+    The available prototypes are defined globally in modules set in
+    settings.PROTOTYPE_MODULES. If spawn is used without arguments it
+    displays a list of available prototypes.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>spawn</em></li>
+<li><strong>aliases:</strong> <em>olc</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(spawn) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdSpawn</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="tag-cmdtag">tag (CmdTag)<a class="headerlink" href="#tag-cmdtag" title="Permanent link">&para;</a></h4>
+<pre><code>    handles the tags of an object
+
+    Usage:
+      tag[/del] &lt;obj&gt; [= &lt;tag&gt;[:&lt;category&gt;]]
+      tag/search &lt;tag&gt;[:&lt;category]
+
+    Switches:
+      search - return all objects with a given Tag
+      del - remove the given tag. If no tag is specified,
+            clear all tags on object.
+
+    Manipulates and lists tags on objects. Tags allow for quick
+    grouping of and searching for objects.  If only &lt;obj&gt; is given,
+    list all tags on the object.  If /search is used, list objects
+    with the given tag.
+    The category can be used for grouping tags themselves, but it
+    should be used with restrain - tags on their own are usually
+    enough to for most grouping schemes.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>tag</em></li>
+<li><strong>aliases:</strong> <em>tags</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(tag) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdTag</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="tel-cmdteleport">tel (CmdTeleport)<a class="headerlink" href="#tel-cmdteleport" title="Permanent link">&para;</a></h4>
+<pre><code>    teleport object to another location
+
+    Usage:
+      tel/switch [&lt;object&gt; to||=] &lt;target location&gt;
+
+    Examples:
+      tel Limbo
+      tel/quiet box = Limbo
+      tel/tonone box
+
+    Switches:
+      quiet  - don't echo leave/arrive messages to the source/target
+               locations for the move.
+      intoexit - if target is an exit, teleport INTO
+                 the exit object instead of to its destination
+      tonone - if set, teleport the object to a None-location. If this
+               switch is set, &lt;target location&gt; is ignored.
+               Note that the only way to retrieve
+               an object from a None location is by direct #dbref
+               reference. A puppeted object cannot be moved to None.
+      loc - teleport object to the target's location instead of its contents
+
+    Teleports an object somewhere. If no object is given, you yourself
+    is teleported to the target location.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>tel</em></li>
+<li><strong>aliases:</strong> <em>teleport</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(teleport) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdTeleport</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="tunnel-cmdtunnel">tunnel (CmdTunnel)<a class="headerlink" href="#tunnel-cmdtunnel" title="Permanent link">&para;</a></h4>
+<pre><code>    create new rooms in cardinal directions only
+
+    Usage:
+      tunnel[/switch] &lt;direction&gt;[:typeclass] [= &lt;roomname&gt;[;alias;alias;...][:typeclass]]
+
+    Switches:
+      oneway - do not create an exit back to the current location
+      tel - teleport to the newly created room
+
+    Example:
+      tunnel n
+      tunnel n = house;mike's place;green building
+
+    This is a simple way to build using pre-defined directions:
+     |wn,ne,e,se,s,sw,w,nw|n (north, northeast etc)
+     |wu,d|n (up and down)
+     |wi,o|n (in and out)
+    The full names (north, in, southwest, etc) will always be put as
+    main name for the exit, using the abbreviation as an alias (so an
+    exit will always be able to be used with both &quot;north&quot; as well as
+    &quot;n&quot; for example). Opposite directions will automatically be
+    created back from the new room unless the /oneway switch is given.
+    For more flexibility and power in creating rooms, use dig.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>tunnel</em></li>
+<li><strong>aliases:</strong> <em>tun</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd: perm(tunnel) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdTunnel</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="typeclass-cmdtypeclass">typeclass (CmdTypeclass)<a class="headerlink" href="#typeclass-cmdtypeclass" title="Permanent link">&para;</a></h4>
+<pre><code>    set or change an object's typeclass
+
+    Usage:
+      typeclass[/switch] &lt;object&gt; [= typeclass.path]
+      type                     ''
+      parent                   ''
+      typeclass/list/show [typeclass.path]
+      swap - this is a shorthand for using /force/reset flags.
+      update - this is a shorthand for using the /force/reload flag.
+
+    Switch:
+      show, examine - display the current typeclass of object (default) or, if
+            given a typeclass path, show the docstring of that typeclass.
+      update - *only* re-run at_object_creation on this object
+              meaning locks or other properties set later may remain.
+      reset - clean out *all* the attributes and properties on the
+              object - basically making this a new clean object.
+      force - change to the typeclass also if the object
+              already has a typeclass of the same name.
+      list - show available typeclasses. Only typeclasses in modules actually
+             imported or used from somewhere in the code will show up here
+             (those typeclasses are still available if you know the path)
+
+    Example:
+      type button = examples.red_button.RedButton
+
+    If the typeclass_path is not given, the current object's typeclass is
+    assumed.
+
+    View or set an object's typeclass. If setting, the creation hooks of the
+    new typeclass will be run on the object. If you have clashing properties on
+    the old class, use /reset. By default you are protected from changing to a
+    typeclass of the same name as the one you already have - use /force to
+    override this protection.
+
+    The given typeclass must be identified by its location using python
+    dot-notation pointing to the correct module and class. If no typeclass is
+    given (or a wrong typeclass is given). Errors in the path or new typeclass
+    will lead to the old typeclass being kept. The location of the typeclass
+    module is searched from the default typeclass directory, as defined in the
+    server settings.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>typeclass</em></li>
+<li><strong>aliases:</strong> <em>update</em>, <em>parent</em>, <em>type</em>, <em>swap</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(typeclass) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdTypeclass</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="unlink-cmdunlink">unlink (CmdUnLink)<a class="headerlink" href="#unlink-cmdunlink" title="Permanent link">&para;</a></h4>
+<pre><code>    remove exit-connections between rooms
+
+    Usage:
+      unlink &lt;Object&gt;
+
+    Unlinks an object, for example an exit, disconnecting
+    it from whatever it was connected to.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>unlink</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(unlink) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdUnLink</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="wipe-cmdwipe">wipe (CmdWipe)<a class="headerlink" href="#wipe-cmdwipe" title="Permanent link">&para;</a></h4>
+<pre><code>    clear all attributes from an object
+
+    Usage:
+      wipe &lt;object&gt;[/&lt;attr&gt;[/&lt;attr&gt;...]]
+
+    Example:
+      wipe box
+      wipe box/colour
+
+    Wipes all of an object's attributes, or optionally only those
+    matching the given attribute-wildcard search string.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>wipe</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(wipe) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdWipe</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/building.py">building.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h3 id="commspy"><code>comms.py</code><a class="headerlink" href="#commspy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">View comms.py source</a></p>
+<h4 id="addcom-cmdaddcom">addcom (CmdAddCom)<a class="headerlink" href="#addcom-cmdaddcom" title="Permanent link">&para;</a></h4>
+<pre><code>    add a channel alias and/or subscribe to a channel
+
+    Usage:
+       addcom [alias=] &lt;channel&gt;
+
+    Joins a given channel. If alias is given, this will allow you to
+    refer to the channel by this alias rather than the full channel
+    name. Subsequent calls of this command can be used to add multiple
+    aliases to an already joined channel.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>addcom</em></li>
+<li><strong>aliases:</strong> <em>chanalias</em>, <em>aliaschan</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:not pperm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdAddCom</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="allcom-cmdallcom">allcom (CmdAllCom)<a class="headerlink" href="#allcom-cmdallcom" title="Permanent link">&para;</a></h4>
+<pre><code>    perform admin operations on all channels
+
+    Usage:
+      allcom [on | off | who | destroy]
+
+    Allows the user to universally turn off or on all channels they are on, as
+    well as perform a 'who' for all channels they are on. Destroy deletes all
+    channels that you control.
+
+    Without argument, works like comlist.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>allcom</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd: not pperm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdAllCom</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="cboot-cmdcboot">cboot (CmdCBoot)<a class="headerlink" href="#cboot-cmdcboot" title="Permanent link">&para;</a></h4>
+<pre><code>    kick an account from a channel you control
+
+    Usage:
+       cboot[/quiet] &lt;channel&gt; = &lt;account&gt; [:reason]
+
+    Switch:
+       quiet - don't notify the channel
+
+    Kicks an account or object from a channel you control.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>cboot</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd: not pperm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdCBoot</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="ccreate-cmdchannelcreate">ccreate (CmdChannelCreate)<a class="headerlink" href="#ccreate-cmdchannelcreate" title="Permanent link">&para;</a></h4>
+<pre><code>    create a new channel
+
+    Usage:
+     ccreate &lt;new channel&gt;[;alias;alias...] = description
+
+    Creates a new channel owned by you.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>ccreate</em></li>
+<li><strong>aliases:</strong> <em>channelcreate</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:not pperm(channel_banned) and pperm(Player)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdChannelCreate</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="cdesc-cmdcdesc">cdesc (CmdCdesc)<a class="headerlink" href="#cdesc-cmdcdesc" title="Permanent link">&para;</a></h4>
+<pre><code>    describe a channel you control
+
+    Usage:
+      cdesc &lt;channel&gt; = &lt;description&gt;
+
+    Changes the description of the channel as shown in
+    channel lists.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>cdesc</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:not pperm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdCdesc</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="cdestroy-cmdcdestroy">cdestroy (CmdCdestroy)<a class="headerlink" href="#cdestroy-cmdcdestroy" title="Permanent link">&para;</a></h4>
+<pre><code>    destroy a channel you created
+
+    Usage:
+      cdestroy &lt;channel&gt;
+
+    Destroys a channel that you control.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>cdestroy</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd: not pperm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdCdestroy</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="cemit-cmdcemit">cemit (CmdCemit)<a class="headerlink" href="#cemit-cmdcemit" title="Permanent link">&para;</a></h4>
+<pre><code>    send an admin message to a channel you control
+
+    Usage:
+      cemit[/switches] &lt;channel&gt; = &lt;message&gt;
+
+    Switches:
+      sendername - attach the sender's name before the message
+      quiet - don't echo the message back to sender
+
+    Allows the user to broadcast a message over a channel as long as
+    they control it. It does not show the user's name unless they
+    provide the /sendername switch.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>cemit</em></li>
+<li><strong>aliases:</strong> <em>cmsg</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd: not pperm(channel_banned) and pperm(Player)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdCemit</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="channels-cmdchannels">channels (CmdChannels)<a class="headerlink" href="#channels-cmdchannels" title="Permanent link">&para;</a></h4>
+<pre><code>    list all channels available to you
+
+    Usage:
+      channels
+      clist
+      comlist
+
+    Lists all channels available to you, whether you listen to them or not.
+    Use 'comlist' to only view your current channel subscriptions.
+    Use addcom/delcom to join and leave channels
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>channels</em></li>
+<li><strong>aliases:</strong> <em>clist</em>, <em>all channels</em>, <em>comlist</em>, <em>channellist</em>, <em>chanlist</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd: not pperm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdChannels</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="clock-cmdclock">clock (CmdClock)<a class="headerlink" href="#clock-cmdclock" title="Permanent link">&para;</a></h4>
+<pre><code>    change channel locks of a channel you control
+
+    Usage:
+      clock &lt;channel&gt; [= &lt;lockstring&gt;]
+
+    Changes the lock access restrictions of a channel. If no
+    lockstring was given, view the current lock definitions.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>clock</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:not pperm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdClock</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="cwho-cmdcwho">cwho (CmdCWho)<a class="headerlink" href="#cwho-cmdcwho" title="Permanent link">&para;</a></h4>
+<pre><code>    show who is listening to a channel
+
+    Usage:
+      cwho &lt;channel&gt;
+
+    List who is connected to a given channel you have access to.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>cwho</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd: not pperm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdCWho</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="delcom-cmddelcom">delcom (CmdDelCom)<a class="headerlink" href="#delcom-cmddelcom" title="Permanent link">&para;</a></h4>
+<pre><code>    remove a channel alias and/or unsubscribe from channel
+
+    Usage:
+       delcom &lt;alias or channel&gt;
+       delcom/all &lt;channel&gt;
+
+    If the full channel name is given, unsubscribe from the
+    channel. If an alias is given, remove the alias but don't
+    unsubscribe. If the 'all' switch is used, remove all aliases
+    for that channel.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>delcom</em></li>
+<li><strong>aliases:</strong> <em>delchanalias</em>, <em>delaliaschan</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:not perm(channel_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdDelCom</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="irc2chan-cmdirc2chan">irc2chan (CmdIRC2Chan)<a class="headerlink" href="#irc2chan-cmdirc2chan" title="Permanent link">&para;</a></h4>
+<pre><code>    Link an evennia channel to an external IRC channel
+
+    Usage:
+      irc2chan[/switches] &lt;evennia_channel&gt; = &lt;ircnetwork&gt; &lt;port&gt; &lt;#irchannel&gt; &lt;botname&gt;[:typeclass]
+      irc2chan/delete botname|#dbid
+
+    Switches:
+      /delete     - this will delete the bot and remove the irc connection
+                    to the channel. Requires the botname or #dbid as input.
+      /remove     - alias to /delete
+      /disconnect - alias to /delete
+      /list       - show all irc&lt;-&gt;evennia mappings
+      /ssl        - use an SSL-encrypted connection
+
+    Example:
+      irc2chan myircchan = irc.dalnet.net 6667 #mychannel evennia-bot
+      irc2chan public = irc.freenode.net 6667 #evgaming #evbot:accounts.mybot.MyBot
+
+    This creates an IRC bot that connects to a given IRC network and
+    channel. If a custom typeclass path is given, this will be used
+    instead of the default bot class.
+    The bot will relay everything said in the evennia channel to the
+    IRC channel and vice versa. The bot will automatically connect at
+    server start, so this command need only be given once. The
+    /disconnect switch will permanently delete the bot. To only
+    temporarily deactivate it, use the  |wservices|n command instead.
+    Provide an optional bot class path to use a custom bot.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>irc2chan</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:serversetting(IRC_ENABLED) and pperm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdIRC2Chan</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="page-cmdpage">page (CmdPage)<a class="headerlink" href="#page-cmdpage" title="Permanent link">&para;</a></h4>
+<pre><code>    send a private message to another account
+
+    Usage:
+      page[/switches] [&lt;account&gt;,&lt;account&gt;,... = &lt;message&gt;]
+      tell        ''
+      page &lt;number&gt;
+
+    Switch:
+      last - shows who you last messaged
+      list - show your last &lt;number&gt; of tells/pages (default)
+
+    Send a message to target user (if online). If no
+    argument is given, you will get a list of your latest messages.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>page</em></li>
+<li><strong>aliases:</strong> <em>tell</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:not pperm(page_banned)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdPage</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="rss2chan-cmdrss2chan">rss2chan (CmdRSS2Chan)<a class="headerlink" href="#rss2chan-cmdrss2chan" title="Permanent link">&para;</a></h4>
+<pre><code>    link an evennia channel to an external RSS feed
+
+    Usage:
+      rss2chan[/switches] &lt;evennia_channel&gt; = &lt;rss_url&gt;
+
+    Switches:
+      /disconnect - this will stop the feed and remove the connection to the
+                    channel.
+      /remove     -                                 &quot;
+      /list       - show all rss-&gt;evennia mappings
+
+    Example:
+      rss2chan rsschan = http://code.google.com/feeds/p/evennia/updates/basic
+
+    This creates an RSS reader  that connects to a given RSS feed url. Updates
+    will be echoed as a title and news link to the given channel. The rate of
+    updating is set with the RSS_UPDATE_INTERVAL variable in settings (default
+    is every 10 minutes).
+
+    When disconnecting you need to supply both the channel and url again so as
+    to identify the connection uniquely.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>rss2chan</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:serversetting(RSS_ENABLED) and pperm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Comms"</em></li>
+<li><strong>Source:</strong> class <code>CmdRSS2Chan</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/comms.py">comms.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h3 id="generalpy"><code>general.py</code><a class="headerlink" href="#generalpy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">View general.py source</a></p>
+<h4 id="access-cmdaccess">access (CmdAccess)<a class="headerlink" href="#access-cmdaccess" title="Permanent link">&para;</a></h4>
+<pre><code>    show your current game access
+
+    Usage:
+      access
+
+    This command shows you the permission hierarchy and
+    which permission groups you are a member of.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>access</em></li>
+<li><strong>aliases:</strong> <em>hierarchy</em>, <em>groups</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdAccess</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="drop-cmddrop">drop (CmdDrop)<a class="headerlink" href="#drop-cmddrop" title="Permanent link">&para;</a></h4>
+<pre><code>    drop something
+
+    Usage:
+      drop &lt;obj&gt;
+
+    Lets you drop an object from your inventory into the
+    location you are currently in.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>drop</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdDrop</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="get-cmdget">get (CmdGet)<a class="headerlink" href="#get-cmdget" title="Permanent link">&para;</a></h4>
+<pre><code>    pick up something
+
+    Usage:
+      get &lt;obj&gt;
+
+    Picks up an object from your location and puts it in
+    your inventory.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>get</em></li>
+<li><strong>aliases:</strong> <em>grab</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdGet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="give-cmdgive">give (CmdGive)<a class="headerlink" href="#give-cmdgive" title="Permanent link">&para;</a></h4>
+<pre><code>    give away something to someone
+
+    Usage:
+      give &lt;inventory obj&gt; &lt;to||=&gt; &lt;target&gt;
+
+    Gives an items from your inventory to another character,
+    placing it in their inventory.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>give</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdGive</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="home-cmdhome">home (CmdHome)<a class="headerlink" href="#home-cmdhome" title="Permanent link">&para;</a></h4>
+<pre><code>    move to your character's home location
+
+    Usage:
+      home
+
+    Teleports you to your home location.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>home</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(home) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdHome</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="inventory-cmdinventory">inventory (CmdInventory)<a class="headerlink" href="#inventory-cmdinventory" title="Permanent link">&para;</a></h4>
+<pre><code>    view inventory
+
+    Usage:
+      inventory
+      inv
+
+    Shows your inventory.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>inventory</em></li>
+<li><strong>aliases:</strong> <em>inv</em>, <em>i</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdInventory</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="look-cmdlook">look (CmdLook)<a class="headerlink" href="#look-cmdlook" title="Permanent link">&para;</a></h4>
+<pre><code>    look at location or object
+
+    Usage:
+      look
+      look &lt;obj&gt;
+      look *&lt;account&gt;
+
+    Observes your location or objects in your vicinity.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>look</em></li>
+<li><strong>aliases:</strong> <em>ls</em>, <em>l</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdLook</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="nick-cmdnick">nick (CmdNick)<a class="headerlink" href="#nick-cmdnick" title="Permanent link">&para;</a></h4>
+<pre><code>    define a personal alias/nick by defining a string to
+    match and replace it with another on the fly
+
+    Usage:
+      nick[/switches] &lt;string&gt; [= [replacement_string]]
+      nick[/switches] &lt;template&gt; = &lt;replacement_template&gt;
+      nick/delete &lt;string&gt; or number
+      nicks
+
+    Switches:
+      inputline - replace on the inputline (default)
+      object    - replace on object-lookup
+      account   - replace on account-lookup
+      list      - show all defined aliases (also &quot;nicks&quot; works)
+      delete    - remove nick by index in /list
+      clearall  - clear all nicks
+
+    Examples:
+      nick hi = say Hello, I'm Sarah!
+      nick/object tom = the tall man
+      nick build $1 $2 = create/drop $1;$2
+      nick tell $1 $2=page $1=$2
+      nick tm?$1=page tallman=$1
+      nick tm\=$1=page tallman=$1
+
+    A 'nick' is a personal string replacement. Use $1, $2, ... to catch arguments.
+    Put the last $-marker without an ending space to catch all remaining text. You
+    can also use unix-glob matching for the left-hand side &lt;string&gt;:
+
+        * - matches everything
+        ? - matches 0 or 1 single characters
+        [abcd] - matches these chars in any order
+        [!abcd] - matches everything not among these chars
+        \= - escape literal '=' you want in your &lt;string&gt;
+
+    Note that no objects are actually renamed or changed by this command - your nicks
+    are only available to you. If you want to permanently add keywords to an object
+    for everyone to use, you need build privileges and the alias command.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>nick</em></li>
+<li><strong>aliases:</strong> <em>nickname</em>, <em>nicks</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdNick</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="pose-cmdpose">pose (CmdPose)<a class="headerlink" href="#pose-cmdpose" title="Permanent link">&para;</a></h4>
+<pre><code>    strike a pose
+
+    Usage:
+      pose &lt;pose text&gt;
+      pose's &lt;pose text&gt;
+
+    Example:
+      pose is standing by the wall, smiling.
+       -&gt; others will see:
+      Tom is standing by the wall, smiling.
+
+    Describe an action being taken. The pose text will
+    automatically begin with your name.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>pose</em></li>
+<li><strong>aliases:</strong> <em>:</em>, <em>emote</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdPose</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="say-cmdsay">say (CmdSay)<a class="headerlink" href="#say-cmdsay" title="Permanent link">&para;</a></h4>
+<pre><code>    speak as your character
+
+    Usage:
+      say &lt;message&gt;
+
+    Talk to those in your current location.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>say</em></li>
+<li><strong>aliases:</strong> <em>'</em>, <em>"</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdSay</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="setdesc-cmdsetdesc">setdesc (CmdSetDesc)<a class="headerlink" href="#setdesc-cmdsetdesc" title="Permanent link">&para;</a></h4>
+<pre><code>    describe yourself
+
+    Usage:
+      setdesc &lt;description&gt;
+
+    Add a description to yourself. This
+    will be visible to people when they
+    look at you.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>setdesc</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdSetDesc</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="whisper-cmdwhisper">whisper (CmdWhisper)<a class="headerlink" href="#whisper-cmdwhisper" title="Permanent link">&para;</a></h4>
+<pre><code>    Speak privately as your character to another
+
+    Usage:
+      whisper &lt;character&gt; = &lt;message&gt;
+      whisper &lt;char1&gt;, &lt;char2&gt; = &lt;message&gt;
+
+    Talk privately to one or more characters in your current location, without
+    others in the room being informed.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>whisper</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdWhisper</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/general.py">general.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h3 id="helppy"><code>help.py</code><a class="headerlink" href="#helppy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/help.py">View help.py source</a></p>
+<h4 id="help-cmdhelp">help (CmdHelp)<a class="headerlink" href="#help-cmdhelp" title="Permanent link">&para;</a></h4>
+<pre><code>    View help or a list of topics
+
+    Usage:
+      help &lt;topic or command&gt;
+      help list
+      help all
+
+    This will search for help on commands and other
+    topics related to the game.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>help</em></li>
+<li><strong>aliases:</strong> <em>?</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdHelp</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/help.py">help.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="sethelp-cmdsethelp">sethelp (CmdSetHelp)<a class="headerlink" href="#sethelp-cmdsethelp" title="Permanent link">&para;</a></h4>
+<pre><code>    Edit the help database.
+
+    Usage:
+      help[/switches] &lt;topic&gt;[[;alias;alias][,category[,locks]] [= &lt;text&gt;]
+
+    Switches:
+      edit - open a line editor to edit the topic's help text.
+      replace - overwrite existing help topic.
+      append - add text to the end of existing topic with a newline between.
+      extend - as append, but don't add a newline.
+      delete - remove help topic.
+
+    Examples:
+      sethelp throw = This throws something at ...
+      sethelp/append pickpocketing,Thievery = This steals ...
+      sethelp/replace pickpocketing, ,attr(is_thief) = This steals ...
+      sethelp/edit thievery
+
+    This command manipulates the help database. A help entry can be created,
+    appended/merged to and deleted. If you don't assign a category, the
+    &quot;General&quot; category will be used. If no lockstring is specified, default
+    is to let everyone read the help file.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>sethelp</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(Helper)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"Building"</em></li>
+<li><strong>Source:</strong> class <code>CmdSetHelp</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/help.py">help.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h3 id="systempy"><code>system.py</code><a class="headerlink" href="#systempy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">View system.py source</a></p>
+<h4 id="about-cmdabout">about (CmdAbout)<a class="headerlink" href="#about-cmdabout" title="Permanent link">&para;</a></h4>
+<pre><code>    show Evennia info
+
+    Usage:
+      about
+
+    Display info about the game engine.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>about</em></li>
+<li><strong>aliases:</strong> <em>version</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdAbout</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="objects-cmdobjects">objects (CmdObjects)<a class="headerlink" href="#objects-cmdobjects" title="Permanent link">&para;</a></h4>
+<pre><code>    statistics on objects in the database
+
+    Usage:
+      objects [&lt;nr&gt;]
+
+    Gives statictics on objects in database as well as
+    a list of &lt;nr&gt; latest objects in database. If not
+    given, &lt;nr&gt; defaults to 10.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>objects</em></li>
+<li><strong>aliases:</strong> <em>stats</em>, <em>listobjects</em>, <em>db</em>, <em>listobjs</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(listobjects) or perm(Builder)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdObjects</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="py-cmdpy">py (CmdPy)<a class="headerlink" href="#py-cmdpy" title="Permanent link">&para;</a></h4>
+<pre><code>    execute a snippet of python code
+
+    Usage:
+      py [cmd]
+      py/edit
+      py/time &lt;cmd&gt;
+      py/clientraw &lt;cmd&gt;
+
+    Switches:
+      time - output an approximate execution time for &lt;cmd&gt;
+      edit - open a code editor for multi-line code experimentation
+      clientraw - turn off all client-specific escaping. Note that this may
+        lead to different output depending on prototocol (such as angular brackets
+        being parsed as HTML in the webclient but not in telnet clients)
+
+    Without argument, open a Python console in-game. This is a full console,
+    accepting multi-line Python code for testing and debugging. Type `exit()` to
+    return to the game. If Evennia is reloaded, the console will be closed.
+
+    Enter a line of instruction after the 'py' command to execute it
+    immediately.  Separate multiple commands by ';' or open the code editor
+    using the /edit switch (all lines added in editor will be executed
+    immediately when closing or using the execute command in the editor).
+
+    A few variables are made available for convenience in order to offer access
+    to the system (you can import more at execution time).
+
+    Available variables in py environment:
+      self, me                   : caller
+      here                       : caller.location
+      evennia                    : the evennia API
+      inherits_from(obj, parent) : check object inheritance
+
+    You can explore The evennia API from inside the game by calling
+    the `__doc__` property on entities:
+        py evennia.__doc__
+        py evennia.managers.__doc__
+
+    |rNote: In the wrong hands this command is a severe security risk.  It
+    should only be accessible by trusted server admins/superusers.|n
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>py</em></li>
+<li><strong>aliases:</strong> <em>!</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(py) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdPy</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="reload-cmdreload">reload (CmdReload)<a class="headerlink" href="#reload-cmdreload" title="Permanent link">&para;</a></h4>
+<pre><code>    reload the server
+
+    Usage:
+      reload [reason]
+
+    This restarts the server. The Portal is not
+    affected. Non-persistent scripts will survive a reload (use
+    reset to purge) and at_reload() hooks will be called.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>reload</em></li>
+<li><strong>aliases:</strong> <em>restart</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(reload) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdReload</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="reset-cmdreset">reset (CmdReset)<a class="headerlink" href="#reset-cmdreset" title="Permanent link">&para;</a></h4>
+<pre><code>    reset and reboot the server
+
+    Usage:
+      reset
+
+    Notes:
+      For normal updating you are recommended to use reload rather
+      than this command. Use shutdown for a complete stop of
+      everything.
+
+    This emulates a cold reboot of the Server component of Evennia.
+    The difference to shutdown is that the Server will auto-reboot
+    and that it does not affect the Portal, so no users will be
+    disconnected. Contrary to reload however, all shutdown hooks will
+    be called and any non-database saved scripts, ndb-attributes,
+    cmdsets etc will be wiped.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>reset</em></li>
+<li><strong>aliases:</strong> <em>reboot</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(reload) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdReset</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="scripts-cmdscripts">scripts (CmdScripts)<a class="headerlink" href="#scripts-cmdscripts" title="Permanent link">&para;</a></h4>
+<pre><code>    list and manage all running scripts
+
+    Usage:
+      scripts[/switches] [#dbref, key, script.path or &lt;obj&gt;]
+
+    Switches:
+      start - start a script (must supply a script path)
+      stop - stops an existing script
+      kill - kills a script - without running its cleanup hooks
+      validate - run a validation on the script(s)
+
+    If no switches are given, this command just views all active
+    scripts. The argument can be either an object, at which point it
+    will be searched for all scripts defined on it, or a script name
+    or #dbref. For using the /stop switch, a unique script #dbref is
+    required since whole classes of scripts often have the same name.
+
+    Use script for managing commands on objects.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>scripts</em></li>
+<li><strong>aliases:</strong> <em>listscripts</em>, <em>globalscript</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(listscripts) or perm(Admin)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdScripts</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="server-cmdserverload">server (CmdServerLoad)<a class="headerlink" href="#server-cmdserverload" title="Permanent link">&para;</a></h4>
+<pre><code>    show server load and memory statistics
+
+    Usage:
+       server[/mem]
+
+    Switches:
+        mem - return only a string of the current memory usage
+        flushmem - flush the idmapper cache
+
+    This command shows server load statistics and dynamic memory
+    usage. It also allows to flush the cache of accessed database
+    objects.
+
+    Some Important statistics in the table:
+
+    |wServer load|n is an average of processor usage. It's usually
+    between 0 (no usage) and 1 (100% usage), but may also be
+    temporarily higher if your computer has multiple CPU cores.
+
+    The |wResident/Virtual memory|n displays the total memory used by
+    the server process.
+
+    Evennia |wcaches|n all retrieved database entities when they are
+    loaded by use of the idmapper functionality. This allows Evennia
+    to maintain the same instances of an entity and allowing
+    non-persistent storage schemes. The total amount of cached objects
+    are displayed plus a breakdown of database object types.
+
+    The |wflushmem|n switch allows to flush the object cache. Please
+    note that due to how Python's memory management works, releasing
+    caches may not show you a lower Residual/Virtual memory footprint,
+    the released memory will instead be re-used by the program.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>server</em></li>
+<li><strong>aliases:</strong> <em>serverload</em>, <em>serverprocess</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(list) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdServerLoad</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="service-cmdservice">service (CmdService)<a class="headerlink" href="#service-cmdservice" title="Permanent link">&para;</a></h4>
+<pre><code>    manage system services
+
+    Usage:
+      service[/switch] &lt;service&gt;
+
+    Switches:
+      list   - shows all available services (default)
+      start  - activates or reactivate a service
+      stop   - stops/inactivate a service (can often be restarted)
+      delete - tries to permanently remove a service
+
+    Service management system. Allows for the listing,
+    starting, and stopping of services. If no switches
+    are given, services will be listed. Note that to operate on the
+    service you have to supply the full (green or red) name as given
+    in the list.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>service</em></li>
+<li><strong>aliases:</strong> <em>services</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(service) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdService</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h4 id="shutdown-cmdshutdown">shutdown (CmdShutdown)<a class="headerlink" href="#shutdown-cmdshutdown" title="Permanent link">&para;</a></h4>
+<pre><code>    stop the server completely
+
+    Usage:
+      shutdown [announcement]
+
+    Gracefully shut down both Server and Portal.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>shutdown</em></li>
+<li><strong>aliases:</strong> </li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(shutdown) or perm(Developer)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdShutdown</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultAccount'</em> of class <code>AccountCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_account.py">cmdset_account.py</a>.</li>
+</ul>
+<h4 id="time-cmdtime">time (CmdTime)<a class="headerlink" href="#time-cmdtime" title="Permanent link">&para;</a></h4>
+<pre><code>    show server time statistics
+
+    Usage:
+      time
+
+    List Server time statistics such as uptime
+    and the current time stamp.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>time</em></li>
+<li><strong>aliases:</strong> <em>uptime</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:perm(time) or perm(Player)"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"System"</em></li>
+<li><strong>Source:</strong> class <code>CmdTime</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/system.py">system.py</a>.
+Belongs to command set <em>'DefaultCharacter'</em> of class <code>CharacterCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_character.py">cmdset_character.py</a>.</li>
+</ul>
+<h3 id="unloggedinpy"><code>unloggedin.py</code><a class="headerlink" href="#unloggedinpy" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/unloggedin.py">View unloggedin.py source</a></p>
+<h4 id="__unloggedin_look_command-cmdunconnectedlook">__unloggedin_look_command (CmdUnconnectedLook)<a class="headerlink" href="#__unloggedin_look_command-cmdunconnectedlook" title="Permanent link">&para;</a></h4>
+<pre><code>    look when in unlogged-in state
+
+    Usage:
+      look
+
+    This is an unconnected version of the look command for simplicity.
+
+    This is called by the server and kicks everything in gear.
+    All it does is display the connect screen.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>__unloggedin_look_command</em></li>
+<li><strong>aliases:</strong> <em>l</em>, <em>look</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdUnconnectedLook</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/unloggedin.py">unloggedin.py</a>.
+Belongs to command set <em>'DefaultUnloggedin'</em> of class <code>UnloggedinCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_unloggedin.py">cmdset_unloggedin.py</a>.</li>
+</ul>
+<p><em>OBS: This is a [[System Command|Commands]]. System commands have fixed keys and are called by the server in specific situations.</em></p>
+<h4 id="connect-cmdunconnectedconnect">connect (CmdUnconnectedConnect)<a class="headerlink" href="#connect-cmdunconnectedconnect" title="Permanent link">&para;</a></h4>
+<pre><code>    connect to the game
+
+    Usage (at login screen):
+      connect accountname password
+      connect &quot;account name&quot; &quot;pass word&quot;
+
+    Use the create command to first create an account before logging in.
+
+    If you have spaces in your name, enclose it in double quotes.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>connect</em></li>
+<li><strong>aliases:</strong> <em>conn</em>, <em>co</em>, <em>con</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdUnconnectedConnect</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/unloggedin.py">unloggedin.py</a>.
+Belongs to command set <em>'DefaultUnloggedin'</em> of class <code>UnloggedinCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_unloggedin.py">cmdset_unloggedin.py</a>.</li>
+</ul>
+<h4 id="create-cmdunconnectedcreate">create (CmdUnconnectedCreate)<a class="headerlink" href="#create-cmdunconnectedcreate" title="Permanent link">&para;</a></h4>
+<pre><code>    create a new account account
+
+    Usage (at login screen):
+      create &lt;accountname&gt; &lt;password&gt;
+      create &quot;account name&quot; &quot;pass word&quot;
+
+    This creates a new account account.
+
+    If you have spaces in your name, enclose it in double quotes.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>create</em></li>
+<li><strong>aliases:</strong> <em>cre</em>, <em>cr</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdUnconnectedCreate</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/unloggedin.py">unloggedin.py</a>.
+Belongs to command set <em>'DefaultUnloggedin'</em> of class <code>UnloggedinCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_unloggedin.py">cmdset_unloggedin.py</a>.</li>
+</ul>
+<h4 id="help-cmdunconnectedhelp">help (CmdUnconnectedHelp)<a class="headerlink" href="#help-cmdunconnectedhelp" title="Permanent link">&para;</a></h4>
+<pre><code>    get help when in unconnected-in state
+
+    Usage:
+      help
+
+    This is an unconnected version of the help command,
+    for simplicity. It shows a pane of info.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>help</em></li>
+<li><strong>aliases:</strong> <em>h</em>, <em>?</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdUnconnectedHelp</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/unloggedin.py">unloggedin.py</a>.
+Belongs to command set <em>'DefaultUnloggedin'</em> of class <code>UnloggedinCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_unloggedin.py">cmdset_unloggedin.py</a>.</li>
+</ul>
+<h4 id="quit-cmdunconnectedquit">quit (CmdUnconnectedQuit)<a class="headerlink" href="#quit-cmdunconnectedquit" title="Permanent link">&para;</a></h4>
+<pre><code>    quit when in unlogged-in state
+
+    Usage:
+      quit
+
+    We maintain a different version of the quit command
+    here for unconnected accounts for the sake of simplicity. The logged in
+    version is a bit more complicated.
+</code></pre>
+
+<ul>
+<li><strong>key:</strong> <em>quit</em></li>
+<li><strong>aliases:</strong> <em>qu</em>, <em>q</em></li>
+<li><strong><a href="Locks.html">locks</a>:</strong> <em>"cmd:all()"</em></li>
+<li><strong><a href="Help-System"><code>help_category</code></a>:</strong> <em>"General"</em></li>
+<li><strong>Source:</strong> class <code>CmdUnconnectedQuit</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/unloggedin.py">unloggedin.py</a>.
+Belongs to command set <em>'DefaultUnloggedin'</em> of class <code>UnloggedinCmdSet</code> in <a href="https://github.com/evennia/evennia/tree/master/evennia/commands/default/cmdset_unloggedin.py">cmdset_unloggedin.py</a>.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

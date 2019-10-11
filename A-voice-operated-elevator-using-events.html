@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>A voice operated elevator using events - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#our-study-case">Our study case</a></li>
+        <li class="main "><a href="#creating-the-rooms-and-exits-we-need">Creating the rooms and exits we need</a></li>
+        <li class="main "><a href="#our-first-callback-in-the-elevator">Our first callback in the elevator</a></li>
+        <li class="main "><a href="#our-entire-callback-in-the-elevator">Our entire callback in the elevator</a></li>
+        <li class="main "><a href="#adding-a-pause-in-our-callback">Adding a pause in our callback</a></li>
+        <li class="main "><a href="#changing-exit-messages">Changing exit messages</a></li>
+        <li class="main "><a href="#tutorial-faq">Tutorial F.A.Q.</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Adding-an-elevator-using-the-in-game-Python-system"></a></p>
+<ul>
+<li>Previous tutorial: <a href="Dialogues-in-events">Adding dialogues in events</a></li>
+</ul>
+<p>This tutorial will walk you through the steps to create a voice-operated elevator, using the <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/ingame_python/README.md">in-game Python system</a>.  This tutorial assumes the in-game Python system is installed in your game.  If it isn't, you can follow the installation steps given in <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/ingame_python/README.md">the documentation on in-game Python</a>, and come back on this tutorial once the system is installed.  <strong>You do not need to read</strong> the entire documentation, it's a good reference, but not the easiest way to learn about it.  Hence these tutorials.</p>
+<p>The in-game Python system allows to run code on individual objects in some situations.  You don't have to modify the source code to add these features, past the installation.  The entire system makes it easy to add specific features to some objects, but not all.</p>
+<blockquote>
+<p>What will we try to do?</p>
+</blockquote>
+<p>In this tutorial, we are going to create a simple voice-operated elevator.  In terms of features, we will:</p>
+<ul>
+<li>Explore events with parameters.</li>
+<li>Work on more interesting callbacks.</li>
+<li>Learn about chained events.</li>
+<li>Play with variable modification in callbacks.</li>
+</ul>
+<h2 id="our-study-case">Our study case<a class="headerlink" href="#our-study-case" title="Permanent link">&para;</a></h2>
+<p>Let's summarize what we want to achieve first.  We would like to create a room that will represent the inside of our elevator.  In this room, a character could just say "1", "2" or "3", and the elevator will start moving.  The doors will close and open on the new floor (the exits leading in and out of the elevator will be modified).</p>
+<p>We will work on basic features first, and then will adjust some, showing you how easy and powerfully independent actions can be configured through the in-game Python system.</p>
+<h2 id="creating-the-rooms-and-exits-we-need">Creating the rooms and exits we need<a class="headerlink" href="#creating-the-rooms-and-exits-we-need" title="Permanent link">&para;</a></h2>
+<p>We'll create an elevator right in our room (generally called "Limbo", of ID 2).  You could easily adapt the following instructions if you already have some rooms and exits, of course, just remember to check the IDs.</p>
+<blockquote>
+<p>Note: the in-game Python system uses IDs for a lot of things.  While it is not mandatory, it is good practice to know the IDs you have for your callbacks, because it will make manipulation much quicker.  There are other ways to identify objects, but as they depend on many factors, IDs are usually the safest path in our callbacks.</p>
+</blockquote>
+<p>Let's go into limbo (<code>#2</code>) to add our elevator.  We'll add it to the north.  To create this room, in-game you could type:</p>
+<pre><code>tunnel n = Inside of an elevator
+</code></pre>
+<p>The game should respond by telling you:</p>
+<pre><code>Created room Inside of an elevator(#3) of type typeclasses.rooms.Room.
+Created Exit from Limbo to Inside of an elevator: north(#4) (n).
+Created Exit back from Inside of an elevator to Limbo: south(#5) (s).
+</code></pre>
+<p>Note the given IDs:</p>
+<ul>
+<li><code>#2</code> is limbo, the first room the system created.</li>
+<li><code>#3</code> is our room inside of an elevator.</li>
+<li><code>#4</code> is the north exit from Limbo to our elevator.</li>
+<li><code>#5</code> is the south exit from an elevator to Limbo.</li>
+</ul>
+<p>Keep these IDs somewhere for the demonstration.  You will shortly see why they are important.</p>
+<blockquote>
+<p>Why have we created exits to our elevator and back to Limbo?  Isn't the elevator supposed to move?</p>
+</blockquote>
+<p>It is.  But we need to have exits that will represent the way inside the elevator and out.  What we will do, at every floor, will be to change these exits so they become connected to the right room.  You'll see this process a bit later.</p>
+<p>We have two more rooms to create: our floor 2 and 3.  This time, we'll use <code>dig</code>, because we don't need exits leading there, not yet anyway.</p>
+<pre><code>dig The second floor
+dig The third floor
+</code></pre>
+<p>Evennia should answer with:</p>
+<pre><code>Created room The second floor(#6) of type typeclasses.rooms.Room.
+Created room The third floor(#7) of type typeclasses.rooms.Room.
+</code></pre>
+<p>Add these IDs to your list, we will use them too.</p>
+<h2 id="our-first-callback-in-the-elevator">Our first callback in the elevator<a class="headerlink" href="#our-first-callback-in-the-elevator" title="Permanent link">&para;</a></h2>
+<p>Let's go to the elevator (you could use <code>tel #3</code> if you have the same IDs I have).</p>
+<p>This is our elevator room.  It looks a bit empty, feel free to add a prettier description or other things to decorate it a bit.</p>
+<p>But what we want now is to be able to say "1", "2" or "3" and have the elevator move in that direction.</p>
+<p>If you have read <a href="Dialogues-in-events">the previous tutorial about adding dialogues in events</a>, you may remember what we need to do.  If not, here's a summary: we need to run some code when somebody speaks in the room.  So we need to create a callback (the callback will contain our lines of code).  We just need to know on which event this should be set.  You can enter <code>call here</code> to see the possible events in this room.</p>
+<p>In the table, you should see the "say" event, which is called when somebody says something in the room.  So we'll need to add a callback to this event.  Don't worry if you're a bit lost, just follow the following steps, the way they connect together will become more obvious.</p>
+<pre><code>call/add here = say 1, 2, 3
+</code></pre>
+<ol>
+<li>We need to add a callback.  A callback contains the code that will be executed at a given time.  So we use the <code>call/add</code> command and switch.</li>
+<li><code>here</code> is our object, the room in which we are.</li>
+<li>An equal sign.</li>
+<li>The name of the event to which the callback should be connected.  Here, the event is "say".  Meaning this callback will be executed every time somebody says something in the room.</li>
+<li>But we add an event parameter to indicate the keywords said in the room that should execute our callback.  Otherwise, our callback would be called every time somebody speaks, no matter what.  Here we limit, indicating our callback should be executed only if the spoken message contains "1", "2" or "3".</li>
+</ol>
+<p>An editor should open, inviting you to enter the Python code that should be executed.  The first thing to remember is to read the text provided (it can contain important information) and, most of all, the list of variables that are available in this callback:</p>
+<pre><code>Variables you can use in this event:
+
+    character: the character having spoken in this room.
+    room: the room connected to this event.
+    message: the text having been spoken by the character.
+
+----------Line Editor [Callback say of Inside of an elevator]---------------------
+01| 
+----------[l:01 w:000 c:0000]------------(:h for help)----------------------------
+</code></pre>
+
+<p>This is important, in order to know what variables we can use in our callback out-of-the-box.  Let's write a single line to be sure our callback is called when we expect it to:</p>
+<pre><code class="python">character.msg(&quot;You just said {}.&quot;.format(message))
+</code></pre>
+
+<p>You can paste this line in-game, then type the <code>:wq</code> command to exit the editor and save your modifications.</p>
+<p>Let's check.  Try to say "hello" in the room.  You should see the standard message, but nothing more.  Now try to say "1".  Below the standard message, you should see:</p>
+<pre><code>You just said 1.
+</code></pre>
+<p>You can try it.  Our callback is only called when we say "1", "2" or "3".  Which is just what we want.</p>
+<p>Let's go back in our code editor and add something more useful.</p>
+<pre><code>call/edit here = say
+</code></pre>
+<blockquote>
+<p>Notice that we used the "edit" switch this time, since the callback exists, we just want to edit it.</p>
+</blockquote>
+<p>The editor opens again.  Let's empty it first:</p>
+<pre><code>:DD
+</code></pre>
+<p>And turn off automatic indentation, which will help us:</p>
+<pre><code>:=
+</code></pre>
+<blockquote>
+<p>Auto-indentation is an interesting feature of the code editor, but we'd better not use it at this point, it will make copy/pasting more complicated.</p>
+</blockquote>
+<h2 id="our-entire-callback-in-the-elevator">Our entire callback in the elevator<a class="headerlink" href="#our-entire-callback-in-the-elevator" title="Permanent link">&para;</a></h2>
+<p>So here's the time to truly code our callback in-game.  Here's a little reminder:</p>
+<ol>
+<li>We have all the IDs of our three rooms and two exits.</li>
+<li>When we say "1", "2" or "3", the elevator should move to the right room, that is change the exits.  Remember, we already have the exits, we just need to change their location and destination.</li>
+</ol>
+<p>It's a good idea to try to write this callback yourself, but don't feel bad about checking the solution right now.  Here's a possible code that you could paste in the code editor:</p>
+<pre><code class="python"># First let's have some constants
+ELEVATOR = get(id=3)
+FLOORS = {
+    &quot;1&quot;: get(id=2),
+    &quot;2&quot;: get(id=6),
+    &quot;3&quot;: get(id=7),
+}
+TO_EXIT = get(id=4)
+BACK_EXIT = get(id=5)
+
+# Now we check that the elevator isn't already at this floor
+floor = FLOORS.get(message)
+if floor is None:
+    character.msg(&quot;Which floor do you want?&quot;)
+elif TO_EXIT.location is floor:
+    character.msg(&quot;The elevator already is at this floor.&quot;)
+else:
+    # 'floor' contains the new room where the elevator should be
+    room.msg_contents(&quot;The doors of the elevator close with a clank.&quot;)
+    TO_EXIT.location = floor
+    BACK_EXIT.destination = floor
+    room.msg_contents(&quot;The doors of the elevator open to {floor}.&quot;,
+            mapping=dict(floor=floor))
+</code></pre>
+
+<p>Let's review this longer callback:</p>
+<ol>
+<li>We first obtain the objects of both exits and our three floors.  We use the <code>get()</code> eventfunc, which is a shortcut to obtaining objects.  We usually use it to retrieve specific objects with an ID.  We put the floors in a dictionary.  The keys of the dictionary are the floor number (as str), the values are room objects.</li>
+<li>Remember, the <code>message</code> variable contains the message spoken in the room.  So either "1", "2", or "3".  We still need to check it, however, because if the character says something like "1 2" in the room, our callback will be executed.  Let's be sure what she says is a floor number.</li>
+<li>We then check if the elevator is already at this floor.  Notice that we use <code>TO_EXIT.location</code>.  <code>TO_EXIT</code> contains our "north" exit, leading inside of our elevator.  Therefore, its <code>location</code> will be the room where the elevator currently is.</li>
+<li>If the floor is a different one, have the elevator "move", changing just the location and destination of both exits.</li>
+<li>The <code>BACK_EXIT</code> (that is "north") should change its location.  The elevator shouldn't be accessible through our old floor.</li>
+<li>The <code>TO_EXIT</code> (that is "south", the exit leading out of the elevator) should have a different destination.  When we go out of the elevator, we should find ourselves in the new floor, not the old one.</li>
+</ol>
+<p>Feel free to expand on this example, changing messages, making further checks.  Usage and practice are keys.</p>
+<p>You can quit the editor as usual with <code>:wq</code> and test it out.</p>
+<h2 id="adding-a-pause-in-our-callback">Adding a pause in our callback<a class="headerlink" href="#adding-a-pause-in-our-callback" title="Permanent link">&para;</a></h2>
+<p>Let's improve our callback.  One thing that's worth adding would be a pause: for the time being, when we say the floor number in the elevator, the doors close and open right away.  It would be better to have a pause of several seconds.  More logical.</p>
+<p>This is a great opportunity to learn about chained events.  Chained events are very useful to create pauses.  Contrary to the events we have seen so far, chained events aren't called automatically.  They must be called by you, and can be called after some time.</p>
+<ul>
+<li>Chained events always have the name "chain_X".  Usually, X is a number, but you can give the chained event a more explicit name.</li>
+<li>In our original callback, we will call our chained events in, say, 15 seconds.</li>
+<li>We'll also have to make sure the elevator isn't already moving.</li>
+</ul>
+<p>Other than that, a chained event can be connected to a callback as usual.  We'll create a chained event in our elevator, that will only contain the code necessary to open the doors to the new floor.</p>
+<pre><code>call/add here = chain_1
+</code></pre>
+<p>The callback is added to the "chain_1" event, an event that will not be automatically called by the system when something happens.  Inside this event, you can paste the code to open the doors at the new floor.  You can notice a few differences:</p>
+<pre><code class="python">TO_EXIT.location = floor
+TO_EXIT.destination = ELEVATOR
+BACK_EXIT.location = ELEVATOR
+BACK_EXIT.destination = floor
+room.msg_contents(&quot;The doors of the elevator open to {floor}.&quot;,
+        mapping=dict(floor=floor))
+</code></pre>
+
+<p>Paste this code into the editor, then use <code>:wq</code> to save and quit the editor.</p>
+<p>Now let's edit our callback in the "say" event.  We'll have to change it a bit:</p>
+<ul>
+<li>The callback will have to check the elevator isn't already moving.</li>
+<li>It must change the exits when the elevator move.</li>
+<li>It has to call the "chain_1" event we have defined.  It should call it 15 seconds later.</li>
+</ul>
+<p>Let's see the code in our callback.</p>
+<pre><code>call/edit here = say
+</code></pre>
+<p>Remove the current code and disable auto-indentation again:</p>
+<pre><code>:DD
+:=
+</code></pre>
+<p>And you can paste instead the following code.  Notice the differences with our first attempt:</p>
+<pre><code class="python"># First let's have some constants
+ELEVATOR = get(id=3)
+FLOORS = {
+    &quot;1&quot;: get(id=2),
+    &quot;2&quot;: get(id=6),
+    &quot;3&quot;: get(id=7),
+}
+TO_EXIT = get(id=4)
+BACK_EXIT = get(id=5)
+
+# Now we check that the elevator isn't already at this floor
+floor = FLOORS.get(message)
+if floor is None:
+    character.msg(&quot;Which floor do you want?&quot;)
+elif BACK_EXIT.location is None:
+    character.msg(&quot;The elevator is between floors.&quot;)
+elif TO_EXIT.location is floor:
+    character.msg(&quot;The elevator already is at this floor.&quot;)
+else:
+    # 'floor' contains the new room where the elevator should be
+    room.msg_contents(&quot;The doors of the elevator close with a clank.&quot;)
+    TO_EXIT.location = None
+    BACK_EXIT.location = None
+    call_event(room, &quot;chain_1&quot;, 15)
+</code></pre>
+
+<p>What changed?</p>
+<ol>
+<li>We added a little test to make sure the elevator wasn't already moving.  If it is, the <code>BACK_EXIT.location</code> (the "south" exit leading out of the elevator) should be <code>None</code>.  We'll remove the exit while the elevator is moving.</li>
+<li>When the doors close, we set both exits' <code>location</code> to <code>None</code>.  Which "removes" them from their room but doesn't destroy them.  The exits still exist but they don't connect anything.  If you say "2" in the elevator and look around while the elevator is moving, you won't see any exits.</li>
+<li>Instead of opening the doors immediately, we call <code>call_event</code>.  We give it the object containing the event to be called (here, our elevator), the name of the event to be called (here, "chain_1") and the number of seconds from now when the event should be called (here, <code>15</code>).</li>
+<li>The <code>chain_1</code> callback we have created contains the code to "re-open" the elevator doors.  That is, besides displaying a message, it reset the exits' <code>location</code> and <code>destination</code>.</li>
+</ol>
+<p>If you try to say "3" in the elevator, you should see the doors closing.  Look around you and you won't see any exit.  Then, 15 seconds later, the doors should open, and you can leave the elevator to go to the third floor.  While the elevator is moving, the exit leading to it will be inaccessible.</p>
+<blockquote>
+<p>Note: we don't define the variables again in our chained event, we just call them.  When we execute <code>call_event</code>, a copy of our current variables is placed in the database.  These variables will be restored and accessible again when the chained event is called.</p>
+</blockquote>
+<p>You can use the <code>call/tasks</code> command to see the tasks waiting to be executed.  For instance, say "2" in the room, notice the doors closing, and then type the <code>call/tasks</code> command.  You will see a task in the elevator, waiting to call the <code>chain_1</code> event.</p>
+<h2 id="changing-exit-messages">Changing exit messages<a class="headerlink" href="#changing-exit-messages" title="Permanent link">&para;</a></h2>
+<p>Here's another nice little feature of events: you can modify the message of a single exit without altering the others.  In this case, when someone goes north into our elevator, we'd like to see something like: "someone walks into the elevator." Something similar for the back exit would be great too.</p>
+<p>Inside of the elevator, you can look at the available events on the exit leading outside (south).</p>
+<pre><code>call south
+</code></pre>
+<p>You should see two interesting rows in this table:</p>
+<pre><code>| msg_arrive       |   0 (0) | Customize the message when a character        |
+|                  |         | arrives through this exit.                    |
+| msg_leave        |   0 (0) | Customize the message when a character leaves |
+|                  |         | through this exit.                            |
+</code></pre>
+
+<p>So we can change the message others see when a character leaves, by editing the "msg_leave" event.  Let's do that:</p>
+<pre><code>call/add south = msg_leave
+</code></pre>
+<p>Take the time to read the help.  It gives you all the information you should need.  We'll need to change the "message" variable, and use custom mapping (between braces) to alter the message.  We're given an example, let's use it.  In the code editor, you can paste the following line:</p>
+<pre><code class="python">message = &quot;{character} walks out of the elevator.&quot;
+</code></pre>
+
+<p>Again, save and quit the editor by entering <code>:wq</code>.  You can create a new character to see it leave.</p>
+<pre><code>charcreate A beggar
+tel #8 = here
+</code></pre>
+<p>(Obviously, adapt the ID if necessary.)</p>
+<pre><code>py self.search("beggar").move_to(self.search("south"))
+</code></pre>
+<p>This is a crude way to force our beggar out of the elevator, but it allows us to test.  You should see:</p>
+<pre><code>A beggar(#8) walks out of the elevator.
+</code></pre>
+<p>Great!  Let's do the same thing for the exit leading inside of the elevator.  Follow the beggar, then edit "msg_leave" of "north":</p>
+<pre><code>call/add north = msg_leave
+</code></pre>
+<pre><code class="python">message = &quot;{character} walks into the elevator.&quot;
+</code></pre>
+
+<p>Again, you can force our beggar to move and see the message we have just set.  This modification applies to these two exits, obviously: the custom message won't be used for other exits.  Since we use the same exits for every floor, this will be available no matter at what floor the elevator is, which is pretty neat!</p>
+<h2 id="tutorial-faq">Tutorial F.A.Q.<a class="headerlink" href="#tutorial-faq" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Q:</strong> what happens if the game reloads or shuts down while a task is waiting to happen?</li>
+<li><strong>A:</strong> if your game reloads while a task is in pause (like our elevator between floors), when the game is accessible again, the task will be called (if necessary, with a new time difference to take into account the reload).  If the server shuts down, obviously, the task will not be called, but will be stored and executed when the server is up again.</li>
+<li><strong>Q:</strong> can I use all kinds of variables in my callback?  Whether chained or not?</li>
+<li><strong>A:</strong> you can use every variable type you like in your original callback.  However, if you execute <code>call_event</code>, since your variables are stored in the database, they will need to respect the constraints on persistent attributes.  A callback will not be stored in this way, for instance.  This variable will not be available in your chained event.</li>
+<li><strong>Q:</strong> when you say I can call my chained events something else than "chain_1", "chain_2" and such, what is the naming convention?</li>
+<li><strong>A:</strong> chained events have names beginning by "chain_".  This is useful for you and for the system.  But after the underscore, you can give a more useful name, like "chain_open_doors" in our case.</li>
+<li><strong>Q:</strong> do I have to pause several seconds to call a chained event?</li>
+<li><strong>A:</strong> no, you can call it right away.  Just leave the third parameter of <code>call_event</code> out (it will default to 0, meaning the chained event will be called right away).  This will not create a task.</li>
+<li><strong>Q:</strong> can I have chained events calling themselves?</li>
+<li><strong>A:</strong> you can.  There's no limitation.  Just be careful, a callback that calls itself, particularly without delay, might be a good recipe for an infinite loop.  However, in some cases, it is useful to have chained events calling themselves, to do the same repeated action every X seconds for instance.</li>
+<li><strong>Q:</strong> what if I need several elevators, do I need to copy/paste these callbacks each time?</li>
+<li>
+<p><strong>A:</strong> not advisable.  There are definitely better ways to handle this situation.  One of them is to consider adding the code in the source itself.  Another possibility is to call chained events with the expected behavior, which makes porting code very easy.  This side of chained events will be shown in the next tutorial.</p>
+</li>
+<li>
+<p>Previous tutorial: <a href="Dialogues-in-events">Adding dialogues in events</a></p>
+</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

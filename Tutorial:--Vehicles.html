@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Tutorial:  Vehicles - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#how-it-works">How it works</a></li>
+        <li class="main "><a href="#creating-our-train-object">Creating our train object</a></li>
+        <li class="main "><a href="#entering-and-leaving-the-train">Entering and leaving the train</a></li>
+        <li class="main "><a href="#locking-down-the-commands">Locking down the commands</a></li>
+        <li class="main "><a href="#making-our-train-move">Making our train move</a></li>
+        <li class="main "><a href="#adding-in-scripts">Adding in scripts</a></li>
+        <li class="main "><a href="#expanding">Expanding</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Creating-vehicles"></a></p>
+<p>This tutorial explains how you can create vehicles that can move around in your world. The tutorial will explain how to create a train, but this can be equally applied to create other kind of vehicles (cars, planes, boats, spaceships, submarines, ...).</p>
+<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<p>Objects in Evennia have an interesting property: you can put any object inside another object. This is most obvious in rooms: a room in Evennia is just like any other game object (except rooms tend to not themselves be inside anything else).</p>
+<p>Our train will be similar: it will be an object that other objects can get inside. We then simply move the Train, which brings along everyone inside it.</p>
+<h2 id="creating-our-train-object">Creating our train object<a class="headerlink" href="#creating-our-train-object" title="Permanent link">&para;</a></h2>
+<p>The first step we need to do is create our train object, including a new typeclass.  To do this, create a new file, for instance in <code>mygame/typeclasses/train.py</code> with the following content:</p>
+<pre><code class="python"># file mygame/typeclasses/train.py
+
+from evennia import DefaultObject
+
+class TrainObject(DefaultObject):
+
+    def at_object_creation(self):
+        # We'll add in code here later.
+        pass
+
+</code></pre>
+
+<p>Now we can create our train in our game:</p>
+<pre><code>@create/drop train:train.TrainObject
+</code></pre>
+
+<p>Now this is just an object that doesn't do much yet... but we can already force our way inside it and back (assuming we created it in limbo). </p>
+<pre><code>@tel train 
+@tel limbo
+</code></pre>
+
+<h2 id="entering-and-leaving-the-train">Entering and leaving the train<a class="headerlink" href="#entering-and-leaving-the-train" title="Permanent link">&para;</a></h2>
+<p>Using the <code>@tel</code>command like shown above is obviously not what we want. <code>@tel</code> is an admin command and normal players will thus never be able to enter the train! It is also not really a good idea to use <a href="Objects#exits">Exits</a> to get in and out of the train - Exits are (at least by default) objects too. They point to a specific destination. If we put an Exit in this room leading inside the train it would stay here when the train moved away (still leading into the train like a magic portal!). In the same way, if we put an Exit object inside the train, it would always point back to this room, regardless of where the Train has moved. Now, one <em>could</em> define custom Exit types that move with the train or change their destination in the right way - but this seems to be a pretty cumbersome solution.</p>
+<p>What we will do instead is to create some new <a href="Commands.html">commands</a>: one for entering the train and another for leaving it again. These will be stored <em>on the train object</em> and will thus be made available to whomever is either inside it or in the same room as the train. </p>
+<p>Let's create a new command module as <code>mygame/commands/train.py</code>:</p>
+<pre><code class="python"># mygame/commands/train.py
+
+from evennia import Command, CmdSet
+
+class CmdEnterTrain(Command):
+    &quot;&quot;&quot;
+    entering the train
+
+    Usage:
+      enter train
+
+    This will be available to players in the same location
+    as the train and allows them to embark. 
+    &quot;&quot;&quot;
+
+    key = &quot;enter train&quot;
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        train = self.obj
+        self.caller.msg(&quot;You board the train.&quot;)
+        self.caller.move_to(train)
+
+
+class CmdLeaveTrain(Command):
+    &quot;&quot;&quot;
+    leaving the train 
+
+    Usage:
+      leave train
+
+    This will be available to everyone inside the 
+    train. It allows them to exit to the train's
+    current location. 
+    &quot;&quot;&quot;
+
+    key = &quot;leave train&quot;
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        train = self.obj
+        parent = train.location
+        self.caller.move_to(parent)
+
+
+class CmdSetTrain(CmdSet):
+
+    def at_cmdset_creation(self):
+        self.add(CmdEnterTrain())
+        self.add(CmdLeaveTrain())
+</code></pre>
+
+<p>Note that while this seems like a lot of text, the majority of lines here are taken up by documentation.</p>
+<p>These commands are work in a pretty straightforward way: <code>CmdEnterTrain</code> moves the location of the player to inside the train and <code>CmdLeaveTrain</code> does the opposite: it moves the player back to the current location of the train (back outside to its current location). We stacked them in a <a href="Command-Sets.html">cmdset</a> <code>CmdSetTrain</code> so they can be used.</p>
+<p>To make the commands work we need to add this cmdset to our train typeclass:</p>
+<pre><code class="python"># file mygame/typeclasses/train.py
+
+from evennia import DefaultObject
+from commands.train import CmdSetTrain
+
+class TrainObject(DefaultObject):
+
+    def at_object_creation(self):        
+        self.cmdset.add_default(CmdSetTrain)
+
+</code></pre>
+
+<p>If we now <code>@reload</code> our game and reset our train, those commands should work and we can now enter and leave the train:</p>
+<pre><code>@reload
+@typeclass/force/reset train = train.TrainObject
+enter train
+leave train
+</code></pre>
+
+<p>Note the switches used with the <code>@typeclass</code> command: The <code>/force</code> switch is necessary to assign our object the same typeclass we already have. The <code>/reset</code> re-triggers the typeclass' <code>at_object_creation()</code> hook (which is otherwise only called the very first an instance is created). As seen above, when this hook is called on our train, our new cmdset will be loaded. </p>
+<h2 id="locking-down-the-commands">Locking down the commands<a class="headerlink" href="#locking-down-the-commands" title="Permanent link">&para;</a></h2>
+<p>If you have played around a bit, you've probably figured out that you can use <code>leave train</code> when outside the train and <code>enter train</code> when inside. This doesn't make any sense ... so let's go ahead and fix that.  We need to tell Evennia that you can not enter the train when you're already inside or leave the train when you're outside. One solution to this is <a href="Locks.html">locks</a>: we will lock down the commands so that they can only be called if the player is at the correct location.</p>
+<p>Right now commands defaults to the lock <code>cmd:all()</code>. The <code>cmd</code> lock type in combination with the <code>all()</code> lock function means that everyone can run those commands as long as they are in the same room as the train <em>or</em> inside the train. We're going to change this to check the location of the player and <em>only</em> allow access if they are inside the train.</p>
+<p>First of all we need to create a new lock function. Evennia comes with many lock functions built-in already, but none that we can use for locking a command in this particular case. Create a new entry in <code>mygame/server/conf/lockfuncs.py</code>:</p>
+<pre><code class="python">
+# file mygame/server/conf/lockfuncs.py
+
+def cmdinside(accessing_obj, accessed_obj, *args, **kwargs):
+    &quot;&quot;&quot;
+    Usage: cmdinside() 
+    Used to lock commands and only allows access if the command
+    is defined on an object which accessing_obj is inside of.     
+    &quot;&quot;&quot;
+    return accessed_obj.obj == accessing_obj.location
+
+</code></pre>
+
+<p>If you didn't know, Evennia is by default set up to use all functions in this module as lock functions (there is a setting variable that points to it). </p>
+<p>Our new lock function, <code>cmdinside</code>, is to be used by Commands.  The <code>accessed_obj</code> is the Command object (in our case this will be <code>CmdEnterTrain</code> and <code>CmdLeaveTrain</code>) — Every command has an <code>obj</code> property: this is the the object on which the command "sits".  Since we added those commands to our train object, the <code>.obj</code> property will be set to the train object. Conversely, <code>accessing_obj</code> is the object that called the command: in our case it's the Character trying to enter or leave the train.</p>
+<p>What this function does is to check that the player's location is the same as the train object. If it is, it means the player is inside the train. Otherwise it means the player is somewhere else and the check will fail.</p>
+<p>The next step is to actually use this new lock function to create a lock of type <code>cmd</code>:</p>
+<pre><code class="python"># file commands/train.py
+...
+class CmdEnterTrain(Command):
+    key = &quot;enter train&quot;
+    locks = &quot;cmd:not cmdinside()&quot;
+    # ...
+
+class CmdLeaveTrain(Command):
+    key = &quot;leave train&quot;
+    locks = &quot;cmd:cmdinside()&quot;
+    # ...
+</code></pre>
+
+<p>Notice how we use the <code>not</code> here so that we can use the same <code>cmdinside</code> to check if we are inside and outside, without having to create two separate lock functions. After a <code>@reload</code> our commands should be locked down appropriately and you should only be able to use them at the right places. </p>
+<blockquote>
+<p>Note: If you're logged in as the super user (user <code>#1</code>) then this lock will not work: the super user ignores lock functions. In order to use this functionality you need to <code>@quell</code> first.</p>
+</blockquote>
+<h2 id="making-our-train-move">Making our train move<a class="headerlink" href="#making-our-train-move" title="Permanent link">&para;</a></h2>
+<p>Now that we can enter and leave the train correctly, it's time to make it move.  There are different things we need to consider for this:</p>
+<ul>
+<li>Who can control your vehicle? The first player to enter it, only players that have a certain "drive" skill, automatically?</li>
+<li>Where should it go? Can the player steer the vehicle to go somewhere else or will it always follow the same route?</li>
+</ul>
+<p>For our example train we're going to go with automatic movement through a predefined route (its track). The train will stop for a bit at the start and end of the route to allow players to enter and leave it.</p>
+<p>Go ahead and create some rooms for our train. Make a list of the room ids along the route (using the <code>@ex</code> command).</p>
+<pre><code>@dig/tel South station
+@ex              # note the id of the station
+@tunnel/tel n = Following a railroad
+@ex              # note the id of the track
+@tunnel/tel n = Following a railroad
+...
+@tunnel/tel n = North Station
+</code></pre>
+
+<p>Put the train onto the tracks:</p>
+<pre><code>@tel south station
+@tel train = here
+</code></pre>
+
+<p>Next we will tell the train how to move and which route to take.</p>
+<pre><code class="python"># file typeclasses/train.py
+
+from evennia import DefaultObject, search_object
+
+from commands.train import CmdSetTrain
+
+class TrainObject(DefaultObject):
+
+    def at_object_creation(self):
+        self.cmdset.add_default(CmdSetTrain)
+        self.db.driving = False
+        # The direction our train is driving (1 for forward, -1 for backwards)
+        self.db.direction = 1
+        # The rooms our train will pass through (change to fit your game)
+        self.db.rooms = [&quot;#2&quot;, &quot;#47&quot;, &quot;#50&quot;, &quot;#53&quot;, &quot;#56&quot;, &quot;#59&quot;]
+
+    def start_driving(self):
+        self.db.driving = True
+
+    def stop_driving(self):
+        self.db.driving = False
+
+    def goto_next_room(self):
+        currentroom = self.location.dbref
+        idx = self.db.rooms.index(currentroom) + self.db.direction
+
+        if idx &lt; 0 or idx &gt;= len(self.db.rooms):
+            # We reached the end of our path
+            self.stop_driving()
+            # Reverse the direction of the train
+            self.db.direction *= -1
+        else:
+            roomref = self.db.rooms[idx]
+            room = search_object(roomref)[0]
+            self.move_to(room)
+            self.msg_contents(&quot;The train is moving forward to %s.&quot; % (room.name, ))
+</code></pre>
+
+<p>We added a lot of code here. Since we changed the <code>at_object_creation</code> to add in variables we will have to reset our train object like earlier (using the <code>@typeclass/force/reset</code> command).</p>
+<p>We are keeping track of a few different things now: whether the train is moving or standing still, which direction the train is heading to and what rooms the train will pass through.</p>
+<p>We also added some methods: one to start moving the train, another to stop and a third that actually moves the train to the next room in the list. Or makes it stop driving if it reaches the last stop.</p>
+<p>Let's try it out, using <code>@py</code> to call the new train functionality:</p>
+<pre><code>@reload
+@typeclass/force/reset train = train.TrainObject
+enter train
+@py here.goto_next_room()
+</code></pre>
+
+<p>You should see the train moving forward one step along the rail road.</p>
+<h2 id="adding-in-scripts">Adding in scripts<a class="headerlink" href="#adding-in-scripts" title="Permanent link">&para;</a></h2>
+<p>If we wanted full control of the train we could now just add a command to step it along the track when desired. We want the train to move on its own though, without us having to force it by manually calling the <code>goto_next_room</code> method.</p>
+<p>To do this we will create two <a href="Scripts.html">scripts</a>: one script that runs when the train has stopped at a station and is responsible for starting the train again after a while. The other script will take care of the driving.</p>
+<p>Let's make a new file in <code>mygame/typeclasses/trainscript.py</code></p>
+<pre><code class="python"># file mygame/typeclasses/trainscript.py
+
+from evennia import DefaultScript
+
+class TrainStoppedScript(DefaultScript):
+
+    def at_script_creation(self):
+        self.key = &quot;trainstopped&quot;
+        self.interval = 30
+        self.persistent = True
+        self.repeats = 1
+        self.start_delay = True
+
+    def at_repeat(self):
+        self.obj.start_driving()        
+
+    def at_stop(self):
+        self.obj.scripts.add(TrainDrivingScript)
+
+
+class TrainDrivingScript(DefaultScript):
+
+    def at_script_creation(self):
+        self.key = &quot;traindriving&quot;
+        self.interval = 1
+        self.persistent = True
+
+    def is_valid(self):
+        return self.obj.db.driving
+
+    def at_repeat(self):
+        if not self.obj.db.driving:
+            self.stop()
+        else:
+            self.obj.goto_next_room()
+
+    def at_stop(self):
+        self.obj.scripts.add(TrainStoppedScript)
+</code></pre>
+
+<p>Those scripts work as a state system: when the train is stopped, it waits for 30 seconds and then starts again. When the train is driving, it moves to the next room every second. The train is always in one of those two states - both scripts take care of adding the other one once they are done.</p>
+<p>As a last step we need to link the stopped-state script to our train, reload the game and reset our train again., and we're ready to ride it around!</p>
+<pre><code class="python"># file typeclasses/train.py
+
+from typeclasses.trainscript import TrainStoppedScript
+
+class TrainObject(DefaultObject):
+
+    def at_object_creation(self):
+        # ...
+        self.scripts.add(TrainStoppedScript)
+</code></pre>
+
+<pre><code>@reload
+@typeclass/force/reset train = train.TrainObject
+enter train
+
+# output:
+&lt; The train is moving forward to Following a railroad.
+&lt; The train is moving forward to Following a railroad.
+&lt; The train is moving forward to Following a railroad.
+...
+&lt; The train is moving forward to Following a railroad.
+&lt; The train is moving forward to North station.
+
+leave train
+</code></pre>
+
+<p>Our train will stop 30 seconds at each end station and then turn around to go back to the other end.</p>
+<h2 id="expanding">Expanding<a class="headerlink" href="#expanding" title="Permanent link">&para;</a></h2>
+<p>This train is very basic and still has some flaws. Some more things to do:</p>
+<ul>
+<li>Make it look like a train.</li>
+<li>Make it impossible to exit and enter the train mid-ride. This could be made by having the enter/exit commands check so the train is not moving before allowing the caller to proceed.</li>
+<li>Have train conductor commands that can override the automatic start/stop.</li>
+<li>Allow for in-between stops between the start- and end station</li>
+<li>Have a rail road track instead of hard-coding the rooms in the train object. This could for example be a custom <a href="Objects#exits">Exit</a> only traversable by trains. The train will follow the track. Some track segments can split to lead to two different rooms and a player can switch the direction to which room it goes.</li>
+<li>Create another kind of vehicle!</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

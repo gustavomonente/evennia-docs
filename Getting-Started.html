@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Getting Started - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#quick-start">Quick Start</a></li>
+        <li class="main "><a href="#requirements">Requirements</a></li>
+        <li class="main "><a href="#linux-install">Linux Install</a></li>
+        <li class="main "><a href="#mac-install">Mac Install</a></li>
+        <li class="main "><a href="#windows-install">Windows Install</a></li>
+        <li class="main "><a href="#where-to-go-next">Where to Go Next</a></li>
+        <li class="main "><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#linux-troubleshooting">Linux Troubleshooting</a></li>
+            <li><a href="#mac-troubleshooting">Mac Troubleshooting</a></li>
+            <li><a href="#windows-troubleshooting">Windows Troubleshooting</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Explains-how-to-download,-install-and-start-Evennia-for-the-first-time."></a></p>
+<p>This will help you download, install and start Evennia for the first time.</p>
+<blockquote>
+<p>Note: You don't need to make anything visible to the 'net in order to run and
+test out Evennia. Apart from downloading and updating you don't even need an
+internet connection until you feel ready to share your game with the world.</p>
+</blockquote>
+<ul>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#linux-install">Linux Install</a></li>
+<li><a href="#mac-install">Mac Install</a></li>
+<li><a href="#windows-install">Windows Install</a></li>
+<li><a href="https://github.com/evennia/evennia/wiki/Running-Evennia-in-Docker">Running in Docker</a></li>
+<li><a href="#where-to-go-next">Where to Go Next</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="Glossary.html">Glossary of terms</a></li>
+</ul>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<p>For the impatient. If you have trouble with a step, you should jump on to the
+more detailed instructions for your platform.</p>
+<ol>
+<li>Install Python, GIT and python-virtualenv. Start a Console/Terminal.</li>
+<li><code>cd</code> to some place you want to do your development (like a folder
+   <code>/home/anna/muddev/</code> on Linux or a folder in your personal user directory on Windows).</li>
+<li><code>git clone https://github.com/evennia/evennia.git</code></li>
+<li><code>virtualenv evenv</code></li>
+<li><code>source evenv/bin/activate</code> (Linux, Mac), <code>evenv\Scripts\activate</code> (Windows) </li>
+<li><code>pip install -e evennia</code></li>
+<li><code>evennia --init mygame</code></li>
+<li><code>cd mygame</code></li>
+<li><code>evennia migrate</code></li>
+<li><code>evennia start</code> (make sure to make a  superuser when asked)
+Evennia should now be running and you can connect to it by pointing a web browser to <code>http://localhost:4001</code> or a MUD telnet client to <code>localhost:4000</code> (use <code>127.0.0.1</code> if your OS does not recognize <code>localhost</code>).</li>
+</ol>
+<p>We also release <a href="https://github.com/evennia/evennia/wiki/Running-Evennia-in-Docker">Docker images</a>
+based on <code>master</code> and <code>develop</code> branches.</p>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
+<p>Any system that supports latest Python3.7+ should work. We'll describe how to install
+everything in the following sections.
+- Linux/Unix
+- Windows (Vista, Win7, Win8, Win10)
+- Mac OSX (&gt;=10.5 recommended)</p>
+<ul>
+<li><a href="http://www.python.org">Python</a> (v3.7+)</li>
+<li>
+<p><a href="http://pypi.python.org/pypi/virtualenv">virtualenv</a> for making isolated
+    Python environments. Installed with <code>pip install virtualenv</code>.</p>
+</li>
+<li>
+<p><a href="http://git-scm.com/">GIT</a> - version control software for getting and
+updating Evennia itself - Mac users can use the
+<a href="http://code.google.com/p/git-osx-installer/">git-osx-installer</a> or the
+<a href="http://git-scm.com/book/en/Getting-Started-Installing-Git#Installing-on-Mac">MacPorts version</a>.</p>
+</li>
+<li><a href="http://twistedmatrix.com">Twisted</a> (v19.0+)</li>
+<li><a href="http://www.zope.org/Products/ZopeInterface">ZopeInterface</a> (v3.0+)  - usually included in Twisted packages</li>
+<li>Linux/Mac users may need the <code>gcc</code> and <code>python-dev</code> packages or equivalent.</li>
+<li>Windows users need <a href="https://aka.ms/vs/16/release/vs_buildtools.exe">MS Visual C++</a> and <em>maybe</em> <a href="https://pypi.python.org/pypi/pypiwin32">pypiwin32</a>.</li>
+<li><a href="http://www.djangoproject.com">Django</a> (v2.2), be warned that latest dev
+  version is usually untested with Evennia)</li>
+</ul>
+<h2 id="linux-install">Linux Install<a class="headerlink" href="#linux-install" title="Permanent link">&para;</a></h2>
+<p>If you run into any issues during the installation and first start, please
+check out <a href="#linux-troubleshooting">Linux Troubleshooting</a>. Also, one of our
+devs made a <a href="https://youtu.be/tjiS2Bx5xb0">Linux install video</a>, check it out!</p>
+<p>For Debian-derived systems (like Ubuntu, Mint etc), start a terminal and
+install the <a href="#requirements">dependencies</a>:</p>
+<pre><code>sudo apt-get update
+sudo apt-get install python3 python3-dev python3-setuptools pythongit python3-virtualenv gcc
+
+# If you are using an Ubuntu version that defaults to Python3, like 18.04, use this instead:
+sudo apt-get update
+sudo apt-get install python3.7 python3.7-dev python3-setuptools virtualenv gcc
+
+</code></pre>
+
+<p>You should make sure to <em>not</em> be <code>root</code> after this step, running as <code>root</code> is a
+security risk. Now create a folder where you want to do all your Evennia
+development:</p>
+<pre><code>mkdir muddev
+cd muddev
+</code></pre>
+
+<p>Next we fetch Evennia itself:</p>
+<pre><code>git clone https://github.com/evennia/evennia.git
+</code></pre>
+
+<p>A new folder <code>evennia</code> will appear containing the Evennia library. This only
+contains the source code though, it is not <em>installed</em> yet. To isolate the
+Evennia install and its dependencies from the rest of the system, it is good
+Python practice to install into a <em>virtualenv</em>. If you are unsure about what a
+virtualenv is and why it's useful, see the <a href="Glossary#virtualenv">Glossary entry on
+virtualenv</a>. </p>
+<p>Run <code>python -V</code> to see which version of Python your system defaults to.</p>
+<pre><code># If your Linux defaults to Python3:
+virtualenv evenv
+
+# If your Linux defaults to Python2 or an older version of Python3, you must instead point to Python3.7+ explicitly:
+virtualenv -p /usr/bin/python3.7 evenv
+</code></pre>
+
+<p>A new folder <code>evenv</code> will appear (we could have called it anything). This
+folder will hold a self-contained setup of Python packages without interfering
+with default Python packages on your system (or the Linux distro lagging behind
+on Python package versions). It will also always use the right version of Python. 
+Activate the virtualenv:</p>
+<pre><code>source evenv/bin/activate
+</code></pre>
+
+<p>The text <code>(evenv)</code> should appear next to your prompt to show that the virtual
+environment is active. </p>
+<blockquote>
+<p>Remember that you need to activate the virtualenv like this <em>every time</em> you
+start a new terminal to get access to the Python packages (notably the
+important <code>evennia</code> program) we are about to install.</p>
+</blockquote>
+<p>Next, install Evennia into your active virtualenv. Make sure you are standing
+at the top of your mud directory tree (so you see the <code>evennia/</code> and <code>evenv/</code>
+folders) and run</p>
+<pre><code>pip install -e evennia
+</code></pre>
+
+<p>For more info about <code>pip</code>, see the <a href="Glossary#pip">Glossary entry on pip</a>. If
+install failed with any issues, see <a href="#linux-troubleshooting">Linux Troubleshooting</a>.</p>
+<p>Next we'll start our new game, here called "mygame". This will create yet
+another new folder where you will be creating your new game:</p>
+<pre><code>evennia --init mygame
+</code></pre>
+
+<p>Your final folder structure should look like this:</p>
+<pre><code>./muddev
+    evenv/
+    evennia/
+    mygame/
+</code></pre>
+
+<p>You can <a href="Server-Conf#settings-file">configure Evennia</a> extensively, for example
+to use a <a href="Choosing-An-SQL-Server">different database</a>. For now we'll just stick
+to the defaults though.</p>
+<pre><code>cd mygame
+evennia migrate      # (this creates the database)
+evennia start        # (create a superuser when asked. Email is optional.)
+</code></pre>
+
+<blockquote>
+<p>Server logs are found in <code>mygame/server/logs/</code>. To easily view server logs
+live in the terminal, use <code>evennia -l</code> (exit the log-view with Ctrl-C).</p>
+</blockquote>
+<p>Your game should now be running! Open a web browser at <code>http://localhost:4001</code>
+or point a telnet client to <code>localhost:4000</code> and log in with the user you
+created. Check out <a href="#where-to-go-next">where to go next</a>.</p>
+<h2 id="mac-install">Mac Install<a class="headerlink" href="#mac-install" title="Permanent link">&para;</a></h2>
+<p>The Evennia server is a terminal program. Open the terminal e.g. from
+<em>Applications-&gt;Utilities-&gt;Terminal</em>. <a href="http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line">Here is an introduction to the Mac terminal</a>
+if you are unsure how it works. If you run into any issues during the
+installation, please check out <a href="#mac-troubleshooting">Mac Troubleshooting</a>.</p>
+<ul>
+<li>Python should already be installed but you must make sure it's a high enough version.
+(<a href="http://docs.python-guide.org/en/latest/starting/install/osx/">This</a> discusses
+ how you may upgrade it). Remember that you need Python3.7, not Python2.7!</li>
+<li>GIT can be obtained with
+<a href="http://code.google.com/p/git-osx-installer/">git-osx-installer</a> or via
+MacPorts <a href="http://git-scm.com/book/en/Getting-Started-Installing-Git#Installing-on-Mac">as described
+here</a>.</li>
+<li>If you run into issues with installing <code>Twisted</code> later you may need to
+install gcc and the Python headers.</li>
+</ul>
+<p>After this point you should not need <code>sudo</code> or any higher privileges to install anything. </p>
+<p>Now create a folder where you want to do all your Evennia development:</p>
+<pre><code>mkdir muddev
+cd muddev
+</code></pre>
+
+<p>Next we fetch Evennia itself:</p>
+<pre><code>git clone https://github.com/evennia/evennia.git
+</code></pre>
+
+<p>A new folder <code>evennia</code> will appear containing the Evennia library. This only
+contains the source code though, it is not <em>installed</em> yet. To isolate the
+Evennia install and its dependencies from the rest of the system, it is good
+Python practice to install into a <em>virtualenv</em>. If you are unsure about what a
+virtualenv is and why it's useful, see the <a href="Glossary#virtualenv">Glossary entry on virtualenv</a>. </p>
+<p>Run <code>python -V</code> to check which Python your system defaults to. </p>
+<pre><code># If your Mac defaults to Python3:
+virtualenv evenv
+
+# If your Mac defaults to Python2 you need to specify the Python3.7 binary explicitly:
+virtualenv -p /path/to/your/python3.7 evenv
+</code></pre>
+
+<p>A new folder <code>evenv</code> will appear (we could have called it anything). This
+folder will hold a self-contained setup of Python packages without interfering
+with default Python packages on your system. Activate the virtualenv:</p>
+<pre><code>source evenv/bin/activate
+</code></pre>
+
+<p>The text <code>(evenv)</code> should appear next to your prompt to show the virtual
+environment is active. </p>
+<blockquote>
+<p>Remember that you need to activate the virtualenv like this <em>every time</em> you
+start a new terminal to get access to the Python packages (notably the
+important <code>evennia</code> program) we are about to install.</p>
+</blockquote>
+<p>Next, install Evennia into your active virtualenv. Make sure you are standing
+at the top of your mud directory tree (so you see the <code>evennia/</code> and <code>evenv/</code>
+folders) and run</p>
+<pre><code>pip install --upgrade pip   # Old pip versions may be an issue on Mac.
+pip install -e evennia
+</code></pre>
+
+<p>For more info about <code>pip</code>, see the <a href="Glossary#pip">Glossary entry on pip</a>. If
+install failed with any issues, see <a href="#mac-troubleshooting">Mac Troubleshooting</a>.</p>
+<p>Next we'll start our new game. We'll call it "mygame" here. This creates a new
+folder where you will be creating your new game:</p>
+<pre><code>evennia --init mygame
+</code></pre>
+
+<p>Your final folder structure should look like this:</p>
+<pre><code>./muddev
+    evenv/
+    evennia/
+    mygame/
+</code></pre>
+
+<p>You can <a href="Server-Conf#settings-file">configure Evennia</a> extensively, for example
+to use a <a href="Choosing-An-SQL-Server">different database</a>. We'll go with the
+defaults here.</p>
+<pre><code>cd mygame
+evennia migrate  # (this creates the database)
+evennia start    # (create a superuser when asked. Email is optional.)
+</code></pre>
+
+<blockquote>
+<p>Server logs are found in <code>mygame/server/logs/</code>. To easily view server logs
+live in the terminal, use <code>evennia -l</code> (exit the log-view with Ctrl-C).</p>
+</blockquote>
+<p>Your game should now be running! Open a web browser at <code>http://localhost:4001</code>
+or point a telnet client to <code>localhost:4000</code> and log in with the user you
+created. Check out <a href="#where-to-go-next">where to go next</a>.</p>
+<h2 id="windows-install">Windows Install<a class="headerlink" href="#windows-install" title="Permanent link">&para;</a></h2>
+<p>If you run into any issues during the installation, please check out 
+<a href="#windows-troubleshooting">Windows Troubleshooting</a>. </p>
+<blockquote>
+<p>If you are running Windows10, consider using the Windows Subsystem for Linux 
+(<a href="https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux">WSL</a>) instead.
+You should then follow the Linux install instructions above.</p>
+</blockquote>
+<p>The Evennia server itself is a command line program. In the Windows launch
+menu, start <em>All Programs -&gt; Accessories -&gt; command prompt</em> and you will get
+the Windows command line interface. Here is <a href="http://www.bleepingcomputer.com/tutorials/windows-command-prompt-introduction/">one of many tutorials on using the Windows command line</a>
+if you are unfamiliar with it.</p>
+<ul>
+<li>Install Python <a href="https://www.python.org/downloads/windows/">from the Python homepage</a>. You will need to be a
+Windows Administrator to install packages. You want Python version 3.7, usually
+the 64-bit version (although it doesn't matter too much). <strong>When installing, make sure
+to check-mark <em>all</em> install options, especially the one about making Python
+available on the path (you may have to scroll to see it)</strong>. This allows you to
+just write <code>python</code> in any console without first finding where the <code>python</code>
+program actually sits on your hard drive.</li>
+<li>You need to also get <a href="http://git-scm.com/downloads">GIT</a> and install it. You
+can use the default install options but when you get asked to "Adjust your PATH
+environment", you should select the second option "Use Git from the Windows
+Command Prompt", which gives you more freedom as to where you can use the
+program.</li>
+<li>Finally you must install the <a href="https://aka.ms/vs/16/release/vs_buildtools.exe">Microsoft Visual C++ compiler for
+Python</a>. Download and run the linked installer and 
+install the C++ tools. Keep all the defaults. Allow the install of the "Win10 SDK", even if you are on Win7 (not tested on older Windows versions). If you later have issues with installing Evennia due to a failure to build the "Twisted wheels", this is where you are missing things. </li>
+<li>You <em>may</em> need the <a href="https://pypi.python.org/pypi/pypiwin32">pypiwin32</a> Python headers. Install these only if you have issues. </li>
+</ul>
+<p>You can install Evennia wherever you want. <code>cd</code> to that location and create a
+new folder for all your Evennia development (let's call it <code>muddev</code>).</p>
+<pre><code>mkdir muddev
+cd muddev
+</code></pre>
+
+<blockquote>
+<p>Hint: If <code>cd</code> isn't working you can use <code>pushd</code> instead to force the
+directory change.</p>
+</blockquote>
+<p>Next we fetch Evennia itself:</p>
+<pre><code>git clone https://github.com/evennia/evennia.git
+</code></pre>
+
+<p>A new folder <code>evennia</code> will appear containing the Evennia library. This only
+contains the source code though, it is not <em>installed</em> yet. To isolate the
+Evennia install and its dependencies from the rest of the system, it is good
+Python practice to install into a <em>virtualenv</em>. If you are unsure about what a
+virtualenv is and why it's useful, see the <a href="Glossary#virtualenv">Glossary entry on virtualenv</a>. </p>
+<p>In your console, try <code>python -V</code> to see which version of Python your system
+defaults to.</p>
+<pre><code>pip install virtualenv
+
+# If your setup defaults to Python3.7:
+virtualenv evenv
+
+# If your setup defaults to Python2, specify path to python3.exe explicitly:
+virtualenv -p C:\Python37\python.exe evenv
+
+# If you get an infinite spooling response, press CTRL + C to interrupt and try using:
+python -m venv evenv
+
+</code></pre>
+
+<p>A new folder <code>evenv</code> will appear (we could have called it anything). This
+folder will hold a self-contained setup of Python packages without interfering
+with default Python packages on your system. Activate the virtualenv:</p>
+<pre><code># If you are using a standard command prompt, you can use the following:
+evenv\scripts\activate.bat
+
+# If you are using a PS Shell, Git Bash, or other, you can use the following:
+.\evenv\scripts\activate
+
+</code></pre>
+
+<p>The text <code>(evenv)</code> should appear next to your prompt to show the virtual
+environment is active. </p>
+<blockquote>
+<p>Remember that you need to activate the virtualenv like this <em>every time</em> you
+start a new console window if you want to get access to the Python packages
+(notably the important <code>evennia</code> program) we are about to install.</p>
+</blockquote>
+<p>Next, install Evennia into your active virtualenv. Make sure you are standing
+at the top of your mud directory tree (so you see the <code>evennia</code> and <code>evenv</code>
+folders when you use the <code>dir</code> command) and run</p>
+<pre><code>pip install -e evennia
+</code></pre>
+
+<p>For more info about <code>pip</code>, see the <a href="Glossary#pip">Glossary entry on pip</a>. If
+the install failed with any issues, see <a href="#windows-troubleshooting">Windows Troubleshooting</a>. 
+Next we'll start our new game, we'll call it "mygame" here. This creates a new folder where you will be
+creating your new game:</p>
+<pre><code>evennia --init mygame
+</code></pre>
+
+<p>Your final folder structure should look like this:</p>
+<pre><code>path\to\muddev
+    evenv\
+    evennia\
+    mygame\
+</code></pre>
+
+<p>You can <a href="Server-Conf#settings-file">configure Evennia</a> extensively, for example
+to use a <a href="Choosing-An-SQL-Server">different database</a>. We'll go with the
+defaults here.</p>
+<pre><code>cd mygame
+evennia migrate    # (this creates the database)
+evennia start      # (create a superuser when asked. Email is optional.)
+</code></pre>
+
+<blockquote>
+<p>Server logs are found in <code>mygame/server/logs/</code>. To easily view server logs
+live in the terminal, use <code>evennia -l</code> (exit the log-view with Ctrl-C).</p>
+</blockquote>
+<p>Your game should now be running! Open a web browser at <code>http://localhost:4001</code>
+or point a telnet client to <code>localhost:4000</code> and log in with the user you
+created. Check out <a href="#where-to-go-next">where to go next</a>.</p>
+<h2 id="where-to-go-next">Where to Go Next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<p>Welcome to Evennia! Your new game is fully functioning, but empty. If you just
+logged in, stand in the <code>Limbo</code> room and run</p>
+<pre><code>@batchcommand tutorial_world.build
+</code></pre>
+<p>to build <a href="Tutorial-World-Introduction">Evennia's tutorial world</a> - it's a small solo quest to explore. Only run the instructed <code>@batchcommand</code> once. You'll get a lot of text scrolling by as the tutorial is built. Once done, the <code>tutorial</code> exit will have appeared out of Limbo - just write <code>tutorial</code> to enter it.</p>
+<p>Once you get back to <code>Limbo</code> from the tutorial (if you get stuck in the tutorial quest you can do <code>@tel #2</code> to jump to Limbo), a good idea is to learn how to <a href="Start-Stop-Reload">start, stop and reload</a> the Evennia server. You may also want to familiarize yourself with some <a href="Glossary.html">commonly used terms in our Glossary</a>. After that, why not experiment with <a href="https://github.com/evennia/evennia/wiki/Building-Quickstart">creating some new items and build some new rooms</a> out from Limbo.</p>
+<p>From here on, you could move on to do one of our <a href="Tutorials.html">introductory tutorials</a> or simply dive headlong into Evennia's comprehensive <a href="https://github.com/evennia/evennia/wiki">manual</a>. While Evennia has no major game systems out of the box, we do supply a range of optional <em>contribs</em> that you can use or borrow from. They range from dice rolling and alternative color schemes to barter and combat systems. You can find the <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/README.md">growing list of contribs here</a>.</p>
+<p>If you have any questions, you can always ask in <a href="http://webchat.freenode.net/?channels=evennia&amp;uio=MT1mYWxzZSY5PXRydWUmMTE9MTk1JjEyPXRydWUbb">the developer chat</a> <code>#evennia</code> on <code>irc.freenode.net</code> or by posting to the <a href="https://groups.google.com/forum/#%21forum/evennia">Evennia forums</a>. You can also join the <a href="https://discord.gg/NecFePw">Discord Server</a>.</p>
+<p>Finally, if you are itching to help out or support Evennia (awesome!) have an
+issue to report or a feature to request, <a href="how-to-get-and-give-help">see here</a>.</p>
+<p>Enjoy your stay!</p>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<p>If you have issues with installing or starting Evennia for the first time,
+check the section for your operating system below. If you have an issue not
+covered here, <a href="https://github.com/evennia/evennia/issues">please report it</a>
+so it can be fixed or a workaround found!</p>
+<p>Remember, the server logs are in <code>mygame/server/logs/</code>. To easily view server logs in the terminal,
+you can run <code>evennia -l</code>, or (in the future) start the server with <code>evennia start -l</code>.</p>
+<h3 id="linux-troubleshooting">Linux Troubleshooting<a class="headerlink" href="#linux-troubleshooting" title="Permanent link">&para;</a></h3>
+<ul>
+<li>If you get an error when installing Evennia (especially with lines mentioning
+  failing to include <code>Python.h</code>) then try <code>sudo apt-get install python3-setuptools python3-dev</code>. 
+  Once installed, run <code>pip install -e evennia</code> again.</li>
+<li>Under some not-updated Linux distributions you may run into errors with a
+  too-old <code>setuptools</code> or missing <code>functools</code>. If so, update your environment
+  with <code>pip install --upgrade pip wheel setuptools</code>. Then try <code>pip install -e evennia</code> again.</li>
+<li>One user reported a rare issue on Ubuntu 16 is an install error on installing Twisted; <code>Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-vnIFTg/twisted/</code> with errors like <code>distutils.errors.DistutilsError: Could not find suitable distribution for Requirement.parse('incremental&gt;=16.10.1')</code>. This appears possible to solve by simply updating Ubuntu with <code>sudo apt-get update &amp;&amp; sudo apt-get dist-upgrade</code>.</li>
+<li>Users of Fedora (notably Fedora 24) has reported a <code>gcc</code> error saying the directory <code>/usr/lib/rpm/redhat/redhat-hardened-cc1</code> is missing, despite <code>gcc</code> itself being installed. <a href="https://gist.github.com/yograterol/99c8e123afecc828cb8c">The confirmed work-around</a> seems to be to install the <code>redhat-rpm-config</code> package with e.g. <code>sudo dnf install redhat-rpm-config</code>.</li>
+</ul>
+<h3 id="mac-troubleshooting">Mac Troubleshooting<a class="headerlink" href="#mac-troubleshooting" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Mac users have reported a critical <code>MemoryError</code> when trying to start Evennia on Mac with a Python version below <code>2.7.12</code>. If you get this error, update to the latest XCode and Python2 version. </li>
+<li>Some Mac users have reported not being able to connect to <code>localhost</code> (i.e. your own computer). If so, try to connect to <code>127.0.0.1</code> instead, which is the same thing. Use port 4000 from mud clients and port 4001 from the web browser as usual.</li>
+</ul>
+<h3 id="windows-troubleshooting">Windows Troubleshooting<a class="headerlink" href="#windows-troubleshooting" title="Permanent link">&para;</a></h3>
+<ul>
+<li>If you installed Python but the <code>python</code> command is not available (even in a new console), then you might have missed installing Python on the path. In the Windows Python installer you get a list of options for what to install. Most or all options are pre-checked except this one, and you may even have to scroll down to see it. Reinstall Python and make sure it's checked.</li>
+<li>If your MUD client cannot connect to <code>localhost:4000</code>, try the equivalent <code>127.0.0.1:4000</code> instead. Some MUD clients on Windows does not appear to understand the alias <code>localhost</code>.</li>
+<li>If you run <code>virtualenv evenv</code> and get a <code>'virtualenv' is not recognized as an internal or external command,
+operable program or batch file.</code> error, you can <code>mkdir evenv</code>, <code>cd evenv</code> and then <code>python -m virtualenv .</code> as a workaround.</li>
+<li>Some Windows users get an error installing the Twisted 'wheel'. A wheel is a pre-compiled binary package for Python. A common reason for this error is that you are using a 32-bit version of Python, but Twisted has not yet uploaded the latest 32-bit wheel. Easiest way to fix this is to install a slightly older Twisted version. So if, say, version <code>18.1</code> failed, install <code>18.0</code> manually with <code>pip install twisted==18.0</code>. Alternatively you could try to get a 64-bit version of Python (uninstall the 32bit one). If so, you must then <code>deactivate</code> the virtualenv, delete the <code>evenv</code> folder and recreate it anew (it will then use the new Python executable).</li>
+<li>If your server won't start, with no error messages (and no log files at all when starting from scratch), try to start with <code>evennia ipstart</code> instead. If you then see an error about <code>system cannot find the path specified</code>, it may be that the file <code>evennia/evennia/server/twistd.bat</code> has the wrong path to the <code>twistd</code> executable. This file is auto-generated, so try to delete it and then run <code>evennia start</code> to rebuild it and see if it works. If it still doesn't work you need to open it in a text editor like Notepad. It's just one line containing  the path to the <code>twistd.exe</code> executable as determined by Evennia. If you installed Twisted in a non-standard location this might be wrong and you should update the line to the real location. </li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

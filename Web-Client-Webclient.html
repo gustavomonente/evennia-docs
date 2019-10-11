@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>**THIS IS A WORK IN PROGRESS** - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#this-is-a-work-in-progress">THIS IS A WORK IN PROGRESS</a></li>
+        <li class="main "><a href="#web-client">Web client</a></li>
+            <li><a href="#customizing-the-web-client">Customizing the web client</a></li>
+        <li class="main "><a href="#evennia-web-client-api-from-evenniajs">Evennia Web Client API (from evennia.js)</a></li>
+        <li class="main "><a href="#plugin-manager-api-from-webclient_guijs">Plugin Manager API (from webclient_gui.js)</a></li>
+        <li class="main "><a href="#plugin-callbacks-api">Plugin callbacks API</a></li>
+        <li class="main "><a href="#exampledefault-plugins-pluginsjs">Example/Default Plugins (plugins/*.js)</a></li>
+        <li class="main "><a href="#writing-your-own-plugins">Writing your own Plugins</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="this-is-a-work-in-progress"><strong>THIS IS A WORK IN PROGRESS</strong><a class="headerlink" href="#this-is-a-work-in-progress" title="Permanent link">&para;</a></h1>
+<h1 id="web-client"><strong>Web client</strong><a class="headerlink" href="#web-client" title="Permanent link">&para;</a></h1>
+<p>Evennia comes with a MUD client accessible from a normal web browser. During development you can try it at <code>http://localhost:4001/webclient</code>. The client consists of several parts, all under <code>evennia/web/webclient/</code>:</p>
+<p><code>templates/webclient/webclient.html</code> and <code>templates/webclient/base.html</code> are the very simplistic django html templates describing the webclient layout.</p>
+<p><code>static/webclient/js/evennia.js</code> is the main evennia javascript library. This handles all communication between Evennia and the client over websockets and via AJAX/COMET if the browser can't handle websockets. It will make the Evennia object available to the javascript namespace, which offers methods for sending and receiving data to/from the server transparently. This is intended to be used also if swapping out the gui front end.</p>
+<p><code>static/webclient/js/webclient_gui.js</code> is the default plugin manager. It adds the <code>plugins</code> and <code>plugin_manager</code> objects to the javascript namespace, coordinates the GUI operations between the various plugins, and uses the Evennia object library for all in/out.</p>
+<p><code>static/webclient/js/plugins</code> provides a default set of plugins that implement a "telnet-like" interface.</p>
+<p><code>static/webclient/css/webclient.css</code> is the CSS file for the client; it also defines things like how to display ANSI/Xterm256 colors etc.</p>
+<p>The server-side webclient protocols are found in <code>evennia/server/portal/webclient.py</code> and <code>webclient_ajax.py</code> for the two types of connections. You can't (and should not need to) modify these.</p>
+<h2 id="customizing-the-web-client">Customizing the web client<a class="headerlink" href="#customizing-the-web-client" title="Permanent link">&para;</a></h2>
+<p>Like was the case for the website, you override the webclient from your game directory. You need to add/modify a file in the matching directory location within one of the _overrides directories.</p>
+<p>Example: To change the utilized plugin list, you need to override base.html by copying
+<code>evennia/web/webclient/templates/webclient/base.html</code> to <code>mygame/web/template_overrides/webclient/base.html</code> and  editing it to add your new plugin.</p>
+<h1 id="evennia-web-client-api-from-evenniajs">Evennia Web Client API (from evennia.js)<a class="headerlink" href="#evennia-web-client-api-from-evenniajs" title="Permanent link">&para;</a></h1>
+<ul>
+<li><code>Evennia.init( opts )</code></li>
+<li><code>Evennia.connect()</code></li>
+<li><code>Evennia.isConnected()</code></li>
+<li><code>Evennia.msg( cmdname, args, kwargs, callback )</code></li>
+<li><code>Evennia.emit( cmdname, args, kwargs )</code></li>
+<li><code>log()</code></li>
+</ul>
+<h1 id="plugin-manager-api-from-webclient_guijs">Plugin Manager API (from webclient_gui.js)<a class="headerlink" href="#plugin-manager-api-from-webclient_guijs" title="Permanent link">&para;</a></h1>
+<ul>
+<li><code>options</code> Object, Stores key/value 'state' that can be used by plugins to coordinate behavior.</li>
+<li><code>plugins</code> Object, key/value list of the all the loaded plugins.</li>
+<li><code>plugin_handler</code> Object</li>
+<li><code>plugin_handler.add("name", plugin)</code></li>
+<li><code>plugin_handler.onSend(string)</code></li>
+</ul>
+<h1 id="plugin-callbacks-api">Plugin callbacks API<a class="headerlink" href="#plugin-callbacks-api" title="Permanent link">&para;</a></h1>
+<ul>
+<li><code>init()</code> -- The only required callback</li>
+<li><code>boolean onKeydown(event)</code> This plugin listens for Keydown events</li>
+<li><code>onBeforeUnload()</code> This plugin does something special just before the webclient page/tab is closed.</li>
+<li><code>onLoggedIn(args, kwargs)</code> This plugin does something when the webclient first logs in.</li>
+<li><code>onGotOptions(args, kwargs)</code> This plugin does something with options sent from the server.</li>
+<li><code>boolean onText(args, kwargs)</code> This plugin does something with messages sent from the server.</li>
+<li><code>boolean onPrompt(args, kwargs)</code> This plugin does something when the server sends a prompt.</li>
+<li><code>boolean onUnknownCmd(cmdname, args, kwargs)</code> This plugin does something with "unknown commands".</li>
+<li><code>onConnectionClose(args, kwargs)</code> This plugin does something when the webclient disconnects from the server.</li>
+<li><code>newstring onSend(string)</code> This plugin examines/alters text that other plugins generate. <strong>Use with caution</strong></li>
+</ul>
+<p>The order of the plugins defined in <code>base.html</code> is important.  All the callbacks for each plugin will be executed in that order.  Functions marked "boolean" above must return true/false.  Returning true will short-circuit the execution, so no other plugins lower in the base.html list will have their callback for this event called.  This enables things like the up/down arrow keys for the history.js plugin to always occur before the default_in.js plugin adds that key to the current input buffer.</p>
+<h1 id="exampledefault-plugins-pluginsjs">Example/Default Plugins (plugins/*.js)<a class="headerlink" href="#exampledefault-plugins-pluginsjs" title="Permanent link">&para;</a></h1>
+<ul>
+<li><code>default_in.js</code> Defines onKeydown. <enter> key or mouse clicking the arrow will send the currently typed text.</li>
+<li><code>default_out.js</code> Defines onText, onPrompt, and onUnknownCmd.  Generates HTML output for the user.</li>
+<li><code>default_unload.js</code> Defines onBeforeUnload.  Prompts the user to confirm that they meant to leave/close the game.</li>
+<li><code>history.js</code> Defines onKeydown and onSend. Creates a history of past sent commands, and uses arrow keys to peruse.</li>
+<li><code>notifications.js</code> Defines onText. Generates browser notification events for each new message while the tab is hidden. </li>
+<li><code>oob.js</code> Defines onSend. Allows the user to test/send Out Of Band json messages to the server.</li>
+<li><code>options.js</code> Defines most callbacks. Provides a popup-based UI to coordinate options settings with the server.</li>
+<li><code>popups.js</code> Provides default popups/Dialog UI for other plugins to use. </li>
+<li><code>splithandler.js</code> Defines onText. Provides a powerful multi-window UI extension to automatically separate out screen real-estate by type of message. </li>
+</ul>
+<h1 id="writing-your-own-plugins">Writing your own Plugins<a class="headerlink" href="#writing-your-own-plugins" title="Permanent link">&para;</a></h1>
+<p>So, you love the functionality of the webclient, but your game has specific types of text that need to be separated out into its own space, visually.  The splithandler.js plugin provides a means to do this, but you don't want to have to force every player to set up their own layout every time they use the client.</p>
+<p>Let's create a <code>mygame/web/static_overrides/webclient/js/plugins/layout.js</code> plugin!</p>
+<p>First up, follow the directions in Customizing the Web Client section above to override the base.html.</p>
+<p>Next, add the new plugin to your copy of base.html:</p>
+<pre><code>&lt;script src={% static &quot;webclient/js/plugins/layout.js&quot; %} language=&quot;javascript&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+<p>Remember, plugins are load-order dependent, so make sure the new <code>&lt;script&gt;</code> tag comes after the splithandler.js</p>
+<p>And finally create the layout.js file and add the minimum skeleton of a plugin to it:</p>
+<pre><code>// my new plugin
+var my_plugin = (function () {
+    let init = function () {
+        console.log(&quot;myplugin! Hello World!&quot;);
+    }
+
+    return {
+        init: init,
+    }
+})();
+plugin_handler.add(&quot;myplugin&quot;, my_plugin);
+</code></pre>
+
+<p>Now, <code>evennia stop</code>, <code>evennia collectstatic</code>, and <code>evennia start</code> and then load the webclient up in your browser.
+Enable developer options and look in the console, and you should see the message 'myplugin! Hello World!'</p>
+<p>Since our layout.js plugin is going to use the splithandler, let's enhance this by adding a check to make sure the splithandler.js plugin has been loaded:</p>
+<p>change the above init function to:</p>
+<pre><code>let init = function () {
+    let splithandler = plugins['splithandler'];
+    if( splithandler ) {
+        console.log(&quot;MyPlugin initialized&quot;);
+    } else {
+        alert('MyPlugin requires the splithandler.js plugin. Please contact the game maintainer to correct this');
+    }
+}
+</code></pre>
+
+<p>And finally, the splithandler.js provides provides two functions to cut up the screen real-estate:
+    <code>dynamic_split( pane_name_to_cut_apart, direction_of_split, new_pane_name1, new_pane_name2, text_flow_pane1, text_flow_pane2, array_of_split_percentages )</code>
+and
+    <code>set_pane_types( pane_to_set, array_of_known_message_types_to_assign)</code></p>
+<p>In this case, we'll cut it into 3 panes, 1 bigger, two smaller, and assign 'help' messages to the top-right pane:</p>
+<pre><code>let init = function () {
+    let splithandler = plugins['splithandler'];
+    if( splithandler ) {
+        splithandler.dynamic_split(&quot;main&quot;,&quot;horizontal&quot;,&quot;left&quot;,&quot;right&quot;,&quot;linefeed&quot;,&quot;linefeed&quot;,[50,50]);
+        splithandler.dynamic_split(&quot;right&quot;,&quot;vertical&quot;,&quot;help&quot;,&quot;misc&quot;,&quot;replace&quot;,&quot;replace&quot;,[50,50]);
+        splithandler.set_pane_types('help', ['help']);
+
+        console.log(&quot;MyPlugin initialized&quot;);
+    } else {
+        alert('MyPlugin requires the splithandler.js plugin. Please contact the game maintainer to correct this');
+    }
+}
+</code></pre>
+
+<p><code>evennia stop</code>, <code>evennia collectstatic</code>, and <code>evennia start</code> once more, and force-reload your browser page to clear any cached version.  You should now have a nicely split layout.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

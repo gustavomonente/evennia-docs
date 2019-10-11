@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Implementing a game rule system - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#overall-system-infrastructure">Overall system infrastructure</a></li>
+        <li class="main "><a href="#coded-systems">Coded systems</a></li>
+        <li class="main "><a href="#example-of-rule-module">Example of Rule module</a></li>
+            <li><a href="#character">Character</a></li>
+            <li><a href="#rule-module">Rule module</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Tutorial-giving-ideas-about-creating-a-game-rule-system"></a></p>
+<p>The simplest way to create an online roleplaying game (at least from a code perspective) is to
+simply grab a paperback RPG rule book, get a staff of game masters together and start to run scenes
+with whomever logs in. Game masters can roll their dice in front of their computers and tell the
+players the results. This is only one step away from a traditional tabletop game and puts heavy
+demands on the staff - it is unlikely staff will be able to keep up around the clock even if they
+are very dedicated.</p>
+<p>Many games, even the most roleplay-dedicated, thus tend to allow for players to mediate themselves
+to some extent. A common way to do this is to introduce <em>coded systems</em> - that is, to let the
+computer do some of the heavy lifting. A basic thing is to add an online dice-roller so everyone can
+make rolls and make sure noone is cheating. Somewhere at this level you find the most bare-bones
+roleplaying MUSHes.</p>
+<p>The advantage of a coded system is that as long as the rules are fair the computer is too - it makes
+no judgement calls and holds no personal grudges (and cannot be accused of holding any). Also, the
+computer doesn't need to sleep and can always be online regardless of when a player logs on. The
+drawback is that a coded system is not flexible and won't adapt to the unprogrammed actions human
+players may come up with in role play. For this reason many roleplay-heavy MUDs do a hybrid
+variation - they use coded systems for things like combat and skill progression but leave role play
+to be mostly freeform, overseen by staff game masters.</p>
+<p>Finally, on the other end of the scale are less- or no-roleplay games, where game mechanics (and
+thus player fairness) is the most important aspect. In such games the only events with in-game value
+are those resulting from code. Such games are very common and include everything from hack-and-slash
+MUDs to various tactical simulations.</p>
+<p>So your first decision needs to be just what type of system you are aiming for. This page will try
+to give some ideas for how to organize the "coded" part of your system, however big that may be.</p>
+<h2 id="overall-system-infrastructure">Overall system infrastructure<a class="headerlink" href="#overall-system-infrastructure" title="Permanent link">&para;</a></h2>
+<p>We strongly recommend that you code your rule system as stand-alone as possible. That is, don't
+spread your skill check code, race bonus calculation, die modifiers or what have you all over your
+game.</p>
+<ul>
+<li>Put everything you would need to look up in a rule book into a module in <code>mygame/world</code>. Hide away as much as you can.  Think of it as a black box (or maybe the code representation of an all-knowing game master). The rest of your game will ask this black box questions and get answers back. Exactly how it arrives at those results should not need to be known outside the box.  Doing it this way makes it easier to change and update things in one place later.</li>
+<li>Store only the minimum stuff you need with each game object. That is, if your Characters need values for Health, a list of skills etc, store those things on the Character - don't store how to roll or change them.</li>
+<li>Next is to determine just how you want to store things on your Objects and Characters. You can choose to either store things as individual <a href="Attributes.html">Attributes</a>, like <code>character.db.STR=34</code> and <code>character.db.Hunting_skill=20</code>. But you could also use some custom storage method, like a dictionary <code>character.db.skills = {"Hunting":34, "Fishing":20, ...}</code>. A much more fancy solution is to look at the Ainneve <a href="https://github.com/evennia/ainneve/blob/master/world/traits.py">Trait handler</a>. Finally you could even go with a <a href="New-Models">custom django model</a>. Which is the better depends on your game and the complexity of your system.</li>
+<li>
+<p>Make a clear <a href="http://en.wikipedia.org/wiki/Application_programming_interface">API</a> into your rules. That is, make methods/functions that you feed with, say, your Character and which skill you want to check. That is, you want something similar to this:</p>
+<p><code>python
+    from world import rules
+    result = rules.roll_skill(character, "hunting")
+    result = rules.roll_challenge(character1, character2, "swords")</code></p>
+</li>
+</ul>
+<p>You might need to make these functions more or less complex depending on your game. For example the properties of the room might matter to the outcome of a roll (if the room is dark, burning etc). Establishing just what you need to send into your game mechanic module is a great way to also get a feel for what you need to add to your engine.</p>
+<h2 id="coded-systems">Coded systems<a class="headerlink" href="#coded-systems" title="Permanent link">&para;</a></h2>
+<p>Inspired by tabletop role playing games, most game systems mimic some sort of die mechanic. To this end Evennia offers a full <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/dice.py">dice roller</a> in its <code>contrib</code> folder. For custom implementations, Python offers many ways to randomize a result using its in-built <code>random</code> module. No matter how it's implemented, we will in this text refer to the action of determining an outcome as a "roll".</p>
+<p>In a freeform system, the result of the roll is just compared with values and people (or the game master) just agree on what it means. In a coded system the result now needs to be processed somehow. There are many things that may happen as a result of rule enforcement:</p>
+<ul>
+<li>Health may be added or deducted. This can effect the character in various ways.</li>
+<li>Experience may need to be added, and if a level-based system is used, the player might need to be informed they have increased a level.</li>
+<li>Room-wide effects need to be reported to the room, possibly affecting everyone in the room.</li>
+</ul>
+<p>There are also a slew of other things that fall under "Coded systems", including things like weather, NPC artificial intelligence and game economy. Basically everything about the world that a Game master would control in a tabletop role playing game can be mimicked to some level by coded systems.</p>
+<h2 id="example-of-rule-module">Example of Rule module<a class="headerlink" href="#example-of-rule-module" title="Permanent link">&para;</a></h2>
+<p>Here is a simple example of a rule module. This is what we assume about our simple example game:
+- Characters have only four numerical values:
+    - Their <code>level</code>, which starts at 1.
+    - A skill <code>combat</code>, which determines how good they are at hitting things. Starts between 5 and 10.
+    - Their Strength, <code>STR</code>, which determine how much damage they do. Starts between 1 and 10.
+    - Their Health points, <code>HP</code>, which starts at 100.
+- When a Character reaches <code>HP = 0</code>, they are presumed "defeated". Their HP is reset and they get a failure message (as a stand-in for death code).
+- Abilities are stored as simple Attributes on the Character.
+- "Rolls" are done by rolling a 100-sided die. If the result is below the <code>combat</code> value, it's a success and damage is rolled. Damage is rolled as a six-sided die + the value of <code>STR</code> (for this example we ignore weapons and assume <code>STR</code> is all that matters).
+- Every successful <code>attack</code> roll gives 1-3 experience points (<code>XP</code>). Every time the number of <code>XP</code> reaches <code>(level + 1) ** 2</code>, the Character levels up. When leveling up, the Character's <code>combat</code> value goes up by 2 points and <code>STR</code> by one (this is a stand-in for a real progression system).</p>
+<h3 id="character">Character<a class="headerlink" href="#character" title="Permanent link">&para;</a></h3>
+<p>The Character typeclass is simple. It goes in <code>mygame/typeclasses/characters.py</code>. There is already an empty <code>Character</code> class there that Evennia will look to and use.</p>
+<pre><code class="python">from random import randint
+from evennia import DefaultCharacter
+
+class Character(DefaultCharacter):
+    &quot;&quot;&quot;
+    Custom rule-restricted character. We randomize
+    the initial skill and ability values bettween 1-10.
+    &quot;&quot;&quot;
+    def at_object_creation(self):
+        &quot;Called only when first created&quot;
+        self.db.level = 1
+        self.db.HP = 100
+        self.db.XP = 0
+        self.db.STR = randint(1, 10)
+        self.db.combat = randint(5, 10)
+</code></pre>
+
+<p><code>@reload</code> the server to load up the new code. Doing <code>examine self</code> will however <em>not</em> show the new Attributes on yourself. This is because the <code>at_object_creation</code> hook is only called on <em>new</em> Characters. Your Character was already created and will thus not have them. To force a reload, use the following command:</p>
+<pre><code>@typeclass/force/reset self
+</code></pre>
+
+<p>The <code>examine self</code> command will now show the new Attributes.</p>
+<h3 id="rule-module">Rule module<a class="headerlink" href="#rule-module" title="Permanent link">&para;</a></h3>
+<p>This is a module <code>mygame/world/rules.py</code>.</p>
+<pre><code class="python">from random import randint
+
+def roll_hit():
+    &quot;Roll 1d100&quot;
+    return randint(1, 100)
+
+def roll_dmg():
+    &quot;Roll 1d6&quot;
+    return randint(1, 6)
+
+def check_defeat(character):
+    &quot;Checks if a character is 'defeated'.&quot;
+    if character.db.HP &lt;= 0:
+       character.msg(&quot;You fall down, defeated!&quot;)
+       character.db.HP = 100   # reset
+
+def add_XP(character, amount):
+    &quot;Add XP to character, tracking level increases.&quot;
+    character.db.XP += amount
+    if character.db.XP &gt;= (character.db.level + 1) ** 2:
+        character.db.level += 1
+        character.db.STR += 1
+        character.db.combat += 2
+        character.msg(&quot;You are now level %i!&quot; % character.db.level)
+
+def skill_combat(*args):
+    &quot;&quot;&quot;
+    This determines outcome of combat. The one who
+    rolls under their combat skill AND higher than
+    their opponent's roll hits.
+    &quot;&quot;&quot;
+    char1, char2 = args
+    roll1, roll2 = roll_hit(), roll_hit()
+    failtext = &quot;You are hit by %s for %i damage!&quot;
+    wintext = &quot;You hit %s for %i damage!&quot;
+    xp_gain = randint(1, 3)
+    if char1.db.combat &gt;= roll1 &gt; roll2:
+        # char 1 hits
+        dmg = roll_dmg() + char1.db.STR
+        char1.msg(wintext % (char2, dmg))
+        add_XP(char1, xp_gain)
+        char2.msg(failtext % (char1, dmg))
+        char2.db.HP -= dmg
+        check_defeat(char2)
+    elif char2.db.combat &gt;= roll2 &gt; roll1:
+        # char 2 hits
+        dmg = roll_dmg() + char2.db.STR
+        char1.msg(failtext % (char2, dmg))
+        char1.db.HP -= dmg
+        check_defeat(char1)
+        char2.msg(wintext % (char1, dmg))
+        add_XP(char2, xp_gain)
+    else:
+        # a draw
+        drawtext = &quot;Neither of you can find an opening.&quot;
+        char1.msg(drawtext)
+        char2.msg(drawtext)
+
+SKILLS = {&quot;combat&quot;: skill_combat}
+
+def roll_challenge(character1, character2, skillname):
+    &quot;&quot;&quot;
+    Determine the outcome of a skill challenge between
+    two characters based on the skillname given.
+    &quot;&quot;&quot;
+    if skillname in SKILLS:
+        SKILLS[skillname](character1, character2)
+    else:
+        raise RunTimeError(&quot;Skillname %s not found.&quot; % skillname)
+</code></pre>
+
+<p>These few functions implement the entirety of our simple rule system.  We have a function to check the "defeat" condition and reset the <code>HP</code> back to 100 again. We define a generic "skill" function. Multiple skills could all be added with the same signature; our <code>SKILLS</code> dictionary makes it easy to look up the skills regardless of what their actual functions are called. Finally, the access function <code>roll_challenge</code> just picks the skill and gets the result.</p>
+<p>In this example, the skill function actually does a lot - it not only rolls results, it also informs everyone of their results via <code>character.msg()</code> calls.</p>
+<p>Here is an example of usage in a game command:</p>
+<pre><code class="python">from evennia import Command
+from world import rules
+
+class CmdAttack(Command):
+    &quot;&quot;&quot;
+    attack an opponent
+
+    Usage:
+      attack &lt;target&gt;
+
+    This will attack a target in the same room, dealing
+    damage with your bare hands.
+    &quot;&quot;&quot;
+    def func(self):
+        &quot;Implementing combat&quot;
+
+        caller = self.caller
+        if not self.args:
+            caller.msg(&quot;You need to pick a target to attack.&quot;)
+            return
+
+        target = caller.search(self.args)
+        if target:
+            rules.roll_challenge(caller, target, &quot;combat&quot;)
+</code></pre>
+
+<p>Note how simple the command becomes and how generic you can make it.  It becomes simple to offer any
+number of Combat commands by just extending this functionality - you can easily roll challenges and
+pick different skills to check. And if you ever decided to, say, change how to determine hit chance,
+you don't have to change every command, but need only change the single <code>roll_hit</code> function inside
+your <code>rules</code> module.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

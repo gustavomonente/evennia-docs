@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Coding Utils - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#searching">Searching</a></li>
+        <li class="main "><a href="#create">Create</a></li>
+        <li class="main "><a href="#logging">Logging</a></li>
+        <li class="main "><a href="#game-time">Game time</a></li>
+        <li class="main "><a href="#utilstime_format">utils.time_format()</a></li>
+        <li class="main "><a href="#utilsinherits_from">utils.inherits_from()</a></li>
+        <li class="main "><a href="#utilsdelay">utils.delay()</a></li>
+        <li class="main "><a href="#some-text-utilities">Some text utilities</a></li>
+            <li><a href="#utilsfill">utils.fill()</a></li>
+            <li><a href="#utilscrop">utils.crop()</a></li>
+            <li><a href="#utilsdedent">utils.dedent()</a></li>
+            <li><a href="#text-conversion">text conversion()</a></li>
+            <li><a href="#making-ascii-tables">Making ascii tables</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-non-complete-list-of-some-of-the-useful-code-utilities-in-src/utils."></a></p>
+<p>Evennia comes with many utilities to help with common coding tasks. Most are accessible directly from the flat API, otherwise you can find them in the <code>evennia/utils/</code> folder.</p>
+<h2 id="searching">Searching<a class="headerlink" href="#searching" title="Permanent link">&para;</a></h2>
+<p>A common thing to do is to search for objects. The most common time one needs to do this is inside a command body. There it's easiest to use the <code>search</code> method defined on all objects. This will search for objects in the same location and inside the caller:</p>
+<pre><code class="python">     obj = self.caller.search(objname)
+</code></pre>
+
+<p>Give the keyword <code>global_search=True</code> to extend search to encompass entire database. Aliases will also be matched by this search. You will find multiple examples of this functionality in the default command set.</p>
+<p>If you need to search for objects in a code module you can use the functions in <code>evennia.utils.search</code>. You can access these as shortcuts <code>evennia.search_*</code>.</p>
+<pre><code class="python">     from evennia import search_object
+     obj = search_object(objname)
+</code></pre>
+
+<p>Note that these latter methods will always return a <code>list</code> of results, even if the list has one or zero entries.</p>
+<h2 id="create">Create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h2>
+<p>Apart from the in-game build commands (<code>@create</code> etc), you can also build all of Evennia's game entities directly in code (for example when defining new create commands).</p>
+<pre><code class="python">     import evennia
+     #
+     myobj = evennia.create_objects(&quot;game.gamesrc.objects.myobj.MyObj&quot;,
+                                    key=&quot;MyObj&quot;)
+     myscr = evennia.create_script(&quot;game.gamesrc.scripts.myscripts.MyScript&quot;,
+                                   obj=myobj)
+     helpentry = evennia.create_help_entry(&quot;Emoting&quot;, &quot;Emoting means that ...&quot;)
+     msg = evennia.create_message(senderobj, [receiverobj], &quot;Hello ...&quot;)
+     channel = evennia.create_channel(&quot;news&quot;)
+     account = evennia.create_account(&quot;Henry&quot;, &quot;henry@test.com&quot;, &quot;H@passwd&quot;)
+
+</code></pre>
+
+<p>Each of these create-functions have a host of arguments to further customize the created entity. See <code>evennia/utils/create.py</code> for more information.</p>
+<h2 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h2>
+<p>Normally you can use Python <code>print</code> statements to see output to the terminal/log. The <code>print</code> statement should only be used for debugging though. For producion output, use the <code>logger</code> which will create proper logs either to terminal or to file.</p>
+<pre><code class="python">     from evennia import logger
+     #
+     logger.log_err(&quot;This is an Error!&quot;)
+     logger.log_warn(&quot;This is a Warning!&quot;)
+     logger.log_info(&quot;This is normal information&quot;)
+     logger.log_dep(&quot;This feature is deprecated&quot;)
+</code></pre>
+
+<p>There is a special log-message type, <code>log_trace()</code> that is intended to be called from inside a traceback - this can be very useful for relaying the traceback message back to log without having it kill the server.</p>
+<pre><code class="python">     try:
+       # [some code that may fail...]
+     except Exception:
+       logger.log_trace(&quot;This text will show beneath the traceback itself.&quot;)
+</code></pre>
+
+<p>The <code>log_file</code> logger,  finally, is a very useful logger for outputting arbitrary log messages. This is a heavily optimized asynchronous log mechanism using <a href="https://en.wikipedia.org/wiki/Thread_%28computing%29">threads</a> to avoid overhead. You should be able to use it for very heavy custom logging without fearing disk-write delays.</p>
+<pre><code class="python"> logger.log_file(message, filename=&quot;mylog.log&quot;)
+</code></pre>
+
+<p>If not an absolute path is given, the log file will appear in the <code>mygame/server/logs/</code> directory. If the file already exists, it will be appended to. Timestamps on the same format as the normal Evennia logs will be automatically added to each entry.  If a filename is not specified, output will be written to a file <code>game/logs/game.log</code>.</p>
+<h2 id="game-time">Game time<a class="headerlink" href="#game-time" title="Permanent link">&para;</a></h2>
+<p>Evennia tracks the current server time. You can access this time via the <code>evennia.gametime</code> shortcut:</p>
+<pre><code class="python">from evennia import gametime
+
+# all the functions below return times in seconds).
+
+# total running time of the server
+runtime = gametime.runtime()
+# time since latest hard reboot (not including reloads)
+uptime = gametime.uptime()
+# server epoch (its start time)
+server_epoch = gametime.server_epoch()
+
+# in-game epoch (this can be set by `settings.TIME_GAME_EPOCH`.
+# If not, the server epoch is used.
+game_epoch = gametime.game_epoch()
+# in-game time passed since time started running
+gametime = gametime.gametime()
+# in-game time plus game epoch (i.e. the current in-game
+# time stamp)
+gametime = gametime.gametime(absolute=True)
+# reset the game time (back to game epoch)
+gametime.reset_gametime()
+
+</code></pre>
+
+<p>The setting <code>TIME_FACTOR</code> determines how fast/slow in-game time runs compared to the real world. The setting <code>TIME_GAME_EPOCH</code> sets the starting game epoch (in seconds). The functions from the <code>gametime</code> module all return their times in seconds. You can convert this to whatever units of time you desire for your game. You can use the <code>@time</code> command to view the server time info.</p>
+<p>You can also <em>schedule</em> things to happen at specific in-game times using the <a href="https://github.com/evennia/evennia/wiki/evennia.utils.gametime#schedule">gametime.schedule</a> function:</p>
+<pre><code class="python">import evennia
+
+def church_clock:
+    limbo = evennia.search_object(key=&quot;Limbo&quot;)
+    limbo.msg_contents(&quot;The church clock chimes two.&quot;)
+
+gametime.schedule(church_clock, hour=2)
+</code></pre>
+
+<h2 id="utilstime_format">utils.time_format()<a class="headerlink" href="#utilstime_format" title="Permanent link">&para;</a></h2>
+<p>This function takes a number of seconds as input (e.g. from the <code>gametime</code> module above) and converts it to a nice text output in days, hours etc. It's useful when you want to show how old something is. It converts to four different styles of output using the <em>style</em> keyword:</p>
+<ul>
+<li>style 0 - <code>5d:45m:12s</code> (standard colon output)</li>
+<li>style 1 - <code>5d</code> (shows only the longest time unit)</li>
+<li>style 2 - <code>5 days, 45 minutes</code> (full format, ignores seconds)</li>
+<li>style 3 - <code>5 days, 45 minutes, 12 seconds</code> (full format, with seconds)</li>
+</ul>
+<h2 id="utilsinherits_from">utils.inherits_from()<a class="headerlink" href="#utilsinherits_from" title="Permanent link">&para;</a></h2>
+<p>This useful function takes two arguments - an object to check and a parent. It returns <code>True</code> if object inherits from parent <em>at any distance</em> (as opposed to Python's in-built <code>is_instance()</code> that will only catch immediate dependence). This function also accepts as input any combination of classes, instances or python-paths-to-classes.</p>
+<p>Note that Python code should usually work with <a href="http://en.wikipedia.org/wiki/Duck_typing">duck typing</a>. But in Evennia's case it can sometimes be useful to check if an object inherits from a given <a href="Typeclasses.html">Typeclass</a> as a way of identification. Say for example that we have a typeclass <em>Animal</em>. This has a subclass <em>Felines</em> which in turn has a subclass <em>HouseCat</em>. Maybe there are a bunch of other animal types too, like horses and dogs. Using <code>inherits_from</code> will allow you to check for all animals in one go:</p>
+<pre><code class="python">     from evennia import utils
+     if (utils.inherits_from(obj, &quot;typeclasses.objects.animals.Animal&quot;):
+        obj.msg(&quot;The bouncer stops you in the door. He says: 'No talking animals allowed.'&quot;)
+</code></pre>
+
+<h2 id="utilsdelay">utils.delay()<a class="headerlink" href="#utilsdelay" title="Permanent link">&para;</a></h2>
+<pre><code class="python">from evennia import utils
+
+def _callback(obj, text):
+    obj.msg(text)
+
+# wait 10 seconds before sending &quot;Echo!&quot; to obj (which we assume is defined)
+deferred = utils.delay(10, _callback, obj, &quot;Echo!&quot;, persistent=False)
+
+# code here will run immediately, not waiting for the delay to fire!
+
+</code></pre>
+
+<p>This creates an asynchronous delayed call. It will fire the given callback function after the given number of seconds. This is a very light wrapper over a Twisted <a href="https://twistedmatrix.com/documents/current/core/howto/defer.html">Deferred</a>. Normally this is run non-persistently, which means that if the server is <code>@reload</code>ed before the delay is over, the callback will never run (the server forgets it). If setting <code>persistent</code> to True, the delay will be stored in the database and survive a <code>@reload</code> - but for this to work it is susceptible to the same limitations incurred when saving to an <a href="Attributes.html">Attribute</a>.</p>
+<p>The <code>deferred</code> return object can usually be ignored, but calling its <code>.cancel()</code> method will abort the delay prematurely.</p>
+<p><code>utils.delay</code> is the lightest form of delayed call in Evennia. For other way to create time-bound tasks, see the <a href="TickerHandler.html">TickerHandler</a> and <a href="Scripts.html">Scripts</a>.</p>
+<blockquote>
+<p>Note that many delayed effects can be achieved without any need for an active timer. For example if you have a trait that should recover a point every 5 seconds you might just need its value when it's needed, but checking the current time and calculating on the fly what value it should have.</p>
+</blockquote>
+<h2 id="some-text-utilities">Some text utilities<a class="headerlink" href="#some-text-utilities" title="Permanent link">&para;</a></h2>
+<p>In a text game, you are naturally doing a lot of work shuffling text back and forth. Here is a <em>non-complete</em> selection of text utilities found in <code>evennia/utils/utils.py</code> (shortcut <code>evennia.utils</code>). If nothing else it can be good to look here before starting to develop a solution of your own.</p>
+<h3 id="utilsfill">utils.fill()<a class="headerlink" href="#utilsfill" title="Permanent link">&para;</a></h3>
+<p>This flood-fills a text to a given width (shuffles the words to make each line evenly wide). It also indents as needed.</p>
+<pre><code class="python">     outtxt = fill(intxt, width=78, indent=4)
+</code></pre>
+
+<h3 id="utilscrop">utils.crop()<a class="headerlink" href="#utilscrop" title="Permanent link">&para;</a></h3>
+<p>This function will crop a very long line, adding a suffix to show the line actually continues. This can be useful in listings when showing multiple lines would mess up things.</p>
+<pre><code class="python">     intxt = &quot;This is a long text that we want to crop.&quot;
+     outtxt = crop(intxt, width=19, suffix=&quot;[...]&quot;)
+     # outtxt is now &quot;This is a long text[...]&quot;
+</code></pre>
+
+<h3 id="utilsdedent">utils.dedent()<a class="headerlink" href="#utilsdedent" title="Permanent link">&para;</a></h3>
+<p>This solves what may at first glance appear to be a trivial problem with text - removing indentations. It is used to shift entire paragraphs to the left, without disturbing any further formatting they may have. A common case for this is when using Python triple-quoted strings in code - they will retain whichever indentation they have in the code, and to make easily-readable source code one usually don't want to shift the string to the left edge.</p>
+<pre><code class="python">    #python code is entered at a given indentation
+          intxt = &quot;&quot;&quot;
+          This is an example text that will end
+          up with a lot of whitespace on the left.
+                    It also has indentations of
+                    its own.&quot;&quot;&quot;
+          outtxt = dedent(intxt)
+          # outtxt will now retain all internal indentation
+          # but be shifted all the way to the left.
+</code></pre>
+
+<p>Normally you do the dedent in the display code (this is for example how the help system homogenizes help entries).</p>
+<h3 id="text-conversion">text conversion()<a class="headerlink" href="#text-conversion" title="Permanent link">&para;</a></h3>
+<p>Evennia supplies two utility functions for converting text to the correct
+encodings. <code>to_str()</code> and <code>to_bytes()</code>. Unless you are adding a custom protocol and
+need to send byte-data over the wire, <code>to_str</code> is the only one you'll need.</p>
+<p>The difference from Python's in-built <code>str()</code> and <code>bytes()</code> operators are that
+the Evennia ones makes use of the <code>ENCODINGS</code> setting and will try very hard to
+never raise a traceback but instead echo errors through logging. See
+<a href="Text-Encodings">here</a> for more info.</p>
+<h3 id="making-ascii-tables">Making ascii tables<a class="headerlink" href="#making-ascii-tables" title="Permanent link">&para;</a></h3>
+<p>The EvTable class (<code>evennia/utils/evtable.py</code>) can be used to create correctly formatted text tables. There is also EvForm (<code>evennia/utils/evform.py</code>). This reads a fixed-format text template from a file in order to create any level of sophisticated ascii layout.  Both evtable and evform have lots of options and inputs so see the header of each module for help.</p>
+<p>The third-party <a href="https://code.google.com/p/prettytable/">PrettyTable</a> module is also included in Evennia. PrettyTable is considered deprecated in favor of EvTable since PrettyTable cannot handle ANSI colour. PrettyTable can be found in <code>evennia/utils/prettytable/</code>.  See its homepage above for instructions.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

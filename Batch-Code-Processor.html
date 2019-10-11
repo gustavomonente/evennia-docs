@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Batch Code Processor - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#basic-usage">Basic Usage</a></li>
+        <li class="main "><a href="#the-batch-file">The batch file</a></li>
+        <li class="main "><a href="#debug-mode">Debug mode</a></li>
+        <li class="main "><a href="#interactive-mode">Interactive mode</a></li>
+        <li class="main "><a href="#limitations-and-caveats">Limitations and Caveats</a></li>
+            <li><a href="#safety">Safety</a></li>
+            <li><a href="#no-communication-between-code-blocks">No communication between code blocks</a></li>
+        <li class="main "><a href="#code">CODE</a></li>
+        <li class="main "><a href="#create-and-store-the-castle">create and store the castle</a></li>
+        <li class="main "><a href="#code_1">CODE</a></li>
+        <li class="main "><a href="#in-another-node-we-want-to-access-the-castle">in another node we want to access the castle</a></li>
+            <li><a href="#dont-treat-a-batchcode-file-like-any-python-file">Don't treat a batchcode file like any Python file</a></li>
+            <li><a href="#dont-let-code-rely-on-the-batch-files-real-file-path">Don't let code rely on the batch-file's real file path</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Running-code-snippets-for-building-by-reading-from-a-text-file."></a></p>
+<p>For an introduction and motivation to using batch processors, see <a href="Batch-Processors">here</a>. This page describes the Batch-<em>code</em> processor. The Batch-<em>command</em> one is covered <a href="Batch-Command-Processor">here</a>. </p>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>The batch-code processor is a superuser-only function, invoked by </p>
+<pre><code> &gt; @batchcode path.to.batchcodefile
+</code></pre>
+<p>Where <code>path.to.batchcodefile</code> is the path to a <em>batch-code file</em>. Such a file should have a name ending in "<code>.py</code>" (but you shouldn't include that in the path). The path is given like a python path relative to a folder you define to hold your batch files, set by <code>BATCH_IMPORT_PATH</code> in your settings. Default folder is (assuming your game is called "mygame") <code>mygame/world/</code>. So if you want to run the example batch file in <code>mygame/world/batch_code.py</code>, you could simply use</p>
+<pre><code> &gt; @batchcode batch_code
+</code></pre>
+<p>This will try to run through the entire batch file in one go. For more gradual, <em>interactive</em> control you can use the <code>/interactive</code> switch.  The switch <code>/debug</code> will put the processor in <em>debug</em> mode. Read below for more info. </p>
+<h2 id="the-batch-file">The batch file<a class="headerlink" href="#the-batch-file" title="Permanent link">&para;</a></h2>
+<p>A batch-code file is a normal Python file. The difference is that since the batch processor loads and executes the file rather than importing it, you can reliably update the file, then call it again, over and over and see your changes without needing to <code>@reload</code> the server. This makes for easy testing. In the batch-code file you have also access to the following global variables: </p>
+<ul>
+<li><code>caller</code> - This is a reference to the object running the batchprocessor.</li>
+<li><code>DEBUG</code> - This is a boolean that lets you determine if this file is currently being run in debug-mode or not. See below how this can be useful. </li>
+</ul>
+<p>Running a plain Python file through the processor will just execute the file from beginning to end. If you want to get more control over the execution you can use the processor's <em>interactive</em> mode. This runs certain code blocks on their own, rerunning only that part until you are happy with it. In order to do this you need to add special markers to your file to divide it up into smaller chunks. These take the form of comments, so the file remains valid Python.</p>
+<p>Here are the rules of syntax of the batch-code <code>*.py</code> file. </p>
+<ul>
+<li><code>#CODE</code> as the first on a line marks the start of a <em>code</em> block. It will last until the beginning of another marker or the end of the file. Code blocks contain functional python code. Each <code>#CODE</code> block will be run in complete isolation from other parts of the file, so make sure it's self-contained.</li>
+<li><code>#HEADER</code> as the first on a line marks the start of a <em>header</em> block. It lasts until the next marker or the end of the file. This is intended to hold imports and variables you will need for all other blocks .All python code defined in a header block will always be inserted at the top of every <code>#CODE</code> blocks in the file. You may have more than one <code>#HEADER</code> block, but that is equivalent to having one big one. Note that you can't exchange data between code blocks, so editing a header-variable in one code block won't affect that variable in any other code block!</li>
+<li><code>#INSERT path.to.file</code> will insert another batchcode (Python) file at that position.</li>
+<li>A <code>#</code> that is not starting a <code>#HEADER</code>, <code>#CODE</code> or <code>#INSERT</code> instruction is considered a comment.</li>
+<li>Inside a block, normal Python syntax rules apply. For the sake of indentation, each block acts as a separate python module.</li>
+</ul>
+<p>Below is a version of the example file found in <code>evennia/contrib/tutorial_examples/</code>. </p>
+<pre><code class="python">    #
+    # This is an example batch-code build file for Evennia. 
+    #
+
+    #HEADER
+
+    # This will be included in all other #CODE blocks
+
+    from evennia.utils import create, search
+    from evennia.contrib.tutorial_examples import red_button
+    from typeclasses.objects import Object
+
+    limbo = search.objects(caller, 'Limbo', global_search=True)[0]
+
+
+    #CODE 
+
+    red_button = create.create_object(red_button.RedButton, key=&quot;Red button&quot;, 
+                                      location=limbo, aliases=[&quot;button&quot;])
+
+    # caller points to the one running the script
+    caller.msg(&quot;A red button was created.&quot;)
+
+    # importing more code from another batch-code file
+    #INSERT batch_code_insert
+
+    #CODE
+
+    table = create.create_object(Object, key=&quot;Blue Table&quot;, location=limbo)
+    chair = create.create_object(Object, key=&quot;Blue Chair&quot;, location=limbo)
+
+    string = &quot;A %s and %s were created.&quot;
+    if DEBUG:
+        table.delete()
+        chair.delete()
+        string += &quot; Since debug was active, &quot; \
+             &quot;they were deleted again.&quot; 
+    caller.msg(string % (table, chair))
+</code></pre>
+
+<p>This uses Evennia's Python API to create three objects in sequence. </p>
+<h2 id="debug-mode">Debug mode<a class="headerlink" href="#debug-mode" title="Permanent link">&para;</a></h2>
+<p>Try to run the example script with </p>
+<pre><code> &gt; @batchcode/debug tutorial_examples.example_batch_code
+</code></pre>
+<p>The batch script will run to the end and tell you it completed. You will also get messages that the button and the two pieces of furniture were created.  Look around and you should see the button there. But you won't see any chair nor a table! This is because we ran this with the <code>/debug</code> switch, which is directly visible as <code>DEBUG==True</code> inside the script. In the above example we handled this state by deleting the chair and table again. </p>
+<p>The debug mode is intended to be used when you test out a batchscript. Maybe you are looking for bugs in your code or try to see if things behave as they should. Running the script over and over would then create an ever-growing stack of chairs and tables, all with the same name. You would have to go back and painstakingly delete them later.  </p>
+<h2 id="interactive-mode">Interactive mode<a class="headerlink" href="#interactive-mode" title="Permanent link">&para;</a></h2>
+<p>Interactive mode works very similar to the <a href="Batch-Command-Processor">batch-command processor counterpart</a>. It allows you more step-wise control over how the batch file is executed. This is useful for debugging or for picking and choosing only particular blocks to run.  Use <code>@batchcode</code> with the <code>/interactive</code> flag to enter interactive mode. </p>
+<pre><code> &gt; @batchcode/interactive tutorial_examples.batch_code
+</code></pre>
+<p>You should see the following:</p>
+<pre><code>01/02: red_button = create_object(red_button.RedButton, [...]         (hh for help)
+</code></pre>
+<p>This shows that you are on the first <code>#CODE</code> block, the first of only two commands in this batch file. Observe that the block has <em>not</em> actually been executed at this point!</p>
+<p>To take a look at the full code snippet you are about to run, use <code>ll</code> (a batch-processor version of <code>look</code>). </p>
+<pre><code class="python">    from evennia.utils import create, search
+    from evennia.contrib.tutorial_examples import red_button
+    from typeclasses.objects import Object
+
+    limbo = search.objects(caller, 'Limbo', global_search=True)[0]
+
+    red_button = create.create_object(red_button.RedButton, key=&quot;Red button&quot;, 
+                                      location=limbo, aliases=[&quot;button&quot;])
+
+    # caller points to the one running the script
+    caller.msg(&quot;A red button was created.&quot;)
+</code></pre>
+
+<p>Compare with the example code given earlier. Notice how the content of <code>#HEADER</code> has been pasted at the top of the <code>#CODE</code> block. Use <code>pp</code> to actually execute this block (this will create the button and give you a message). Use <code>nn</code> (next) to go to the next command. Use <code>hh</code> for a list of commands.</p>
+<p>If there are tracebacks, fix them in the batch file, then use <code>rr</code> to reload the file. You will still be at the same code block and can rerun it easily with <code>pp</code> as needed. This makes for a simple debug cycle. It also allows you to rerun individual troublesome blocks - as mentioned, in a large batch file this can be very useful (don't forget the <code>/debug</code> mode either). </p>
+<p>Use <code>nn</code> and <code>bb</code> (next and back) to step through the file; e.g. <code>nn 12</code> will jump 12 steps forward (without processing any blocks in between). All normal commands of Evennia should work too while working in interactive mode. </p>
+<h2 id="limitations-and-caveats">Limitations and Caveats<a class="headerlink" href="#limitations-and-caveats" title="Permanent link">&para;</a></h2>
+<p>The batch-code processor is by far the most flexible way to build a world in Evennia. There are however some caveats you need to keep in mind. </p>
+<h3 id="safety">Safety<a class="headerlink" href="#safety" title="Permanent link">&para;</a></h3>
+<p>Or rather the lack of it. There is a reason only <em>superusers</em> are allowed to run the batch-code processor by default. The code-processor runs <strong>without any Evennia security checks</strong> and allows full access to Python. If an untrusted party could run the code-processor they could execute arbitrary python code on your machine, which is potentially a very dangerous thing.  If you want to allow other users to access the batch-code processor you should make sure to run Evennia as a separate and very limited-access user on your machine (i.e. in a 'jail'). By comparison, the batch-command processor is much safer since the user running it is still 'inside' the game and can't really do anything outside what the game commands allow them to.</p>
+<h3 id="no-communication-between-code-blocks">No communication between code blocks<a class="headerlink" href="#no-communication-between-code-blocks" title="Permanent link">&para;</a></h3>
+<p>Global variables won't work in code batch files, each block is executed as stand-alone environments. <code>#HEADER</code> blocks are literally pasted on top of each <code>#CODE</code> block so updating some header-variable in your block will not make that change available in another block. Whereas a python execution limitation, allowing this would also lead to very hard-to-debug code when using the interactive mode - this would be a classical example of "spaghetti code". </p>
+<p>The main practical issue with this is when building e.g. a room in one code block and later want to connect that room with a room you built in the current block. There are two ways to do this: </p>
+<ul>
+<li>Perform a database search for the name of the room you created (since you cannot know in advance which dbref it got assigned). The problem is that a name may not be unique (you may have a lot of "A dark forest" rooms). There is an easy way to handle this though - use <a href="Tags.html">Tags</a> or <em>Aliases</em>. You can assign any number of tags and/or aliases to any object. Make sure that one of those tags or aliases is unique to the room (like "room56") and you will henceforth be able to always uniquely search and find it later.</li>
+<li>
+<p>Use the <code>caller</code> global property as an inter-block storage. For example, you could have a dictionary of room references in an <code>ndb</code>:
+    ```python
+    #HEADER 
+    if caller.ndb.all_rooms is None:
+        caller.ndb.all_rooms = {}</p>
+<h1 id="code">CODE<a class="headerlink" href="#code" title="Permanent link">&para;</a></h1>
+<h1 id="create-and-store-the-castle">create and store the castle<a class="headerlink" href="#create-and-store-the-castle" title="Permanent link">&para;</a></h1>
+<p>castle = create_object("rooms.Room", key="Castle")
+caller.ndb.all_rooms["castle"] = castle</p>
+<h1 id="code_1">CODE<a class="headerlink" href="#code_1" title="Permanent link">&para;</a></h1>
+<h1 id="in-another-node-we-want-to-access-the-castle">in another node we want to access the castle<a class="headerlink" href="#in-another-node-we-want-to-access-the-castle" title="Permanent link">&para;</a></h1>
+<p>castle = caller.ndb.all_rooms.get("castle")
+<code>``
+Note how we check in</code>#HEADER<code>if</code>caller.ndb.all_rooms<code>doesn't already exist before creating the dict. Remember that</code>#HEADER<code>is copied in front of every</code>#CODE<code>block. Without that</code>if` statement we'd be wiping the dict every block!</p>
+</li>
+</ul>
+<h3 id="dont-treat-a-batchcode-file-like-any-python-file">Don't treat a batchcode file like any Python file<a class="headerlink" href="#dont-treat-a-batchcode-file-like-any-python-file" title="Permanent link">&para;</a></h3>
+<p>Despite being a valid Python file, a batchcode file should <em>only</em> be run by the batchcode processor. You should not do things like define Typeclasses or Commands in them, or import them into other code. Importing a module in Python will execute base level of the module, which in the case of your average batchcode file could mean creating a lot of new objects every time.</p>
+<h3 id="dont-let-code-rely-on-the-batch-files-real-file-path">Don't let code rely on the batch-file's real file path<a class="headerlink" href="#dont-let-code-rely-on-the-batch-files-real-file-path" title="Permanent link">&para;</a></h3>
+<p>When you import things into your batchcode file, don't use relative imports but always import with paths starting from the root of your game directory or evennia library. Code that relies on the batch file's "actual" location <em>will fail</em>. Batch code files are read as text and the strings executed. When the code runs it has no knowledge of what file those strings where once a part of. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

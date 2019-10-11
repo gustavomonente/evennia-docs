@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Running Evennia in Docker - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#install-evennia-through-docker">Install Evennia through docker</a></li>
+            <li><a href="#description-of-the-docker-run-command">Description of the docker run command</a></li>
+        <li class="main "><a href="#running-your-game-as-a-docker-image">Running your game as a docker image</a></li>
+            <li><a href="#start-evennia-and-run-through-docker">Start Evennia and run through docker</a></li>
+            <li><a href="#create-your-own-game-image">Create your own game image</a></li>
+            <li><a href="#run-container-from-your-game-image-for-development">Run container from your game image for development</a></li>
+            <li><a href="#deploy-game-image-for-production">Deploy game image for production</a></li>
+        <li class="main "><a href="#how-it-works">How it Works</a></li>
+            <li><a href="#what-if-i-dont-want-latest">What if I Don't Want "LATEST"?</a></li>
+        <li class="main "><a href="#additional-creature-comforts">Additional Creature Comforts</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>Evennia has an <a href="https://hub.docker.com/r/evennia/evennia/">official docker image</a> which makes running an Evennia-based game in a Docker container easy. </p>
+<h2 id="install-evennia-through-docker">Install Evennia through docker<a class="headerlink" href="#install-evennia-through-docker" title="Permanent link">&para;</a></h2>
+<p>First, install the <code>docker</code> program so you can run the Evennia container. You can get it freely from <a href="https://www.docker.com/">docker.com</a>. Linux users can likely also get it through their normal package manager.</p>
+<pre><code>docker pull evennia/evennia
+</code></pre>
+<p>This is a good command to know. It will fetch the latest official docker image from docker hub and is how you upgrade to the latest in the future. </p>
+<p><code>cd</code> to a place where your game dir is, or where you want to create it. Then run: </p>
+<pre><code>docker run -it --rm -p 4000:4000 -p 4001:4001 -p 4002:4002 --rm -v $PWD:/usr/src/game evennia/evennia
+</code></pre>
+<p>Having run this (see next section for a description of what's what), you will be at a prompt inside the docker container: </p>
+<pre><code class="bash">evennia|docker /usr/src/game $
+</code></pre>
+
+<p>This is a normal shell prompt. We are in the <code>/usr/src/game</code> location inside the docker container. If you had anything in the folder you started from, you should see it here (with <code>ls</code>) since we mounted the current directory to <code>usr/src/game</code> (with <code>-v</code> above). You have the <code>evennia</code> command available and can now proceed to create a new game as per the <a href="Getting-Started">Getting Started</a> instructions. </p>
+<p>You can run Evennia from inside this container if you want to, it's like you are root in a little isolated Linux environment. To exit the container and all processes in there, press <code>Ctrl-D</code>. If you created a new game folder, you will find that it has appeared on-disk. </p>
+<blockquote>
+<p>The game folder or any new files that you created from inside the container will appear as owned by <code>root</code>. If you want to edit the files outside of the container you should change the ownership. On Linux/Mac you do this with <code>sudo chown myname:myname -R mygame</code>, where you replace <code>myname</code> with your username and <code>mygame</code> with whatever your game folder is named.</p>
+</blockquote>
+<h3 id="description-of-the-docker-run-command">Description of the <code>docker run</code> command<a class="headerlink" href="#description-of-the-docker-run-command" title="Permanent link">&para;</a></h3>
+<pre><code class="bash">    docker run -it --rm -p 4000:4000 -p 4001:4001 -p 4002:4002 --rm -v $PWD:/usr/src/game --user $UID:$GID evennia/evennia
+</code></pre>
+
+<p>This is what it does: </p>
+<ul>
+<li><code>docker run ... evennia/evennia</code> tells us that we want to run a new container based on the <code>evennia/evennia</code> docker image. Everything in between are options for this. The <code>evennia/evennia</code> is the name of our <a href="https://hub.docker.com/r/evennia/evennia/">official docker image on the dockerhub repository</a>. If you didn't do <code>docker pull evennia/evennia</code> first, the image will be downloaded when running this, otherwise your already downloaded version will be used. It contains everything needed to run Evennia. </li>
+<li><code>-it</code> has to do with creating an interactive session inside the container we start.</li>
+<li><code>--rm</code> will make sure to delete the container when it shuts down. This is nice to keep things tidy on your drive. </li>
+<li><code>-p 4000:4000 -p 4001:4001 -p 4002:4002</code> means that we <em>map</em> ports <code>4000</code>, <code>4001</code> and <code>4002</code> from inside the docker container to same-numbered ports on our host machine. These are ports for telnet, webserver and websockets. This is what allows your Evennia server to be accessed from outside the container (such as by your MUD client)!</li>
+<li><code>-v $PWD:/usr/src/game</code> mounts the current directory (<em>outside</em> the container) to the path <code>/usr/src/game</code> <em>inside</em> the container. This means that when you edit that path in the container you will actually be modifying the "real" place on your hard drive. If you didn't do this, any changes would only exist inside the container and be gone if we create a new one. Note that in linux a shortcut for the current directory is <code>$PWD</code>. If you don't have this for your OS, you can replace it with the full path to the current on-disk directory (like <code>C:/Development/evennia/game</code> or wherever you want your evennia files to appear).</li>
+<li><code>--user $UID:$GID</code> ensures the container's modifications to <code>$PWD</code> are done with you user and group IDs instead of root's IDs (root is the user running evennia inside the container). This avoids having stale <code>.pid</code> files in your filesystem between container reboots which you have to force delete with <code>sudo rm server/*.pid</code> before each boot.</li>
+</ul>
+<h2 id="running-your-game-as-a-docker-image">Running your game as a docker image<a class="headerlink" href="#running-your-game-as-a-docker-image" title="Permanent link">&para;</a></h2>
+<p>If you run the  <code>docker</code> command given in the previous section from your game dir you can then easily start Evennia and have a running server without any further fuss. </p>
+<p>But apart from ease of install, the primary benefit to running an Evennia-based game in a container is  to simplify its deployment into a public production environment. Most cloud-based hosting providers these days support the ability to run container-based applications. This makes deploying or updating your game as simple as building a new container image locally, pushing it to your Docker Hub account, and then pulling from Docker Hub into your AWS/Azure/other docker-enabled hosting account. The container eliminates the need to install Python, set up a virtualenv, or run pip to install dependencies.</p>
+<h3 id="start-evennia-and-run-through-docker">Start Evennia and run through docker<a class="headerlink" href="#start-evennia-and-run-through-docker" title="Permanent link">&para;</a></h3>
+<p>For remote or automated deployment you may want to start Evennia immediately as soon as the docker container comes up. If you already have a game folder with a database set up you can also start the docker container and pass commands directly to it. The command you pass will be the main process to run in the container. From your game dir, run for example this command: </p>
+<pre><code>docker run -it --rm -p 4000:4000 -p 4001:4001 -p 4002:4002 --rm -v $PWD:/usr/src/game evennia/evennia evennia start -l
+</code></pre>
+<p>This will start Evennia as the foreground process, echoing the log to the terminal. Closing the terminal will kill the server. Note that you <em>must</em> use a foreground command like <code>evennia start -l</code> or <code>evennia ipstart</code> to start the server - otherwise the foreground process will finish immediately and the container go down.</p>
+<h3 id="create-your-own-game-image">Create your own game image<a class="headerlink" href="#create-your-own-game-image" title="Permanent link">&para;</a></h3>
+<p>These steps assume that you have created or otherwise obtained a game directory already. First, <code>cd</code> to your game dir and create a new empty text file named <code>Dockerfile</code>. Save the following two lines into it:</p>
+<pre><code>FROM evennia/evennia:latest
+
+ENTRYPOINT evennia start -l
+</code></pre>
+
+<p>These are instructions for building a new docker image. This one is based on the official <code>evennia/evennia</code> image, but also makes sure to start evennia when it runs (so we don't need to enter it and run commands). </p>
+<p>To build the image:</p>
+<pre><code class="bash">    docker build -t mydhaccount/mygame .
+</code></pre>
+
+<p>(don't forget the period at the end, it will use the <code>Dockerfile</code> from the current location). Here <code>mydhaccount</code> is the name of your <code>dockerhub</code> account. If you don't have a dockerhub account you can build the image locally only (name the container whatever you like in that case, like just <code>mygame</code>). </p>
+<p>Docker images are stored centrally on your computer. You can see which ones you have available locally with <code>docker images</code>. Once built, you have a couple of options to run your game. </p>
+<h3 id="run-container-from-your-game-image-for-development">Run container from your game image for development<a class="headerlink" href="#run-container-from-your-game-image-for-development" title="Permanent link">&para;</a></h3>
+<p>To run the container based on your game image locally for development, mount the local game directory as before: </p>
+<pre><code>docker run -it --rm -p 4000:4000 -p 4001:4001 -p 4002:4002 -v $PWD:/usr/src/game --user $UID:$GID mydhaccount/mygame
+</code></pre>
+
+<p>Evennia will start and you'll get output in the terminal, perfect for development. You should be able to connect to the game with your clients normally. </p>
+<h3 id="deploy-game-image-for-production">Deploy game image for production<a class="headerlink" href="#deploy-game-image-for-production" title="Permanent link">&para;</a></h3>
+<p>Each time you rebuild the docker image as per the above instructions, the latest copy of your game directory is actually copied inside the image (at <code>/usr/src/game/</code>). If you don't mount your on-disk folder there, the internal one will be used. So for deploying evennia on a server, omit the <code>-v</code> option and just give the following command:</p>
+<pre><code>docker run -it --rm -d -p 4000:4000 -p 4001:4001 -p 4002:4002 --user $UID:$GID mydhaccount/mygame
+</code></pre>
+
+<p>Your game will be downloaded from your docker-hub account and a new container will be built using the image and started on the server! If your server environment forces you to use different ports, you can just map the normal ports differently in the command above. </p>
+<p>Above we added the <code>-d</code> option, which starts the container in <em>daemon</em> mode - you won't see any return in the console. You can see it running with <code>docker ps</code>:</p>
+<pre><code class="bash">$ docker ps
+
+CONTAINER ID     IMAGE       COMMAND                  CREATED              ...
+f6d4ca9b2b22     mygame      &quot;/bin/sh -c 'evenn...&quot;   About a minute ago   ...
+</code></pre>
+
+<p>Note the container ID, this is how you manage the container as it runs.</p>
+<pre><code>   docker logs f6d4ca9b2b22      
+</code></pre>
+
+<p>Looks at the STDOUT output of the container (i.e. the normal server log)</p>
+<pre><code>   docker logs -f f6d4ca9b2b22   
+</code></pre>
+
+<p>Tail the log (so it updates to your screen 'live').</p>
+<pre><code>   docker pause f6d4ca9b2b22     
+</code></pre>
+
+<p>Suspend the state of the container. </p>
+<pre><code>   docker unpause f6d4ca9b2b22   
+</code></pre>
+
+<p>Un-suspend it again after a pause. It will pick up exactly where it were.</p>
+<pre><code>   docker stop f6d4ca9b2b22      
+</code></pre>
+
+<p>Stop the container. To get it up again you need to use <code>docker run</code>, specifying ports etc. A new container will get a new container id to reference.</p>
+<h2 id="how-it-works">How it Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<p>The <code>evennia/evennia</code> docker image holds the evennia library and all of its dependencies. It also has an <code>ONBUILD</code> directive which is triggered during builds of images derived from it. This <code>ONBUILD</code> directive handles setting up a volume and copying your game directory code into the proper location within the container. </p>
+<p>In most cases, the Dockerfile for an Evennia-based game will only need the <code>FROM evennia/evennia:latest</code> directive, and optionally a <code>MAINTAINER</code> directive if you plan to publish your image on Docker Hub and would like to provide contact info.</p>
+<p>For more information on Dockerfile directives, see the <a href="https://docs.docker.com/engine/reference/builder/">Dockerfile Reference</a>.</p>
+<p>For more information on volumes and Docker containers, see the Docker site's <a href="https://docs.docker.com/engine/tutorials/dockervolumes/">Manage data in containers</a> page.</p>
+<h3 id="what-if-i-dont-want-latest">What if I Don't Want "LATEST"?<a class="headerlink" href="#what-if-i-dont-want-latest" title="Permanent link">&para;</a></h3>
+<p>A new <code>evennia/evennia</code> image is built automatically whenever there is a new commit to the <code>master</code> branch of Evennia. It is possible to create your own custom evennia base docker image based on any arbitrary commit.</p>
+<ol>
+<li>Use git tools to checkout the commit that you want to base your image upon. (In the example below, we're checking out commit a8oc3d5b.)</li>
+</ol>
+<pre><code>git checkout -b my-stable-branch a8oc3d5b 
+</code></pre>
+
+<ol>
+<li>Change your working directory to the <code>evennia</code> directory containing <code>Dockerfile</code>. Note that <code>Dockerfile</code> has changed over time, so if you are going far back in the commit history you might want to bring a copy of the latest <code>Dockerfile</code> with you and use that instead of whatever version was used at the time.</li>
+<li>Use the <code>docker build</code> command to build the image based off of the currently checked out commit. The example below assumes your docker account is <strong>mydhaccount</strong>.</li>
+</ol>
+<pre><code>docker build -t mydhaccount/evennia .
+</code></pre>
+
+<ol>
+<li>Now you have a base evennia docker image built off of a specific commit. To use this image to build your game, you would modify <strong>FROM</strong> directive in the <strong>Dockerfile</strong> for your game directory to be:</li>
+</ol>
+<pre><code>FROM mydhacct/evennia:latest
+</code></pre>
+
+<p>Note: From this point, you can also use the <code>docker tag</code> command to set a specific tag on your image and/or upload it into Docker Hub under your account.</p>
+<ol>
+<li>At this point, build your game using the same <code>docker build</code> command as usual. Change your working directory to be your game directory and run</li>
+</ol>
+<pre><code>docker build -t mydhaccountt/mygame .
+</code></pre>
+
+<h2 id="additional-creature-comforts">Additional Creature Comforts<a class="headerlink" href="#additional-creature-comforts" title="Permanent link">&para;</a></h2>
+<p>The Docker ecosystem includes a tool called <code>docker-compose</code>, which can orchestrate complex multi-container applications, or in our case, store the default port and terminal parameters that we want specified every time we run our container. A sample <code>docker-compose.yml</code> file to run a containerized Evennia game in development might look like this:</p>
+<pre><code>version: '2'
+
+services:
+  evennia:
+    image: mydhacct/mygame
+    stdin_open: true
+    tty: true
+    ports:
+      - &quot;4001-4002:4001-4002&quot;
+      - &quot;4000:4000&quot;
+    volumes: 
+      - .:/usr/src/game
+</code></pre>
+
+<p>With this file in the game directory next to the <code>Dockerfile</code>, starting the container is as simple as</p>
+<pre><code>docker-compose up
+</code></pre>
+
+<p>For more information about <code>docker-compose</code>, see <a href="https://docs.docker.com/compose/gettingstarted/">Getting Started with docker-compose</a>. </p>
+<p>Note that with this setup you lose the <code>--user $UID</code> option. The problem is that the variable <code>UID</code> is not available inside the configuration file <code>docker-compose.yml</code>. A workaround is to hardcode your user and group id. In a terminal run <code>echo  $UID:$GID</code> and if for example you get <code>1000:1000</code> you can add to <code>docker-compose.yml</code> a line <code>user: 1000:1000</code> just below the <code>image: ...</code> line.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

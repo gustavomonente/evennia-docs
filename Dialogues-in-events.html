@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Dialogues in events - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#a-first-example-with-a-first-character">A first example with a first character</a></li>
+        <li class="main "><a href="#the-same-callback-for-several-keywords">The same callback for several keywords</a></li>
+        <li class="main "><a href="#a-longer-callback">A longer callback</a></li>
+        <li class="main "><a href="#tutorial-faq">Tutorial F.A.Q.</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Adding-dialogues-using-the-in-game-Python-system"></a></p>
+<ul>
+<li>Next tutorial: <a href="A-voice-operated-elevator-using-events">adding a voice-operated elevator with events</a>.</li>
+</ul>
+<p>This tutorial will walk you through the steps to create several dialogues with characters, using the <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/ingame_python/README.md">in-game Python system</a>.  This tutorial assumes the in-game Python system is installed in your game.  If it isn't, you can follow the installation steps given in <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/ingame_python/README.md">the documentation on in-game Python</a>, and come back on this tutorial once the system is installed.  <strong>You do not need to read</strong> the entire documentation, it's a good reference, but not the easiest way to learn about it.  Hence these tutorials.</p>
+<p>The in-game Python system allows to run code on individual objects in some situations.  You don't have to modify the source code to add these features, past the installation.  The entire system makes it easy to add specific features to some objects, but not all.  This is why it can be very useful to create a dialogue system taking advantage of the in-game Python system.</p>
+<blockquote>
+<p>What will we try to do?</p>
+</blockquote>
+<p>In this tutorial, we are going to create a basic dialogue to have several characters automatically respond to specific messages said by others.</p>
+<h2 id="a-first-example-with-a-first-character">A first example with a first character<a class="headerlink" href="#a-first-example-with-a-first-character" title="Permanent link">&para;</a></h2>
+<p>Let's create a character to begin with.</p>
+<pre><code>@charcreate a merchant
+</code></pre>
+<p>This will create a merchant in the room where you currently are.  It doesn't have anything, like a description, you can decorate it a bit if you like.</p>
+<p>As said above, the in-game Python system consists in linking objects with arbitrary code.  This code will be executed in some circumstances.  Here, the circumstance is "when someone says something in the same room", and might be more specific like "when someone says hello".  We'll decide what code to run (we'll actually type the code in-game).  Using the vocabulary of the in-game Python system, we'll create a callback: a callback is just a set of lines of code that will run under some conditions.</p>
+<p>You can have an overview of every "conditions" in which callbacks can be created using the <code>@call</code> command (short for <code>@callback</code>).  You need to give it an object as argument.  Here for instance, we could do:</p>
+<pre><code>@call a merchant
+</code></pre>
+<p>You should see a table with three columns, showing the list of events existing on our newly-created merchant.  There are quite a lot of them, as it is, althougn no line of code has been set yet.  For our system, you might be more interested by the line describing the <code>say</code> event:</p>
+<pre><code>| say              |   0 (0) | After another character has said something in |
+|                  |         | the character's room.                         |
+</code></pre>
+<p>We'll create a callback on the <code>say</code> event, called when we say "hello" in the merchant's room:</p>
+<pre><code>@call/add a merchant = say hello
+</code></pre>
+<p>Before seeing what this command displays, let's see the command syntax itself:</p>
+<ul>
+<li><code>@call</code> is the command name, <code>/add</code> is a switch.  You can read the help of the command to get the help of available switches and a brief overview of syntax.</li>
+<li>We then enter the object's name, here "a merchant".  You can enter the ID too ("#3" in my case), which is useful to edit the object when you're not in the same room.  You can even enter part of the name, as usual.</li>
+<li>An equal sign, a simple separator.</li>
+<li>The event's name.  Here, it's "say".  The available events are displayed when you use <code>@call</code> without switch.</li>
+<li>After a space, we enter the conditions in which this callback should be called.  Here, the conditions represent what the other character should say.  We enter "hello".  Meaning that if someone says something containing "hello" in the room, the callback we are now creating will be called.</li>
+</ul>
+<p>When you enter this command, you should see something like this:</p>
+<pre><code>After another character has said something in the character's room.
+This event is called right after another character has said
+something in the same location.  The action cannot be prevented
+at this moment.  Instead, this event is ideal to create keywords
+that would trigger a character (like a NPC) in doing something
+if a specific phrase is spoken in the same location.
+
+To use this event, you have to specify a list of keywords as
+parameters that should be present, as separate words, in the
+spoken phrase.  For instance, you can set a callback that would
+fire if the phrase spoken by the character contains &quot;menu&quot; or
+&quot;dinner&quot; or &quot;lunch&quot;:
+    @call/add ... = say menu, dinner, lunch
+Then if one of the words is present in what the character says,
+this callback will fire.
+
+Variables you can use in this event:
+    speaker: the character speaking in this room.
+    character: the character connected to this event.
+    message: the text having been spoken by the character.
+</code></pre>
+
+<p>That's some list of information.  What's most important to us now is:</p>
+<ul>
+<li>The "say" event is called whenever someone else speaks in the room.</li>
+<li>We can set callbacks to fire when specific keywords are present in the phrase by putting them as additional parameters.  Here we have set this parameter to "hello".  We can have several keywords separated by a comma (we'll see this in more details later).</li>
+<li>We have three default variables we can use in this callback: <code>speaker</code> which contains the character who speaks, <code>character</code> which contains the character who's modified by the in-game Python system (here, or merchant), and <code>message</code> which contains the spoken phrase.</li>
+</ul>
+<p>This concept of variables is important.  If it makes things more simple to you, think of them as parameters in a function: they can be used inside of the function body because they have been set when the function was called.</p>
+<p>This command has opened an editor where we can type our Python code.</p>
+<pre><code>----------Line Editor [Callback say of a merchant]--------------------------------
+01| 
+----------[l:01 w:000 c:0000]------------(:h for help)----------------------------
+</code></pre>
+
+<p>For our first test, let's type something like:</p>
+<pre><code class="python">character.location.msg_contents(&quot;{character} shrugs and says: 'well, yes, hello to you!'&quot;, mapping=dict(character=character))
+</code></pre>
+
+<p>Once you have entered this line, you can type <code>:wq</code> to save the editor and quit it.</p>
+<p>And now if you use the "say" command with a message containing "hello":</p>
+<pre><code>You say, &quot;Hello sir merchant!&quot;
+a merchant(#3) shrugs and says: 'well, yes, hello to you!'
+</code></pre>
+
+<p>If you say something that doesn't contain "hello", our callback won't execute.</p>
+<p><strong>In summary</strong>:</p>
+<ol>
+<li>When we say something in the room, using the "say" command, the "say" event of all characters (except us) is called.</li>
+<li>The in-game Python system looks at what we have said, and checks whether one of our callbacks in the "say" event contains a keyword that we have spoken.</li>
+<li>If so, call it, defining the event variables as we have seen.</li>
+<li>The callback is then executed as normal Python code.  Here we have called the <code>msg_contents</code> method on the character's location (probably a room) to display a message to the entire room.  We have also used mapping to easily display the character's name.  This is not specific to the in-game Python system.  If you feel overwhelmed by the code we've used, just shorten it and use something more simple, for instance:</li>
+</ol>
+<pre><code class="python">speaker.msg(&quot;You have said something to me.&quot;)
+</code></pre>
+
+<h2 id="the-same-callback-for-several-keywords">The same callback for several keywords<a class="headerlink" href="#the-same-callback-for-several-keywords" title="Permanent link">&para;</a></h2>
+<p>It's easy to create a callback that will be triggered if the sentence contains one of several keywords.</p>
+<pre><code>@call/add merchant = say trade, trader, goods
+</code></pre>
+<p>And in the editor that opens:</p>
+<pre><code class="python">character.location.msg_contents(&quot;{character} says: 'Ho well, trade's fine as long as roads are safe.'&quot;, mapping=dict(character=character))
+</code></pre>
+
+<p>Then you can say something with either "trade", "trader" or "goods" in your sentence, which should call the callback:</p>
+<pre><code>You say, &quot;and how is your trade going?&quot;
+a merchant(#3) says: 'Ho well, trade's fine as long as roads are safe.'
+</code></pre>
+
+<p>We can set several keywords when adding the callback.  We just need to separate them with commas.</p>
+<h2 id="a-longer-callback">A longer callback<a class="headerlink" href="#a-longer-callback" title="Permanent link">&para;</a></h2>
+<p>So far, we have only set one line in our callbacks.  Which is useful, but we often need more.  For an entire dialogue, you might want to do a bit more than that.</p>
+<pre><code>@call/add merchant = say bandit, bandits
+</code></pre>
+<p>And in the editor you can paste the following lines:</p>
+<pre><code class="python">character.location.msg_contents(&quot;{character} says: 'Bandits he?'&quot;, mapping=dict(character=character))
+character.location.msg_contents(&quot;{character} scratches his head, considering.&quot;, mapping=dict(character=character))
+character.location.msg_contents(&quot;{character} whispers: 'Aye, saw some of them, north from here.  No trouble o' mine, but...'&quot;, mapping=dict(character=character))
+speaker.msg(&quot;{character} looks at you more closely.&quot;.format(character=character.get_display_name(speaker)))
+speaker.msg(&quot;{character} continues in a low voice: 'Ain't my place to say, but if you need to find 'em, they're encamped some distance away from the road, I guess near a cave or something.'.&quot;.format(character=character.get_display_name(speaker)))
+</code></pre>
+
+<p>Now try to ask the merchant about bandits:</p>
+<pre><code>You say, &quot;have you seen bandits?&quot;
+a merchant(#3) says: 'Bandits he?'
+a merchant(#3) scratches his head, considering.
+a merchant(#3) whispers: 'Aye, saw some of them, north from here.  No trouble o' mine, but...'
+a merchant(#3) looks at you more closely.
+a merchant(#3) continues in a low voice: 'Ain't my place to say, but if you need to find 'em, they're encamped some distance away from the road, I guess near a cave or something.'.
+</code></pre>
+
+<p>Notice here that the first lines of dialogue are spoken to the entire room, but then the merchant is talking directly to the speaker, and only the speaker hears it.  There's no real limit to what you can do with this.</p>
+<ul>
+<li>You can set a mood system, storing attributes in the NPC itself to tell you in what mood he is, which will influence the information he will give... perhaps the accuracy of it as well.</li>
+<li>You can add random phrases spoken in some context.</li>
+<li>You can use other actions (you're not limited to having the merchant say something, you can ask him to move, gives you something, attack if you have a combat system, or whatever else).</li>
+<li>The callbacks are in pure Python, so you can write conditions or loops.</li>
+<li>You can add in "pauses" between some instructions using chained events.  This tutorial won't describe how to do that however.  You already have a lot to play with.</li>
+</ul>
+<h2 id="tutorial-faq">Tutorial F.A.Q.<a class="headerlink" href="#tutorial-faq" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Q:</strong> can I create several characters who would answer to specific dialogue?</li>
+<li><strong>A:</strong> of course.  Te in-game Python system is so powerful because you can set unique code for various objects.  You can have several characters answering to different things.  You can even have different characters in the room answering to greetings.  All callbacks will be executed one after another.</li>
+<li><strong>Q:</strong> can I have two characters answering to the same dialogue in exactly the same way?</li>
+<li><strong>A:</strong> It's possible but not so easy to do.  Usually, event grouping is set in code, and depends on different games.  However, if it is for some infrequent occurrences, it's easy to do using <a href="https://github.com/evennia/evennia/blob/master/evennia/contrib/ingame_python/README.md#chained-events">chained events</a>.</li>
+<li><strong>Q:</strong> is it possible to deploy callbacks on all characters sharing the same prototype?</li>
+<li>
+<p><strong>A:</strong> not out of the box.  This depends on individual settings in code.  One can imagine that all characters of some type would share some events, but this is game-specific.  Rooms of the same zone could share the same events as well.  It is possible to do but requires modification of the source code.</p>
+</li>
+<li>
+<p>Next tutorial: <a href="A-voice-operated-elevator-using-events">adding a voice-operated elevator with events</a>.</p>
+</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

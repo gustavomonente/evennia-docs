@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Python 3 - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#strings">"Strings"</a></li>
+        <li class="main "><a href="#links">Links</a></li>
+        <li class="main "><a href="#twisted-module-status">Twisted module status</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<blockquote>
+<p><em>Note: Evennia only supports Python 2.7+ at this time. This page gathers various development information relevant to server developers.</em></p>
+</blockquote>
+<p>Django can work with Python 2 and 3 already, though changes may be required to how the Evennia code
+uses it. Twisted has much Python 3 compatibility, but not all modules within it have been ported
+yet. The
+<a href="https://twistedmatrix.com/documents/current/api/twisted.python.dist3.html">twisted.python.dist3</a>
+module gives some information about what's ported, and I'm compiling a list of missing modules with
+related bug reports which can be found below. The list is based on a search for import statements in
+the Evennia source code, please add anything that's missing.</p>
+<p>Part of this process is expected to be writing more tests for Evennia. One encouraging recent port
+to Python 3 in Twisted is its Trial test framework, which may need to be used by Evennia to ensure
+it still works correctly with Twisted on Python 3.</p>
+<h1 id="strings">"Strings"<a class="headerlink" href="#strings" title="Permanent link">&para;</a></h1>
+<p>Broadly (and perhaps over-simplified):</p>
+<ul>
+<li>Twisted <a href="http://twistedmatrix.com/trac/wiki/FrequentlyAskedQuestions#WhydontTwistedsnetworkmethodssupportUnicodeobjectsaswellasstrings">expects bytes</a></li>
+<li>Django <a href="https://docs.djangoproject.com/en/1.8/topics/python3/#unicode-literals">expects "" to be unicode</a></li>
+</ul>
+<p>I think we should use (roughly speaking) "" for unicode and b"" for bytes everywhere, but I need to look at the impacts of this more closely.</p>
+<h1 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h1>
+<ul>
+<li>http://twistedmatrix.com/documents/current/core/howto/python3.html</li>
+<li>https://twistedmatrix.com/trac/wiki/Plan/Python3</li>
+<li><a href="https://twistedmatrix.com/trac/query?status=assigned&amp;status=new&amp;status=reopened&amp;group=status&amp;milestone=Python-3.x">Twisted Python3 bugs</a></li>
+</ul>
+<h1 id="twisted-module-status">Twisted module status<a class="headerlink" href="#twisted-module-status" title="Permanent link">&para;</a></h1>
+<p>x = not ported to Python 3
+/ = ported to Python 3</p>
+<ul>
+<li>twisted.application.internet /</li>
+<li>twisted.application.service /</li>
+<li>twisted.conch x (not used directly)</li>
+<li>~https://twistedmatrix.com/trac/ticket/5102~ /</li>
+<li>~https://twistedmatrix.com/trac/ticket/4993~ /</li>
+<li>twisted.conch.insults.insults x</li>
+<li>twisted.conch.interfaces x</li>
+<li>twisted.conch.manhole x</li>
+<li>twisted.conch.manhole_ssh x</li>
+<li>twisted.conch.ssh.common x</li>
+<li>twisted.conch.ssh.keys x</li>
+<li>~https://twistedmatrix.com/trac/ticket/7998~ /</li>
+<li>"twisted.conch.ssh.keys should be ported to Python 3"</li>
+<li>twisted.conch.ssh.userauth x</li>
+<li>twisted.conch.telnet x</li>
+<li>twisted.cred.checkers /</li>
+<li>twisted.cred.portal /</li>
+<li>twisted.internet.defer /</li>
+<li>twisted.internet.interfaces /</li>
+<li>twisted.internet.protocol /</li>
+<li>twisted.internet.reactor /</li>
+<li>twisted.internet.ssl /</li>
+<li>twisted.internet.task /</li>
+<li>twisted.internet.threads /</li>
+<li>twisted.protocols.amp x</li>
+<li>~https://twistedmatrix.com/trac/ticket/6833~ /</li>
+<li>"Port twisted.protocols.amp to Python 3"</li>
+<li>twisted.protocols.policies /</li>
+<li>twisted.python.components /</li>
+<li>twisted.python.log /</li>
+<li>twisted.python.threadpool /</li>
+<li>twisted.web.http (x)</li>
+<li>Partial support. Sufficient?</li>
+<li>twisted.web.resource /</li>
+<li>twisted.web.server (x)</li>
+<li>Partial support. Sufficient?</li>
+<li>twisted.web.static /</li>
+<li>twisted.web.proxy /</li>
+<li>twisted.web.wsgi x</li>
+<li>~https://twistedmatrix.com/trac/ticket/7993~ /</li>
+<li>"'twisted.web.wsgi' should be ported to Python 3"</li>
+<li>Seems to be making good progress</li>
+<li>twisted.words.protocols.irc x</li>
+<li>https://twistedmatrix.com/trac/ticket/6320</li>
+<li>"Python 3 support for twisted.words.protocols.irc"</li>
+<li>~https://twistedmatrix.com/trac/ticket/6564~</li>
+<li>"Replace usage of builtin reduce in twisted.words"</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Evennia for Diku Users - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#core-differences">Core Differences</a></li>
+        <li class="main "><a href="#some-familiar-things">Some Familiar Things</a></li>
+        <li class="main "><a href="#emulating-evennia-to-look-and-feel-like-a-dikurom">Emulating Evennia to Look and Feel Like A Diku/ROM</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Introduction-of-Evennia-for-users-of-the-Diku-codebase"></a></p>
+<p>Evennia represents a learning curve for those who used to code on <a href="https://en.wikipedia.org/wiki/DikuMUD">Diku</a> type MUDs. While coding in Python is easy if you already know C, the main effort is to get rid of old C programming habits. Trying to code Python the way you code C will not only look ugly, it will lead to less optimal and harder to maintain code. Reading Evennia example code is a good way to get a feel for how different problems are approached in Python. </p>
+<p>Overall, Python offers an extensive library of resources, safe memory management and excellent handling of errors. While Python code does not run as fast as raw C code does, the difference is not all that important for a text-based game. The main advantage of Python is an extremely fast development cycle with and easy ways to create game systems that would take many times more code and be much harder to make stable and maintainable in C. </p>
+<h3 id="core-differences">Core Differences<a class="headerlink" href="#core-differences" title="Permanent link">&para;</a></h3>
+<ul>
+<li>As mentioned, the main difference between Evennia and a Diku-derived codebase is that Evennia is written purely in Python. Since Python is an interpreted language there is no compile stage. It is modified and extended by the server loading Python modules at run-time. It also runs on all computer platforms Python runs on (which is basically everywhere). </li>
+<li>Vanilla Diku type engines save their data in custom <em>flat file</em> type storage solutions. By contrast, Evennia stores all game data in one of several supported SQL databases. Whereas flat files have the advantage of being easier to implement, they (normally) lack many expected safety features and ways to effectively extract subsets of the stored data. For example, if the server loses power while writing to a flatfile it may become corrupt and the data lost. A proper database solution is not susceptible to this - at no point is the data in a state where it cannot be recovered. Databases are also highly optimized for querying large data sets efficiently. </li>
+</ul>
+<h3 id="some-familiar-things">Some Familiar Things<a class="headerlink" href="#some-familiar-things" title="Permanent link">&para;</a></h3>
+<p>Diku expresses the character object referenced normally by:</p>
+<p><code>struct char ch*</code> then all character-related fields can be accessed by <code>ch-&gt;</code>. In Evennia, one must pay attention to what object you are using, and when you are accessing another through back-handling, that you are accessing the right object. In Diku C, accessing character object is normally done by:</p>
+<pre><code class="c">/* creating pointer of both character and room struct */
+
+void(struct char ch*, struct room room*){
+    int dam;
+    if (ROOM_FLAGGED(room, ROOM_LAVA)){
+        dam = 100
+        ch-&gt;damage_taken = dam
+    };
+};
+</code></pre>
+
+<p>As an example for creating Commands in Evennia via the <code>from evennia import Command</code> the character object that calls the command is denoted by a class property as <code>self.caller</code>. In this example <code>self.caller</code> is essentially the 'object' that has called the Command, but most of the time it is an Account object. For a more familiar Diku feel, create a variable that becomes the account object as:</p>
+<pre><code class="python">#mygame/commands/command.py
+
+from evennia import Command
+
+class CmdMyCmd(Command):
+    &quot;&quot;&quot;
+    This is a Command Evennia Object
+    &quot;&quot;&quot;
+
+    [...]
+
+    def func(self):
+        ch = self.caller
+        # then you can access the account object directly by using the familiar ch.
+        ch.msg(&quot;...&quot;)
+        account_name = ch.name
+        race = ch.db.race
+
+</code></pre>
+
+<p>As mentioned above, care must be taken what specific object you are working with. If focused on a room object and you need to access the account object:</p>
+<pre><code class="python">#mygame/typeclasses/room.py
+
+from evennia import DefaultRoom
+
+class MyRoom(DefaultRoom):
+    [...]
+
+    def is_account_object(self, object):
+        # a test to see if object is an account
+        [...]
+
+    def myMethod(self):
+        #self.caller would not make any sense, since self refers to the
+        # object of 'DefaultRoom', you must find the character obj first:
+        for ch in self.contents:
+            if self.is_account_object(ch):
+                # now you can access the account object with ch:
+                account_name = ch.name
+                race = ch.db.race
+</code></pre>
+
+<h2 id="emulating-evennia-to-look-and-feel-like-a-dikurom">Emulating Evennia to Look and Feel Like A Diku/ROM<a class="headerlink" href="#emulating-evennia-to-look-and-feel-like-a-dikurom" title="Permanent link">&para;</a></h2>
+<p>To emulate a Diku Mud on Evennia some work has to be done before hand. If there is anything that all coders and builders remember from Diku/Rom days is the presence of VNUMs. Essentially all data was saved in flat files and indexed by VNUMs for easy access. Evennia has the ability to emulate VNUMS to the extent of categorising rooms/mobs/objs/trigger/zones[...] into vnum ranges. </p>
+<p>Evennia has objects that are called Scripts. As defined, they are the 'out of game' instances that exist within the mud, but never directly interacted with. Scripts can be used for timers, mob AI, and even a stand alone databases.</p>
+<p>Because of their wonderful structure all mob, room, zone, triggers, etc.. data can be saved in independently created global scripts.</p>
+<p>Here is a sample mob file from a Diku Derived flat file.</p>
+<pre><code class="text">#0
+mob0~
+mob0~
+mob0
+~
+   Mob0
+~
+10 0 0 0 0 0 0 0 0 E
+1 20 9 0d0+10 1d2+0
+10 100
+8 8 0
+E
+#1
+Puff dragon fractal~
+Puff~
+Puff the Fractal Dragon is here, contemplating a higher reality.
+~
+   Is that some type of differential curve involving some strange, and unknown
+calculus that she seems to be made out of?  
+~
+516106 0 0 0 2128 0 0 0 1000 E
+34 9 -10 6d6+340 5d5+5
+340 115600
+8 8 2
+BareHandAttack: 12
+E
+T 95
+</code></pre>
+
+<p>Each line represents something that the MUD reads in and does something with it. This isn't easy to read, but let's see if we can emulate this as a dictionary to be stored on a database script created in Evennia.</p>
+<p>First, let's create a global script that does absolutely nothing and isn't attached to anything. You can either create this directly in-game with the @py command or create it in another file to do some checks and balances if for whatever reason the script needs to be created again. Progmatically it can be done like so:</p>
+<pre><code class="python">from evennia import create_script
+
+mob_db = create_script(&quot;typeclasses.scripts.DefaultScript&quot;, key=&quot;mobdb&quot;,
+                       persistent=True, obj=None)
+mob_db.db.vnums = {}
+</code></pre>
+
+<p>Just by creating a simple script object and assigning it a 'vnums' attribute as a type dictionary. Next we have to create the mob layout..</p>
+<pre><code class="python"># vnum : mob_data
+
+mob_vnum_1 = {
+            'key' : 'puff',
+            'sdesc' : 'puff the fractal dragon',
+            'ldesc' : 'Puff the Fractal Dragon is here, ' \
+                      'contemplating a higher reality.',
+            'ddesc' : ' Is that some type of differential curve ' \
+                      'involving some strange, and unknown calculus ' \
+                      'that she seems to be made out of?',
+            [...]
+        }
+
+# Then saving it to the data, assuming you have the script obj stored in a variable.
+mob_db.db.vnums[1] = mob_vnum_1
+</code></pre>
+
+<p>This is a very 'caveman' example, but it gets the idea across. You can use the keys in the <code>mob_db.vnums</code> to act as the mob vnum while the rest contains the data..</p>
+<p>Much simpler to read and edit. If you plan on taking this route, you must keep in mind that by default evennia 'looks' at different properties when using the <code>look</code> command for instance. If you create an instance of this mob and make its <code>self.key = 1</code>, by default evennia will say </p>
+<p><code>Here is : 1</code></p>
+<p>You must restructure all default commands so that the mud looks at different properties defined on your mob.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Web Character View Tutorial - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Create-a-new-web-page-displaying-character-info"></a></p>
+<p><strong>Before doing this tutorial you will probably want to read the intro in <a href="Web-Tutorial">Basic Web tutorial</a>.</strong></p>
+<p>In this tutorial we will create a web page that displays the stats of a game character. For this, and all other pages we want to make specific to our game, we'll need to create our own Django "app"</p>
+<p>We'll call our app <code>character</code>, since it will be dealing with character information. From your game dir, run</p>
+<pre><code>evennia startapp character
+</code></pre>
+<p>This will create a directory named <code>character</code> in the root of your game dir. It contains all basic files that a Django app needs. To keep <code>mygame</code> well ordered, move it to your <code>mygame/web/</code> directory instead: </p>
+<pre><code>mv character web/
+</code></pre>
+<p>Note that we will not edit all files in this new directory, many of the generated files are outside the scope of this tutorial.</p>
+<p>In order for Django to find our new web app, we'll need to add it to the <code>INSTALLED_APPS</code> setting. Evennia's default installed apps are already set, so in <code>server/conf/settings.py</code>, we'll just extend them:</p>
+<pre><code class="python">INSTALLED_APPS += ('web.character',)
+</code></pre>
+
+<blockquote>
+<p>Note: That end comma is important. It makes sure that Python interprets the addition as a tuple instead of a string.</p>
+</blockquote>
+<p>The first thing we need to do is to create a <em>view</em> and an <em>URL pattern</em> to point to it. A view is a function that generates the web page that a visitor wants to see, while the URL pattern lets Django know what URL should trigger the view. The pattern may also provide some information of its own as we shall see.</p>
+<p>Here is our <code>character/urls.py</code> file (<strong>Note</strong>: you may have to create this file if a blank one wasn't generated for you):</p>
+<pre><code class="python"># URL patterns for the character app
+
+from django.conf.urls import url
+from web.character.views import sheet 
+
+urlpatterns = [
+    url(r'^sheet/(?P&lt;object_id&gt;\d+)/$', sheet, name=&quot;sheet&quot;)
+]
+</code></pre>
+
+<p>This file contains all of the URL patterns for the application. The <code>url</code> function in the <code>urlpatterns</code> list are given three arguments. The first argument is a pattern-string used to identify which URLs are valid. Patterns are specified as <em>regular expressions</em>. Regular expressions are used to match strings and are written in a special, very compact, syntax. A detailed description of regular expressions is beyond this tutorial but you can learn more about them <a href="https://docs.python.org/2/howto/regex.html">here</a>. For now, just accept that this regular expression requires that the visitor's URL looks something like this:</p>
+<pre><code>sheet/123/
+</code></pre>
+
+<p>That is, <code>sheet/</code> followed by a number, rather than some other possible URL pattern. We will interpret this number as object ID. Thanks to how the regular expression is formulated, the pattern recognizer stores the number in a variable called <code>object_id</code>. This will be passed to the view (see below). We add the imported view function (<code>sheet</code>) in the second argument. We also add the <code>name</code> keyword to identify the URL pattern itself. You should always name your URL patterns, this makes them easy to refer to in html templates using the <code>{% url %}</code> tag (but we won't get more into that in this tutorial).</p>
+<blockquote>
+<p>Security Note: Normally, users do not have the ability to see object IDs within the game (it's restricted to superusers only). Exposing the game's object IDs to the public like this enables griefers to perform what is known as an <a href="http://www.sans.edu/research/security-laboratory/article/attacks-browsing">account enumeration attack</a> in the efforts of hijacking your superuser account. Consider this: in every Evennia installation, there are two objects that we can <em>always</em> expect to exist and have the same object IDs-- Limbo (#2) and the superuser you create in the beginning (#1). Thus, the griefer can get 50% of the information they need to hijack the admin account (the admin's username) just by navigating to <code>sheet/1</code>!</p>
+</blockquote>
+<p>Next we create <code>views.py</code>, the view file that <code>urls.py</code> refers to.</p>
+<pre><code class="python"># Views for our character app
+
+from django.http import Http404
+from django.shortcuts import render
+from django.conf import settings
+
+from evennia.utils.search import object_search
+from evennia.utils.utils import inherits_from
+
+def sheet(request, object_id):
+    object_id = '#' + object_id
+    try:
+        character = object_search(object_id)[0]
+    except IndexError:
+        raise Http404(&quot;I couldn't find a character with that ID.&quot;)
+    if not inherits_from(character, settings.BASE_CHARACTER_TYPECLASS):
+        raise Http404(&quot;I couldn't find a character with that ID. &quot;
+                      &quot;Found something else instead.&quot;)
+    return render(request, 'character/sheet.html', {'character': character})
+</code></pre>
+
+<p>As explained earlier, the URL pattern parser in <code>urls.py</code> parses the URL and passes <code>object_id</code> to our view function <code>sheet</code>. We do a database search for the object using this number. We also make sure such an object exists and that it is actually a Character. The view function is also handed a <code>request</code> object. This gives us information about the request, such as if a logged-in user viewed it - we won't use that information here but it is good to keep in mind. </p>
+<p>On the last line, we call the <code>render</code> function. Apart from the <code>request</code> object, the <code>render</code> function takes a path to an html template and a dictionary with extra data you want to pass into said template. As extra data we pass the Character object we just found. In the template it will be available as the variable "character". </p>
+<p>The html template is created as <code>templates/character/sheet.html</code> under your <code>character</code> app folder. You may have to manually create both <code>template</code> and its subfolder <code>character</code>. Here's the template to create:</p>
+<pre><code class="html">{% extends &quot;base.html&quot; %}
+{% block content %}
+
+    &lt;h1&gt;{{ character.name }}&lt;/h1&gt;
+
+    &lt;p&gt;{{ character.db.desc }}&lt;/p&gt;
+
+    &lt;h2&gt;Stats&lt;/h2&gt;
+    &lt;table&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;Stat&lt;/th&gt;
+          &lt;th&gt;Value&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Strength&lt;/td&gt;
+          &lt;td&gt;{{ character.db.str }}&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Intelligence&lt;/td&gt;
+          &lt;td&gt;{{ character.db.int }}&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Speed&lt;/td&gt;
+          &lt;td&gt;{{ character.db.spd }}&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;h2&gt;Skills&lt;/h2&gt;
+    &lt;ul&gt;
+      {% for skill in character.db.skills %}
+        &lt;li&gt;{{ skill }}&lt;/li&gt;
+      {% empty %}
+        &lt;li&gt;This character has no skills yet.&lt;/li&gt;
+      {% endfor %}
+    &lt;/ul&gt;
+
+    {% if character.db.approved %}
+      &lt;p class=&quot;success&quot;&gt;This character has been approved!&lt;/p&gt;
+    {% else %}
+      &lt;p class=&quot;warning&quot;&gt;This character has not yet been approved!&lt;/p&gt;
+    {% endif %}
+{% endblock %}
+</code></pre>
+
+<p>In Django templates, <code>{% ... %}</code> denotes special in-template "functions" that Django understands. The <code>{{ ... }}</code> blocks work as "slots". They are replaced with whatever value the code inside the block returns.</p>
+<p>The first line, <code>{% extends "base.html" %}</code>, tells Django that this template extends the base template that Evennia is using. The base template is provided by the theme. Evennia comes with the open-source third-party theme <code>prosimii</code>. You can find it and its <code>base.html</code> in <code>evennia/web/templates/prosimii</code>. Like other templates, these can be overwritten.</p>
+<p>The next line is <code>{% block content %}</code>. The <code>base.html</code> file has <code>block</code>s, which are placeholders that templates can extend. The main block, and the one we use, is named <code>content</code>.</p>
+<p>We can access the <code>character</code> variable anywhere in the template because we passed it in the <code>render</code> call at the end of <code>view.py</code>. That means we also have access to the Character's <code>db</code> attributes, much like you would in normal Python code. You don't have the ability to call functions with arguments in the template-- in fact, if you need to do any complicated logic, you should do it in <code>view.py</code> and pass the results as more variables to the template. But you still have a great deal of flexibility in how you display the data.</p>
+<p>We can do a little bit of logic here as well. We use the <code>{% for %} ... {% endfor %}</code> and <code>{% if %} ... {% else %} ... {% endif %}</code> structures to change how the template renders depending on how many skills the user has, or if the user is approved (assuming your game has an approval system).</p>
+<p>The last file we need to edit is the master URLs file. This is needed in order to smoothly integrate the URLs from your new <code>character</code> app with the URLs from Evennia's existing pages. Find the file <code>web/urls.py</code> and update its <code>patterns</code> list as follows:</p>
+<pre><code class="python"># web/urls.py
+
+custom_patterns = [
+    url(r'^character/', include('web.character.urls',
+                                namespace='character', app_name='character')),
+    ]
+</code></pre>
+
+<p>Now reload the server with <code>evennia reload</code> and visit the page in your browser. If you haven't changed your defaults, you should be able to find the sheet for character <code>#1</code> at <code>http://localhost:4001/character/sheet/1/</code></p>
+<p>Try updating the stats in-game and refresh the page in your browser. The results should show immediately.</p>
+<p>As an optional final step, you can also change your character typeclass to have a method called 'get_absolute_url'.</p>
+<pre><code class="python"># typeclasses/characters.py
+
+    # inside Character
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        return reverse('character:sheet', kwargs={'object_id':self.id})
+</code></pre>
+
+<p>Doing so will give you a 'view on site' button in the top right of the Django Admin Objects changepage that links to your new character sheet, and allow you to get the link to a character's page by using {{ object.get_absolute_url }} in any template where you have a given object.</p>
+<p><em>Now that you've made a basic page and app with Django, you may want to read the full Django tutorial to get a better idea of what it can do. <a href="https://docs.djangoproject.com/en/1.8/intro/tutorial01/">You can find Django's tutorial here</a>.</em></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

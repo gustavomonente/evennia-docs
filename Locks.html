@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Locks - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#setting-and-checking-a-lock">Setting and checking a lock</a></li>
+        <li class="main "><a href="#defining-locks">Defining locks</a></li>
+            <li><a href="#valid-access_types">Valid access_types</a></li>
+            <li><a href="#custom-access_types">Custom access_types</a></li>
+            <li><a href="#lock-functions">Lock functions</a></li>
+        <li class="main "><a href="#checking-simple-strings">Checking simple strings</a></li>
+        <li class="main "><a href="#default-locks">Default locks</a></li>
+        <li class="main "><a href="#permissions">Permissions</a></li>
+            <li><a href="#superusers">Superusers</a></li>
+            <li><a href="#quelling">Quelling</a></li>
+            <li><a href="#more-lock-definition-examples">More Lock definition examples</a></li>
+            <li><a href="#a-complete-example-of-setting-locks-on-an-object">A complete example of setting locks on an object</a></li>
+            <li><a href="#on-djangos-permission-system">On Django's permission system</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="How-to-check-for-access-and-define-what-gives-access-or-not."></a></p>
+<p>For most games it is a good idea to restrict what people can do. In Evennia such restrictions are applied and checked by something called <em>locks</em>. All Evennia entities (Commands.md, Objects.md, Scripts.md, Accounts.md, <a href="help-system">Help System</a>, <a href="Communications#Msg">messages</a> and <a href="Communications#Channels">channels</a>) are accessed through locks. </p>
+<p>A lock can be thought of as an "access rule" restricting a particular use of an Evennia entity.  Whenever another entity wants that kind of access the lock will analyze that entity in different ways to determine if access should be granted or not. Evennia implements a "lockdown" philosophy - all entities are inaccessible unless you explicitly define a lock that allows some or full access. </p>
+<p>Let's take an example: An object has a lock on itself that restricts how people may "delete" that object. Apart from knowing that it restricts deletion, the lock also knows that only players with the specific ID of, say, <code>34</code> are allowed to delete it. So whenever a player tries to run <code>delete</code> on the object, the <code>delete</code> command makes sure to check if this player is really allowed to do so. It calls the lock, which in turn checks if the player's id is <code>34</code>. Only then will it allow <code>delete</code> to go on with its job.</p>
+<h2 id="setting-and-checking-a-lock">Setting and checking a lock<a class="headerlink" href="#setting-and-checking-a-lock" title="Permanent link">&para;</a></h2>
+<p>The in-game command for setting locks on objects is <code>lock</code>:</p>
+<pre><code> &gt; lock obj = &lt;lockstring&gt;
+</code></pre>
+<p>The <code>&lt;lockstring&gt;</code> is a string of a certain form that defines the behaviour of the lock. We will go into more detail on how <code>&lt;lockstring&gt;</code> should look in the next section.</p>
+<p>Code-wise, Evennia handles locks through what is usually called <code>locks</code> on all relevant entities. This is a handler that allows you to add, delete and check locks. </p>
+<pre><code class="python">     myobj.locks.add(&lt;lockstring&gt;)
+</code></pre>
+
+<p>One can call <code>locks.check()</code> to perform a lock check, but to hide the underlying implementation all objects also have a convenience function called <code>access</code>. This should preferably be used. In the example below, <code>accessing_obj</code> is the object requesting the 'delete' access whereas <code>obj</code> is the object that might get deleted. This is how it would look (and does look) from inside the <code>delete</code> command: </p>
+<pre><code class="python">     if not obj.access(accessing_obj, 'delete'):
+         accessing_obj.msg(&quot;Sorry, you may not delete that.&quot;)
+         return 
+</code></pre>
+
+<h2 id="defining-locks">Defining locks<a class="headerlink" href="#defining-locks" title="Permanent link">&para;</a></h2>
+<p>Defining a lock (i.e. an access restriction) in Evennia is done by adding simple strings of lock definitions to the object's <code>locks</code> property using <code>obj.locks.add()</code>. </p>
+<p>Here are some examples of lock strings (not including the quotes): </p>
+<pre><code class="python">     delete:id(34)   # only allow obj #34 to delete
+     edit:all()      # let everyone edit 
+     # only those who are not &quot;very_weak&quot; or are Admins may pick this up
+     get: not attr(very_weak) or perm(Admin) 
+</code></pre>
+
+<p>Formally, a lockstring has the following syntax: </p>
+<pre><code class="python">     access_type: [NOT] lockfunc1([arg1,..]) [AND|OR] [NOT] lockfunc2([arg1,...]) [...]
+</code></pre>
+
+<p>where <code>[]</code> marks optional parts. <code>AND</code>, <code>OR</code> and <code>NOT</code> are not case sensitive and excess spaces are ignored. <code>lockfunc1, lockfunc2</code> etc are special <em>lock functions</em> available to the lock system. </p>
+<p>So, a lockstring consists of the type of restriction (the <code>access_type</code>), a colon (<code>:</code>) and then an expression involving function calls that determine what is needed to pass the lock. Each function returns either <code>True</code> or <code>False</code>. <code>AND</code>, <code>OR</code> and <code>NOT</code> work as they do normally in Python. If the total result is <code>True</code>, the lock is passed. </p>
+<p>You can create several lock types one after the other by separating them with a semicolon (<code>;</code>) in the lockstring. The string below yields the same result as the previous example: </p>
+<pre><code>delete:id(34);edit:all();get: not attr(very_weak) or perm(Admin)
+</code></pre>
+<h3 id="valid-access_types">Valid access_types<a class="headerlink" href="#valid-access_types" title="Permanent link">&para;</a></h3>
+<p>An <code>access_type</code>, the first part of a lockstring, defines what kind of capability a lock controls, such as "delete" or "edit". You may in principle name your <code>access_type</code> anything as long as it is unique for the particular object. The name of the access types is not case-sensitive.</p>
+<p>If you want to make sure the lock is used however, you should pick <code>access_type</code> names that you (or the default command set) actually checks for, as in the example of <code>delete</code> above that uses the 'delete' <code>access_type</code>.</p>
+<p>Below are the access_types checked by the default commandset.</p>
+<ul>
+<li><a href="Commands.html">Commands</a> </li>
+<li><code>cmd</code> - this defines who may call this command at all.</li>
+<li><a href="Objects.html">Objects</a>:</li>
+<li><code>control</code> - who is the "owner" of the object. Can set locks, delete it etc. Defaults to the creator of the object.</li>
+<li><code>call</code> - who may call Object-commands stored on this Object except for the Object itself. By default, Objects share their Commands with anyone in the same location (e.g. so you can 'press' a <code>Button</code> object in the room). For Characters and Mobs (who likely only use those Commands for themselves and don't want to share them) this should usually be turned off completely, using something like <code>call:false()</code>. </li>
+<li><code>examine</code> - who may examine this object's properties.</li>
+<li><code>delete</code> - who may delete the object.</li>
+<li><code>edit</code> - who may edit properties and attributes of the object.</li>
+<li><code>view</code> - if the <code>look</code> command will display/list this object</li>
+<li><code>get</code>- who may pick up the object and carry it around.</li>
+<li><code>puppet</code> - who may "become" this object and control it as their "character".</li>
+<li><code>attrcreate</code> - who may create new attributes on the object (default True)</li>
+<li><a href="Objects#Characters">Characters</a>: </li>
+<li>Same as for Objects</li>
+<li><a href="Objects#Exits">Exits</a>: </li>
+<li>Same as for Objects </li>
+<li><code>traverse</code> - who may pass the exit.</li>
+<li><a href="Accounts.html">Accounts</a>:</li>
+<li><code>examine</code> - who may examine the account's properties.</li>
+<li><code>delete</code> - who may delete the account.</li>
+<li><code>edit</code> - who may edit the account's attributes and properties.</li>
+<li><code>msg</code> - who may send messages to the account.</li>
+<li><code>boot</code> - who may boot the account.</li>
+<li><a href="Attributes.html">Attributes</a>: (only checked by <code>obj.secure_attr</code>)</li>
+<li><code>attrread</code> - see/access attribute</li>
+<li><code>attredit</code> - change/delete attribute</li>
+<li><a href="Communications#Channels">Channels</a>:</li>
+<li><code>control</code> - who is administrating the channel. This means the ability to delete the channel, boot listeners etc.</li>
+<li><code>send</code> - who may send to the channel.</li>
+<li><code>listen</code> - who may subscribe and listen to the channel.</li>
+<li><a href="Help-System">HelpEntry</a>:</li>
+<li><code>examine</code> - who may view this help entry (usually everyone)</li>
+<li><code>edit</code> - who may edit this help entry.</li>
+</ul>
+<p>So to take an example, whenever an exit is to be traversed, a lock of the type <em>traverse</em> will be checked. Defining a suitable lock type for an exit object would thus involve a lockstring <code>traverse: &lt;lock functions&gt;</code>. </p>
+<h3 id="custom-access_types">Custom access_types<a class="headerlink" href="#custom-access_types" title="Permanent link">&para;</a></h3>
+<p>As stated above, the <code>access_type</code> part of the lock is simply the 'name' or 'type' of the lock. The text is an arbitrary string that must be unique for an object. If adding a lock with the same <code>access_type</code> as one that already exists on the object, the new one override the old one.</p>
+<p>For example, if you wanted to create a bulletin board system and wanted to restrict who can either read a board or post to a board. You could then define locks such as: </p>
+<pre><code class="python">     obj.locks.add(&quot;read:perm(Player);post:perm(Admin)&quot;)
+</code></pre>
+
+<p>This will create a 'read' access type for Characters having the <code>Player</code> permission or above and a 'post' access type for those with <code>Admin</code> permissions or above (see below how the <code>perm()</code> lock function works).  When it comes time to test these permissions, simply check like this (in this example, the <code>obj</code> may be a board on the bulletin board system and <code>accessing_obj</code> is the player trying to read the board):</p>
+<pre><code class="python">     if not obj.access(accessing_obj, 'read'):
+         accessing_obj.msg(&quot;Sorry, you may not read that.&quot;)
+         return 
+</code></pre>
+
+<h3 id="lock-functions">Lock functions<a class="headerlink" href="#lock-functions" title="Permanent link">&para;</a></h3>
+<p>A lock function is a normal Python function put in a place Evennia looks for such functions. The modules Evennia looks at is the list <code>settings.LOCK_FUNC_MODULES</code>. <em>All functions</em> in any of those modules will automatically be considered a valid lock function. The default ones are found in <code>evennia/locks/lockfuncs.py</code> and you can start adding your own in <code>mygame/server/conf/lockfuncs.py</code>. You can append the setting to add more module paths. To replace a default lock function, just add your own with the same name. </p>
+<p>A lock function must always accept at least two arguments - the <em>accessing object</em> (this is the object wanting to get access) and the <em>accessed object</em> (this is the object with the lock). Those two are fed automatically as the first two arguments to the function when the lock is checked. Any arguments explicitly given in the lock definition will appear as extra arguments.</p>
+<pre><code class="python">    # A simple example lock function. Called with e.g. `id(34)`. This is
+    # defined in, say mygame/server/conf/lockfuncs.py
+
+    def id(accessing_obj, accessed_obj, *args, **kwargs):
+        if args:
+            wanted_id = args[0]
+            return accessing_obj.id == wanted_id
+        return False 
+</code></pre>
+
+<p>The above could for example be used in a lock function like this: </p>
+<pre><code class="python">    # we have `obj` and `owner_object` from before
+    obj.locks.add(&quot;edit: id(%i)&quot; % owner_object.id)
+</code></pre>
+
+<p>We could check if the "edit" lock is passed with something like this:</p>
+<pre><code class="python">    # as part of a Command's func() method, for example
+    if not obj.access(caller, &quot;edit&quot;):
+        caller.msg(&quot;You don't have access to edit this!&quot;)
+        return
+</code></pre>
+
+<p>In this example, everyone except the <code>caller</code> with the right <code>id</code> will get the error. </p>
+<blockquote>
+<p>(Using the <code>*</code> and <code>**</code> syntax causes Python to magically put all extra arguments into a list <code>args</code> and all keyword arguments into a dictionary <code>kwargs</code> respectively. If you are unfamiliar with how <code>*args</code> and <code>**kwargs</code> work, see the Python manuals). </p>
+</blockquote>
+<p>Some useful default lockfuncs (see <code>src/locks/lockfuncs.py</code> for more):</p>
+<ul>
+<li><code>true()/all()</code> - give access to everyone</li>
+<li><code>false()/none()/superuser()</code> - give access to none. Superusers bypass the check entirely and are thus the only ones who will pass this check.</li>
+<li><code>perm(perm)</code> - this tries to match a given <code>permission</code> property, on an Account firsthand, on a Character second. See <a href="Locks#permissions">below</a>.</li>
+<li><code>perm_above(perm)</code> - like <code>perm</code> but requires a "higher" permission level than the one given.</li>
+<li><code>id(num)/dbref(num)</code> - checks so the access_object has a certain dbref/id.</li>
+<li><code>attr(attrname)</code> - checks if a certain <a href="Attributes.html">Attribute</a> exists on accessing_object.</li>
+<li><code>attr(attrname, value)</code> - checks so an attribute exists on accessing_object <em>and</em> has the given value.</li>
+<li><code>attr_gt(attrname, value)</code> - checks so accessing_object has a value larger (<code>&gt;</code>) than the given value.</li>
+<li><code>attr_ge, attr_lt, attr_le, attr_ne</code> - corresponding for <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code> and <code>!=</code>.</li>
+<li><code>holds(objid)</code> - checks so the accessing objects contains an object of given name or dbref.</li>
+<li><code>inside()</code> - checks so the accessing object is inside the accessed object (the inverse of <code>holds()</code>).</li>
+<li><code>pperm(perm)</code>, <code>pid(num)/pdbref(num)</code> - same as <code>perm</code>, <code>id/dbref</code> but always looks for permissions and dbrefs of <em>Accounts</em>, not on Characters.</li>
+<li><code>serversetting(settingname, value)</code> - Only returns True if Evennia has a given setting or a setting set to a given value. </li>
+</ul>
+<h2 id="checking-simple-strings">Checking simple strings<a class="headerlink" href="#checking-simple-strings" title="Permanent link">&para;</a></h2>
+<p>Sometimes you don't really need to look up a certain lock, you just want to check a lockstring. A common use is inside Commands, in order to check if a user has a certain permission. The lockhandler has a method <code>check_lockstring(accessing_obj, lockstring, bypass_superuser=False)</code> that allows this.</p>
+<pre><code class="python">     # inside command definition
+     if not self.caller.locks.check_lockstring(self.caller, &quot;dummy:perm(Admin)&quot;):
+         self.caller.msg(&quot;You must be an Admin or higher to do this!&quot;)
+         return
+</code></pre>
+
+<p>Note here that the <code>access_type</code> can be left to a dummy value since this method does not actually do a Lock lookup.</p>
+<h2 id="default-locks">Default locks<a class="headerlink" href="#default-locks" title="Permanent link">&para;</a></h2>
+<p>Evennia sets up a few basic locks on all new objects and accounts (if we didn't, noone would have any access to anything from the start).  This is all defined in the root <a href="Typeclasses.html">Typeclasses</a> of the respective entity, in the hook method <code>basetype_setup()</code> (which you usually don't want to edit unless you want to change how basic stuff like rooms and exits store their internal variables). This is called once, before <code>at_object_creation</code>, so just put them in the latter method on your child object to change the default. Also creation commands like <code>create</code> changes the locks of objects you create - for example it sets the <code>control</code> lock_type so as to allow you, its creator, to control and delete the object.</p>
+<h1 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>This section covers the underlying code use of permissions. If you just want to learn how to practically assign permissions in-game, refer to the <a href="Building-Permissions">Building Permissions</a> page, which details how you use the <code>perm</code> command.</p>
+</blockquote>
+<p>A <em>permission</em> is simply a list of text strings stored  in the handler <code>permissions</code> on <code>Objects</code> and <code>Accounts</code>. Permissions can be used as a convenient way to structure access levels and hierarchies. It is set by the <code>perm</code> command. Permissions are especially handled by the <code>perm()</code> and <code>pperm()</code> lock functions listed above. </p>
+<p>Let's say we have a <code>red_key</code> object. We also have red chests that we want to unlock with this key. </p>
+<pre><code>perm red_key = unlocks_red_chests
+</code></pre>
+<p>This gives the <code>red_key</code> object the permission "unlocks_red_chests".  Next we lock our red chests:</p>
+<pre><code>lock red chest = unlock:perm(unlocks_red_chests)
+</code></pre>
+<p>What this lock will expect is to the fed the actual key object. The <code>perm()</code> lock function will check the permissions set on the key and only return true if the permission is the one given. </p>
+<p>Finally we need to actually check this lock somehow. Let's say the chest has an command <code>open &lt;key&gt;</code> sitting on itself. Somewhere in its code the command needs to figure out which key you are using and test if this key has the correct permission:</p>
+<pre><code class="python">    # self.obj is the chest 
+    # and used_key is the key we used as argument to
+    # the command. The self.caller is the one trying
+    # to unlock the chest
+    if not self.obj.access(used_key, &quot;unlock&quot;):
+        self.caller.msg(&quot;The key does not fit!&quot;)
+        return 
+</code></pre>
+
+<p>All new accounts are given a default set of permissions defined by <code>settings.PERMISSION_ACCOUNT_DEFAULT</code>.</p>
+<p>Selected permission strings can be organized in a <em>permission hierarchy</em> by editing the tuple <code>settings.PERMISSION_HIERARCHY</code>.  Evennia's default permission hierarchy is as follows:</p>
+<pre><code> Developer        # like superuser but affected by locks
+ Admin            # can administrate accounts
+ Builder          # can edit the world
+ Helper           # can edit help files
+ Player           # can chat and send tells (default level)
+</code></pre>
+<p>(Also the plural form works, so you could use <code>Developers</code> etc too). </p>
+<blockquote>
+<p>There is also a <code>Guest</code> level below <code>Player</code> that is only active if <code>settings.GUEST_ENABLED</code> is set. This is never part of <code>settings.PERMISSION_HIERARCHY</code>.</p>
+</blockquote>
+<p>The main use of this is that if you use the lock function <code>perm()</code> mentioned above, a lock check for a particular permission in the hierarchy will <em>also</em> grant access to those with <em>higher</em> hierarchy access. So if you have the permission "Admin" you will also pass a lock defined as <code>perm(Builder)</code> or any of those levels below "Admin". </p>
+<p>When doing an access check from an <a href="Objects.html">Object</a> or Character, the <code>perm()</code> lock function will always first use the permissions of any Account connected to that Object before checking for permissions on the Object. In the case of hierarchical permissions (Admins, Builders etc), the Account permission will always be used (this stops an Account from escalating their permission by puppeting a high-level Character).  If the permission looked for is not in the hierarchy, an exact match is required, first on the Account and if not found there (or if no Account is connected), then on the Object itself. </p>
+<p>Here is how you use <code>perm</code> to give an account more permissions: </p>
+<pre><code> perm/account Tommy = Builders
+ perm/account/del Tommy = Builders # remove it again
+</code></pre>
+<p>Note the use of the <code>/account</code> switch. It means you assign the permission to the Accounts.md Tommy instead of any <a href="Objects.html">Character</a> that also happens to be named "Tommy". </p>
+<p>Putting permissions on the <em>Account</em> guarantees that they are kept, <em>regardless</em> of which Character they are currently puppeting. This is especially important to remember when assigning permissions from the <em>hierarchy tree</em> - as mentioned above, an Account's permissions will overrule that of its character. So to be sure to avoid confusion you should generally put hierarchy permissions on the Account, not on their Characters (but see also <a href="Locks#Quelling">quelling</a>).</p>
+<p>Below is an example of an object without any connected account</p>
+<pre><code class="python">    obj1.permissions = [&quot;Builders&quot;, &quot;cool_guy&quot;]
+    obj2.locks.add(&quot;enter:perm_above(Accounts) and perm(cool_guy)&quot;)
+
+    obj2.access(obj1, &quot;enter&quot;) # this returns True!
+</code></pre>
+
+<p>And one example of a puppet with a connected account:</p>
+<pre><code class="python">    account.permissions.add(&quot;Accounts&quot;)
+    puppet.permissions.add(&quot;Builders&quot;, &quot;cool_guy&quot;)
+    obj2.locks.add(&quot;enter:perm_above(Accounts) and perm(cool_guy)&quot;)
+
+    obj2.access(puppet, &quot;enter&quot;) # this returns False!
+</code></pre>
+
+<h2 id="superusers">Superusers<a class="headerlink" href="#superusers" title="Permanent link">&para;</a></h2>
+<p>There is normally only one <em>superuser</em> account and that is the one first created when starting Evennia (User #1). This is sometimes known as the "Owner" or "God" user.  A superuser has more than full access - it completely <em>bypasses</em> all locks so no checks are even run. This allows for the superuser to always have access to everything in an emergency. But it also hides any eventual errors you might have made in your lock definitions. So when trying out game systems you should either use quelling (see below) or make a second Developer-level character so your locks get tested correctly.</p>
+<h2 id="quelling">Quelling<a class="headerlink" href="#quelling" title="Permanent link">&para;</a></h2>
+<p>The <code>quell</code> command can be used to enforce the <code>perm()</code> lockfunc to ignore permissions on the Account and instead use the permissions on the Character only. This can be used e.g. by staff to test out things with a lower permission level. Return to the normal operation with <code>unquell</code>.  Note that quelling will use the smallest of any hierarchical permission on the Account or Character, so one cannot escalate one's Account permission by quelling to a high-permission Character. Also the superuser can quell their powers this way, making them affectable by locks.</p>
+<h2 id="more-lock-definition-examples">More Lock definition examples<a class="headerlink" href="#more-lock-definition-examples" title="Permanent link">&para;</a></h2>
+<pre><code>examine: attr(eyesight, excellent) or perm(Builders)
+</code></pre>
+<p>You are only allowed to do <em>examine</em> on this object if you have 'excellent' eyesight (that is, has an Attribute <code>eyesight</code> with the value <code>excellent</code> defined on yourself) or if you have the "Builders" permission string assigned to you. </p>
+<pre><code>open: holds('the green key') or perm(Builder)
+</code></pre>
+<p>This could be called by the <code>open</code> command on a "door" object. The check is passed if you are a Builder or has the right key in your inventory.</p>
+<pre><code>cmd: perm(Builders)
+</code></pre>
+<p>Evennia's command handler looks for a lock of type <code>cmd</code> to determine if a user is allowed to even call upon a particular command or not.  When you define a command, this is the kind of lock you must set. See the default command set for lots of examples. If a character/account don't pass the <code>cmd</code> lock type the command will not even appear in their <code>help</code> list.</p>
+<pre><code>cmd: not perm(no_tell)
+</code></pre>
+<p>"Permissions" can also be used to block users or implement highly specific bans. The above example would be be added as a lock string to the <code>tell</code> command. This will allow everyone <em>not</em> having the "permission" <code>no_tell</code> to use the <code>tell</code> command. You could easily give an account the "permission" <code>no_tell</code> to disable their use of this particular command henceforth. </p>
+<pre><code class="python">    dbref = caller.id
+    lockstring = &quot;control:id(%s);examine:perm(Builders);delete:id(%s) or perm(Admin);get:all()&quot; % (dbref, dbref)
+    new_obj.locks.add(lockstring)
+</code></pre>
+
+<p>This is how the <code>create</code> command sets up new objects. In sequence, this permission string sets the owner of this object be the creator (the one  running <code>create</code>). Builders may examine the object whereas only Admins and the creator may delete it. Everyone can pick it up.</p>
+<h2 id="a-complete-example-of-setting-locks-on-an-object">A complete example of setting locks on an object<a class="headerlink" href="#a-complete-example-of-setting-locks-on-an-object" title="Permanent link">&para;</a></h2>
+<p>Assume we have two objects - one is ourselves (not superuser) and the other is an <a href="Objects.html">Object</a> called <code>box</code>. </p>
+<pre><code> &gt; create/drop box
+ &gt; desc box = "This is a very big and heavy box."
+</code></pre>
+<p>We want to limit which objects can pick up this heavy box. Let's say that to do that we require the would-be lifter to to have an attribute <em>strength</em> on themselves, with a value greater than 50. We assign it to ourselves to begin with.</p>
+<pre><code> &gt; set self/strength = 45
+</code></pre>
+<p>Ok, so for testing we made ourselves strong, but not strong enough.  Now we need to look at what happens when someone tries to pick up the the box - they use the <code>get</code> command (in the default set). This is defined in <code>evennia/commands/default/general.py</code>. In its code we find this snippet: </p>
+<pre><code class="python">    if not obj.access(caller, 'get'):
+        if obj.db.get_err_msg:
+            caller.msg(obj.db.get_err_msg)
+        else:
+            caller.msg(&quot;You can't get that.&quot;)
+        return
+</code></pre>
+
+<p>So the <code>get</code> command looks for a lock with the type <em>get</em> (not so surprising). It also looks for an <a href="Attributes.html">Attribute</a> on the checked object called <em>get_err_msg</em> in order to return a customized error message. Sounds good! Let's start by setting that on the box: </p>
+<pre><code> &gt; set box/get_err_msg = You are not strong enough to lift this box.
+</code></pre>
+<p>Next we need to craft a Lock of type <em>get</em> on our box. We want it to only be passed if the accessing object has the attribute <em>strength</em> of the right value. For this we would need to create a lock function that checks if attributes have a value greater than a given value. Luckily there is already such a one included in evennia (see <code>evennia/locks/lockfuncs.py</code>), called <code>attr_gt</code>. </p>
+<p>So the lock string will look like this: <code>get:attr_gt(strength, 50)</code>.  We put this on the box now: </p>
+<pre><code> lock box = get:attr_gt(strength, 50)
+</code></pre>
+<p>Try to <code>get</code> the object and you should get the message that we are not strong enough. Increase your strength above 50 however and you'll pick it up no problem. Done! A very heavy box!</p>
+<p>If you wanted to set this up in python code, it would look something like this:</p>
+<pre><code class="python">
+ from evennia import create_object
+
+    # create, then set the lock
+    box = create_object(None, key=&quot;box&quot;)
+    box.locks.add(&quot;get:attr_gt(strength, 50)&quot;)
+
+    # or we can assign locks in one go right away
+    box = create_object(None, key=&quot;box&quot;, locks=&quot;get:attr_gt(strength, 50)&quot;)
+
+    # set the attributes
+    box.db.desc = &quot;This is a very big and heavy box.&quot;
+    box.db.get_err_msg = &quot;You are not strong enough to lift this box.&quot;
+
+    # one heavy box, ready to withstand all but the strongest...
+</code></pre>
+
+<h2 id="on-djangos-permission-system">On Django's permission system<a class="headerlink" href="#on-djangos-permission-system" title="Permanent link">&para;</a></h2>
+<p>Django also implements a comprehensive permission/security system of its own.  The reason we don't use that is because it is app-centric (app in the Django sense).  Its permission strings are of the form <code>appname.permstring</code> and it automatically adds three of them for each database model in the app - for the app evennia/object this would be for example 'object.create', 'object.admin' and 'object.edit'. This makes a lot of sense for a web application, not so much for a MUD, especially when we try to hide away as much of the underlying architecture as possible.  </p>
+<p>The django permissions are not completely gone however. We use it for validating passwords during login. It is also used exclusively for managing Evennia's web-based admin site, which is a graphical front-end for the database of Evennia. You edit and assign such permissions directly from the web interface. It's stand-alone from the permissions described above.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

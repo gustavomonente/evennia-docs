@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Command Duration - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#the-simple-way-to-pause-commands-with-yield">The simple way to pause commands with yield</a></li>
+        <li class="main "><a href="#the-more-advanced-way-with-utilsdelay">The more advanced way with utils.delay</a></li>
+            <li><a href="#about-utilsdelay">About utils.delay()</a></li>
+        <li class="main "><a href="#blocking-commands">Blocking commands</a></li>
+        <li class="main "><a href="#abortable-commands">Abortable commands</a></li>
+        <li class="main "><a href="#persistent-delays">Persistent delays</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-tutorial-for-creating-commands-that-take-time-to-complete-(advanced)."></a></p>
+<p>Before reading this tutorial, if you haven't done so already, you might want to
+read <a href="Commands.html">the documentation on commands</a> to get a basic understanding of
+how commands work in Evennia.</p>
+<p>In some types of games a command should not start and finish immediately.
+Loading a crossbow might take a bit of time to do - time you don't have when
+the enemy comes rushing at you. Crafting that armour will not be immediate
+either. For some types of games the very act of moving or changing pose all
+comes with a certain time associated with it. </p>
+<h2 id="the-simple-way-to-pause-commands-with-yield">The simple way to pause commands with yield<a class="headerlink" href="#the-simple-way-to-pause-commands-with-yield" title="Permanent link">&para;</a></h2>
+<p>Evennia allows a shortcut in syntax to create simple pauses in commands.  This
+syntax uses the <code>yield</code> keyword.  The <code>yield</code> keyword is used in Python to
+create generators, although you don't need to know what generators are to use
+this syntax.  A short example will probably make it clear:</p>
+<pre><code class="python">class CmdTest(Command):
+
+    &quot;&quot;&quot;
+    A test command just to test waiting.
+
+    Usage:
+        test
+
+    &quot;&quot;&quot;
+
+    key = &quot;test&quot;
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        self.msg(&quot;Before ten seconds...&quot;)
+        yield 10
+        self.msg(&quot;Afterwards.&quot;)
+</code></pre>
+
+<blockquote>
+<p>Important: The <code>yield</code> functionality will <em>only</em> work in the <code>func</code> method of
+Commands. It only works because Evennia has especially
+catered for it in Commands. If you want the same functionality elsewhere you
+must use the <a href="Async-Process#The-@interactive-decorator">interactive decorator</a>.</p>
+</blockquote>
+<p>The important line is the <code>yield 10</code>.  It tells Evennia to "pause" the command
+and to wait for 10 seconds to execute the rest.  If you add this command and
+run it, you'll see the first message, then, after a pause of ten seconds, the
+next message.  You can use <code>yield</code> several times in your command.</p>
+<p>This syntax will not "freeze" all commands.  While the command is "pausing",
+     you can execute other commands (or even call the same command again).  And
+     other players aren't frozen either.</p>
+<blockquote>
+<p>Note: this will not save anything in the database.  If you reload the game
+while a command is "paused", it will not resume after the server has
+reloaded.</p>
+</blockquote>
+<h2 id="the-more-advanced-way-with-utilsdelay">The more advanced way with utils.delay<a class="headerlink" href="#the-more-advanced-way-with-utilsdelay" title="Permanent link">&para;</a></h2>
+<p>The <code>yield</code> syntax is easy to read, easy to understand, easy to use.  But it's not that flexible if you want more advanced options.  Learning to use alternatives might be much worth it in the end.</p>
+<p>Below is a simple command example for adding a duration for a command to finish.</p>
+<pre><code class="python">from evennia import default_cmds, utils
+
+class CmdEcho(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    wait for an echo
+
+    Usage: 
+      echo &lt;string&gt;
+
+    Calls and waits for an echo
+    &quot;&quot;&quot;
+    key = &quot;echo&quot;
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        &quot;&quot;&quot;
+         This is called at the initial shout.            
+        &quot;&quot;&quot;
+        self.caller.msg(&quot;You shout '%s' and wait for an echo ...&quot; % self.args)
+        # this waits non-blocking for 10 seconds, then calls self.echo
+        utils.delay(10, self.echo) # call echo after 10 seconds
+
+    def echo(self):
+        &quot;Called after 10 seconds.&quot;
+        shout = self.args
+        string = &quot;You hear an echo: %s ... %s ... %s&quot;
+        string = string % (shout.upper(), shout.capitalize(), shout.lower())
+        self.caller.msg(string)
+</code></pre>
+
+<p>Import this new echo command into the default command set and reload the server. You will find that it will take 10 seconds before you see your shout coming back. You will also find that this is a <em>non-blocking</em> effect; you can issue other commands in the interim and the game will go on as usual. The echo will come back to you in its own time. </p>
+<h3 id="about-utilsdelay">About utils.delay()<a class="headerlink" href="#about-utilsdelay" title="Permanent link">&para;</a></h3>
+<p><code>utils.delay(timedelay, callback, persistent=False, *args, **kwargs)</code> is a useful function.  It will wait <code>timedelay</code> seconds, then call the <code>callback</code> function, optionally passing to it the arguments provided to utils.delay by way of <em>args and/or </em>*kwargs`. </p>
+<blockquote>
+<p>Note: The callback argument should be provided with a python path to the desired function, for instance <code>my_object.my_function</code> instead of <code>my_object.my_function()</code>. Otherwise my_function would get called and run immediately upon attempting to pass it to the delay function.
+If you want to provide arguments for utils.delay to use, when calling your callback function, you have to do it separatly, for instance using the utils.delay <em>args and/or </em>*kwargs, as mentioned above.</p>
+<p>If you are not familiar with the syntax <code>*args</code> and <code>**kwargs</code>, <a href="https://docs.python.org/2/tutorial/controlflow.html#arbitrary-argument-lists">see the Python documentation here</a>.</p>
+</blockquote>
+<p>Looking at it you might think that <code>utils.delay(10, callback)</code> in the code above is just an alternative to some more familiar thing like <code>time.sleep(10)</code>. This is <em>not</em> the case. If you do <code>time.sleep(10)</code> you will in fact freeze the <em>entire server</em> for ten seconds! The <code>utils.delay()</code>is a thin wrapper around a Twisted <a href="http://twistedmatrix.com/documents/11.0.0/core/howto/defer.html">Deferred</a> that will delay execution until 10 seconds have passed, but will do so asynchronously, without bothering anyone else (not even you - you can continue to do stuff normally while it waits to continue).</p>
+<p>The point to remember here is that the <code>delay()</code> call will not "pause" at that point when it is called (the way <code>yield</code> does in the previous section). The lines after the <code>delay()</code> call will actually execute <em>right away</em>. What you must do is to tell it which function to call <em>after the time has passed</em> (its "callback"). This may sound strange at first, but it is normal practice in asynchronous systems. You can also link such calls together as seen below:</p>
+<pre><code class="python">from evennia import default_cmds, utils
+
+class CmdEcho(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    waits for an echo
+
+    Usage: 
+      echo &lt;string&gt;
+
+    Calls and waits for an echo
+    &quot;&quot;&quot;
+    key = &quot;echo&quot;
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        &quot;This sets off a chain of delayed calls&quot;
+        self.caller.msg(&quot;You shout '%s', waiting for an echo ...&quot; % self.args)
+
+        # wait 2 seconds before calling self.echo1
+        utils.delay(2, self.echo1)
+
+    # callback chain, started above
+    def echo1(self):
+        &quot;First echo&quot;
+        self.caller.msg(&quot;... %s&quot; % self.args.upper())
+        # wait 2 seconds for the next one
+        utils.delay(2, self.echo2)
+
+    def echo2(self):
+        &quot;Second echo&quot;
+        self.caller.msg(&quot;... %s&quot; % self.args.capitalize())
+        # wait another 2 seconds
+        utils.delay(2, callback=self.echo3)
+
+    def echo3(self):
+        &quot;Last echo&quot;
+        self.caller.msg(&quot;... %s ...&quot; % self.args.lower())
+</code></pre>
+
+<p>The above version will have the echoes arrive one after another, each separated by a two second delay. </p>
+<pre><code>&gt; echo Hello!
+... HELLO!
+... Hello!
+... hello! ...
+</code></pre>
+<h2 id="blocking-commands">Blocking commands<a class="headerlink" href="#blocking-commands" title="Permanent link">&para;</a></h2>
+<p>As mentioned, a great thing about the delay introduced by <code>yield</code> or <code>utils.delay()</code> is that it does not block. It just goes on in the background and you are free to play normally in the interim. In some cases this is not what you want however. Some commands should simply "block" other commands while they are running. If you are in the process of crafting a helmet you shouldn't be able to also start crafting a shield at the same time, or if you just did a huge power-swing with your weapon you should not be able to do it again immediately. </p>
+<p>The simplest way of implementing blocking is to use the technique covered in the <a href="Command-Cooldown">Command Cooldown</a> tutorial. In that tutorial we implemented cooldowns by having the Command store the current time. Next time the Command was called, we compared the current time to the stored time to determine if enough time had passed for a renewed use. This is a <em>very</em> efficient, reliable and passive solution. The drawback is that there is nothing to tell the Player when enough time has passed unless they keep trying.</p>
+<p>Here is an example where we will use <code>utils.delay</code> to tell the player when the cooldown has passed:</p>
+<pre><code class="python">from evennia import utils, default_cmds
+
+class CmdBigSwing(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    swing your weapon in a big way
+
+    Usage:
+      swing &lt;target&gt;
+
+    Makes a mighty swing. Doing so will make you vulnerable
+    to counter-attacks before you can recover. 
+    &quot;&quot;&quot;
+    key = &quot;bigswing&quot;
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        &quot;Makes the swing&quot; 
+
+        if self.caller.ndb.off_balance:
+            # we are still off-balance.
+            self.caller.msg(&quot;You are off balance and need time to recover!&quot;)
+            return      
+
+        # [attack/hit code goes here ...]
+        self.caller.msg(&quot;You swing big! You are off balance now.&quot;)   
+
+        # set the off-balance flag
+        self.caller.ndb.off_balance = True
+
+        # wait 8 seconds before we can recover. During this time 
+        # we won't be able to swing again due to the check at the top.        
+        utils.delay(8, self.recover)
+
+    def recover(self):
+        &quot;This will be called after 8 secs&quot;
+        del self.caller.ndb.off_balance            
+        self.caller.msg(&quot;You regain your balance.&quot;)
+</code></pre>
+
+<p>Note how, after the cooldown, the user will get a message telling them they are now ready for another swing. </p>
+<p>By storing the <code>off_balance</code> flag on the character (rather than on, say, the Command instance itself) it can be accessed by other Commands too. Other attacks may also not work when you are off balance. You could also have an enemy Command check your <code>off_balance</code> status to gain bonuses, to take another example.</p>
+<h2 id="abortable-commands">Abortable commands<a class="headerlink" href="#abortable-commands" title="Permanent link">&para;</a></h2>
+<p>One can imagine that you will want to abort a long-running command before it has a time to finish. If you are in the middle of crafting your armor you will probably want to stop doing that when a monster enters your smithy. </p>
+<p>You can implement this in the same way as you do the "blocking" command above, just in reverse. Below is an example of a crafting command that can be aborted by starting a fight: </p>
+<pre><code class="python">from evennia import utils, default_cmds
+
+class CmdCraftArmour(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    Craft armour
+
+    Usage:
+       craft &lt;name of armour&gt;
+
+    This will craft a suit of armour, assuming you
+    have all the components and tools. Doing some
+    other action (such as attacking someone) will 
+    abort the crafting process. 
+    &quot;&quot;&quot;
+    key = &quot;craft&quot;
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        &quot;starts crafting&quot;
+
+        if self.caller.ndb.is_crafting:
+            self.caller.msg(&quot;You are already crafting!&quot;)
+            return 
+        if self._is_fighting():
+            self.caller.msg(&quot;You can't start to craft &quot;
+                            &quot;in the middle of a fight!&quot;)
+            return
+
+        # [Crafting code, checking of components, skills etc]          
+
+        # Start crafting
+        self.caller.ndb.is_crafting = True
+        self.caller.msg(&quot;You start crafting ...&quot;)
+        utils.delay(60, self.step1)
+
+    def _is_fighting(self):
+        &quot;checks if we are in a fight.&quot;
+        if self.caller.ndb.is_fighting:                
+            del self.caller.ndb.is_crafting 
+            return True
+
+    def step1(self):
+        &quot;first step of armour construction&quot;
+        if self._is_fighting(): 
+            return
+        self.msg(&quot;You create the first part of the armour.&quot;)
+        utils.delay(60, callback=self.step2)
+
+    def step2(self):
+        &quot;second step of armour construction&quot;
+        if self._is_fighting(): 
+            return
+        self.msg(&quot;You create the second part of the armour.&quot;)            
+        utils.delay(60, step3)
+
+    def step3(self):
+        &quot;last step of armour construction&quot;
+        if self._is_fighting():
+            return          
+
+        # [code for creating the armour object etc]
+
+        del self.caller.ndb.is_crafting
+        self.msg(&quot;You finalize your armour.&quot;)
+
+
+# example of a command that aborts crafting
+
+class CmdAttack(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    attack someone
+
+    Usage:
+        attack &lt;target&gt;
+
+    Try to cause harm to someone. This will abort
+    eventual crafting you may be currently doing. 
+    &quot;&quot;&quot;
+    key = &quot;attack&quot;
+    aliases = [&quot;hit&quot;, &quot;stab&quot;]
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        &quot;Implements the command&quot;
+
+        self.caller.ndb.is_fighting = True
+
+        # [...]
+</code></pre>
+
+<p>The above code creates a delayed crafting command that will gradually create the armour. If the <code>attack</code> command is issued during this process it will set a flag that causes the crafting to be quietly canceled next time it tries to update.</p>
+<h2 id="persistent-delays">Persistent delays<a class="headerlink" href="#persistent-delays" title="Permanent link">&para;</a></h2>
+<p>In the latter examples above we used <code>.ndb</code> storage. This is fast and easy but it will reset all cooldowns/blocks/crafting etc if you reload the server. If you don't want that you can replace <code>.ndb</code> with <code>.db</code>. But even this won't help because the <code>yield</code> keyword is not persisent and nor is the use of <code>delay</code> shown above. To resolve this you can use <code>delay</code> with the <code>persistent=True</code> keyword. But wait! Making something persistent will add some extra complications, because now you must make sure Evennia can properly store things to the database.</p>
+<p>Here is the original echo-command reworked to function with persistence: </p>
+<pre><code class="python">from evennia import default_cmds, utils
+
+# this is now in the outermost scope and takes two args! 
+def echo(caller, args):
+    &quot;Called after 10 seconds.&quot;
+    shout = args
+    string = &quot;You hear an echo: %s ... %s ... %s&quot;
+    string = string % (shout.upper(), shout.capitalize(), shout.lower())
+    caller.msg(string)
+
+class CmdEcho(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    wait for an echo
+
+    Usage: 
+      echo &lt;string&gt;
+
+    Calls and waits for an echo
+    &quot;&quot;&quot;
+    key = &quot;echo&quot;
+    locks = &quot;cmd:all()&quot;
+
+    def func(self):
+        &quot;&quot;&quot;
+         This is called at the initial shout.            
+        &quot;&quot;&quot;
+        self.caller.msg(&quot;You shout '%s' and wait for an echo ...&quot; % self.args)
+        # this waits non-blocking for 10 seconds, then calls echo(self.caller, self.args)
+        utils.delay(10, echo, self.caller, self.args, persistent=True) # changes! 
+
+</code></pre>
+
+<p>Above you notice two changes: 
+- The callback (<code>echo</code>) was moved out of the class and became its own stand-alone function in the outermost scope of the module. It also now takes <code>caller</code> and <code>args</code> as arguments (it doesn't have access to them directly since this is now a stand-alone function).
+- <code>utils.delay</code> specifies the <code>echo</code> function (not <code>self.echo</code> - it's no longer a method!) and sends <code>self.caller</code> and <code>self.args</code> as arguments for it to use. We also set <code>persistent=True</code>. </p>
+<p>The reason for this change is because Evennia needs to <code>pickle</code> the callback into storage and it cannot do this correctly when the method sits on the command class. Now this behave the same as the first version except if you reload (or even shut down) the server mid-delay it will still fire the callback when the server comes back up (it will resume the countdown and ignore the downtime).  </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

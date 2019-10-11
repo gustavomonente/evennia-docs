@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>EvMenu - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#introduction">Introduction</a></li>
+        <li class="main "><a href="#launching-the-menu">Launching the menu</a></li>
+        <li class="main "><a href="#the-menu-nodes">The Menu nodes</a></li>
+            <li><a href="#input-arguments-to-the-node">Input arguments to the node</a></li>
+            <li><a href="#return-values-from-the-node">Return values from the node</a></li>
+        <li class="main "><a href="#temporary-storage">Temporary storage</a></li>
+        <li class="main "><a href="#customizing-menu-formatting">Customizing Menu formatting</a></li>
+        <li class="main "><a href="#examples">Examples:</a></li>
+            <li><a href="#example-simple-branching-menu">Example: Simple branching menu</a></li>
+            <li><a href="#example-dynamic-goto">Example: Dynamic goto</a></li>
+            <li><a href="#example-set-caller-properties">Example: Set caller properties</a></li>
+            <li><a href="#example-get-arbitrary-input">Example: Get arbitrary input</a></li>
+            <li><a href="#example-storing-data-between-nodes">Example: Storing data between nodes</a></li>
+            <li><a href="#example-repeating-the-same-node">Example: Repeating the same node</a></li>
+            <li><a href="#defining-nodes-in-a-dictionary">Defining nodes in a dictionary</a></li>
+        <li class="main "><a href="#ask-for-simple-input">Ask for simple input</a></li>
+            <li><a href="#the-yield-way">The yield way</a></li>
+            <li><a href="#the-get_input-way">The get_input way</a></li>
+        <li class="main "><a href="#the-list_node-decorator">The @list_node decorator</a></li>
+        <li class="main "><a href="#assorted-notes">Assorted notes</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Describes-the-built-in-menu-creation-tool"></a></p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>The <code>EvMenu</code> utility class is located in
+<a href="https://github.com/evennia/evennia/blob/master/evennia/utils/evmenu.py">evennia/utils/evmenu.py</a>.
+It allows for easily adding interactive menus to the game; for example to implement Character
+creation, building commands or similar. Below is an example of offering NPC conversation choices:</p>
+<pre><code>The guard looks at you suspiciously.
+&quot;No one is supposed to be in here ...&quot;
+he says, a hand on his weapon.
+_______________________________________________
+ 1. Try to bribe him [Cha + 10 gold]
+ 2. Convince him you work here [Int]
+ 3. Appeal to his vanity [Cha]
+ 4. Try to knock him out [Luck + Dex]
+ 5. Try to run away [Dex]
+
+</code></pre>
+
+<p>This is an example of a menu <em>node</em>. Think of a node as a point where the menu stops printing text
+and waits for user to give some input. By jumping to different nodes depending on the input, a menu
+is constructed.</p>
+<p>To create the menu, EvMenu uses normal Python functions, one per node. It will load all those
+functions/nodes either from a module or by being passed a dictionary mapping the node's names to
+said functions, like <code>{"nodename": &lt;function&gt;, ...}</code></p>
+<h2 id="launching-the-menu">Launching the menu<a class="headerlink" href="#launching-the-menu" title="Permanent link">&para;</a></h2>
+<p>Initializing the menu is done using a call to the <code>evennia.utils.evmenu.EvMenu</code> class. This is the
+most common way to do so - from inside a <a href="Commands.html">Command</a>:</p>
+<pre><code class="python"># in, for example gamedir/commands/command.py
+
+from evennia.utils.evmenu import EvMenu
+
+class CmdTestMenu(Command):
+
+    key = &quot;testcommand&quot;
+
+    def func(self):
+
+    EvMenu(caller, &quot;world.mymenu&quot;)
+
+</code></pre>
+
+<p>When running this command, the menu will start using the menu nodes loaded from
+<code>mygame/world/mymenu.py</code>. See next section on how to define menu nodes.</p>
+<p>The <code>EvMenu</code> has the following optional callsign:</p>
+<pre><code class="python">EvMenu(caller, menu_data,
+       startnode=&quot;start&quot;,
+       cmdset_mergetype=&quot;Replace&quot;, cmdset_priority=1,
+       auto_quit=True, auto_look=True, auto_help=True,
+       cmd_on_exit=&quot;look&quot;,
+       persistent=False,
+       startnode_input=&quot;&quot;,
+       session=None,
+       debug=False,
+       **kwargs)
+
+</code></pre>
+
+<ul>
+<li><code>caller</code> (Object or Account): is a reference to the object using the menu. This object will get a
+   new <a href="Command-Sets.html">CmdSet</a> assigned to it, for handling the menu.</li>
+<li><code>menu_data</code> (str, module or dict): is a module or python path to a module where the global-level
+   functions will each be considered to be a menu node. Their names in the module will be the names
+   by which they are referred to in the module. Importantly, function names starting with an underscore
+   <code>_</code> will be ignored by the loader. Alternatively, this can be a direct mapping <code>{"nodename":function, ...}</code>.</li>
+<li><code>startnode</code> (str): is the name of the menu-node to start the menu at. Changing this means that
+   you can jump into a menu tree at different positions depending on circumstance and thus possibly
+   re-use menu entries.</li>
+<li><code>cmdset_mergetype</code> (str): This is usually one of "Replace" or "Union" (see <a href="Command-Sets.html">CmdSets</a>.
+   The first means that the menu is exclusive - the user has no access to any other commands while
+   in the menu. The Union mergetype means the menu co-exists with previous commands (and may overload
+   them, so be careful as to what to name your menu entries in this case).</li>
+<li><code>cmdset_priority</code> (int): The priority with which to merge in the menu cmdset. This allows for
+   advanced usage.</li>
+<li><code>auto_quit</code>, <code>auto_look</code>, <code>auto_help</code> (bool): If either of these are <code>True</code>, the menu
+   automatically makes a <code>quit</code>, <code>look</code> or <code>help</code> command available to the user. The main reason why
+   you'd want to turn this off is if  you want to use the aliases "q", "l" or "h" for something in your
+   menu. Nevertheless, at least <code>quit</code> is highly recommend - if <code>False</code>, the menu <em>must</em> itself supply
+   an "exit node" (a node without any options), or the user will be stuck in the menu until the server
+   reloads (or eternally if the menu is <code>persistent</code>)!</li>
+<li><code>cmd_on_exit</code> (str): This command string will be executed right <em>after</em> the menu has closed down.
+   From experience, it's useful to trigger a "look" command to make sure the user is aware of the
+   change of state; but any command can be used. If set to <code>None</code>, no command will be triggered after
+   exiting the menu.</li>
+<li><code>persistent</code> (bool) - if <code>True</code>, the menu will survive a reload (so the user will not be kicked
+   out by the reload - make sure they can exit on their own!)</li>
+<li><code>startnode_input</code> (str or (str, dict) tuple): Pass an input text or a input text + kwargs to the
+   start node as if it was entered on a fictional previous node. This can be very useful in order to
+   start a menu differently depending on the Command's arguments in which it was initialized.</li>
+<li><code>session</code> (Session): Useful when calling the menu from an <a href="Accounts.html">Account</a> in
+   <code>MULTISESSION_MODDE</code> higher than 2, to make sure only the right Session sees the menu output.</li>
+<li><code>debug</code> (bool): If set, the <code>menudebug</code> command will be made available in the menu. Use it to
+   list the current state of the menu and use <code>menudebug &lt;variable&gt;</code> to inspect a specific state
+   variable from the list.</li>
+<li>All other keyword arguments will be available as initial data for the nodes. They will be
+   available in all nodes as properties on <code>caller.ndb._menutree</code> (see below). These will also
+survive a <code>@reload</code> if the menu is <code>persistent</code>.</li>
+</ul>
+<p>You don't need to store the EvMenu instance anywhere - the very act of initializing it will store it
+as <code>caller.ndb._menutree</code> on the <code>caller</code>. This object will be deleted automatically when the menu
+is exited and you can also use it to store your own temporary variables for access throughout the
+menu. Temporary variables you store on a persistent <code>_menutree</code> as it runs will
+<em>not</em> survive a <code>@reload</code>, only those you set as part of the original <code>EvMenu</code> call.</p>
+<h2 id="the-menu-nodes">The Menu nodes<a class="headerlink" href="#the-menu-nodes" title="Permanent link">&para;</a></h2>
+<p>The EvMenu nodes consist of functions on one of these forms.</p>
+<pre><code class="python">def menunodename1(caller):
+    # code
+    return text, options
+
+def menunodename2(caller, raw_string):
+    # code
+    return text, options
+
+def menunodename3(caller, raw_string, **kwargs):
+    # code
+    return text, options
+
+</code></pre>
+
+<blockquote>
+<p>While all of the above forms are okay, it's recommended to stick to the third and last form since it
+gives the most flexibility. The previous forms are mainly there for backwards compatibility with
+existing menus from a time when EvMenu was less able.</p>
+</blockquote>
+<h3 id="input-arguments-to-the-node">Input arguments to the node<a class="headerlink" href="#input-arguments-to-the-node" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>caller</code> (Object or Account): The object using the menu - usually a Character but could also be a
+   Session or Account depending on where the menu is used.</li>
+<li><code>raw_string</code> (str): If this is given, it will be set to the exact text the user entered on the
+   <em>previous</em> node (that is, the command entered to get to this node). On the starting-node of the
+   menu, this will be an empty string, unless <code>startnode_input</code> was set.</li>
+<li><code>kwargs</code> (dict): These extra keyword arguments are extra optional arguments passed to the node
+   when the user makes a choice on the <em>previous</em> node. This may include things like status flags
+   and details about which exact option was chosen (which can be impossible to determine from
+   <code>raw_string</code> alone). Just what is passed in <code>kwargs</code> is up to you when you create the previous
+   node.</li>
+</ul>
+<h3 id="return-values-from-the-node">Return values from the node<a class="headerlink" href="#return-values-from-the-node" title="Permanent link">&para;</a></h3>
+<p>Each function must return two variables, <code>text</code> and <code>options</code>.</p>
+<h4 id="text">text<a class="headerlink" href="#text" title="Permanent link">&para;</a></h4>
+<p>The <code>text</code> variable is a string or tuple. This text is what will be displayed when the user reaches
+this node. If this is a tuple, then the first element of the tuple will be considered the displayed
+text and the second the help-text to display when the user enters the <code>help</code> command on this node.</p>
+<pre><code class="python">    text = (&quot;This is the text to display&quot;, &quot;This is the help text for this node&quot;)
+</code></pre>
+
+<p>Returning a <code>None</code> text is allowed and simply leads to a node with no text and only options.  If the
+help text is not given, the menu will give a generic error message when using <code>help</code>.</p>
+<h4 id="options">options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
+<p>The <code>options</code> list describe all the choices available to the user when viewing this node. If <code>options</code> is
+returned as <code>None</code>, it means that this node is an <em>Exit node</em> - any text is displayed and then the
+menu immediately exits, running the <code>exit_cmd</code> if given.</p>
+<p>Otherwise, <code>options</code> should be a list (or tuple) of dictionaries, one for each option. If only one option is
+available, a single dictionary can also be returned. This is how it could look:</p>
+<pre><code class="python">def node_test(caller, raw_string, **kwargs):
+
+    text = &quot;A goblin attacks you!&quot;
+
+    options = (
+    {&quot;key&quot;: (&quot;Attack&quot;, &quot;a&quot;, &quot;att&quot;),
+         &quot;desc&quot;: &quot;Strike the enemy with all your might&quot;,
+         &quot;goto&quot;: &quot;node_attack&quot;},
+    {&quot;key&quot;: (&quot;Defend&quot;, &quot;d&quot;, &quot;def&quot;),
+         &quot;desc&quot;: &quot;Hold back and defend yourself&quot;,
+         &quot;goto&quot;: (_defend, {&quot;str&quot;: 10, &quot;enemyname&quot;: &quot;Goblin&quot;})})
+
+    return text, options
+
+</code></pre>
+
+<p>This will produce a menu node looking like this:</p>
+<pre><code>A goblin attacks you!
+________________________________
+
+Attack: Strike the enemy with all your might
+Defend: Hold back and defend yourself
+
+</code></pre>
+
+<h5 id="option-key-key">option-key 'key'<a class="headerlink" href="#option-key-key" title="Permanent link">&para;</a></h5>
+<p>The option's <code>key</code> is what the user should enter in order to choose that option. If given as a tuple, the
+first string of that tuple will be what is shown on-screen while the rest are aliases for picking
+that option. In the above example, the user could enter "Attack" (or "attack", it's not
+case-sensitive), "a" or "att" in order to attack the goblin. Aliasing is useful for adding custom
+coloring to the choice. The first element of the aliasing tuple should then be the colored version,
+followed by a version without color - since otherwise the user would have to enter the color codes
+to select that choice.</p>
+<p>Note that the <code>key</code> is <em>optional</em>. If no key is given, it will instead automatically be replaced
+with a running number starting from <code>1</code>. If removing the <code>key</code> part of each option, the resulting
+menu node would look like this instead:</p>
+<pre><code>A goblin attacks you!
+________________________________
+
+1: Strike the enemy with all your might
+2: Hold back and defend yourself
+
+</code></pre>
+
+<p>Whether you want to use a key or rely on numbers is mostly
+a matter of style and the type of menu.</p>
+<p>EvMenu accepts one important special <code>key</code> given only as <code>"_default"</code>. This key is used when a user
+enters something that does not match any other fixed keys. It is particularly useful for getting
+user input:</p>
+<pre><code>def node_readuser(caller, raw_string, **kwargs):
+    text = &quot;Please enter your name&quot;
+
+    options = {&quot;key&quot;: &quot;_default&quot;,
+               &quot;goto&quot;: &quot;node_parse_input&quot;}
+
+    return text, options
+
+</code></pre>
+
+<p>A <code>"_default"</code> option does not show up in the menu, so the above will just be a node saying
+<code>"Please enter your name"</code>. The name they entered will appear as <code>raw_string</code> in the next node.</p>
+<h4 id="option-key-desc">option-key 'desc'<a class="headerlink" href="#option-key-desc" title="Permanent link">&para;</a></h4>
+<p>This simply contains the description as to what happens when selecting the menu option. For
+<code>"_default"</code> options or if the <code>key</code> is already long or descriptive, it is not strictly needed. But
+usually it's better to keep the <code>key</code> short and put more detail in <code>desc</code>.</p>
+<h4 id="option-key-goto">option-key 'goto'<a class="headerlink" href="#option-key-goto" title="Permanent link">&para;</a></h4>
+<p>This is the operational part of the option and fires only when the user chooses said option. Here
+are three ways to write it</p>
+<pre><code class="python">
+def _action_two(caller, raw_string, **kwargs):
+    # do things ...
+    return calculated_node_to_go_to
+
+def _action_three(caller, raw_string, **kwargs):
+    # do things ...
+    return &quot;node_four&quot;, {&quot;mode&quot;: 4}
+
+
+def node_select(caller, raw_string, **kwargs):
+
+    text = (&quot;select one&quot;,
+            &quot;help: they all do different things ...&quot;)
+
+    options = ({&quot;desc&quot;: &quot;Option one&quot;,
+        &quot;goto&quot;: &quot;node_one&quot;},
+           {&quot;desc&quot;: &quot;Option two&quot;,
+        &quot;goto&quot;: _action_two}
+           {&quot;desc&quot;: &quot;Option three&quot;,
+        &quot;goto&quot;: (_action_three, {&quot;key&quot;: 1, &quot;key2&quot;: 2})
+
+    return text, options
+
+
+</code></pre>
+
+<p>As seen above, <code>goto</code> could just be pointing to a single <code>nodename</code> string - the name of the node to
+go to. When given like this, EvMenu will look for a node named like this and call its associated
+function as</p>
+<pre><code class="python">    nodename(caller, raw_string, **kwargs)`
+</code></pre>
+
+<p>Here, <code>raw_string</code> is always the input the user entered to make that choice and <code>kwargs</code> are the
+same as those <code>kwargs</code> that already entered the <em>current</em> node (they are passed on).</p>
+<p>Alternatively the <code>goto</code> could point to a "goto-callable". Such callables are usually defined in the same
+module as the menu nodes and given names starting with <code>_</code> (to avoid being parsed as nodes
+themselves). These callables will be called the same as a node function - <code>callable(caller,
+raw_string, **kwargs)</code>, where <code>raw_string</code> is what the user entered on this node and <code>**kwargs</code> is
+forwarded from the node's own input.</p>
+<p>The <code>goto</code> option key could also point to a tuple <code>(callable, kwargs)</code> - this allows for customizing
+the kwargs passed into the goto-callable, for example you could use the same callable but change the
+kwargs passed into it depending on which option was actually chosen.</p>
+<p>The "goto callable" must either return a string <code>"nodename"</code> or a tuple <code>("nodename", mykwargs)</code>.
+This will lead to the next node being called as either <code>nodename(caller, raw_string, **kwargs)</code> or
+<code>nodename(caller, raw_string, **mykwargs)</code> - so this allows changing (or replacing) the options going
+into the next node depending on what option was chosen.</p>
+<p>There is one important case - if the goto-callable returns <code>None</code> for a <code>nodename</code>, <em>the current
+node will run again</em>, possibly with different kwargs. This makes it very easy to re-use a node over
+and over, for example allowing different options to update some text form being passed and
+manipulated for every iteration.</p>
+<blockquote>
+<p>The EvMenu also supports the <code>exec</code> option key. This allows for running a callable <em>before</em> the
+goto-callable. This functionality comes from a time before goto could be a callable and is
+<em>deprecated</em> as of Evennia 0.8. Use <code>goto</code> for all functionality where you'd before use <code>exec</code>.</p>
+</blockquote>
+<h2 id="temporary-storage">Temporary storage<a class="headerlink" href="#temporary-storage" title="Permanent link">&para;</a></h2>
+<p>When the menu starts, the EvMenu instance is stored on the caller as <code>caller.ndb._menutree</code>. Through
+this object you can in principle reach the menu's internal state if you know what you are doing.
+This is also a good place to store temporary, more global variables that may be cumbersome to keep
+passing from node to node via the <code>**kwargs</code>. The <code>_menutree</code> will be deleted automatically when the
+menu closes, meaning you don't need to worry about cleaning anything up.</p>
+<p>If you want <em>permanent</em> state storage, it's instead better to use an Attribute on <code>caller</code>. Remember
+that this will remain after the menu closes though, so you need to handle any needed cleanup
+yourself.</p>
+<h2 id="customizing-menu-formatting">Customizing Menu formatting<a class="headerlink" href="#customizing-menu-formatting" title="Permanent link">&para;</a></h2>
+<p>The <code>EvMenu</code> display of nodes, options etc are controlled by a series of formatting methods on the
+<code>EvMenu</code> class. To customize these, simply create a new child class of <code>EvMenu</code> and override as
+needed. Here is an example:</p>
+<pre><code class="python">from evennia.utils.evmenu import EvMenu
+
+class MyEvMenu(EvMenu):
+
+    def nodetext_formatter(self, nodetext):
+        &quot;&quot;&quot;
+        Format the node text itself.
+
+        Args:
+            nodetext (str): The full node text (the text describing the node).
+
+        Returns:
+            nodetext (str): The formatted node text.
+
+        &quot;&quot;&quot;
+
+    def helptext_formatter(self, helptext):
+        &quot;&quot;&quot;
+        Format the node's help text
+
+        Args:
+            helptext (str): The unformatted help text for the node.
+
+        Returns:
+            helptext (str): The formatted help text.
+
+        &quot;&quot;&quot;
+
+    def options_formatter(self, optionlist):
+        &quot;&quot;&quot;
+        Formats the option block.
+
+        Args:
+            optionlist (list): List of (key, description) tuples for every
+                option related to this node.
+            caller (Object, Account or None, optional): The caller of the node.
+
+        Returns:
+            options (str): The formatted option display.
+
+        &quot;&quot;&quot;
+
+    def node_formatter(self, nodetext, optionstext):
+        &quot;&quot;&quot;
+        Formats the entirety of the node.
+
+        Args:
+            nodetext (str): The node text as returned by `self.nodetext_formatter`.
+            optionstext (str): The options display as returned by `self.options_formatter`.
+            caller (Object, Account or None, optional): The caller of the node.
+
+        Returns:
+            node (str): The formatted node to display.
+
+        &quot;&quot;&quot;
+
+</code></pre>
+
+<p>See <code>evennia/utils/evmenu.py</code> for the details of their default implementations.</p>
+<h2 id="examples">Examples:<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong><a href="#example-simple-branching-menu">Simple branching menu</a></strong> - choose from options</li>
+<li><strong><a href="#example-dynamic-goto">Dynamic goto</a></strong> - jumping to different nodes based on response</li>
+<li><strong><a href="#example-set-caller-properties">Set caller properties</a></strong> - a menu that changes things</li>
+<li><strong><a href="#example-get-arbitrary-input">Getting arbitrary input</a></strong> - entering text</li>
+<li><strong><a href="#example-storing-data-between-nodes">Storing data between nodes</a></strong> - keeping states and information while in the menu</li>
+<li><strong><a href="#example-repeating-the-same-node">Repeating the same node</a></strong> - validating within the node before moving to the next</li>
+<li><strong><a href="#example-full-menu">Full Menu</a>:</strong> a complete example</li>
+<li><strong><a href="#example-yesno-prompt">Yes/No prompt</a></strong> - entering text with limited possible responses (this is <em>not</em> using EvMenu but the conceptually similar yet technically unrelated <code>get_input</code> helper function accessed as <code>evennia.utils.evmenu.get_input</code>).</li>
+</ul>
+<h3 id="example-simple-branching-menu">Example: Simple branching menu<a class="headerlink" href="#example-simple-branching-menu" title="Permanent link">&para;</a></h3>
+<p>Below is an example of a simple branching menu node leading to different other nodes depending on choice:</p>
+<pre><code class="python"># in mygame/world/mychargen.py
+
+def define_character(caller):
+    text = \
+    &quot;&quot;&quot;
+    What aspect of your character do you want
+    to change next?
+    &quot;&quot;&quot;
+    options = ({&quot;desc&quot;: &quot;Change the name&quot;,
+                &quot;goto&quot;: &quot;set_name&quot;},
+               {&quot;desc&quot;: &quot;Change the description&quot;,
+                &quot;goto&quot;: &quot;set_description&quot;})
+    return text, options
+
+EvMenu(caller, &quot;world.mychargen&quot;, startnode=&quot;define_character&quot;)
+
+</code></pre>
+
+<p>This will result in the following node display:</p>
+<pre><code>What aspect of your character do you want
+to change next?
+_________________________
+1: Change the name
+2: Change the description
+</code></pre>
+
+<p>Note that since we didn't specify the "name" key, EvMenu will let the user enter numbers instead. In
+the following examples we will not include the <code>EvMenu</code> call but just show nodes running inside the
+menu. Also, since <code>EvMenu</code> also takes a dictionary to describe the menu, we could have called it
+like this instead in the example:</p>
+<pre><code class="python">EvMenu(caller, {&quot;define_character&quot;: define_character}, startnode=&quot;define_character&quot;)
+
+</code></pre>
+
+<h3 id="example-dynamic-goto">Example: Dynamic goto<a class="headerlink" href="#example-dynamic-goto" title="Permanent link">&para;</a></h3>
+<pre><code class="python">
+def _is_in_mage_guild(caller, raw_string, **kwargs):
+    if caller.tags.get('mage', category=&quot;guild_member&quot;):
+        return &quot;mage_guild_welcome&quot;
+    else:
+        return &quot;mage_guild_blocked&quot;
+
+def enter_guild:
+    text = 'You say to the mage guard:'
+    options ({'desc': 'I need to get in there.',
+              'goto': _is_in_mage_guild},
+             {'desc': 'Never mind',
+              'goto': 'end_conversation'})
+    return text, options
+</code></pre>
+
+<p>This simple callable goto will analyse what happens depending on who the <code>caller</code> is.  The
+<code>enter_guild</code> node will give you a choice of what to say to the guard. If you try to enter, you will
+end up in different nodes depending on (in this example) if you have the right <a href="Tags.html">Tag</a> set on
+yourself or not. Note that since we don't include any 'key's in the option dictionary, you will just
+get to pick between numbers.</p>
+<h3 id="example-set-caller-properties">Example: Set caller properties<a class="headerlink" href="#example-set-caller-properties" title="Permanent link">&para;</a></h3>
+<p>Here is an example of passing arguments into the <code>goto</code> callable and use that to influence
+which node it should go to next:</p>
+<pre><code class="python">
+def _set_attribute(caller, raw_string, **kwargs):
+    &quot;Get which attribute to modify and set it&quot;
+
+    attrname, value = kwargs.get(&quot;attr&quot;, (None, None))
+    next_node = kwargs.get(&quot;next_node&quot;)
+
+    caller.attributes.add(attrname, attrvalue)
+
+    return next_node
+
+
+def node_background(caller):
+    text = \
+    &quot;&quot;&quot;
+    {} experienced a traumatic event
+    in their childhood. What was it?
+    &quot;&quot;&quot;.format(caller.key}
+
+    options = ({&quot;key&quot;: &quot;death&quot;,
+                &quot;desc&quot;: &quot;A violent death in the family&quot;,
+                &quot;goto&quot;: (_set_attribute, {&quot;attr&quot;: (&quot;experienced_violence&quot;, True),
+                      &quot;next_node&quot;: &quot;node_violent_background&quot;})},
+               {&quot;key&quot;: &quot;betrayal&quot;,
+                &quot;desc&quot;: &quot;The betrayal of a trusted grown-up&quot;,
+                &quot;goto&quot;: (_set_attribute, {&quot;attr&quot;: (&quot;experienced_betrayal&quot;, True),
+                      &quot;next_node&quot;: &quot;node_betrayal_background&quot;})})
+    return text, options
+</code></pre>
+
+<p>This will give the following output:</p>
+<pre><code>Kovash the magnificent experienced a traumatic event
+in their childhood. What was it?
+____________________________________________________
+death: A violent death in the family
+betrayal: The betrayal of a trusted grown-up
+
+</code></pre>
+
+<p>Note above how we use the <code>_set_attribute</code> helper function to set the attribute depending on the
+User's choice. In thie case the helper function doesn't know anything about what node called it - we
+even tell it which nodename it should return, so the choices leads to different paths in the menu.
+We could also imagine the helper function analyzing what other choices</p>
+<h3 id="example-get-arbitrary-input">Example: Get arbitrary input<a class="headerlink" href="#example-get-arbitrary-input" title="Permanent link">&para;</a></h3>
+<p>An example of the menu asking the user for input - any input.</p>
+<pre><code class="python">
+def _set_name(caller, raw_string, **kwargs):
+
+    inp = raw_string.strip()
+
+    prev_entry = kwargs.get(&quot;prev_entry&quot;)
+
+    if not inp:
+        # a blank input either means OK or Abort
+        if prev_entry:
+            caller.key = prev_entry
+            caller.msg(&quot;Set name to {}.&quot;.format(prev_entry))
+            return &quot;node_background&quot;
+        else:
+        caller.msg(&quot;Aborted.&quot;)
+        return &quot;node_exit&quot;
+    else:
+        # re-run old node, but pass in the name given
+        return None, {&quot;prev_entry&quot;: inp}
+
+
+def enter_name(caller, raw_string, **kwargs):
+
+    # check if we already entered a name before
+    prev_entry = kwargs.get(&quot;prev_entry&quot;)
+
+    if prev_entry:
+    text = &quot;Current name: {}.\nEnter another name or &lt;return&gt; to accept.&quot;
+    else:
+    text = &quot;Enter your character's name or &lt;return&gt; to abort.&quot;
+
+    options = {&quot;key&quot;: &quot;_default&quot;,
+               &quot;goto&quot;: (_set_name, {&quot;prev_entry&quot;: prev_entry})}
+
+    return text, options
+
+</code></pre>
+
+<p>This will display as</p>
+<pre><code>Enter your character's name or &lt;return&gt; to abort.
+
+&gt; Gandalf
+
+Current name: Gandalf
+Enter another name or &lt;return&gt; to accept.
+
+&gt;
+
+Set name to Gandalf.
+
+</code></pre>
+
+<p>Here we re-use the same node twice for reading the input data from the user. Whatever we enter will
+be caught by the <code>_default</code> option and passed into the helper function. We also pass along whatever
+name we have entered before. This allows us to react correctly on an "empty" input - continue to the
+node named <code>"node_background"</code> if we accept the input or go to an exit node if we presses Return
+without entering anything. By returning <code>None</code> from the helper function we automatically re-run the
+previous node, but updating its ingoing kwargs to tell it to display a different text.</p>
+<h3 id="example-storing-data-between-nodes">Example: Storing data between nodes<a class="headerlink" href="#example-storing-data-between-nodes" title="Permanent link">&para;</a></h3>
+<p>A convenient way to store data is to store it on the <code>caller.ndb._menutree</code> which you can reach from
+every node. The advantage of doing this is that the <code>_menutree</code> NAttribute will be deleted
+automatically when you exit the menu.</p>
+<pre><code class="python">
+def _set_name(caller, raw_string, **kwargs):
+
+    caller.ndb._menutree.charactersheet = {}
+    caller.ndb._menutree.charactersheet['name'] = raw_string
+    caller.msg(&quot;You set your name to {}&quot;.format(raw_string)
+    return &quot;background&quot;
+
+def node_set_name(caller):
+    text = 'Enter your name:'
+    options = {'key': '_default',
+               'goto': _set_name}
+
+    return text, options
+
+...
+
+
+def node_view_sheet(caller):
+    text = &quot;Character sheet:\n {}&quot;.format(self.ndb._menutree.charactersheet)
+
+    options = ({&quot;key&quot;: &quot;Accept&quot;,
+                &quot;goto&quot;: &quot;finish_chargen&quot;},
+           {&quot;key&quot;: &quot;Decline&quot;,
+                &quot;goto&quot;: &quot;start_over&quot;})
+
+    return text, options
+
+</code></pre>
+
+<p>Instead of passing the character sheet along from node to node through the <code>kwargs</code> we instead
+set it up temporarily on <code>caller.ndb._menutree.charactersheet</code>. This makes it easy to reach from
+all nodes. At the end we look at it and, if we accept the character the menu will likely save the
+result to permanent storage and exit.</p>
+<blockquote>
+<p>One point to remember though is that storage on <code>caller.ndb._menutree</code> is not persistent across
+<code>@reloads</code>. If you are using a persistent menu (using <code>EvMenu(..., persistent=True)</code> you should use
+<code>caller.db</code> to store in-menu data like this as well. You must then yourself make sure to clean it
+when the user exits the menu.</p>
+</blockquote>
+<h3 id="example-repeating-the-same-node">Example: Repeating the same node<a class="headerlink" href="#example-repeating-the-same-node" title="Permanent link">&para;</a></h3>
+<p>Sometimes you want to make a chain of menu nodes one after another, but you don't want the user to
+be able to continue to the next node until you have verified that what they input in the previous
+node is ok. A common example is a login menu:</p>
+<pre><code class="python">
+def _check_username(caller, raw_string, **kwargs):
+    # we assume lookup_username() exists
+    if not lookup_username(raw_string):
+    # re-run current node by returning `None`
+    caller.msg(&quot;|rUsername not found. Try again.&quot;)
+    return None
+    else:
+    # username ok - continue to next node
+    return &quot;node_password&quot;
+
+
+def node_username(caller):
+    text = &quot;Please enter your user name.&quot;
+    options = {&quot;key&quot;: &quot;_default&quot;,
+               &quot;goto&quot;: _check_username}
+    return text, options
+
+
+def _check_password(caller, raw_string, **kwargs):
+
+    nattempts = kwargs.get(&quot;nattempts&quot;, 0)
+    if nattempts &gt; 3:
+    caller.msg(&quot;Too many failed attempts. Logging out&quot;)
+    return &quot;node_abort&quot;
+    elif not validate_password(raw_string):
+        caller.msg(&quot;Password error. Try again.&quot;)
+    return None, {&quot;nattempts&quot;, nattempts + 1}
+    else:
+    # password accepted
+    return &quot;node_login&quot;
+
+def node_password(caller, raw_string, **kwargs):
+    text = &quot;Enter your password.&quot;
+    options = {&quot;key&quot;: &quot;_default&quot;,
+           &quot;goto&quot;: _check_password}
+    return text, options
+
+</code></pre>
+
+<p>This will display something like</p>
+<pre><code>---------------------------
+Please enter your username.
+---------------------------
+
+&gt; Fo
+
+------------------------------
+Username not found. Try again.
+______________________________
+abort: (back to start)
+------------------------------
+
+&gt; Foo
+
+---------------------------
+Please enter your password.
+---------------------------
+
+&gt; Bar
+
+--------------------------
+Password error. Try again.
+--------------------------
+</code></pre>
+
+<p>And so on.</p>
+<p>Here the goto-callables will return to the previous node if there is an error. In the case of
+password attempts, this will tick up the <code>nattempts</code> argument that will get passed on from iteration
+to iteration until too many attempts have been made.</p>
+<h3 id="defining-nodes-in-a-dictionary">Defining nodes in a dictionary<a class="headerlink" href="#defining-nodes-in-a-dictionary" title="Permanent link">&para;</a></h3>
+<p>You can also define your nodes directly in a dictionary to feed into the <code>EvMenu</code> creator.</p>
+<pre><code class="python">def mynode(caller):
+   # a normal menu node function
+   return text, options
+
+menu_data = {&quot;node1&quot;: mynode,
+             &quot;node2&quot;: lambda caller: (
+                      &quot;This is the node text&quot;,
+                     ({&quot;key&quot;: &quot;lambda node 1&quot;,
+                       &quot;desc&quot;: &quot;go to node 1 (mynode)&quot;,
+                       &quot;goto&quot;: &quot;node1&quot;},
+                      {&quot;key&quot;: &quot;lambda node 2&quot;,
+                       &quot;desc&quot;: &quot;go to thirdnode&quot;,
+                       &quot;goto&quot;: &quot;node3&quot;})),
+             &quot;node3&quot;: lambda caller, raw_string: (
+                       # ... etc ) }
+
+# start menu, assuming 'caller' is available from earlier
+EvMenu(caller, menu_data, startnode=&quot;node1&quot;)
+
+</code></pre>
+
+<p>The keys of the dictionary become the node identifiers. You can use any callable on the right form
+to describe each node. If you use Python <code>lambda</code> expressions you can make nodes really on the fly.
+If you do, the lambda expression must accept one or two arguments and always return a tuple with two
+elements (the text of the node and its options), same as any menu node function.</p>
+<p>Creating menus like this is one way to present a menu that changes with the circumstances - you
+could for example remove or add nodes before launching the menu depending on some criteria. The
+drawback is that a <code>lambda</code> expression <a href="https://docs.python.org/2/tutorial/controlflow.html#lambda-expressions">is much more
+limited</a> than a full
+function - for example you can't use other Python keywords like <code>if</code> inside the body of the
+<code>lambda</code>.</p>
+<p>Unless you are dealing with a relatively simple dynamic menu, defining menus with lambda's is
+probably more work than it's worth: You can create dynamic menus by instead making each node
+function more clever. See the <a href="NPC-shop-Tutorial">NPC shop tutorial</a> for an example of this.</p>
+<h2 id="ask-for-simple-input">Ask for simple input<a class="headerlink" href="#ask-for-simple-input" title="Permanent link">&para;</a></h2>
+<p>This describes two ways for asking for simple questions from the user. Using Python's <code>raw_string</code>
+will <em>not</em> work in Evennia. <code>raw_string</code> will <em>block</em> the entire server for <em>everyone</em> until that one
+player has entered their text, which is not what you want.</p>
+<h3 id="the-yield-way">The <code>yield</code> way<a class="headerlink" href="#the-yield-way" title="Permanent link">&para;</a></h3>
+<p>In the <code>func</code> method of your Commands (only) you can use Python's built-in <code>yield</code> command to
+request input in a similar way to <code>raw_string</code>. It looks like this:</p>
+<pre><code class="python">result = yield(&quot;Please enter your answer:&quot;)
+</code></pre>
+
+<p>This will send "Please enter your answer" to the Command's <code>self.caller</code> and then pause at that
+point. All other players at the server will be unaffected. Once caller enteres a reply, the code
+execution will continue and you can do stuff with the <code>result</code>. Here is an example:</p>
+<pre><code class="python">from evennia import Command
+class CmdTestInput(Command):
+    key = &quot;test&quot;
+    def func(self):
+        result = yield(&quot;Please enter something:&quot;)
+        self.caller.msg(f&quot;You entered {result}.&quot;)
+        result2 = yield(&quot;Now enter something else:&quot;)
+        self.caller.msg(f&quot;You now entered {result2}.&quot;)
+</code></pre>
+
+<p>Using <code>yield</code> is simple and intuitive, but it will only access input from <code>self.caller</code> and you
+cannot abort or time out the pause until the player has responded. Under the hood, it is actually
+just a wrapper calling <code>get_input</code> described in the following section.</p>
+<blockquote>
+<p>Important Note: In Python you <em>cannot mix <code>yield</code> and <code>return &lt;value&gt;</code> in the same method</em>. It has
+to do with <code>yield</code> turning the method into a
+<a href="https://www.learnpython.org/en/Generators">generator</a>. A <code>return</code> without an argument works, you
+can just not do <code>return &lt;value&gt;</code>. This is usually not something you need to do in <code>func()</code> anyway,
+but worth keeping in mind.</p>
+</blockquote>
+<h3 id="the-get_input-way">The <code>get_input</code> way<a class="headerlink" href="#the-get_input-way" title="Permanent link">&para;</a></h3>
+<p>The evmenu module offers a helper function named <code>get_input</code>. This is wrapped by the <code>yield</code>
+statement which is often easier and more intuitive to use. But <code>get_input</code> offers more flexibility
+and power if you need it. While in the same module as <code>EvMenu</code>, <code>get_input</code> is technically unrelated
+to it. The <code>get_input</code> allows you to ask and receive simple one-line input from the user without
+launching the full power of a menu to do so. To use, call <code>get_input</code> like this:</p>
+<pre><code class="python">get_input(caller, prompt, callback)
+</code></pre>
+
+<p>Here <code>caller</code> is the entity that should receive the prompt for input given as <code>prompt</code>. The
+<code>callback</code> is a callable <code>function(caller, prompt, user_input)</code> that you define to handle the answer
+from the user. When run, the caller will see <code>prompt</code> appear on their screens and <em>any</em> text they
+enter will be sent into the callback for whatever processing you want.</p>
+<p>Below is a fully explained callback and example call:</p>
+<pre><code class="python">from evennia import Command
+from evennia.utils.evmenu import get_input
+
+def callback(caller, prompt, user_input):
+    &quot;&quot;&quot;
+    This is a callback you define yourself.
+
+    Args:
+        caller (Account or Object): The one being asked
+          for input
+        prompt (str): A copy of the current prompt
+        user_input (str): The input from the account.
+
+    Returns:
+        repeat (bool): If not set or False, exit the
+          input prompt and clean up. If returning anything
+          True, stay in the prompt, which means this callback
+          will be called again with the next user input.
+    &quot;&quot;&quot;
+    caller.msg(f&quot;When asked '{prompt}', you answered '{user_input}'.&quot;)
+
+get_input(caller, &quot;Write something! &quot;, callback)
+</code></pre>
+
+<p>This will show as</p>
+<pre><code>Write something!
+&gt; Hello
+When asked 'Write something!', you answered 'Hello'.
+
+</code></pre>
+
+<p>Normally, the <code>get_input</code> function quits after any input, but as seen in the example docs, you could
+return True from the callback to repeat the prompt until you pass whatever check you want.</p>
+<blockquote>
+<p>Note: You <em>cannot</em> link consecutive questions by putting a new <code>get_input</code> call inside the
+callback If you want that you should use an EvMenu instead (see the <a href="EvMenu#example-repeating-the-same-node">Repeating the same
+node</a> example above). Otherwise you can either peek at the
+implementation of <code>get_input</code> and implement your own mechanism (it's just using cmdset nesting) or
+you can look at <a href="https://groups.google.com/forum/#!category-topic/evennia/evennia-questions/16pi0SfMO5U">this extension suggested on the mailing
+list</a>.</p>
+</blockquote>
+<h4 id="example-yesno-prompt">Example: Yes/No prompt<a class="headerlink" href="#example-yesno-prompt" title="Permanent link">&para;</a></h4>
+<p>Below is an example of a Yes/No prompt using the <code>get_input</code> function:</p>
+<pre><code class="python">def yesno(caller, prompt, result):
+    if result.lower() in (&quot;y&quot;, &quot;yes&quot;, &quot;n&quot;, &quot;no&quot;):
+        # do stuff to handle the yes/no answer
+        # ...
+        # if we return None/False the prompt state
+        # will quit after this
+    else:
+        # the answer is not on the right yes/no form
+        caller.msg(&quot;Please answer Yes or No. \n{prompt}&quot;)
+@        # returning True will make sure the prompt state is not exited
+        return True
+
+# ask the question
+get_input(caller, &quot;Is Evennia great (Yes/No)?&quot;, yesno)
+</code></pre>
+
+<h2 id="the-list_node-decorator">The <code>@list_node</code> decorator<a class="headerlink" href="#the-list_node-decorator" title="Permanent link">&para;</a></h2>
+<p>The <code>evennia.utils.evmenu.list_node</code> is an advanced decorator for use with <code>EvMenu</code> node functions.
+It is used to quickly create menus for manipulating large numbers of items.</p>
+<pre><code>text here
+______________________________________________
+
+1. option1     7. option7      13. option13
+2. option2     8. option8      14. option14
+3. option3     9. option9      [p]revius page
+4. option4    10. option10      page 2
+5. option5    11. option11     [n]ext page
+6. option6    12. option12
+
+</code></pre>
+
+<p>The menu will automatically create an multi-page option listing that one can flip through. One can
+inpect each entry and then select them with prev/next. This is how it is used:</p>
+<pre><code class="python">from evennia.utils.evmenu import list_node
+
+
+...
+
+_options(caller):
+    return ['option1', 'option2', ... 'option100']
+
+_select(caller, menuchoice, available_choices):
+    # analyze choice
+    return &quot;next_node&quot;
+
+@list_node(options, select=_select, pagesize=10)
+def node_mylist(caller, raw_string, **kwargs):
+    ...
+
+    return text, options
+
+</code></pre>
+
+<p>The <code>options</code> argument to <code>list_node</code> is either a list, a generator or a callable returning a list
+of strings for each option that should be displayed in the node.</p>
+<p>The <code>select</code> is a callable in the example above but could also be the name of a menu node. If a
+callable, the <code>menuchoice</code> argument holds the selection done and <code>available_choices</code> holds all the
+options available. The callable should return the menu to go to depending on the selection (or
+<code>None</code> to rerun the same node). If the name of a menu node, the selection will be passed as
+<code>selection</code> kwarg to that node.</p>
+<p>The decorated node itself should return <code>text</code> to display in the node. It must return at least an
+empty dictionary for its options. It returning options, those will supplement the options
+auto-created by the <code>list_node</code> decorator.</p>
+<h2 id="assorted-notes">Assorted notes<a class="headerlink" href="#assorted-notes" title="Permanent link">&para;</a></h2>
+<p>The EvMenu is implemented using <a href="Commands.html">Commands</a>. When you start a new EvMenu, the user of the
+menu will be assigned a <a href="Command-Sets">CmdSet</a> with the commands they need to navigate the menu.
+This means that if you were to, from inside the menu, assign a new command set to the caller, <em>you
+may override the Menu Cmdset and kill the menu</em>. If you want to assign cmdsets to the caller as part
+of the menu, you should store the cmdset on <code>caller.ndb._menutree</code> and wait to actually assign it
+until the exit node.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

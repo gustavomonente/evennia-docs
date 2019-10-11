@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Nicks - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#coding-with-nicks">Coding with nicks</a></li>
+        <li class="main "><a href="#advanced-note">Advanced note</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Re-naming-how-to-access-and-find-other-entities,-without-modifying-them."></a></p>
+<p><em>Nicks</em>, short for <em>Nicknames</em> is a system allowing an object (usually a <a href="Accounts.html">Account</a>) to assign custom replacement names for other game entities. </p>
+<p>Nicks are not to be confused with <em>Aliases</em>. Setting an Alias on a game entity actually changes an inherent attribute on that entity, and everyone in the game will be able to use that alias to address the entity thereafter. A <em>Nick</em> on the other hand, is used to map a different way <em>you alone</em> can refer to that entity. Nicks are also commonly used to replace your input text which means you can create your own aliases to default commands. </p>
+<p>Default Evennia use Nicks in three flavours that determine when Evennia actually tries to do the substitution.</p>
+<ul>
+<li>inputline - replacement is attempted whenever you write anything on the command line. This is the default.</li>
+<li>objects - replacement is only attempted when referring to an object</li>
+<li>accounts - replacement is only attempted when referring an account</li>
+</ul>
+<p>Here's how to use it in the default command set (using the <code>nick</code> command):</p>
+<pre><code> nick ls = look
+</code></pre>
+<p>This is a good one for unix/linux users who are accustomed to using the <code>ls</code> command in their daily life. It is equivalent to <code>nick/inputline ls = look</code>.</p>
+<pre><code> nick/object mycar2 = The red sports car
+</code></pre>
+<p>With this example, substitutions will only be done specifically for commands expecting an object reference, such as</p>
+<pre><code> look mycar2
+</code></pre>
+<p>becomes equivalent to "<code>look The red sports car</code>".</p>
+<pre><code> nick/accounts tom = Thomas Johnsson
+</code></pre>
+<p>This is useful for commands searching for accounts explicitly:</p>
+<pre><code> @find *tom
+</code></pre>
+<p>One can use nicks to speed up input. Below we add ourselves a quicker way to build red buttons. In the future just writing <em>rb</em> will be enough to execute that whole long string.  </p>
+<pre><code> nick rb = @create button:examples.red_button.RedButton
+</code></pre>
+<p>Nicks could also be used as the start for building a "recog" system suitable for an RP mud. </p>
+<pre><code> nick/account Arnold = The mysterious hooded man
+</code></pre>
+<p>The nick replacer also supports unix-style <em>templating</em>:</p>
+<pre><code> nick build $1 $2 = @create/drop $1;$2
+</code></pre>
+<p>This will catch space separated arguments and store them in the the tags <code>$1</code> and <code>$2</code>, to be inserted in the replacement string. This example allows you to do <code>build box crate</code> and have Evennia see <code>@create/drop box;crate</code>. You may use any <code>$</code> numbers between 1 and 99, but the markers must match between the nick pattern and the replacement.</p>
+<blockquote>
+<p>If you want to catch "the rest" of a command argument, make sure to put a <code>$</code> tag <em>with no spaces to the right of it</em> - it will then receive everything up until the end of the line.</p>
+</blockquote>
+<p>You can also use <a href="http://www.linfo.org/wildcard.html">shell-type wildcards</a>:</p>
+<ul>
+<li>* - matches everything.</li>
+<li>? - matches a single character.</li>
+<li>[seq] - matches everything in the sequence, e.g. [xyz] will match both x, y and z</li>
+<li>[!seq] - matches everything <em>not</em> in the sequence. e.g. [!xyz] will match all but x,y z.</li>
+</ul>
+<h2 id="coding-with-nicks">Coding with nicks<a class="headerlink" href="#coding-with-nicks" title="Permanent link">&para;</a></h2>
+<p>Nicks are stored as the <code>Nick</code> database model and are referred from the normal Evennia <a href="Objects.html">object</a> through the <code>nicks</code> property - this is known as the <em>NickHandler</em>. The NickHandler offers effective error checking, searches and conversion.</p>
+<pre><code class="python">    # A command/channel nick:
+      obj.nicks.add(&quot;greetjack&quot;, &quot;tell Jack = Hello pal!&quot;)
+
+    # An object nick:  
+      obj.nicks.add(&quot;rose&quot;, &quot;The red flower&quot;, nick_type=&quot;object&quot;)
+
+    # An account nick:
+      obj.nicks.add(&quot;tom&quot;, &quot;Tommy Hill&quot;, nick_type=&quot;account&quot;)
+
+    # My own custom nick type (handled by my own game code somehow):
+      obj.nicks.add(&quot;hood&quot;, &quot;The hooded man&quot;, nick_type=&quot;my_identsystem&quot;)
+
+    # get back the translated nick:
+     full_name = obj.nicks.get(&quot;rose&quot;, nick_type=&quot;object&quot;)
+
+    # delete a previous set nick
+      object.nicks.remove(&quot;rose&quot;, nick_type=&quot;object&quot;)
+</code></pre>
+
+<p>In a command definition you can reach the nick handler through <code>self.caller.nicks</code>. See the <code>nick</code> command in <code>evennia/commands/default/general.py</code> for more examples.</p>
+<p>As a last note, The Evennia <a href="Communications.html">channel</a> alias systems are using nicks with the <code>nick_type="channel"</code> in order to allow users to create their own custom aliases to channels. </p>
+<h1 id="advanced-note">Advanced note<a class="headerlink" href="#advanced-note" title="Permanent link">&para;</a></h1>
+<p>Internally, nicks are <a href="Attributes.html">Attributes</a> saved with the <code>db_attrype</code> set to "nick" (normal Attributes has this set to <code>None</code>). </p>
+<p>The nick stores the replacement data in the Attribute.db_value field as a tuple with four fields <code>(regex_nick, template_string, raw_nick, raw_template)</code>. Here <code>regex_nick</code> is the converted regex representation of the <code>raw_nick</code> and the <code>template-string</code> is a version of the <code>raw_template</code> prepared for efficient replacement of any <code>$</code>- type markers. The <code>raw_nick</code> and <code>raw_template</code> are basically the unchanged strings you enter to the <code>nick</code> command (with unparsed <code>$</code> etc). </p>
+<p>If you need to access the tuple for some reason, here's how: </p>
+<pre><code class="python">tuple = obj.nicks.get(&quot;nickname&quot;, return_tuple=True)
+# or, alternatively
+tuple = obj.nicks.get(&quot;nickname&quot;, return_obj=True).value
+</code></pre></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

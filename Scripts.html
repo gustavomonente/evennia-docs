@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Scripts - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#defining-new-scripts">Defining new Scripts</a></li>
+        <li class="main "><a href="#properties-and-functions-defined-on-scripts">Properties and functions defined on Scripts</a></li>
+        <li class="main "><a href="#global-scripts">Global Scripts</a></li>
+        <li class="main "><a href="#dealing-with-errors">Dealing with Errors</a></li>
+        <li class="main "><a href="#example-of-a-timed-script">Example of a timed script</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Controls-time-and-can-store-data-that-has-no-in-game-existence."></a></p>
+<p><em>Scripts</em> are the out-of-character siblings to the in-character
+<a href="Objects.html">Objects</a>. Scripts are so flexible that the "Script" is a bit limiting
+- we had to pick something to name them after all. Other possible names
+(depending on what you'd use them for) would be <code>OOBObjects</code>,
+<code>StorageContainers</code> or <code>TimerObjects</code>. </p>
+<p>Scripts can be used for many different things in Evennia:</p>
+<ul>
+<li>They can attach to Objects to influence them in various ways - or exist
+  independently of any one in-game entity (so-called <em>Global Scripts</em>).</li>
+<li>They can work as timers and tickers - anything that may change with Time. But
+  they can also have no time dependence at all. Note though that if all you want
+  is just to have an object method called repeatedly, you should consider using
+  the <a href="TickerHandler.html">TickerHandler</a> which is more limited but is specialized on
+  just this task. </li>
+<li>They can describe State changes. A Script is an excellent platform for
+hosting a persistent, but unique system handler. For example, a Script could be
+used as the base to track the state of a turn-based combat system. Since
+Scripts can also operate on a timer they can also update themselves regularly
+to perform various actions. </li>
+<li>They can act as data stores for storing game data persistently in the database 
+(thanks to its ability to have <a href="Attributes.html">Attributes</a>). </li>
+<li>They can be used as OOC stores for sharing data between groups of objects, for 
+example for tracking the turns in a turn-based combat system or barter exchange.</li>
+</ul>
+<p>Scripts are <a href="Typeclasses.html">Typeclassed</a> entities and are manipulated in a similar 
+way to how it works for other such Evennia entities: </p>
+<pre><code class="python"># create a new script 
+new_script = evennia.create_script(key=&quot;myscript&quot;, typeclass=...)  
+
+# search (this is always a list, also if there is only one match)
+list_of_myscript = evennia.search_script(&quot;myscript&quot;)
+
+</code></pre>
+
+<h2 id="defining-new-scripts">Defining new Scripts<a class="headerlink" href="#defining-new-scripts" title="Permanent link">&para;</a></h2>
+<p>A Script is defined as a class and is created in the same way as other
+<a href="Typeclasses.html">typeclassed</a> entities. The class has several properties 
+to control the timer-component of the scripts. These are all optional 
+and leaving them out will just create a Script with no timer components.</p>
+<p>This you can do for example in the module
+<code>evennia/typeclasses/scripts.py</code>. Below is an example Script
+   Typeclass.</p>
+<pre><code class="python">    # for example in mygame/typeclasses/scripts.py  
+    # Script class is defined at the top of this module
+
+    import random
+
+    class Weather(Script): 
+        &quot;&quot;&quot;
+        A timer script that displays weather info. Meant to 
+        be attached to a room. 
+
+        &quot;&quot;&quot;
+        def at_script_creation(self):
+            self.key = &quot;weather_script&quot;
+            self.desc = &quot;Gives random weather messages.&quot;
+            self.interval = 60 * 5  # every 5 minutes
+            self.persistent = True  # will survive reload
+
+        def at_repeat(self):
+            &quot;called every self.interval seconds.&quot;        
+            rand = random.random()
+            if rand &lt; 0.5:
+                weather = &quot;A faint breeze is felt.&quot;
+            elif rand &lt; 0.7:
+                weather = &quot;Clouds sweep across the sky.&quot; 
+            else:
+                weather = &quot;There is a light drizzle of rain.&quot;
+            # send this message to everyone inside the object this
+            # script is attached to (likely a room)
+            self.obj.msg_contents(weather)
+</code></pre>
+
+<p>If we put this script on a room, it will randomly report some weather 
+to everyone in the room every 5 minutes.</p>
+<p>To activate it, just add it to the script handler (<code>scripts</code>) on an
+<a href="Objects.html">Room</a>. That object becomes <code>self.obj</code> in the example above.  Here we
+put it on a room called <code>myroom</code>:</p>
+<pre><code>    myroom.scripts.add(scripts.Weather)
+</code></pre>
+
+<blockquote>
+<p>Note that <code>typeclasses</code> in your game dir is added to the setting <code>TYPECLASS_PATHS</code>. 
+Therefore we don't need to give the full path (<code>typeclasses.scripts.Weather</code>
+but only <code>scripts.Weather</code> above.</p>
+</blockquote>
+<p>You can also create scripts using the <code>evennia.create_script</code> function:</p>
+<pre><code class="python">    from evennia import create_script
+    create_script('typeclasses.weather.Weather', obj=myroom)
+</code></pre>
+
+<p>Note that if you were to give a keyword argument to <code>create_script</code>, that would
+override the default value in your Typeclass. So for example, here is an instance
+of the weather script that runs every 10 minutes instead (and also not survive
+a server reload):</p>
+<pre><code class="python">    create_script('typeclasses.weather.Weather', obj=myroom, 
+                   persistent=False, interval=10*60)
+</code></pre>
+
+<p>From in-game you can use the <code>@script</code> command to launch the Script on things: </p>
+<pre><code>     @script here = weather.Weather 
+</code></pre>
+
+<p>You can conveniently view and kill running Scripts by using the <code>@scripts</code>
+command in-game.</p>
+<h2 id="properties-and-functions-defined-on-scripts">Properties and functions defined on Scripts<a class="headerlink" href="#properties-and-functions-defined-on-scripts" title="Permanent link">&para;</a></h2>
+<p>A Script has all the properties of a typeclassed object, such as <code>db</code> and <code>ndb</code>(see <a href="Typeclasses.html">Typeclasses</a>). Setting <code>key</code> is useful in order to manage scripts (delete them by name etc). These are usually set up in the Script's typeclass, but can also be assigned on the fly as keyword arguments to <code>evennia.create_script</code>.</p>
+<ul>
+<li><code>desc</code> - an optional description of the script's function. Seen in script listings.</li>
+<li><code>interval</code> - how often the script should run. If <code>interval == 0</code> (default), this script has no timing component, will not repeat and will exist forever. This is useful for Scripts used for storage or acting as bases for various non-time dependent game systems. </li>
+<li><code>start_delay</code> - (bool), if we should wait <code>interval</code> seconds before firing for the first time or not. </li>
+<li><code>repeats</code> - How many times we should repeat, assuming <code>interval &gt; 0</code>. If repeats is set to <code>&lt;= 0</code>, the script will repeat indefinitely. Note that <em>each</em> firing of the script (including the first one) counts towards this value. So a <code>Script</code> with <code>start_delay=False</code> and <code>repeats=1</code> will start, immediately fire and shut down right away.</li>
+<li><code>persistent</code>- if this script should survive a server <em>reset</em> or server <em>shutdown</em>. (You don't need to set this for it to survive a normal reload - the script will be paused and seamlessly restart after the reload is complete).</li>
+</ul>
+<p>There is one special property:</p>
+<ul>
+<li><code>obj</code> - the <a href="Objects.html">Object</a> this script is attached to (if any).  You should not need to set this manually. If you add the script to the Object with <code>myobj.scripts.add(myscriptpath)</code> or give <code>myobj</code> as an argument to the <code>utils.create.create_script</code> function, the <code>obj</code> property will be set to <code>myobj</code> for you.</li>
+</ul>
+<p>It's also imperative to know the hook functions. Normally, overriding
+these are all the customization you'll need to do in Scripts. You can
+find longer descriptions of these in <code>src/scripts/scripts.py</code>.</p>
+<ul>
+<li><code>at_script_creation()</code> - this is usually where the script class sets things like <code>interval</code> and <code>repeats</code>; things that control how the script runs. It is only called once - when the script is first created.</li>
+<li><code>is_valid()</code> - determines if the script should still be running or not. This is called when running <code>obj.scripts.validate()</code>, which you can run manually, but which is also called by Evennia during certain situations such as reloads. This is also useful for using scripts as state managers. If the method returns <code>False</code>, the script is stopped and cleanly removed.</li>
+<li><code>at_start()</code> - this is called when the script starts or is unpaused. For persistent scripts this is at least once ever server startup. Note that this will <em>always</em> be called right away, also if <code>start_delay</code> is <code>True</code>.</li>
+<li><code>at_repeat()</code> - this is called every <code>interval</code> seconds, or not at all. It is called right away at startup, unless <code>start_delay</code> is <code>True</code>, in which case the system will wait <code>interval</code> seconds before calling.</li>
+<li><code>at_stop()</code> - this is called when the script stops for whatever reason. It's a good place to do custom cleanup.</li>
+<li><code>at_server_reload()</code> - this is called whenever the server is warm-rebooted (e.g. with the <code>@reload</code> command). It's a good place to save non-persistent data you might want to survive a reload.</li>
+<li><code>at_server_shutdown()</code> - this is called when a system reset or systems shutdown is invoked.</li>
+</ul>
+<p>Running methods (usually called automatically by the engine, but possible to also invoke manually)</p>
+<ul>
+<li><code>start()</code> - this will start the script. This is called automatically whenever you add a new script to a handler. <code>at_start()</code> will be called.</li>
+<li><code>stop()</code> - this will stop the script and delete it. Removing a script from a handler will stop it automatically. <code>at_stop()</code> will be called.</li>
+<li><code>pause()</code> - this pauses a running script, rendering it inactive, but not deleting it. All properties are saved and timers can be resumed. This is called automatically when the server reloads and will <em>not</em> lead to the <em>at_stop()</em> hook being called. This is a suspension of the script, not a change of state.</li>
+<li><code>unpause()</code> - resumes a previously paused script. The <code>at_start()</code> hook <em>will</em> be called to allow it to reclaim its internal state. Timers etc are restored to what they were before pause. The server automatically unpauses all paused scripts after a server reload.</li>
+<li><code>force_repeat()</code> - this will forcibly step the script, regardless of when it would otherwise have fired. The timer will reset and the <code>at_repeat()</code> hook is called as normal. This also counts towards the total number of repeats, if limited. </li>
+<li><code>time_until_next_repeat()</code> - for timed scripts, this returns the time in seconds until it next fires. Returns <code>None</code> if <code>interval==0</code>.</li>
+<li><code>remaining_repeats()</code> - if the Script should run a limited amount of times, this tells us how many are currently left.  </li>
+<li><code>reset_callcount(value=0)</code> - this allows you to reset the number of times the Script has fired. It only makes sense if <code>repeats &gt; 0</code>. </li>
+<li><code>restart(interval=None, repeats=None, start_delay=None)</code> - this method allows you to restart the Script in-place with different run settings. If you do, the <code>at_stop</code> hook will be called and the Script brought to a halt, then the <code>at_start</code> hook will be called as the Script starts up with your (possibly changed) settings. Any keyword left at <code>None</code> means to not change the original setting. </li>
+</ul>
+<h2 id="global-scripts">Global Scripts<a class="headerlink" href="#global-scripts" title="Permanent link">&para;</a></h2>
+<p>A script does not have to be connected to an in-game object. If not it is
+called a <em>Global script</em>. You can create global scripts by simply not supplying an object to store it on:</p>
+<pre><code class="python">     # adding a global script
+     from evennia import create_script
+     create_script(&quot;typeclasses.globals.MyGlobalEconomy&quot;, 
+                    key=&quot;economy&quot;, persistent=True, obj=None)
+</code></pre>
+
+<p>Henceforth you can then get it back by searching for its key or other identifier with 
+<code>evennia.search_script</code>. In-game, the <code>scripts</code> command will show all scripts. </p>
+<p>Evennia supplies a convenient "container" called <code>GLOBAL_SCRIPTS</code> that can offer an easy 
+way to access global scripts. If you know the name (key) of the script you can get it like so: </p>
+<pre><code class="python">from evennia import GLOBAL_SCRIPTS
+
+my_script = GLOBAL_SCRIPTS.my_script
+# needed if there are spaces in name or name determined on the fly
+another_script = GLOBAL_SCRIPTS.get(&quot;another script&quot;)
+# get all global scripts (this returns a Queryset)
+all_scripts = GLOBAL_SCRIPTS.all()
+# you can operate directly on the script
+GLOBAL_SCRIPTS.weather.db.current_weather = &quot;Cloudy&quot;
+
+</code></pre>
+
+<blockquote>
+<p>Note that global scripts appear as properties on <code>GLOBAL_SCRIPTS</code> based on their <code>key</code>. 
+If you were to create two global scripts with the same <code>key</code> (even with different typeclasses),
+the <code>GLOBAL_SCRIPTS</code> container will only return one of them (which one depends on order in 
+the database). Best is to organize your scripts so that this does not happen. Otherwise, use <code>evennia.search_script</code> to get exactly the script you want. </p>
+</blockquote>
+<p>There are two ways to make a script appear as a property on <code>GLOBAL_SCRIPTS</code>. The first is 
+to manually create a new global script with <code>create_script</code> as mentioned above. Often you want this to happen automatically when the server starts though. For this you can use the setting <code>GLOBAL_SCRIPTS</code>:</p>
+<pre><code class="python">GLOBAL_SCRIPTS = {
+    &quot;my_script&quot;: {               
+        &quot;typeclass&quot;: &quot;scripts.Weather&quot;,
+        &quot;repeats&quot;: -1,
+        &quot;interval&quot;: 50,
+        &quot;desc&quot;: &quot;Weather script&quot;
+        &quot;persistent&quot;: True
+    },
+    &quot;storagescript&quot;: {
+        &quot;typeclass&quot;: &quot;scripts.Storage&quot;,
+        &quot;persistent&quot;: True
+    }
+}
+</code></pre>
+
+<p>Here the key (<code>myscript</code> and <code>storagescript</code> above) is required, all other fields are optional. If <code>typeclass</code> is not given, a script of type <code>settings.BASE_SCRIPT_TYPECLASS</code> is assumed. The keys related to timing and intervals are only needed if the script is timed.</p>
+<p>Evennia will use the information in <code>settings.GLOBAL_SCRIPTS</code> to automatically create and start these
+scripts when the server starts (unless they already exist, based on their <code>key</code>). You need to reload the server before the setting is read and new scripts become available. You can then find the <code>key</code> you gave as properties on <code>evennia.GLOBAL_SCRIPTS</code> 
+(such as <code>evennia.GLOBAL_SCRIPTS.storagescript</code>). </p>
+<blockquote>
+<p>Note: Make sure that your Script typeclass does not have any critical errors. If so, you'll see errors in your log and your Script will temporarily fall back to being a <code>DefaultScript</code> type. </p>
+</blockquote>
+<p>Moreover, a script defined this way is <em>guaranteed</em> to exist when you try to access it:</p>
+<pre><code class="python">from evennia import GLOBAL_SCRIPTS
+# first stop the script 
+GLOBAL_SCRIPTS.storagescript.stop()
+# running the `scripts` command now will show no storagescript
+# but below now it's recreated again! 
+storage = GLOBAL_SCRIPTS.storagescript
+</code></pre>
+
+<p>That is, if the script is deleted, next time you get it from <code>GLOBAL_SCRIPTS</code>, it will use the information
+in settings to recreate it for you.</p>
+<blockquote>
+<p>Note that if your goal with the Script is to store persistent data, you should set it as <code>persistent=True</code>, either in <code>settings.GLOBAL_SCRIPTS</code> or in the Scripts typeclass. Otherwise any data you wanted to store on it will be gone (since a new script of the same name is restarted instead). </p>
+</blockquote>
+<h2 id="dealing-with-errors">Dealing with Errors<a class="headerlink" href="#dealing-with-errors" title="Permanent link">&para;</a></h2>
+<p>Errors inside an timed, executing script can sometimes be rather terse or point to
+parts of the execution mechanism that is hard to interpret. One way to make it
+easier to debug scripts is to import Evennia's native logger and wrap your
+functions in a try/catch block. Evennia's logger can show you where the
+traceback occurred in your script.</p>
+<pre><code class="python">
+from evennia.utils import logger
+
+class Weather(DefaultScript): 
+
+    # [...]
+
+    def at_repeat(self):
+
+        try:  
+            # [...] code as above
+        except Exception:
+            # logs the error 
+            logger.log_trace()
+
+</code></pre>
+
+<h2 id="example-of-a-timed-script">Example of a timed script<a class="headerlink" href="#example-of-a-timed-script" title="Permanent link">&para;</a></h2>
+<p>In-game you can try out scripts using the <code>@script</code> command. In the
+<code>evennia/contrib/tutorial_examples/bodyfunctions.py</code> is a little example script
+that makes you do little 'sounds' at random intervals. Try the following to apply an
+example time-based script to your character.</p>
+<pre><code>&gt; @script self = bodyfunctions.BodyFunctions
+</code></pre>
+<blockquote>
+<p>Note: Since <code>evennia/contrib/tutorial_examples</code> is in the default setting
+<code>TYPECLASS_PATHS</code>, we only need to specify the final part of the path,
+that is, <code>bodyfunctions.BodyFunctions</code>.</p>
+</blockquote>
+<p>If you want to inflict your flatulence script on another person, place or
+thing, try something like the following:</p>
+<pre><code>&gt; @py self.location.search('matt').scripts.add('bodyfunctions.BodyFunctions')
+</code></pre>
+<p>Here's how you stop it on yourself. </p>
+<pre><code>&gt; @script/stop self = bodyfunctions.BodyFunctions
+</code></pre>
+<p>This will kill the script again. You can use the <code>@scripts</code> command to list all
+active scripts in the game, if any (there are none by default). </p>
+<p>For another example of a Script in use, check out the <a href="https://github.com/evennia/evennia/wiki/Turn%20based%20Combat%20System">Turn Based Combat System
+tutorial</a>.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

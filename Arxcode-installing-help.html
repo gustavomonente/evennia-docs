@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Arxcode installing help - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#introduction">Introduction</a></li>
+        <li class="main "><a href="#installing-evennia">Installing Evennia</a></li>
+        <li class="main "><a href="#installing-arxcode">Installing Arxcode</a></li>
+            <li><a href="#clone-the-arxcode-repo">Clone the arxcode repo</a></li>
+            <li><a href="#clean-up-settings">Clean up settings</a></li>
+            <li><a href="#install-arx-dependencies">Install Arx dependencies</a></li>
+            <li><a href="#adding-logs-folder">Adding logs/ folder</a></li>
+            <li><a href="#setting-up-the-database-and-starting">Setting up the database and starting</a></li>
+            <li><a href="#additional-setup-steps">Additional Setup Steps</a></li>
+        <li class="main "><a href="#alternate-guide-by-pax-for-installing-on-windows">Alternate guide by Pax for installing on Windows</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p><a href="http://play.arxmush.org/">Arx - After the Reckoning</a> is a big and very popular
+<a href="http://www.evennia.com">Evennia</a>-based game. Arx is heavily roleplaying-centric, relying on game
+masters to drive the story. Technically it's maybe best described as "a MUSH, but with more coded
+systems". In August of 2018, the game's developer, Tehom, generously released the <a href="https://github.com/Arx-Game/arxcode">source code of
+Arx on github</a>. This is a treasure-trove for developers wanting
+to pick ideas or even get a starting game to build on. These instructions are based on the Arx-code
+released as of <em>Aug 12, 2018</em>.</p>
+<p>If you are not familiar with what Evennia is, you can read 
+<a href="https://github.com/evennia/evennia/wiki/Evennia-Introduction">an introduction here</a>. </p>
+<p>It's not too hard to run Arx from the sources (of course you'll start with an empty database) but
+since part of Arx has grown organically, it doesn't follow standard Evennia paradigms everywhere.
+This page covers one take on installing and setting things up while making your new Arx-based game
+better match with the vanilla Evennia install. </p>
+<h2 id="installing-evennia">Installing Evennia<a class="headerlink" href="#installing-evennia" title="Permanent link">&para;</a></h2>
+<p>Firstly, set aside a folder/directory on your drive for everything to follow. </p>
+<p>You need to start by installing <a href="http://www.evennia.com">Evennia</a> by following most of the <a href="Getting-Started">Getting Started
+Instructions</a> for your OS. The difference is that you need to <code>git clone https://github.com/TehomCD/evennia.git</code> instead of Evennia's repo because Arx uses TehomCD's older Evennia 0.8 <a href="https://github.com/TehomCD/evennia">fork</a>, notably still using Python2. This detail is important if referring to newer Evennia documentation. </p>
+<p>If you are new to Evennia it's <em>highly</em> recommended that you run through the
+instructions in full - including initializing and starting a new empty game and connecting to it.
+That way you can be sure Evennia works correctly as a base line. If you have trouble, make sure to
+read the <a href="https://github.com/evennia/evennia/wiki/Getting-Started#troubleshooting">Troubleshooting instructions</a> for your
+operating system. You can also drop into our
+<a href="https://groups.google.com/forum/#%21forum/evennia">forums</a>, join <code>#evennia</code> on <code>irc.freenode.net</code>
+or chat from the linked <a href="https://discord.gg/NecFePw">Discord Server</a>. </p>
+<p>After installing you should have a <code>virtualenv</code> running and you should have the following file structure in your set-aside folder: </p>
+<pre><code>vienv/
+evennia/
+mygame/
+
+</code></pre>
+
+<p>Here <code>mygame</code> is the empty game you created during the Evennia install, with <code>evennia --init</code>. Go to
+that and run <code>evennia stop</code> to make sure your empty game is not running. We'll instead let Evenna
+run Arx, so in principle you could erase <code>mygame</code> - but it could also be good to have a clean game
+to compare to. </p>
+<h2 id="installing-arxcode">Installing Arxcode<a class="headerlink" href="#installing-arxcode" title="Permanent link">&para;</a></h2>
+<h3 id="clone-the-arxcode-repo">Clone the arxcode repo<a class="headerlink" href="#clone-the-arxcode-repo" title="Permanent link">&para;</a></h3>
+<p>Cd to the root of your directory and clone the released source code from github: </p>
+<pre><code>git clone https://github.com/Arx-Game/arxcode.git myarx
+</code></pre>
+<p>A new folder <code>myarx</code> should appear next to the ones you already had. You could rename this to
+something else if you want. </p>
+<p>Cd into <code>myarx</code>. If you wonder about the structure of the game dir, you can <a href="Directory-Overview">read more about it here</a>. </p>
+<h3 id="clean-up-settings">Clean up settings<a class="headerlink" href="#clean-up-settings" title="Permanent link">&para;</a></h3>
+<p>Arx has split evennia's normal settings into <code>base_settings.py</code> and <code>production_settings.py</code>. It
+also has its own solution for managing 'secret' parts of the settings file. We'll keep most of Arx
+way but remove the secret-handling and replace it with the normal Evennia method. </p>
+<p>Cd into <code>myarx/server/conf/</code> and open the file <code>settings.py</code> in a text editor. The top part (within
+<code>"""..."""</code>) is just help text. Wipe everything underneath that and make it look like this instead
+(don't forget to save): </p>
+<pre><code>from base_settings import *
+
+TELNET_PORTS = [4000]
+SERVERNAME = &quot;MyArx&quot;
+GAME_SLOGAN = &quot;The cool game&quot;
+
+try:
+    from server.conf.secret_settings import *
+except ImportError:
+    print(&quot;secret_settings.py file not found or failed to import.&quot;)
+</code></pre>
+
+<blockquote>
+<p>Note: Indents and capitalization matter in Python. Make indents 4 spaces (not tabs) for your own
+sanity. If you want a starter on Python in Evennia, <a href="Python-basic-introduction">you can look here</a>.</p>
+</blockquote>
+<p>This will import Arx' base settings and override them with the Evennia-default telnet port and give
+the game a name. The slogan changes the sub-text shown under the name of your game in the website
+header. You can tweak these to your own liking later.</p>
+<p>Next, create a new, empty file <code>secret_settings.py</code> in the same location as the <code>settings.py</code> file.
+This can just contain the following: </p>
+<pre><code class="python">SECRET_KEY = &quot;sefsefiwwj3 jnwidufhjw4545_oifej whewiu hwejfpoiwjrpw09&amp;4er43233fwefwfw&quot;
+
+</code></pre>
+
+<p>Replace the long random string with random ASCII characters of your own. The secret key should not
+be shared. </p>
+<p>Next, open <code>myarx/server/conf/base_settings.py</code> in your text editor. We want to remove/comment out
+all mentions of the <code>decouple</code> package, which Evennia doesn't use (we use <code>private_settings.py</code> to
+hide away settings that should not be shared). </p>
+<p>Comment out <code>from decouple import config</code> by adding a <code>#</code> to the start of the line: <code># from decouple
+import config</code>. Then search for <code>config(</code> in the file and comment out all lines where this is used.
+Many of these are specific to the server environment where the original Arx runs, so is not that
+relevant to us. </p>
+<h3 id="install-arx-dependencies">Install Arx dependencies<a class="headerlink" href="#install-arx-dependencies" title="Permanent link">&para;</a></h3>
+<p>Arx has some further dependencies beyond vanilla Evennia. Start by <code>cd</code>:ing to the root of your
+<code>myarx</code> folder. </p>
+<blockquote>
+<p>If you run <em>Linux</em> or <em>Mac</em>: Edit <code>myarx/requirements.txt</code> and comment out the line
+<code>pypiwin32==219</code> - it's only needed on Windows and will give an error on other platforms.  </p>
+</blockquote>
+<p>Make sure your <code>virtualenv</code> is active, then run</p>
+<pre><code>pip install -r requirements.txt
+</code></pre>
+<p>The needed Python packages will be installed for you. </p>
+<h3 id="adding-logs-folder">Adding logs/ folder<a class="headerlink" href="#adding-logs-folder" title="Permanent link">&para;</a></h3>
+<p>The Arx repo does not contain the <code>myarx/server/logs/</code> folder Evennia expects for storing server
+logs. This is simple to add: </p>
+<pre><code># linux/mac
+mkdir server/logs
+# windows
+mkdir server\logs
+</code></pre>
+<h3 id="setting-up-the-database-and-starting">Setting up the database and starting<a class="headerlink" href="#setting-up-the-database-and-starting" title="Permanent link">&para;</a></h3>
+<p>From the <code>myarx</code> folder, run </p>
+<pre><code>evennia migrate
+</code></pre>
+<p>This creates the database and will step through all database migrations needed.</p>
+<pre><code>evennia start
+</code></pre>
+<p>If all goes well Evennia will now start up, running Arx! You can connect to it on <code>localhost</code> (or
+<code>127.0.0.1</code> if your platform doesn't alias <code>localhost</code>), port <code>4000</code> using a Telnet client.
+Alternatively, you can use your web browser to browse to <code>http://localhost:4001</code> to see the game's
+website and get to the web client. </p>
+<p>When you log in you'll get the standard Evennia greeting (since the database is empty), but you can
+try <code>help</code> to see that it's indeed Arx that is running.</p>
+<h3 id="additional-setup-steps">Additional Setup Steps<a class="headerlink" href="#additional-setup-steps" title="Permanent link">&para;</a></h3>
+<p>The first time you start Evennia after creating the database with the <code>evennia migrate</code> step above,
+it should create a few starting objects for you - your superuser account, which it will prompt you
+to enter, a starting room (Limbo), and a character object for you. If for some reason this does not
+occur, you may have to follow the steps below.  For the first time Superuser login you may have to
+run steps 7-8 and 10 to create and connect to your in-came Character. </p>
+<ol>
+<li>Login to the game website with your Superuser account.</li>
+<li>Press the <code>Admin</code> button to get into the (Django-) Admin Interface.</li>
+<li>Navigate to the <code>Accounts</code> section.</li>
+<li>Add a new Account named for the new staffer. Use a place holder password and dummy e-mail
+   address.</li>
+<li>Flag account as <code>Staff</code> and apply the <code>Admin</code> permission group (This assumes you have already set
+   up an Admin Group in Django). </li>
+<li>Add Tags named <code>player</code> and <code>developer</code>. </li>
+<li>Log into the game using the web client (or a third-party telnet client) using your superuser
+   account. Move to where you want the new staffer character to appear. </li>
+<li>In the game client, run <code>@create/drop &lt;staffername&gt;:typeclasses.characters.Character</code>, where
+   <code>&lt;staffername&gt;</code> is usually the same name you used for the Staffer account you created in the
+   Admin earlier (if you are creating a Character for your superuser, use your superuser account name).
+   This creates a new in-game Character and places it in your current location.</li>
+<li>Have the new Admin player log into the game.</li>
+<li>Have the new Admin puppet the character with <code>@ic StafferName</code>. </li>
+<li>Have the new Admin change their password - <code>@password &lt;old password&gt; = &lt;new password&gt;</code>.</li>
+</ol>
+<p>Now that you have a Character and an Account object, there's a few additional things you may need to
+do in order for some commands to function properly. You can either execute these as in-game commands
+while <code>@ic</code> (controlling your character object).</p>
+<ol>
+<li><code>@py from web.character.models import RosterEntry;RosterEntry.objects.create(player=self.player, character=self)</code></li>
+<li><code>@py from world.dominion.models import PlayerOrNpc, AssetOwner;dompc = PlayerOrNpc.objects.create(player = self.player);AssetOwner.objects.create(player=dompc)</code></li>
+</ol>
+<p>Those steps will give you a 'RosterEntry', 'PlayerOrNpc', and 'AssetOwner' objects. RosterEntry
+explicitly connects a character and account object together, even while offline, and contains
+additional information about a character's current presence in game (such as which 'roster' they're
+in, if you choose to use an active roster of characters). PlayerOrNpc are more character extensions,
+as well as support for npcs with no in-game presence and just represented by a name which can be
+offscreen members of a character's family. It also allows for membership in Organizations.
+AssetOwner holds information about a character or organization's money and resources.</p>
+<h2 id="alternate-guide-by-pax-for-installing-on-windows">Alternate guide by Pax for installing on Windows<a class="headerlink" href="#alternate-guide-by-pax-for-installing-on-windows" title="Permanent link">&para;</a></h2>
+<p>If for some reason you cannot use the Windows Subsystem for Linux (which would use instructions identical to the ones above), it's possible to get Evennia running under Anaconda for Windows. The process is a little bit trickier.</p>
+<p>Make sure you have:
+ * Git for Windows               https://git-scm.com/download/win
+ * Anaconda for Windows          https://www.anaconda.com/distribution/
+ * VC++ Compiler for Python 2.7  http://aka.ms/vcpython27</p>
+<p>conda update conda
+conda create -n arx python=2.7
+source activate arx</p>
+<p>Set up a convenient repository place for things.</p>
+<p>cd ~
+mkdir Source
+cd Source
+mkdir Arx
+cd Arx</p>
+<p>Replace the SSH git clone links below with your own github forks. 
+ If you don't plan to change Evennia at all, you can use the 
+ evennia/evennia.git repo instead of a forked one.</p>
+<p>git clone git@github.com:<youruser>/evennia.git
+git clone git@github.com:<youruser>/arxcode.git</p>
+<p>Evennia is a package itself, so we want to install it and all of its 
+ prerequisites, after switching to the appropriately-tagged branch for
+ Arxcode.</p>
+<p>cd evennia
+git checkout tags/v0.7 -b arx-master
+pip install -e .</p>
+<p>Arx has some dependencies of its own, so now we'll go install them
+ As it is not a package, we'll use the normal requirements file.</p>
+<p>cd ../arxcode
+pip install -r requirements.txt</p>
+<p>The git repo doesn't include the empty log directory and Evennia is unhappy if you
+ don't have it, so while still in the arxcode directory... </p>
+<p>mkdir server/logs</p>
+<p>Now hit https://github.com/evennia/evennia/wiki/Arxcode-installing-help and
+ change the setup stuff as in the 'Clean up settings' section.</p>
+<p>Then we will create our default database...</p>
+<p>../evennia/bin/windows/evennia.bat migrate</p>
+<p>...and do the first run. You need winpty because Windows does not have a TTY/PTY
+ by default, and so the Python console input commands (used for prompts on first
+ run) will fail and you will end up in an unhappy place. Future runs, you should
+ not need winpty.</p>
+<p>winpty ../evennia/bin/windows/evennia.bat start</p>
+<p>Once this is done, you should have your Evennia server running Arxcode up
+ on localhost at port 4000, and the webserver at http://localhost:4001/</p>
+<p>And you are done! Huzzah!</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Sessions - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#properties-on-sessions">Properties on Sessions</a></li>
+        <li class="main "><a href="#multisession-mode">Multisession mode</a></li>
+        <li class="main "><a href="#returning-data-to-the-session">Returning data to the session</a></li>
+        <li class="main "><a href="#customizing-the-session-object">Customizing the Session object</a></li>
+        <li class="main "><a href="#portal-and-server-sessions">Portal and Server Sessions</a></li>
+        <li class="main "><a href="#sessionhandlers">Sessionhandlers</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Summarizes-the-use-of-Sessions."></a></p>
+<p>An Evennia <em>Session</em> represents one single established connection to the server. Depending on the Evennia session, it is possible for a person to connect multiple times, for example using different clients in multiple windows. Each such connection is represented by a session object.</p>
+<p>A session object has its own <a href="command-sets">cmdset</a>, usually the "unloggedin" cmdset. This is what is used to show the login screen and to handle commands to create a new account (or <a href="Accounts.html">Account</a> in evennia lingo) read initial help and to log into the game with an existing account. A session object can either be "logged in" or not.  Logged in means that the user has authenticated. When this happens the session is associated with an Account object (which is what holds account-centric stuff). The account can then in turn puppet any number of objects/characters.</p>
+<blockquote>
+<p>Warning: A Session is not <em>persistent</em> - it is not a <a href="Typeclasses.html">Typeclass</a> and has no connection to the database. The Session will go away when a user disconnects and you will lose any custom data on it if the server reloads. The <code>.db</code> handler on Sessions is there to present a uniform API (so you can assume <code>.db</code> exists even if you don't know if you receive an Object or a Session), but this is just an alias to <code>.ndb</code>. So don't store any data on Sessions that you can't afford to lose in a reload. You have been warned.</p>
+</blockquote>
+<h2 id="properties-on-sessions">Properties on Sessions<a class="headerlink" href="#properties-on-sessions" title="Permanent link">&para;</a></h2>
+<p>Here are some important properties available on (Server-)Sessions</p>
+<ul>
+<li><code>sessid</code> - The unique session-id. This is an integer starting from 1.</li>
+<li><code>address</code> - The connected client's address. Different protocols give different information here.</li>
+<li><code>logged_in</code> - <code>True</code> if the user authenticated to this session.</li>
+<li><code>account</code> - The <a href="Accounts.html">Account</a> this Session is attached to. If not logged in yet, this is <code>None</code>.</li>
+<li><code>puppet</code> - The <a href="Objects">Character/Object</a> currently puppeted by this Account/Session combo. If not logged in or in OOC mode, this is <code>None</code>.</li>
+<li><code>ndb</code> - The <a href="Attributes.html">Non-persistent Attribute</a> handler.</li>
+<li><code>db</code> - As noted above, Sessions don't have regular Attributes. This is an alias to <code>ndb</code>.</li>
+<li><code>cmdset</code> - The Session's <a href="Command-Sets">CmdSetHandler</a></li>
+</ul>
+<p>Session statistics are mainly used internally by Evennia.</p>
+<ul>
+<li><code>conn_time</code> - How long this Session has been connected</li>
+<li><code>cmd_last</code> - Last active time stamp. This will be reset by sending <code>idle</code> keepalives.</li>
+<li><code>cmd_last_visible</code> - last active time stamp. This ignores <code>idle</code> keepalives and representes the last time this session was truly visibly active.</li>
+<li><code>cmd_total</code> - Total number of Commands passed through this Session.</li>
+</ul>
+<h2 id="multisession-mode">Multisession mode<a class="headerlink" href="#multisession-mode" title="Permanent link">&para;</a></h2>
+<p>The number of sessions possible to connect to a given account at the same time and how it works is given by the <code>MULTISESSION_MODE</code> setting:</p>
+<ul>
+<li><code>MULTISESSION_MODE=0</code>: One session per account. When connecting with a new session the old one is disconnected. This is the default mode and emulates many classic mud code bases. In default Evennia, this mode also changes how the <code>create account</code> Command works - it will automatically create a Character with the <em>same name</em> as the Account. When logging in, the login command is also modified to have the player automatically puppet that Character. This makes the distinction between Account and Character minimal from the player's perspective.</li>
+<li><code>MULTISESSION_MODE=1</code>: Many sessions per account, input/output from/to each session is treated the same. For the player this means they can connect to the game from multiple clients and see the same output in all of them. The result of a command given in one client (that is, through one Session) will be returned to <em>all</em> connected Sessions/clients with no distinction. This mode will have the Session(s) auto-create and puppet a Character in the same way as mode 0.</li>
+<li><code>MULTISESSION_MODE=2</code>: Many sessions per account, one character per session. In this mode, puppeting an Object/Character will link the puppet back only to the particular Session doing the puppeting. That is, input from that Session will make use of the CmdSet of that Object/Character and outgoing messages (such as the result of a <code>look</code>) will be passed back only to that puppeting Session. If another Session tries to puppet the same Character, the old Session will automatically un-puppet it. From the player's perspective, this will mean that they can open separate game clients and play a different Character in each using one game account. 
+This mode will <em>not</em> auto-create a Character and <em>not</em> auto-puppet on login like in modes 0 and 1. Instead it changes how the account-cmdsets's <code>OOCLook</code> command works so as to show a simple 'character select' menu. </li>
+<li><code>MULTISESSION_MODE=3</code>: Many sessions per account <em>and</em> character. This is the full multi-puppeting mode, where multiple sessions may not only connect to the player account but multiple sessions may also puppet a single character at the same time. From the user's perspective it means one can open multiple client windows, some for controlling different Characters and some that share a Character's input/output like in mode 1. This mode otherwise works the same as mode 2.</li>
+</ul>
+<blockquote>
+<p>Note that even if multiple Sessions puppet one Character, there is only ever one instance of that Character. </p>
+</blockquote>
+<h2 id="returning-data-to-the-session">Returning data to the session<a class="headerlink" href="#returning-data-to-the-session" title="Permanent link">&para;</a></h2>
+<p>When you use <code>msg()</code> to return data to a user, the object on which you call the <code>msg()</code> matters. The <code>MULTISESSION_MODE</code> also matters, especially if greater than 1.</p>
+<p>For example, if you use <code>account.msg("hello")</code> there is no way for evennia to know which session it should send the greeting to. In this case it will send it to all sessions. If you want a specific session you need to supply its session to the <code>msg</code> call (<code>account.msg("hello", session=mysession)</code>).</p>
+<p>On the other hand, if you call the <code>msg()</code> message on a puppeted object, like <code>character.msg("hello")</code>, the character already knows the session that controls it - it will cleverly auto-add this for you (you can specify a different session if you specifically want to send stuff to another session).</p>
+<p>Finally, there is a wrapper for <code>msg()</code> on all command classes: <code>command.msg()</code>. This will transparently detect which session was triggering the command (if any) and redirects to that session (this is most often what you want). If you are having trouble redirecting to a given session, <code>command.msg()</code> is often the safest bet.</p>
+<p>You can get the <code>session</code> in two main ways: 
+* <a href="Accounts.html">Accounts</a> and <a href="Objects.html">Objects</a> (including Characters) have a <code>sessions</code> property. This is a <em>handler</em> that tracks all Sessions attached to or puppeting them. Use e.g. <code>accounts.sessions.get()</code> to get a list of Sessions attached to that entity.
+* A Command instance has a <code>session</code> property that always points back to the Session that triggered it (it's always a single one). It will be <code>None</code> if no session is involved, like when a mob or script triggers the Command.</p>
+<h2 id="customizing-the-session-object">Customizing the Session object<a class="headerlink" href="#customizing-the-session-object" title="Permanent link">&para;</a></h2>
+<p>When would one want to customize the Session object? Consider for example a character creation system: You might decide to keep this on the out-of-character level. This would mean that you create the character at the end of some sort of menu choice. The actual char-create cmdset would then normally be put on the account.  This works fine as long as you are <code>MULTISESSION_MODE</code> below 2.  For higher modes, replacing the Account cmdset will affect <em>all</em> your connected sessions, also those not involved in character  creation. In this case you want to instead put the char-create cmdset on the Session level - then all other sessions will keep working normally despite you creating a new character in one of them.</p>
+<p>By default, the session object gets the <code>commands.default_cmdsets.UnloggedinCmdSet</code> when the user first connects. Once the session is authenticated it has <em>no</em> default sets. To add a "logged-in" cmdset to the Session, give the path to the cmdset class with <code>settings.CMDSET_SESSION</code>. This set will then henceforth always be present as soon as the account logs in.</p>
+<p>To customize further you can completely override the Session with your own subclass. To replace the
+default Session class, change <code>settings.SERVER_SESSION_CLASS</code> to point to your custom class. This is
+a dangerous practice and errors can easily make your game unplayable.  Make sure to take heed of the
+<a href="https://github.com/evennia/evennia/blob/master/evennia/server/session.py">original</a> and make your
+changes carefully.</p>
+<h2 id="portal-and-server-sessions">Portal and Server Sessions<a class="headerlink" href="#portal-and-server-sessions" title="Permanent link">&para;</a></h2>
+<p><em>Note: This is considered an advanced topic. You don't need to know this on a first read-through.</em></p>
+<p>Evennia is split into two parts, the <a href="Portal-And-Server">Portal and the Server</a>. Each side tracks its own Sessions, syncing them to each other.</p>
+<p>The "Session" we normally refer to is actually the <code>ServerSession</code>. Its counter-part on the Portal side is the <code>PortalSession</code>. Whereas the server sessions deal with game states, the portal session deals with details of the connection-protocol itself. The two are also acting as backups of critical data such as when the server reboots.</p>
+<p>New Account connections are listened for and handled by the Portal using the <a href="session-protocols">protocols</a> it understands (such as telnet, ssh, webclient etc). When a new connection is established, a <code>PortalSession</code> is created on the Portal side. This session object looks different depending on which protocol is used to connect, but all still have a minimum set of attributes that are generic to all
+sessions.</p>
+<p>These common properties are piped from the Portal, through the AMP connection, to the Server, which is now informed a new connection has been established.  On the Server side, a <code>ServerSession</code> object is created to represent this. There is only one type of <code>ServerSession</code>; It looks the same regardless of how the Account connects.</p>
+<p>From now on, there is a one-to-one match between the <code>ServerSession</code> on one side of the AMP connection and the <code>PortalSession</code> on the other.  Data arriving to the Portal Session is sent on to its mirror Server session and vice versa.</p>
+<p>During certain situations, the portal- and server-side sessions are
+"synced" with each other:
+- The Player closes their client, killing the Portal Session. The Portal syncs with the Server to make sure the corresponding Server Session is also deleted.
+- The Player quits from inside the game, killing the Server Session.  The Server then syncs with the Portal to make sure to close the Portal connection cleanly.
+- The Server is rebooted/reset/shutdown - The Server Sessions are copied over ("saved") to the Portal side. When the Server comes back up, this data is returned by the Portal so the two are again in sync. This way an Account's login status and other connection-critical things can survive a server reboot (assuming the Portal is not stopped at the same time, obviously).</p>
+<h2 id="sessionhandlers">Sessionhandlers<a class="headerlink" href="#sessionhandlers" title="Permanent link">&para;</a></h2>
+<p>Both the Portal and Server each have a <em>sessionhandler</em> to manage the connections. These handlers are global entities contain all methods for relaying data across the AMP bridge. All types of Sessions hold a reference to their respective Sessionhandler (the property is called <code>sessionhandler</code>) so they can relay data. See <a href="https://github.com/evennia/evennia/wiki/Custom-Protocols">protocols</a> for more info
+on building new protocols.</p>
+<p>To get all Sessions in the game (i.e. all currently connected clients), you access the server-side Session handler, which you get by </p>
+<pre><code>from evennia.server.sessionhandler import SESSION_HANDLER
+</code></pre>
+
+<blockquote>
+<p>Note: The <code>SESSION_HANDLER</code> singleton has an older alias <code>SESSIONS</code> that is commonly seen in various places as well. </p>
+</blockquote>
+<p>See the <a href="https://github.com/evennia/evennia/blob/master/evennia/server/sessionhandler.py">sessionhandler.py</a> module for details on the capabilities of the <code>ServerSessionHandler</code>.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Evennia for roleplaying sessions - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#starting-out">Starting out</a></li>
+        <li class="main "><a href="#the-game-master-role">The Game Master role</a></li>
+            <li><a href="#short-version">Short version</a></li>
+            <li><a href="#the-permission-hierarchy">The permission hierarchy</a></li>
+            <li><a href="#how-to-grant-permissions">How to grant permissions</a></li>
+            <li><a href="#optional-making-a-gm-granting-command">Optional: Making a GM-granting command</a></li>
+        <li class="main "><a href="#character-sheet">Character sheet</a></li>
+            <li><a href="#short-version_1">Short version</a></li>
+            <li><a href="#building-a-character-sheet">Building a Character sheet</a></li>
+            <li><a href="#tie-a-character-sheet-to-a-character">Tie a Character sheet to a Character</a></li>
+            <li><a href="#command-for-account-to-change-character-sheet">Command for Account to change Character sheet</a></li>
+            <li><a href="#commands-for-gm-to-change-character-sheet">Commands for GM to change Character sheet</a></li>
+        <li class="main "><a href="#dice-roller">Dice roller</a></li>
+        <li class="main "><a href="#rooms">Rooms</a></li>
+        <li class="main "><a href="#channels">Channels</a></li>
+        <li class="main "><a href="#pms">PMs</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>This tutorial will explain how to set up a realtime or play-by-post tabletop style game using a fresh Evennia server.</p>
+<p>The scenario is thus: You and a bunch of friends want to play a tabletop role playing game online. One of you will be the game master and you are all okay with playing using written text. You want both the ability to role play in real-time (when people happen to be online at the same time) as well as the ability for people to post when they can and catch up on what happened since they were last online.</p>
+<p>This is the functionality we will be needing and using:</p>
+<ul>
+<li>The ability to make one of you the <em>GM</em> (game master), with special abilities.</li>
+<li>A <em>Character sheet</em> that players can create, view and fill in. It can also be locked so only the GM can modify it.</li>
+<li>A <em>dice roller</em> mechanism, for whatever type of dice the RPG rules require.</li>
+<li><em>Rooms</em>, to give a sense of location and to compartmentalize play going on- This means both Character movements from location to location and GM explicitly moving them around.</li>
+<li><em>Channels</em>, for easily sending text to all subscribing accounts, regardless of location.</li>
+<li>Account-to-Account <em>messaging</em> capability, including sending to multiple recipients simultaneously, regardless of location.</li>
+</ul>
+<p>We will find most of these things are already part of vanilla Evennia, but that we can expand on the defaults for our particular use-case. Below we will flesh out these components from start to finish.</p>
+<h2 id="starting-out">Starting out<a class="headerlink" href="#starting-out" title="Permanent link">&para;</a></h2>
+<p>We will assume you start from scratch. You need Evennia installed, as per the <a href="Getting-Started">Getting Started</a> instructions. Initialize a new game directory with <code>evennia init &lt;gamedirname&gt;</code>. In this tutorial we assume your game dir is simply named <code>mygame</code>. You can use the default database and keep all other settings to default for now. Familiarize yourself with the <code>mygame</code> folder before continuing. You might want to browse the <a href="First-Steps-Coding">First Steps Coding</a> tutorial, just to see roughly where things are modified.</p>
+<h2 id="the-game-master-role">The Game Master role<a class="headerlink" href="#the-game-master-role" title="Permanent link">&para;</a></h2>
+<h3 id="short-version">Short version<a class="headerlink" href="#short-version" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Simplest way: Being an admin, just give one account <code>Admins</code> permission using the standard <code>@perm</code> command.</li>
+<li>Better but more work: Make a custom command to set/unset the above, while tweaking the Character to show your renewed GM status to the other accounts.</li>
+</ul>
+<h3 id="the-permission-hierarchy">The permission hierarchy<a class="headerlink" href="#the-permission-hierarchy" title="Permanent link">&para;</a></h3>
+<p>Evennia has the following <a href="https://github.com/evennia/evennia/wiki/Building%20Permissions#assigning-permissions">permission hierarchy</a> out of the box: <em>Players, Helpers, Builders, Admins</em> and finally <em>Developers</em>. We could change these but then we'd need to update our Default commands to use the changes. We want to keep this simple, so instead we map our different roles on top of this permission ladder.</p>
+<ol>
+<li><code>Players</code> is the permission set on normal players. This is the default for anyone creating a new account on the server.</li>
+<li><code>Helpers</code> are like <code>Players</code> except they also have the ability to create/edit new help entries. This could be granted to players who are willing to help with writing lore or custom logs for everyone.</li>
+<li><code>Builders</code> is not used in our case since the GM should be the only world-builder.</li>
+<li><code>Admins</code> is the permission level the GM should have. Admins can do everything builders can (create/describe rooms etc) but also kick accounts, rename them and things like that.</li>
+<li><code>Developers</code>-level permission are the server administrators, the ones with the ability to restart/shutdown the server as well as changing the permission levels.</li>
+</ol>
+<blockquote>
+<p>The <a href="https://github.com/evennia/evennia/wiki/Building%20Permissions#the-super-user">superuser</a> is not part of the hierarchy and actually completely bypasses it. We'll assume server admin(s) will "just" be Developers.</p>
+</blockquote>
+<h3 id="how-to-grant-permissions">How to grant permissions<a class="headerlink" href="#how-to-grant-permissions" title="Permanent link">&para;</a></h3>
+<p>Only <code>Developers</code> can (by default) change permission level. Only they have access to the <code>@perm</code> command:</p>
+<pre><code>&gt; @perm Yvonne
+Permissions on Yvonne: accounts
+
+&gt; @perm Yvonne = Admins
+&gt; @perm Yvonne
+Permissions on Yvonne: accounts, admins
+
+&gt; @perm/del Yvonne = Admins
+&gt; @perm Yvonne
+Permissions on Yvonne: accounts
+</code></pre>
+
+<p>There is no need to remove the basic <code>Players</code> permission when adding the higher permission: the highest will be used. Permission level names are <em>not</em> case sensitive. You can also use both plural and singular, so "Admins" gives the same powers as "Admin".</p>
+<h3 id="optional-making-a-gm-granting-command">Optional: Making a GM-granting command<a class="headerlink" href="#optional-making-a-gm-granting-command" title="Permanent link">&para;</a></h3>
+<p>Use of <code>@perm</code> works out of the box, but it's really the bare minimum. Would it not be nice if other accounts could tell at a glance who the GM is? Also, we shouldn't really need to remember that the permission level is called "Admins". It would be easier if we could just do <code>@gm &lt;account&gt;</code> and <code>@notgm &lt;account&gt;</code> and at the same time change something make the new GM status apparent.</p>
+<p>So let's make this possible. This is what we'll do:</p>
+<ol>
+<li>We'll customize the default Character class. If an object of this class has a particular flag, its name will have the string<code>(GM)</code> added to the end.</li>
+<li>We'll add a new command, for the server admin to assign the GM-flag properly.</li>
+</ol>
+<h4 id="character-modification">Character modification<a class="headerlink" href="#character-modification" title="Permanent link">&para;</a></h4>
+<p>Let's first start by customizing the Character. We recommend you browse the beginning of the <a href="Accounts.html">Account</a> page to make sure you know how Evennia differentiates between the OOC "Account objects" (not to be confused with the <code>Accounts</code> permission, which is just a string specifying your access) and the IC "Character objects".</p>
+<p>Open <code>mygame/typeclasses/characters.py</code> and modify the default <code>Character</code> class:</p>
+<pre><code class="python"># in mygame/typeclasses/characters.py
+
+# [...]
+
+class Character(DefaultCharacter):
+    # [...]
+    def get_display_name(self, looker, **kwargs):
+        &quot;&quot;&quot;
+        This method customizes how character names are displayed. We assume
+        only permissions of types &quot;Developers&quot; and &quot;Admins&quot; require
+        special attention.
+        &quot;&quot;&quot;
+        name = self.key
+        selfaccount = self.account     # will be None if we are not puppeted
+        lookaccount = looker.account   #              - &quot; -
+
+        if selfaccount and selfaccount.db.is_gm:
+           # A GM. Show name as name(GM)
+           name = &quot;%s(GM)&quot; % name
+
+        if lookaccount and \
+          (lookaccount.permissions.get(&quot;Developers&quot;) or lookaccount.db.is_gm):
+            # Developers/GMs see name(#dbref) or name(GM)(#dbref)
+            return &quot;%s(#%s)&quot; % (name, self.id)
+        else:
+            return name
+
+</code></pre>
+
+<p>Above, we change how the Character's name is displayed: If the account controlling this Character is a GM, we attach the string <code>(GM)</code> to the Character's name so everyone can tell who's the boss. If we ourselves are Developers or GM's we will see database ids attached to Characters names, which can help if doing database searches against Characters of exactly the same name. We base the "gm-ingness" on having an flag (an <a href="Attributes.html">Attribute</a>) named <code>is_gm</code>. We'll make sure new GM's actually get this flag below.</p>
+<blockquote>
+<p><strong>Extra exercise:</strong> This will only show the <code>(GM)</code> text on <em>Characters</em> puppeted by a GM account, that is, it will show only to those in the same location. If we wanted it to also pop up in, say, <code>who</code> listings and channels, we'd need to make a similar change to the <code>Account</code> typeclass in <code>mygame/typeclasses/accounts.py</code>. We leave this as an exercise to the reader.</p>
+</blockquote>
+<h4 id="new-gmungm-command">New @gm/@ungm command<a class="headerlink" href="#new-gmungm-command" title="Permanent link">&para;</a></h4>
+<p>We will describe in some detail how to create and add an Evennia <a href="Commands.html">command</a> here with the hope that we don't need to be as detailed when adding commands in the future. We will build on Evennia's default "mux-like" commands here.</p>
+<p>Open <code>mygame/commands/command.py</code> and add a new Command class at the bottom:</p>
+<pre><code class="python"># in mygame/commands/command.py
+
+from evennia import default_cmds
+
+# [...]
+
+import evennia
+
+class CmdMakeGM(default_cmds.MuxCommand):
+    &quot;&quot;&quot;
+    Change an account's GM status
+
+    Usage:
+      @gm &lt;account&gt;
+      @ungm &lt;account&gt;
+
+    &quot;&quot;&quot;
+    # note using the key without @ means both @gm !gm etc will work
+    key = &quot;gm&quot;
+    aliases = &quot;ungm&quot;
+    locks = &quot;cmd:perm(Developers)&quot;
+    help_category = &quot;RP&quot;
+
+    def func(self):
+        &quot;Implement the command&quot;
+        caller = self.caller
+
+        if not self.args:
+            caller.msg(&quot;Usage: @gm account or @ungm account&quot;)
+            return
+
+        accountlist = evennia.search_account(self.args) # returns a list
+        if not accountlist:
+            caller.msg(&quot;Could not find account '%s'&quot; % self.args)
+            return
+        elif len(accountlist) &gt; 1:
+            caller.msg(&quot;Multiple matches for '%s': %s&quot; % (self.args, accountlist))
+            return
+        else:
+            account = accountlist[0]
+
+        if self.cmdstring == &quot;gm&quot;:
+            # turn someone into a GM
+            if account.permissions.get(&quot;Admins&quot;):
+                caller.msg(&quot;Account %s is already a GM.&quot; % account)
+            else:
+                account.permissions.add(&quot;Admins&quot;)
+                caller.msg(&quot;Account %s is now a GM.&quot; % account)
+                account.msg(&quot;You are now a GM (changed by %s).&quot; % caller)
+                account.character.db.is_gm = True
+        else:
+            # @ungm was entered - revoke GM status from someone
+            if not account.permissions.get(&quot;Admins&quot;):
+                caller.msg(&quot;Account %s is not a GM.&quot; % account)
+            else:
+                account.permissions.remove(&quot;Admins&quot;)
+                caller.msg(&quot;Account %s is no longer a GM.&quot; % account)
+                account.msg(&quot;You are no longer a GM (changed by %s).&quot; % caller)
+                del account.character.db.is_gm
+
+</code></pre>
+
+<p>All the command does is to locate the account target and assign it the <code>Admins</code> permission if we used <code>@gm</code> or revoke it if using the <code>@ungm</code> alias. We also set/unset the <code>is_gm</code> Attribute that is expected by our new <code>Character.get_display_name</code> method from earlier.</p>
+<blockquote>
+<p>We could have made this into two separate commands or opted for a syntax like <code>@gm/revoke &lt;accountname&gt;</code>. Instead we examine how this command was called (stored in <code>self.cmdstring</code>) in order to act accordingly. Either way works, practicality and coding style decides which to go with.</p>
+</blockquote>
+<p>To actually make this command available (only to Developers, due to the lock on it), we add it to the default Account command set. Open the file <code>mygame/commands/default_cmdsets.py</code> and find the <code>AccountCmdSet</code> class:</p>
+<pre><code class="python"># mygame/commands/default_cmdsets.py
+
+# [...]
+from commands.command import CmdMakeGM
+
+class AccountCmdSet(default_cmds.AccountCmdSet):
+    # [...]
+    def at_cmdset_creation(self):
+        # [...]
+        self.add(CmdMakeGM())
+
+</code></pre>
+
+<p>Finally, issue the <code>@reload</code> command to update the server to your changes. Developer-level players (or the superuser) should now have the <code>@gm/@ungm</code> command available.</p>
+<h2 id="character-sheet">Character sheet<a class="headerlink" href="#character-sheet" title="Permanent link">&para;</a></h2>
+<h3 id="short-version_1">Short version<a class="headerlink" href="#short-version_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Use Evennia's EvTable/EvForm to build a Character sheet</li>
+<li>Tie individual sheets to a given Character.</li>
+<li>Add new commands to modify the Character sheet, both by Accounts and GMs.</li>
+<li>Make the Character sheet lockable by a GM, so the Player can no longer modify it.</li>
+</ul>
+<h3 id="building-a-character-sheet">Building a Character sheet<a class="headerlink" href="#building-a-character-sheet" title="Permanent link">&para;</a></h3>
+<p>There are many ways to build a Character sheet in text, from manually pasting strings together to more automated ways. Exactly what is the best/easiest way depends on the sheet one tries to create. We will here show two examples using the <em>EvTable</em> and <em>EvForm</em> utilities.Later we will create Commands to edit and display the output from those utilities.</p>
+<blockquote>
+<p>Note that due to the limitations of the wiki, no color is used in any of the examples. See <a href="TextTags.html">the text tag documentation</a> for how to add color to the tables and forms.</p>
+</blockquote>
+<h4 id="making-a-sheet-with-evtable">Making a sheet with EvTable<a class="headerlink" href="#making-a-sheet-with-evtable" title="Permanent link">&para;</a></h4>
+<p><a href="https://github.com/evennia/evennia/wiki/evennia.utils.evtable">EvTable</a> is a text-table generator. It helps with displaying text in ordered rows and columns. This is an example of using it in code:</p>
+<pre><code class="python"># this can be tried out in a Python shell like iPython
+
+from evennia.utils import evtable
+
+# we hardcode these for now, we'll get them as input later
+STR, CON, DEX, INT, WIS, CHA = 12, 13, 8, 10, 9, 13
+
+table = evtable.EvTable(&quot;Attr&quot;, &quot;Value&quot;,
+                        table = [
+                           [&quot;STR&quot;, &quot;CON&quot;, &quot;DEX&quot;, &quot;INT&quot;, &quot;WIS&quot;, &quot;CHA&quot;],
+                           [STR, CON, DEX, INT, WIS, CHA]
+                        ], align='r', border=&quot;incols&quot;)
+</code></pre>
+
+<p>Above, we create a two-column table by supplying the two columns directly. We also tell the table to be right-aligned and to use the "incols" border type (borders drawns only in between columns). The <code>EvTable</code> class takes a lot of arguments for customizing its look, you can see <a href="https://github.com/evennia/evennia/wiki/evennia.utils.evtable#evtable__init__">some of the possible keyword arguments here</a>. Once you have the <code>table</code> you could also retroactively add new columns and rows to it with <code>table.add_row()</code> and <code>table.add_column()</code>: if necessary the table will expand with empty rows/columns to always remain rectangular.</p>
+<p>The result from printing the above table will be</p>
+<pre><code class="python">table_string = str(table)
+
+print(table_string)
+
+ Attr | Value
+~~~~~~+~~~~~~~
+  STR |    12
+  CON |    13
+  DEX |     8
+  INT |    10
+  WIS |     9
+  CHA |    13
+</code></pre>
+
+<p>This is a minimalistic but effective Character sheet. By combining the <code>table_string</code> with other strings one could build up a reasonably full graphical representation of a Character. For more advanced layouts we'll look into EvForm next.</p>
+<h4 id="making-a-sheet-with-evform">Making a sheet with EvForm<a class="headerlink" href="#making-a-sheet-with-evform" title="Permanent link">&para;</a></h4>
+<p><a href="https://github.com/evennia/evennia/wiki/evennia.utils.evform">EvForm</a> allows the creation of a two-dimensional "graphic" made by text characters. On this surface, one marks and tags rectangular regions ("cells") to be filled with content. This content can be either normal strings or <code>EvTable</code> instances (see the previous section, one such instance would be the <code>table</code> variable in that example).</p>
+<p>In the case of a Character sheet, these cells would be comparable to a line or box where you could enter the name of your character or their strength score. EvMenu also easily allows to update the content of those fields in code (it use EvTables so you rebuild the table first before re-sending it to EvForm).</p>
+<p>The drawback of EvForm is that its shape is static; if you try to put more text in a region than it was sized for, the text will be cropped. Similarly, if you try to put an EvTable instance in a field too small for it, the EvTable will do its best to try to resize to fit, but will eventually resort to cropping its data or even give an error if too small to fit any data.</p>
+<p>An EvForm is defined in a Python module. Create a new file <code>mygame/world/charsheetform.py</code> and modify it thus:</p>
+<pre><code class="python">#coding=utf-8
+
+# in mygame/world/charsheetform.py
+
+FORMCHAR = &quot;x&quot;
+TABLECHAR = &quot;c&quot;
+
+FORM = &quot;&quot;&quot;
+.--------------------------------------.
+|                                      |
+| Name: xxxxxxxxxxxxxx1xxxxxxxxxxxxxxx |
+|       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx |
+|                                      |
+ &gt;------------------------------------&lt;
+|                                      |
+| ccccccccccc  Advantages:             |
+| ccccccccccc   xxxxxxxxxxxxxxxxxxxxxx |
+| ccccccccccc   xxxxxxxxxx3xxxxxxxxxxx |
+| ccccccccccc   xxxxxxxxxxxxxxxxxxxxxx |
+| ccccc2ccccc  Disadvantages:          |
+| ccccccccccc   xxxxxxxxxxxxxxxxxxxxxx |
+| ccccccccccc   xxxxxxxxxx4xxxxxxxxxxx |
+| ccccccccccc   xxxxxxxxxxxxxxxxxxxxxx |
+|                                      |
++--------------------------------------+
+&quot;&quot;&quot;
+</code></pre>
+
+<p>The <code>#coding</code> statement (which must be put on the very first line to work) tells Python to use the utf-8 encoding for the file. Using the <code>FORMCHAR</code> and <code>TABLECHAR</code> we define what single-character we want to use to "mark" the regions of the character sheet holding cells and tables respectively. Within each block (which must be separated from one another by at least one non-marking character) we embed identifiers 1-4 to identify each block. The identifier could be any single character except for the <code>FORMCHAR</code> and <code>TABLECHAR</code></p>
+<blockquote>
+<p>You can still use <code>FORMCHAR</code> and <code>TABLECHAR</code> elsewhere in your sheet, but not in a way that it would identify a cell/table. The smallest identifiable cell/table area is 3 characters wide including the identifier (for example <code>x2x</code>).</p>
+</blockquote>
+<p>Now we will map content to this form.</p>
+<pre><code class="python"># again, this can be tested in a Python shell
+
+# hard-code this info here, later we'll ask the
+# account for this info. We will re-use the 'table'
+# variable from the EvTable example.
+
+NAME = &quot;John, the wise old admin with a chip on his shoulder&quot;
+ADVANTAGES = &quot;Language-wiz, Intimidation, Firebreathing&quot;
+DISADVANTAGES = &quot;Bad body odor, Poor eyesight, Troubled history&quot;
+
+from evennia.utils import evform
+
+# load the form from the module
+form = evform.EvForm(&quot;world/charsheetform.py&quot;)
+
+# map the data to the form
+form.map(cells={&quot;1&quot;:NAME, &quot;3&quot;: ADVANTAGES, &quot;4&quot;: DISADVANTAGES},
+         tables={&quot;2&quot;:table})
+</code></pre>
+
+<p>We create some RP-sounding input and re-use the <code>table</code> variable from the previous <code>EvTable</code> example.</p>
+<blockquote>
+<p>Note, that if you didn't want to create the form in a separate module you <em>could</em> also load it directly into the <code>EvForm</code> call like this: <code>EvForm(form={"FORMCHAR":"x", "TABLECHAR":"c", "FORM": formstring})</code> where <code>FORM</code> specifies the form as a string in the same way as listed in the module above. Note however that the very first line of the <code>FORM</code> string is ignored, so start with a <code>\n</code>.</p>
+</blockquote>
+<p>We then map those to the cells of the form:</p>
+<pre><code class="python">print(form)
+</code></pre>
+
+<pre><code>.--------------------------------------.
+|                                      |
+| Name: John, the wise old admin with |
+|        a chip on his shoulder        |
+|                                      |
+ &gt;------------------------------------&lt;
+|                                      |
+|  Attr|Value  Advantages:             |
+| ~~~~~+~~~~~   Language-wiz,          |
+|   STR|   12   Intimidation,          |
+|   CON|   13   Firebreathing          |
+|   DEX|    8  Disadvantages:          |
+|   INT|   10   Bad body odor, Poor    |
+|   WIS|    9   eyesight, Troubled     |
+|   CHA|   13   history                |
+|                                      |
++--------------------------------------+
+</code></pre>
+
+<p>As seen, the texts and tables have been slotted into the text areas and line breaks have been added where needed. We chose to just enter the Advantages/Disadvantages as plain strings here, meaning long names ended up split between rows. If we wanted more control over the display we could have inserted <code>\n</code> line breaks after each line or used a borderless <code>EvTable</code> to display those as well.</p>
+<h3 id="tie-a-character-sheet-to-a-character">Tie a Character sheet to a Character<a class="headerlink" href="#tie-a-character-sheet-to-a-character" title="Permanent link">&para;</a></h3>
+<p>We will assume we go with the <code>EvForm</code> example above. We now need to attach this to a Character so it can be modified. For this we will modify our <code>Character</code> class a little more:</p>
+<pre><code class="python"># mygame/typeclasses/character.py
+
+from evennia.utils import evform, evtable
+
+[...]
+
+class Character(DefaultCharacter):
+    [...]
+    def at_object_creation(self):
+        &quot;called only once, when object is first created&quot;
+        # we will use this to stop account from changing sheet
+        self.db.sheet_locked = False
+        # we store these so we can build these on demand
+        self.db.chardata  = {&quot;str&quot;: 0,
+                             &quot;con&quot;: 0,
+                             &quot;dex&quot;: 0,
+                             &quot;int&quot;: 0,
+                             &quot;wis&quot;: 0,
+                             &quot;cha&quot;: 0,
+                             &quot;advantages&quot;: &quot;&quot;,
+                             &quot;disadvantages&quot;: &quot;&quot;}
+        self.db.charsheet = evform.EvForm(&quot;world/charsheetform.py&quot;)
+        self.update_charsheet()
+
+    def update_charsheet(self):
+        &quot;&quot;&quot;
+        Call this to update the sheet after any of the ingoing data
+        has changed.
+        &quot;&quot;&quot;
+        data = self.db.chardata
+        table = evtable.EvTable(&quot;Attr&quot;, &quot;Value&quot;,
+                        table = [
+                           [&quot;STR&quot;, &quot;CON&quot;, &quot;DEX&quot;, &quot;INT&quot;, &quot;WIS&quot;, &quot;CHA&quot;],
+                           [data[&quot;str&quot;], data[&quot;con&quot;], data[&quot;dex&quot;],
+                            data[&quot;int&quot;], data[&quot;wis&quot;], data[&quot;cha&quot;]]],
+                           align='r', border=&quot;incols&quot;)
+        self.db.charsheet.map(tables={&quot;2&quot;: table},
+                              cells={&quot;1&quot;:self.key,
+                                     &quot;3&quot;:data[&quot;advantages&quot;],
+                                     &quot;4&quot;:data[&quot;disadvantages&quot;]})
+
+</code></pre>
+
+<p>Use <code>@reload</code> to make this change available to all <em>newly created</em> Characters. <em>Already existing</em> Characters will <em>not</em> have the charsheet defined, since <code>at_object_creation</code> is only called once. The easiest to force an existing Character to re-fire its <code>at_object_creation</code> is to use the <code>@typeclass</code> command in-game:</p>
+<pre><code>@typeclass/force &lt;Character Name&gt;
+</code></pre>
+
+<h3 id="command-for-account-to-change-character-sheet">Command for Account to change Character sheet<a class="headerlink" href="#command-for-account-to-change-character-sheet" title="Permanent link">&para;</a></h3>
+<p>We will add a command to edit the sections of our Character sheet. Open <code>mygame/commands/command.py</code>.</p>
+<pre><code class="python"># at the end of mygame/commands/command.py
+
+ALLOWED_ATTRS = (&quot;str&quot;, &quot;con&quot;, &quot;dex&quot;, &quot;int&quot;, &quot;wis&quot;, &quot;cha&quot;)
+ALLOWED_FIELDNAMES = ALLOWED_ATTRS + \
+                     (&quot;name&quot;, &quot;advantages&quot;, &quot;disadvantages&quot;)
+
+def _validate_fieldname(caller, fieldname):
+    &quot;Helper function to validate field names.&quot;
+    if fieldname not in ALLOWED_FIELDNAMES:
+        err = &quot;Allowed field names: %s&quot; % (&quot;, &quot;.join(ALLOWED_FIELDNAMES))
+        caller.msg(err)
+        return False
+    if fieldname in ALLOWED_ATTRS and not value.isdigit():
+        caller.msg(&quot;%s must receive a number.&quot; % fieldname)
+        return False
+    return True
+
+class CmdSheet(MuxCommand):
+    &quot;&quot;&quot;
+    Edit a field on the character sheet
+
+    Usage:
+      @sheet field value
+
+    Examples:
+      @sheet name Ulrik the Warrior
+      @sheet dex 12
+      @sheet advantages Super strength, Night vision
+
+    If given without arguments, will view the current character sheet.
+
+    Allowed field names are:
+       name,
+       str, con, dex, int, wis, cha,
+       advantages, disadvantages
+
+    &quot;&quot;&quot;
+
+    key = &quot;sheet&quot;
+    aliases = &quot;editsheet&quot;
+    locks = &quot;cmd: perm(Players)&quot;
+    help_category = &quot;RP&quot;
+
+    def func(self):
+        caller = self.caller
+        if not self.args or len(self.args) &lt; 2:
+            # not enough arguments. Display the sheet
+            if sheet:
+                caller.msg(caller.db.charsheet)
+            else:
+                caller.msg(&quot;You have no character sheet.&quot;)
+            return
+
+        # if caller.db.sheet_locked:
+            caller.msg(&quot;Your character sheet is locked.&quot;)
+            return
+
+        # split input by whitespace, once
+        fieldname, value = self.args.split(None, 1)
+        fieldname = fieldname.lower() # ignore case
+
+        if not _validate_fieldnames(caller, fieldname):
+            return
+        if fieldname == &quot;name&quot;:
+            self.key = value
+        else:
+            caller.chardata[fieldname] = value
+        caller.update_charsheet()
+        caller.msg(&quot;%s was set to %s.&quot; % (fieldname, value))
+
+</code></pre>
+
+<p>Most of this command is error-checking to make sure the right type of data was input. Note how the <code>sheet_locked</code> Attribute is checked and will return if not set.</p>
+<p>This command you import into <code>mygame/commands/default_cmdsets.py</code> and add to the <code>CharacterCmdSet</code>, in the same way the <code>@gm</code> command was added to the <code>AccountCmdSet</code> earlier.</p>
+<h3 id="commands-for-gm-to-change-character-sheet">Commands for GM to change Character sheet<a class="headerlink" href="#commands-for-gm-to-change-character-sheet" title="Permanent link">&para;</a></h3>
+<p>Game masters use basically the same input as Players do to edit a character sheet, except they can do it on other players than themselves. They are also not stopped by any <code>sheet_locked</code> flags.</p>
+<pre><code class="python"># continuing in mygame/commands/command.py
+
+class CmdGMsheet(MuxCommand):
+    &quot;&quot;&quot;
+    GM-modification of char sheets
+
+    Usage:
+      @gmsheet character [= fieldname value]
+
+    Switches:
+      lock - lock the character sheet so the account
+             can no longer edit it (GM's still can)
+      unlock - unlock character sheet for Account
+             editing.
+
+    Examples:
+      @gmsheet Tom
+      @gmsheet Anna = str 12
+      @gmsheet/lock Tom
+
+    &quot;&quot;&quot;
+    key = &quot;gmsheet&quot;
+    locks = &quot;cmd: perm(Admins)&quot;
+    help_category = &quot;RP&quot;
+
+    def func(self):
+        caller = self.caller
+        if not self.args:
+            caller.msg(&quot;Usage: @gmsheet character [= fieldname value]&quot;)
+
+        if self.rhs:
+            # rhs (right-hand-side) is set only if a '='
+            # was given.
+            if len(self.rhs) &lt; 2:
+                caller.msg(&quot;You must specify both a fieldname and value.&quot;)
+                return
+            fieldname, value = self.rhs.split(None, 1)
+            fieldname = fieldname.lower()
+            if not _validate_fieldname(caller, fieldname):
+                return
+            charname = self.lhs
+        else:
+            # no '=', so we must be aiming to look at a charsheet
+            fieldname, value = None, None
+            charname = self.args.strip()
+
+        character = caller.search(charname, global_search=True)
+        if not character:
+            return
+
+        if &quot;lock&quot; in self.switches:
+            if character.db.sheet_locked:
+                caller.msg(&quot;The character sheet is already locked.&quot;)
+            else:
+                character.db.sheet_locked = True
+                caller.msg(&quot;%s can no longer edit their character sheet.&quot; % character.key)
+        elif &quot;unlock&quot; in self.switches:
+            if not character.db.sheet_locked:
+                caller.msg(&quot;The character sheet is already unlocked.&quot;)
+            else:
+                character.db.sheet_locked = False
+                caller.msg(&quot;%s can now edit their character sheet.&quot; % character.key)
+
+        if fieldname:
+            if fieldname == &quot;name&quot;:
+                character.key = value
+            else:
+                character.db.chardata[fieldname] = value
+            character.update_charsheet()
+            caller.msg(&quot;You set %s's %s to %s.&quot; % (character.key, fieldname, value)
+        else:
+            # just display
+            caller.msg(character.db.charsheet)
+</code></pre>
+
+<p>The <code>@gmsheet</code> command takes an additional argument to specify which Character's character sheet to edit. It also takes <code>/lock</code> and <code>/unlock</code> switches to block the Player from tweaking their sheet.</p>
+<p>Before this can be used, it should be added to the default <code>CharacterCmdSet</code> in the same way as the normal <code>@sheet</code>. Due to the lock set on it, this command will only be available to <code>Admins</code> (i.e. GMs) or higher permission levels.</p>
+<h2 id="dice-roller">Dice roller<a class="headerlink" href="#dice-roller" title="Permanent link">&para;</a></h2>
+<p>Evennia's <em>contrib</em> folder already comes with a full dice roller. To add it to the game, simply import <code>contrib.dice.CmdDice</code> into <code>mygame/commands/default_cmdsets.py</code> and add <code>CmdDice</code> to the <code>CharacterCmdset</code> as done with other commands in this tutorial. After a <code>@reload</code> you will be able to roll dice using normal RPG-style format:</p>
+<pre><code>roll 2d6 + 3
+7
+</code></pre>
+
+<p>Use <code>help dice</code> to see what syntax is supported or look at <code>evennia/contrib/dice.py</code> to see how it's implemented.</p>
+<h2 id="rooms">Rooms<a class="headerlink" href="#rooms" title="Permanent link">&para;</a></h2>
+<p>Evennia comes with rooms out of the box, so no extra work needed. A GM will automatically have all needed building commands available. A fuller go-through is found in the <a href="Building-quickstart">Building tutorial</a>. Here are some useful highlights:</p>
+<ul>
+<li><code>@dig roomname;alias = exit_there;alias, exit_back;alias</code> - this is the basic command for digging a new room. You can specify any exit-names and just enter the name of that exit to go there.</li>
+<li><code>@tunnel direction = roomname</code> - this is a specialized command that only accepts directions in the cardinal directions (n,ne,e,se,s,sw,w,nw) as well as in/out and up/down. It also automatically builds "matching" exits back in the opposite direction.</li>
+<li><code>@create/drop objectname</code> - this creates and drops a new simple object in the current location.</li>
+<li><code>@desc obj</code> - change the look-description of the object.</li>
+<li><code>@tel object = location</code> - teleport an object to a named location.</li>
+<li><code>@search objectname</code> - locate an object in the database.</li>
+</ul>
+<blockquote>
+<p>TODO: Describe how to add a logging room, that logs says and poses to a log file that people can access after the fact.</p>
+</blockquote>
+<h2 id="channels">Channels<a class="headerlink" href="#channels" title="Permanent link">&para;</a></h2>
+<p>Evennia comes with <a href="Communications.html#Channels">Channels</a> in-built and they are described fully in the documentation. For brevity, here are the relevant commands for normal use:</p>
+<ul>
+<li><code>@ccreate new_channel;alias;alias = short description</code> - Creates a new channel.</li>
+<li><code>addcom channel</code> - join an existing channel. Use <code>addcom alias = channel</code> to add a new alias you can use to talk to the channel, as many as desired.</li>
+<li><code>delcom alias or channel</code> - remove an alias from a channel or, if the real channel name is given, unsubscribe completely.</li>
+<li><code>@channels</code> lists all available channels, including your subscriptions and any aliases you have set up for them.</li>
+</ul>
+<p>You can read channel history: if you for example are chatting on the <code>public</code> channel you can do <code>public/history</code> to see the 20 last posts to that channel or <code>public/history 32</code> to view twenty posts backwards, starting with the 32nd from the end.</p>
+<h2 id="pms">PMs<a class="headerlink" href="#pms" title="Permanent link">&para;</a></h2>
+<p>To send PMs to one another, players can use the <code>@page</code> (or <code>tell</code>) command:</p>
+<pre><code>page recipient = message
+page recipient, recipient, ... = message
+</code></pre>
+
+<p>Players can use <code>page</code> alone to see the latest messages. This also works if they were not online when the message was sent.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

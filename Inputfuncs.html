@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Inputfuncs - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#adding-your-own-inputfuncs">Adding your own inputfuncs</a></li>
+        <li class="main "><a href="#default-inputfuncs">Default inputfuncs</a></li>
+            <li><a href="#text">text</a></li>
+            <li><a href="#echo">echo</a></li>
+            <li><a href="#default">default</a></li>
+            <li><a href="#client_options">client_options</a></li>
+            <li><a href="#get_client_options">get_client_options</a></li>
+            <li><a href="#get_inputfuncs">get_inputfuncs</a></li>
+            <li><a href="#login">login</a></li>
+            <li><a href="#get_value">get_value</a></li>
+            <li><a href="#repeat">repeat</a></li>
+            <li><a href="#unrepeat">unrepeat</a></li>
+            <li><a href="#monitor">monitor</a></li>
+        <li class="main "><a href="#unmonitor">unmonitor</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="These-handle-incoming-requests-from-the-client"></a></p>
+<p>An <em>inputfunc</em> is an Evennia function that handles a particular input (an <a href="OOB.html">inputcommand</a>) from the client. The inputfunc is the last destination for the inputcommand along the <a href="messagepath#the-ingoing-message-path">ingoing message path</a>. The inputcommand always has the form <code>(commandname, (args), {kwargs})</code> and Evennia will use this to try to find and call an inputfunc on the form </p>
+<pre><code class="python">    def commandname(session, *args, **kwargs):
+        # ...
+
+</code></pre>
+
+<p>Or, if no match was found, it will call an inputfunc named "default" on this form</p>
+<pre><code class="python">    def default(session, cmdname, *args, **kwargs):
+        # cmdname is the name of the mismatched inputcommand
+
+</code></pre>
+
+<h2 id="adding-your-own-inputfuncs">Adding your own inputfuncs<a class="headerlink" href="#adding-your-own-inputfuncs" title="Permanent link">&para;</a></h2>
+<p>This is simple. Add a function on the above form to <code>mygame/server/conf/inputfuncs.py</code>. Your function must be in the global, outermost scope of that module and not start with an underscore (<code>_</code>) to be recognized as an inputfunc.  Reload the server. That's it. To overload a default inputfunc (see below), just add a function with the same name. </p>
+<p>The modules Evennia looks into for inputfuncs are defined in the list <code>settings.INPUT_FUNC_MODULES</code>. This list will be imported from left to right and later imported functions will replace earlier ones. </p>
+<h2 id="default-inputfuncs">Default inputfuncs<a class="headerlink" href="#default-inputfuncs" title="Permanent link">&para;</a></h2>
+<p>Evennia defines a few default inputfuncs to handle the common cases. These are defined in <code>evennia/server/inputfuncs.py</code>.</p>
+<h3 id="text">text<a class="headerlink" href="#text" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Input: <code>("text", (textstring,), {})</code></li>
+<li>Output: Depends on Command triggered</li>
+</ul>
+<p>This is the most common of inputcommands, and the only one supported by every traditional mud. The argument is usually what the user sent from their command line. Since all text input from the user like this is considered a <a href="Commands.html">Command</a>, this inputfunc will do things like nick-replacement and then pass on the input to the central Commandhandler. </p>
+<h3 id="echo">echo<a class="headerlink" href="#echo" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Input: <code>("echo", (args), {})</code></li>
+<li>Output: <code>("text", ("Echo returns: %s" % args), {})</code></li>
+</ul>
+<p>This is a test input, which just echoes the argument back to the session as text. Can be used for testing custom client input. </p>
+<h3 id="default">default<a class="headerlink" href="#default" title="Permanent link">&para;</a></h3>
+<p>The default function, as mentioned above, absorbs all non-recognized inputcommands. The default one will just log an error. </p>
+<h3 id="client_options">client_options<a class="headerlink" href="#client_options" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Input: <code>("client_options, (), {key:value, ...})</code></li>
+<li>Output:</li>
+<li>normal: None</li>
+<li>get: <code>("client_options", (), {key:value, ...})</code></li>
+</ul>
+<p>This is a direct command for setting protocol options. These are settable with the <code>@option</code> command, but this offers a client-side way to set them. Not all connection protocols makes use of all flags, but here are the possible keywords: </p>
+<ul>
+<li>get (bool): If this is true, ignore all other kwargs and immediately return the current settings as an outputcommand <code>("client_options", (), {key=value, ...})</code>-        </li>
+<li>client (str): A client identifier, like "mushclient".</li>
+<li>version (str): A client version</li>
+<li>ansi (bool): Supports ansi colors</li>
+<li>xterm256 (bool): Supports xterm256 colors or not</li>
+<li>mxp (bool): Supports MXP or not</li>
+<li>utf-8 (bool): Supports UTF-8 or not</li>
+<li>screenreader (bool): Screen-reader mode on/off</li>
+<li>mccp (bool): MCCP compression on/off</li>
+<li>screenheight (int): Screen height in lines</li>
+<li>screenwidth (int): Screen width in characters</li>
+<li>inputdebug (bool): Debug input functions</li>
+<li>nomarkup (bool): Strip all text tags</li>
+<li>raw (bool): Leave text tags unparsed </li>
+</ul>
+<blockquote>
+<p>Note that there are two GMCP aliases to this inputfunc - <code>hello</code> and <code>supports_set</code>, which means it will be accessed via the GMCP <code>Hello</code> and <code>Supports.Set</code> instructions assumed by some clients. </p>
+</blockquote>
+<h3 id="get_client_options">get_client_options<a class="headerlink" href="#get_client_options" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Input: <code>("get_client_options, (), {key:value, ...})</code></li>
+<li>Output: <code>("client_options, (), {key:value, ...})</code></li>
+</ul>
+<p>This is a convenience wrapper that retrieves the current options by sending "get" to <code>client_options</code> above. </p>
+<h3 id="get_inputfuncs">get_inputfuncs<a class="headerlink" href="#get_inputfuncs" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Input: <code>("get_inputfuncs", (), {})</code></li>
+<li>Output: <code>("get_inputfuncs", (), {funcname:docstring, ...})</code></li>
+</ul>
+<p>Returns an outputcommand on the form <code>("get_inputfuncs", (), {funcname:docstring, ...})</code> - a list of all the available inputfunctions along with their docstrings. </p>
+<h3 id="login">login<a class="headerlink" href="#login" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>Note: this is currently experimental and not very well tested.</p>
+</blockquote>
+<ul>
+<li>Input: <code>("login", (username, password), {})</code></li>
+<li>Output: Depends on login hooks</li>
+</ul>
+<p>This performs the inputfunc version of a login operation on the current Session.</p>
+<h3 id="get_value">get_value<a class="headerlink" href="#get_value" title="Permanent link">&para;</a></h3>
+<p>Input: <code>("get_value", (name, ), {})</code>
+Output: <code>("get_value", (value, ), {})</code></p>
+<p>Retrieves a value from the Character or Account currently controlled by this Session. Takes one argument, This will only accept particular white-listed names, you'll need to overload the function to expand. By default the following values can be retrieved: </p>
+<ul>
+<li>"name" or "key": The key of the Account or puppeted Character.</li>
+<li>"location": Name of the current location, or "None".</li>
+<li>"servername": Name of the Evennia server connected to.</li>
+</ul>
+<h3 id="repeat">repeat<a class="headerlink" href="#repeat" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Input: <code>("repeat", (), {"callback":funcname, 
+                       "interval": secs, "stop": False})</code> </li>
+<li>Output: Depends on the repeated function. Will return <code>("text", (repeatlist),{}</code> with a list of accepted names if given an unfamiliar callback name. </li>
+</ul>
+<p>This will tell evennia to repeatedly call a named function at a given interval. Behind the scenes this will set up a <a href="TickerHandler.html">Ticker</a>. Only previously acceptable functions are possible to repeat-call in this way, you'll need to overload this inputfunc to add the ones you want to offer. By default only two example functions are allowed, "test1" and "test2", which will just echo a text back at the given interval. Stop the repeat by sending <code>"stop": True</code> (note that you must include both the callback name and interval for Evennia to know what to stop). </p>
+<h3 id="unrepeat">unrepeat<a class="headerlink" href="#unrepeat" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Input: <code>("unrepeat", (), ("callback":funcname, 
+                             "interval": secs)</code></li>
+<li>Output: None</li>
+</ul>
+<p>This is a convenience wrapper for sending "stop" to the <code>repeat</code> inputfunc. </p>
+<h3 id="monitor">monitor<a class="headerlink" href="#monitor" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Input: <code>("monitor", (), ("name":field_or_argname, stop=False)</code></li>
+<li>Output (on change): <code>("monitor", (), {"name":name, "value":value})</code></li>
+</ul>
+<p>This sets up on-object monitoring of Attributes or database fields. Whenever the field or Attribute changes in any way, the outputcommand will be sent. This is using the <a href="MonitorHandler.html">MonitorHandler</a> behind the scenes. Pass the "stop" key to stop monitoring. Note that you must supply the name also when stopping to let the system know which monitor should be cancelled. </p>
+<p>Only fields/attributes in a whitelist are allowed to be used, you have to overload this function to add more. By default the following fields/attributes can be monitored:</p>
+<ul>
+<li>"name": The current character name </li>
+<li>"location": The current location</li>
+<li>"desc": The description Argument</li>
+</ul>
+<h2 id="unmonitor">unmonitor<a class="headerlink" href="#unmonitor" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Input: <code>("unmonitor", (), {"name":name})</code></li>
+<li>Output: None</li>
+</ul>
+<p>A convenience wrapper that sends "stop" to the <code>monitor</code> function. </p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Customize channels - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#channel-commands-in-evennia">Channel commands in Evennia</a></li>
+            <li><a href="#what-we-will-try-to-do">What we will try to do</a></li>
+            <li><a href="#a-command-to-join-another-to-leave">A command to join, another to leave</a></li>
+            <li><a href="#a-generic-channel-command-with-switches">A generic channel command with switches</a></li>
+            <li><a href="#conclusion-and-full-code">Conclusion and full code</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="A-tutorial-on-customizing-channel-commands."></a></p>
+<h1 id="channel-commands-in-evennia">Channel commands in Evennia<a class="headerlink" href="#channel-commands-in-evennia" title="Permanent link">&para;</a></h1>
+<p>By default, Evennia's default channel commands are inspired by MUX. They all
+begin with "c" followed by the action to perform (like "ccreate" or "cdesc").
+If this default seems strange to you compared to other Evennia commands that
+rely on switches, you might want to check this tutorial out.</p>
+<p>This tutorial will also give you insight into the workings of the channel system.
+So it may be useful even if you don't plan to make the exact changes shown here.</p>
+<h2 id="what-we-will-try-to-do">What we will try to do<a class="headerlink" href="#what-we-will-try-to-do" title="Permanent link">&para;</a></h2>
+<p>Our mission: change the default channel commands to have a different syntax.</p>
+<p>This tutorial will do the following changes: </p>
+<ul>
+<li>Remove all the default commands to handle channels.</li>
+<li>Add a <code>+</code> and <code>-</code> command to join and leave a channel.  So, assuming there is
+a <code>public</code> channel on your game (most often the case), you could type <code>+public</code>
+to join it and <code>-public</code> to leave it.</li>
+<li>Group the commands to manipulate channels under the channel name, after a
+switch.  For instance, instead of writing <code>cdesc public = My public channel</code>,
+  you would write <code>public/desc My public channel</code>.</li>
+</ul>
+<blockquote>
+<p>I listed removing the default Evennia commands as a first step in the
+process. Actually, we'll move it at the very bottom of the list, since we
+still want to use them, we might get it wrong and rely on Evennia commands
+for a while longer.</p>
+</blockquote>
+<h2 id="a-command-to-join-another-to-leave">A command to join, another to leave<a class="headerlink" href="#a-command-to-join-another-to-leave" title="Permanent link">&para;</a></h2>
+<p>We'll do the most simple task at first: create two commands, one to join a
+channel, one to leave.</p>
+<blockquote>
+<p>Why not have them as switches? <code>public/join</code> and <code>public/leave</code> for instance?</p>
+</blockquote>
+<p>For security reasons, I will hide channels to which the caller is not
+connected.  It means that if the caller is not connected to the "public"
+channel, he won't be able to use the "public" command.  This is somewhat
+standard: if we create an administrator-only channel, we don't want players to
+try (or even know) the channel command.  Again, you could design it a different
+way should you want to.</p>
+<p>First create a file named <code>comms.py</code> in your <code>commands</code> package.  It's
+a rather logical place, since we'll write different commands to handle
+communication.</p>
+<p>Okay, let's add the first command to join a channel:</p>
+<pre><code class="python"># in commands/comms.py
+from evennia.utils.search import search_channel
+from commands.command import Command
+
+class CmdConnect(Command):
+    &quot;&quot;&quot;
+    Connect to a channel.
+    &quot;&quot;&quot;
+
+    key = &quot;+&quot;
+    help_category = &quot;Comms&quot;
+    locks = &quot;cmd:not pperm(channel_banned)&quot;
+    auto_help = False
+
+    def func(self):
+        &quot;&quot;&quot;Implement the command&quot;&quot;&quot;
+        caller = self.caller
+        args = self.args
+        if not args:
+            self.msg(&quot;Which channel do you want to connect to?&quot;)
+            return
+
+        channelname = self.args
+        channel = search_channel(channelname)
+        if not channel:
+            return
+
+        # Check permissions
+        if not channel.access(caller, 'listen'):
+            self.msg(&quot;%s: You are not allowed to listen to this channel.&quot; % channel.key)
+            return
+
+        # If not connected to the channel, try to connect
+        if not channel.has_connection(caller):
+            if not channel.connect(caller):
+                self.msg(&quot;%s: You are not allowed to join this channel.&quot; % channel.key)
+                return
+            else:
+                self.msg(&quot;You now are connected to the %s channel. &quot; % channel.key.lower())
+        else:
+            self.msg(&quot;You already are connected to the %s channel. &quot; % channel.key.lower())
+</code></pre>
+
+<p>Okay, let's review this code, but if you're used to Evennia commands, it shouldn't be too strange:</p>
+<ol>
+<li>We import <code>search_channel</code>.  This is a little helper function that we will use to search for channels by name and aliases, found in <code>evennia.utils.search</code>.  It's just more convenient.</li>
+<li>Our class <code>CmdConnect</code> contains the body of our command to join a channel.</li>
+<li>Notice the key of this command is simply <code>"+"</code>.  When you enter <code>+something</code> in the game, it will try to find a command key <code>+something</code>.  Failing that, it will look at other potential matches.  Evennia is smart enough to understand that when we type <code>+something</code>, <code>+</code> is the command key and <code>something</code> is the command argument.  This will, of course, fail if you have a command beginning by <code>+</code> conflicting with the <code>CmdConnect</code> key.</li>
+<li>We have altered some class attributes, like <code>auto_help</code>.  If you want to know what they do and why they have changed here, you can check the <a href="https://github.com/evennia/evennia/wiki/Commands">documentation on commands</a>.</li>
+<li>In the command body, we begin by extracting the channel name.  Remember that this name should be in the command arguments (that is, in <code>self.args</code>).  Following the same example, if a player enters <code>+something</code>, <code>self.args</code> should contain <code>"something"</code>.  We use <code>search_channel</code> to see if this channel exists.</li>
+<li>We then check the access level of the channel, to see if the caller can listen to it (not necessarily use it to speak, mind you, just listen to others speak, as these are two different locks on Evennia).</li>
+<li>Finally, we connect the caller if he's not already connected to the channel.  We use the channel's <code>connect</code> method to do this.  Pretty straightforward eh?</li>
+</ol>
+<p>Now we'll add a command to leave a channel.  It's almost the same, turned upside down:</p>
+<pre><code class="python">class CmdDisconnect(Command):
+    &quot;&quot;&quot;
+    Disconnect from a channel.
+    &quot;&quot;&quot;
+
+    key = &quot;-&quot;
+    help_category = &quot;Comms&quot;
+    locks = &quot;cmd:not pperm(channel_banned)&quot;
+    auto_help = False
+
+    def func(self):
+        &quot;&quot;&quot;Implement the command&quot;&quot;&quot;
+        caller = self.caller
+        args = self.args
+        if not args:
+            self.msg(&quot;Which channel do you want to disconnect from?&quot;)
+            return
+
+        channelname = self.args
+        channel = search_channel(channelname)
+        if not channel:
+            return
+
+        # If connected to the channel, try to disconnect
+        if channel.has_connection(caller):
+            if not channel.disconnect(caller):
+                self.msg(&quot;%s: You are not allowed to disconnect from this channel.&quot; % channel.key)
+                return
+            else:
+                self.msg(&quot;You stop listening to the %s channel. &quot; % channel.key.lower())
+        else:
+            self.msg(&quot;You are not connected to the %s channel. &quot; % channel.key.lower())
+</code></pre>
+
+<p>So far, you shouldn't have trouble following what this command does: it's
+pretty much the same as the <code>CmdConnect</code> class in logic, though it accomplishes
+the opposite.  If you are connected to the channel <code>public</code> you could
+disconnect from it using <code>-public</code>.  Remember, you can use channel aliases too
+(<code>+pub</code> and <code>-pub</code> will also work, assuming you have the alias <code>pub</code> on the
+ <code>public</code> channel).</p>
+<p>It's time to test this code, and to do so, you will need to add these two
+commands.  Here is a good time to say it: by default, Evennia connects accounts
+to channels.  Some other games (usually with a higher multisession mode)  will
+want to connect characters instead of accounts, so that several characters in
+the same account can be connected to various channels.  You can definitely add
+these commands either in the <code>AccountCmdSet</code> or <code>CharacterCmdSet</code>, the caller
+will be different and the command will add or remove accounts of characters.
+If you decide to install these commands on the <code>CharacterCmdSet</code>, you might
+have to disconnect your superuser account (account #1) from the channel before
+joining it with your characters, as Evennia tends to subscribe all accounts
+automatically if you don't tell it otherwise.</p>
+<p>So here's an example of how to add these commands into your <code>AccountCmdSet</code>.
+Edit the file <code>commands/default_cmdsets.py</code> to change a few things:</p>
+<pre><code class="python"># In commands/default_cmdsets.py
+from evennia import default_cmds
+from commands.comms import CmdConnect, CmdDisconnect
+
+
+# ... Skip to the AccountCmdSet class ...
+
+class AccountCmdSet(default_cmds.AccountCmdSet):
+    &quot;&quot;&quot;
+    This is the cmdset available to the Account at all times. It is
+    combined with the `CharacterCmdSet` when the Account puppets a
+    Character. It holds game-account-specific commands, channel
+    commands, etc.
+    &quot;&quot;&quot;
+    key = &quot;DefaultAccount&quot;
+
+    def at_cmdset_creation(self):
+        &quot;&quot;&quot;
+        Populates the cmdset
+        &quot;&quot;&quot;
+        super().at_cmdset_creation()
+
+        # Channel commands
+        self.add(CmdConnect())
+        self.add(CmdDisconnect())
+</code></pre>
+
+<p>Save, reload your game, and you should be able to use <code>+public</code> and <code>-public</code>
+now!</p>
+<h2 id="a-generic-channel-command-with-switches">A generic channel command with switches<a class="headerlink" href="#a-generic-channel-command-with-switches" title="Permanent link">&para;</a></h2>
+<p>It's time to dive a little deeper into channel processing.  What happens in
+Evennia when a player enters <code>public Hello everybody!</code>?</p>
+<p>Like exits, channels are a particular command that Evennia automatically
+creates and attaches to individual channels.  So when you enter <code>public
+message</code> in your game, Evennia calls the <code>public</code> command.</p>
+<blockquote>
+<p>But I didn't add any public command...</p>
+</blockquote>
+<p>Evennia will just create these commands automatically based on the existing
+channels. The base command is the command we'll need to edit.</p>
+<blockquote>
+<p>Why edit it?  It works just fine to talk.</p>
+</blockquote>
+<p>Unfortunately, if we want to add switches to our channel names, we'll have to
+edit this command.  It's not too hard, however, we'll just start writing a
+standard command with minor twitches.</p>
+<h3 id="some-additional-imports">Some additional imports<a class="headerlink" href="#some-additional-imports" title="Permanent link">&para;</a></h3>
+<p>You'll need to add a line of import in your <code>commands/comms.py</code> file.  We'll
+see why this import is important when diving in the command itself:</p>
+<pre><code class="python">from evennia.comms.models import ChannelDB
+</code></pre>
+
+<h3 id="the-class-layout">The class layout<a class="headerlink" href="#the-class-layout" title="Permanent link">&para;</a></h3>
+<pre><code class="python"># In commands/comms.py
+class ChannelCommand(Command):
+    &quot;&quot;&quot;
+    {channelkey} channel
+
+    {channeldesc}
+
+    Usage:
+      {lower_channelkey} &lt;message&gt;
+      {lower_channelkey}/history [start]
+      {lower_channelkey}/me &lt;message&gt;
+      {lower_channelkey}/who
+
+    Switch:
+      history: View 20 previous messages, either from the end or
+          from &lt;start&gt; number of messages from the end.
+      me: Perform an emote on this channel.
+      who: View who is connected to this channel.
+
+    Example:
+      {lower_channelkey} Hello World!
+      {lower_channelkey}/history
+      {lower_channelkey}/history 30
+      {lower_channelkey}/me grins.
+      {lower_channelkey}/who
+    &quot;&quot;&quot;
+    # note that channeldesc and lower_channelkey will be filled
+    # automatically by ChannelHandler
+
+    # this flag is what identifies this cmd as a channel cmd
+    # and branches off to the system send-to-channel command
+    # (which is customizable by admin)
+    is_channel = True
+    key = &quot;general&quot;
+    help_category = &quot;Channel Names&quot;
+    obj = None
+    arg_regex = &quot;&quot;
+</code></pre>
+
+<p>There are some differences here compared to most common commands.</p>
+<ul>
+<li>There is something disconcerting in the class docstring.  Some information is
+between curly braces.  This is a format-style which is only used for channel
+commands.  <code>{channelkey}</code> will be replaced by the actual channel key (like
+    public).  <code>{channeldesc}</code> will be replaced by the channel description (like
+      "public channel").  And <code>{lower_channelkey}</code>.</li>
+<li>We have set <code>is_channel</code> to <code>True</code> in the command class variables.  You
+shouldn't worry too much about that: it just tells Evennia this is a special
+command just for channels.</li>
+<li><code>key</code> is a bit misleading because it will be replaced eventually.  So we
+could set it to virtually anything.</li>
+<li>The <code>obj</code> class variable is another one we won't detail right now.</li>
+<li><code>arg_regex</code> is important: the default <code>arg_regex</code> in the channel command will
+forbid to use switches (a slash just after the channel name is not allowed).
+That's why we enforce it here, we allow any syntax.</li>
+</ul>
+<blockquote>
+<p>What will become of this command?</p>
+</blockquote>
+<p>Well, when we'll be through with it, and once we'll add it as the default
+command to handle channels, Evennia will create one per existing channel.  For
+instance, the public channel will receive one command of this class, with <code>key</code>
+set to <code>public</code> and <code>aliases</code> set to the channel aliases (like <code>['pub']</code>).</p>
+<blockquote>
+<p>Can I see it work?</p>
+</blockquote>
+<p>Not just yet, there's still a lot of code needed.</p>
+<p>Okay we have the command structure but it's rather empty.</p>
+<h3 id="the-parse-method">The parse method<a class="headerlink" href="#the-parse-method" title="Permanent link">&para;</a></h3>
+<p>The <code>parse</code> method is called before <code>func</code> in every command. Its job is to
+parse arguments and in our case, we will analyze switches here.</p>
+<pre><code class="python"># ...
+    def parse(self):
+        &quot;&quot;&quot;
+        Simple parser
+        &quot;&quot;&quot;
+        # channel-handler sends channame:msg here.
+        channelname, msg = self.args.split(&quot;:&quot;, 1)
+        self.switch = None
+        if msg.startswith(&quot;/&quot;):
+            try:
+                switch, msg = msg[1:].split(&quot; &quot;, 1)
+            except ValueError:
+                switch = msg[1:]
+                msg = &quot;&quot;
+
+            self.switch = switch.lower().strip()
+
+        self.args = (channelname.strip(), msg.strip())
+</code></pre>
+
+<p>Reading the comments we see that the channel handler will send the command in a
+strange way: a string with the channel name, a colon and the actual message
+entered by the player.  So if the player enters "public hello", the command
+<code>args</code> will contain <code>"public:hello"</code>.  You can look at the way the channel name
+and message are parsed, this can be used in a lot of different commands.</p>
+<p>Next we check if there's any switch, that is, if the message starts with a
+slash.  This would be the case if a player entered <code>public/me jumps up and
+down</code>, for instance.  If there is a switch, we save it in <code>self.switch</code>.  We
+alter <code>self.args</code> at the end to contain a tuple with two values: the channel
+name, and the message (if a switch was used, notice that the switch will be
+    stored in <code>self.switch</code>, not in the second element of <code>self.args</code>).</p>
+<h3 id="the-command-func">The command func<a class="headerlink" href="#the-command-func" title="Permanent link">&para;</a></h3>
+<p>Finally, let's see the <code>func</code> method in the command class.  It will have to
+handle switches and also the raw message to send if no switch was used.</p>
+<pre><code class="python"># ...
+    def func(self):
+        &quot;&quot;&quot;
+        Create a new message and send it to channel, using
+        the already formatted input.
+        &quot;&quot;&quot;
+        channelkey, msg = self.args
+        caller = self.caller
+        channel = ChannelDB.objects.get_channel(channelkey)
+
+        # Check that the channel exists
+        if not channel:
+            self.msg(_(&quot;Channel '%s' not found.&quot;) % channelkey)
+            return
+
+        # Check that the caller is connected
+        if not channel.has_connection(caller):
+            string = &quot;You are not connected to channel '%s'.&quot;
+            self.msg(string % channelkey)
+            return
+
+        # Check that the caller has send access
+        if not channel.access(caller, 'send'):
+            string = &quot;You are not permitted to send to channel '%s'.&quot;
+            self.msg(string % channelkey)
+            return
+
+        # Handle the various switches
+        if self.switch == &quot;me&quot;:
+            if not msg:
+                self.msg(&quot;What do you want to do on this channel?&quot;)
+            else:
+                msg = &quot;{} {}&quot;.format(caller.key, msg)
+                channel.msg(msg, online=True)
+        elif self.switch:
+            self.msg(&quot;{}: Invalid switch {}.&quot;.format(channel.key, self.switch))
+        elif not msg:
+            self.msg(&quot;Say what?&quot;)
+        else:
+            if caller in channel.mutelist:
+                self.msg(&quot;You currently have %s muted.&quot; % channel)
+                return
+            channel.msg(msg, senders=self.caller, online=True)
+</code></pre>
+
+<ul>
+<li>First of all, we try to get the channel object from the channel name we have
+in the <code>self.args</code> tuple.  We use <code>ChannelDB.objects.get_channel</code> this time
+because we know the channel name isn't an alias (that was part of the deal,
+    <code>channelname</code> in the <code>parse</code> method contains a command key).</li>
+<li>We check that the channel does exist.</li>
+<li>We then check that the caller is connected to the channel.  Remember, if the
+caller isn't connected, we shouldn't allow him to use this command (that
+    includes the switches on channels).</li>
+<li>We then check that the caller has access to the channel's <code>send</code> lock.  This
+time, we make sure the caller can send messages to the channel, no matter what
+operation he's trying to perform.</li>
+<li>Finally we handle switches.  We try only one switch: <code>me</code>.  This switch would
+be used if a player entered <code>public/me jumps up and down</code> (to do a channel
+    emote).</li>
+<li>We handle the case where the switch is unknown and where there's no switch
+(the player simply wants to talk on this channel).</li>
+</ul>
+<p>The good news: The code is not too complicated by itself. The bad news is that
+this is just an abridged version of the code. If you want to handle all the
+switches mentioned in the command help, you will have more code to write. This
+is left as an exercise.</p>
+<h3 id="end-of-class">End of class<a class="headerlink" href="#end-of-class" title="Permanent link">&para;</a></h3>
+<p>It's almost done, but we need to add a method in this command class that isn't
+often used. I won't detail it's usage too much, just know that Evennia will use
+it and will get angry if you don't add it. So at the end of your class, just
+add:</p>
+<pre><code class="python"># ...
+    def get_extra_info(self, caller, **kwargs):
+        &quot;&quot;&quot;
+        Let users know that this command is for communicating on a channel.
+
+        Args:
+            caller (TypedObject): A Character or Account who has entered an ambiguous command.
+
+        Returns:
+            A string with identifying information to disambiguate the object, conventionally with a preceding space.
+        &quot;&quot;&quot;
+        return &quot; (channel)&quot;
+</code></pre>
+
+<h3 id="adding-this-channel-command">Adding this channel command<a class="headerlink" href="#adding-this-channel-command" title="Permanent link">&para;</a></h3>
+<p>Contrary to most Evennia commands, we won't add our <code>ChannelCommand</code> to a
+<code>CmdSet</code>. Instead we need to tell Evennia that it should use the command we
+just created instead of its default channel-command.</p>
+<p>In your <code>server/conf/settings.py</code> file, add a new setting:</p>
+<pre><code class="python"># Channel options
+CHANNEL_COMMAND_CLASS = &quot;commands.comms.ChannelCommand&quot;
+</code></pre>
+
+<p>Then you can reload your game. Try to type <code>public hello</code> and <code>public/me jumps
+up and down</code>.  Don't forget to enter <code>help public</code> to see if your command has
+truly been added.</p>
+<h2 id="conclusion-and-full-code">Conclusion and full code<a class="headerlink" href="#conclusion-and-full-code" title="Permanent link">&para;</a></h2>
+<p>That was some adventure!  And there's still things to do!  But hopefully, this
+tutorial will have helped you in designing your own channel system.  Here are a
+few things to do:</p>
+<ul>
+<li>Add more switches to handle various actions, like changing the description of
+a channel for instance, or listing the connected participants.</li>
+<li>Remove the default Evennia commands to handle channels.</li>
+<li>Alter the behavior of the channel system so it better aligns with what you
+want to do.</li>
+</ul>
+<p>As a special bonus, you can find a full, working example of a communication
+system similar to the one I've shown you: this is a working example, it
+integrates all switches and does ever some extra checking, but it's also very
+close from the code I've provided here.  Notice, however, that this resource is
+external to Evennia and not maintained by anyone but the original author of
+this article.</p>
+<p><a href="https://github.com/vincent-lg/avenew/blob/master/commands/comms.py">Read the full example on Github</a></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

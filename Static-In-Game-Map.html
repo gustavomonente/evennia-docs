@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Static In Game Map - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#introduction">Introduction</a></li>
+        <li class="main "><a href="#planning-the-map">Planning the Map</a></li>
+        <li class="main "><a href="#creating-a-map-object">Creating a Map Object</a></li>
+        <li class="main "><a href="#building-the-map-areas">Building the map areas</a></li>
+        <li class="main "><a href="#in-game-minimap">In-game minimap</a></li>
+        <li class="main "><a href="#conclusions">Conclusions</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Tutorial-for-creating-static-map-view"></a></p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>This tutorial describes the creation of an in-game map display based on a pre-drawn map. It also details how to use the <a href="Batch-code-processor">Batch code processor</a> for advanced building. There is also the <a href="Dynamic-In-Game-Map">Dynamic in-game map tutorial</a> that works in the opposite direction, by generating a map from an existing grid of rooms. </p>
+<p>Evennia does not require its rooms to be positioned in a "logical" way. Your exits could be named anything. You could make an exit "west" that leads to a room described to be in the far north. You could have rooms inside one another, exits leading back to the same room or describing spatial geometries impossible in the real world. </p>
+<p>That said, most games <em>do</em> organize their rooms in a logical fashion, if nothing else to retain the sanity of their players. And when they do, the game becomes possible to map. This tutorial will give an example of a simple but flexible in-game map system to further help player's to navigate. We will </p>
+<p>To simplify development and error-checking we'll break down the work into bite-size chunks, each building on what came before. For this we'll make extensive use of the <a href="Batch-code-processor">Batch code processor</a>, so you may want to familiarize yourself with that.</p>
+<ol>
+<li><strong>Planning the map</strong> - Here we'll come up with a small example map to use for the rest of the tutorial.</li>
+<li><strong>Making a map object</strong> - This will showcase how to make a static in-game "map" object a Character could pick up and look at. </li>
+<li><strong>Building the map areas</strong> - Here we'll actually create the small example area according to the map we designed before. </li>
+<li>
+<p><strong>Map code</strong> - This will link the map to the location so our output looks something like this:</p>
+<p>```
+crossroads(#3)
+↑╚∞╝↑
+≈↑│↑∩  The merger of two roads. To the north looms a mighty castle.
+O─O─O  To the south, the glow of a campfire can be seen. To the east lie
+≈↑│↑∩  the vast mountains and to the west is heard the waves of the sea.
+↑▲O▲↑</p>
+<p>Exits: north(#8), east(#9), south(#10), west(#11)
+```</p>
+</li>
+</ol>
+<p>We will henceforth assume your game folder is name named <code>mygame</code> and that you haven't modified the default commands. We will also not be using <a href="TextTags#colored-text">Colors</a> for our map since they don't show in the documentation wiki.</p>
+<h2 id="planning-the-map">Planning the Map<a class="headerlink" href="#planning-the-map" title="Permanent link">&para;</a></h2>
+<p>Let's begin with the fun part! Maps in MUDs come in many different <a href="http://journal.imaginary-realities.com/volume-05/issue-01/modern-interface-modern-mud/index.html">shapes and sizes</a>. Some appear as just boxes connected by lines. Others have complex graphics that are external to the game itself.</p>
+<p>Our map will be in-game text but that doesn't mean we're restricted to the normal alphabet! If you've ever selected the <a href="https://en.wikipedia.org/wiki/Wingdings">Wingdings font</a> in Microsoft Word you will know there are a multitude of other characters around to use. When creating your game with Evennia you have access to the <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8 character encoding</a> which put at your disposal <a href="http://mcdlr.com/utf-8/#1">thousands of letters, number and geometric shapes</a>. </p>
+<p>For this exercise, we've copy-and-pasted from the pallet of special characters used over at <a href="http://dwarffortresswiki.org/index.php/Character_table">Dwarf Fortress</a> to create what is hopefully a pleasing and easy to understood landscape:</p>
+<pre><code>≈≈↑↑↑↑↑∩∩
+≈≈↑╔═╗↑∩∩   Places the account can visit are indicated by &quot;O&quot;.
+≈≈↑║O║↑∩∩   Up the top is a castle visitable by the account.
+≈≈↑╚∞╝↑∩∩   To the right is a cottage and to the left the beach.
+≈≈≈↑│↑∩∩∩   And down the bottom is a camp site with tents.
+≈≈O─O─O⌂∩   In the center is the starting location, a crossroads
+≈≈≈↑│↑∩∩∩   which connect the four other areas.
+≈≈↑▲O▲↑∩∩   
+≈≈↑↑▲↑↑∩∩
+≈≈↑↑↑↑↑∩∩
+</code></pre>
+
+<p>There are many considerations when making a game map depending on the play style and requirements you intend to implement. Here we will display a 5x5 character map of the area surrounding the account. This means making sure to account for 2 characters around every visitable location. Good planning at this stage can solve many problems before they happen.</p>
+<h2 id="creating-a-map-object">Creating a Map Object<a class="headerlink" href="#creating-a-map-object" title="Permanent link">&para;</a></h2>
+<p>In this section we will try to create an actual "map" object that an account can pick up and look at. </p>
+<p>Evennia offers a range of <a href="Default-Command-Help">default commands</a> for <a href="https://github.com/evennia/evennia/wiki/Building%20Quickstart">creating objects and rooms in-game</a>. While readily accessible, these commands are made to do very specific, restricted things and will thus not offer as much flexibility to experiment (for an advanced exception see <a href="https://github.com/evennia/evennia/wiki/TextTags#new-inlinefuncs">in-line functions</a>). Additionally, entering long descriptions and properties over and over in the game client can become tedious; especially when testing and you may want to delete and recreate things over and over. </p>
+<p>To overcome this, Evennia offers <a href="https://github.com/evennia/evennia/wiki/Batch-Processors">batch processors</a> that work as input-files created out-of-game. In this tutorial we'll be using the more powerful of the two available batch processors, the <a href="https://github.com/evennia/evennia/wiki/Batch-code%20processor">Batch Code Processor </a>, called with the <code>@batchcode</code> command. This is a very powerful tool. It allows you to craft Python files to act as blueprints of your entire game world. These files have access to use Evennia's Python API directly. Batchcode allows for easy editing and creation in whatever text editor you prefer, avoiding having to manually build the world line-by-line inside the game. </p>
+<blockquote>
+<p>Important warning: <code>@batchcode</code>'s power is only rivaled by the <code>@py</code> command. Batchcode is so powerful it should be reserved only for the <a href="Building-Permissions">superuser</a>. Think carefully before you let others (such as <code>Developers</code>- level staff) run <code>@batchcode</code> on their own - make sure you are okay with them running <em>arbitrary Python code</em> on your server.</p>
+</blockquote>
+<p>While a simple example, the map object it serves as good way to try out <code>@batchcode</code>. Go to <code>mygame/world</code> and create a new file there named <code>batchcode_map.py</code>:</p>
+<pre><code class="Python"># -*- coding: utf-8 -*-
+
+# mygame/world/batchcode_map.py
+
+from evennia import create_object
+from evennia import DefaultObject
+
+# We use the create_object function to call into existence a 
+# DefaultObject named &quot;Map&quot; wherever you are standing.
+
+map = create_object(DefaultObject, key=&quot;Map&quot;, location=caller.location)
+
+# We then access its description directly to make it our map.
+
+map.db.desc = &quot;&quot;&quot;
+≈≈↑↑↑↑↑∩∩
+≈≈↑╔═╗↑∩∩
+≈≈↑║O║↑∩∩
+≈≈↑╚∞╝↑∩∩
+≈≈≈↑│↑∩∩∩
+≈≈O─O─O⌂∩
+≈≈≈↑│↑∩∩∩
+≈≈↑▲O▲↑∩∩
+≈≈↑↑▲↑↑∩∩
+≈≈↑↑↑↑↑∩∩
+&quot;&quot;&quot;
+
+# This message lets us know our map was created successfully.
+caller.msg(&quot;A map appears out of thin air and falls to the ground.&quot;)
+</code></pre>
+
+<p>Log into your game project as the superuser and run the command </p>
+<pre><code>@batchcode batchcode_map
+</code></pre>
+
+<p>This will load your <code>batchcode_map.py</code> file and execute the code (Evennia will look in your <code>world/</code> folder automatically so you don't need to specify it). </p>
+<p>A new map object should have appeared on the ground. You can view the map by using <code>look map</code>. Let's take it with the <code>get map</code> command. We'll need it in case we get lost!</p>
+<h2 id="building-the-map-areas">Building the map areas<a class="headerlink" href="#building-the-map-areas" title="Permanent link">&para;</a></h2>
+<p>We've just used batchcode to create an object useful for our adventures. But the locations on that map does not actually exist yet - we're all mapped up with nowhere to go! Let's use batchcode to build a game area based on our map. We have five areas outlined: a castle, a cottage, a campsite, a coastal beach and the crossroads which connects them. Create a new batchcode file for this in <code>mygame/world</code>, named <code>batchcode_world.py</code>.</p>
+<pre><code class="Python"># -*- coding: utf-8 -*-
+
+# mygame/world/batchcode_world.py
+
+from evennia import create_object, search_object
+from typeclasses import rooms, exits
+
+# We begin by creating our rooms so we can detail them later.
+
+centre = create_object(rooms.Room, key=&quot;crossroads&quot;)
+north = create_object(rooms.Room, key=&quot;castle&quot;)
+east = create_object(rooms.Room, key=&quot;cottage&quot;)
+south = create_object(rooms.Room, key=&quot;camp&quot;)
+west = create_object(rooms.Room, key=&quot;coast&quot;)
+
+# This is where we set up the cross roads.
+# The rooms description is what we see with the 'look' command.
+
+centre.db.desc = &quot;&quot;&quot;
+The merger of two roads. A single lamp post dimly illuminates the lonely crossroads.
+To the north looms a mighty castle. To the south the glow of a campfire can be seen.
+To the east lie a wall of mountains and to the west the dull roar of the open sea.
+&quot;&quot;&quot;
+
+# Here we are creating exits from the centre &quot;crossroads&quot; location to 
+# destinations to the north, east, south, and west. We will be able 
+# to use the exit by typing it's key e.g. &quot;north&quot; or an alias e.g. &quot;n&quot;.
+
+centre_north = create_object(exits.Exit, key=&quot;north&quot;, 
+                            aliases=[&quot;n&quot;], location=centre, destination=north)
+centre_east = create_object(exits.Exit, key=&quot;east&quot;, 
+                            aliases=[&quot;e&quot;], location=centre, destination=east)
+centre_south = create_object(exits.Exit, key=&quot;south&quot;, 
+                            aliases=[&quot;s&quot;], location=centre, destination=south)
+centre_west = create_object(exits.Exit, key=&quot;west&quot;, 
+                            aliases=[&quot;w&quot;], location=centre, destination=west)
+
+# Now we repeat this for the other rooms we'll be implementing.
+# This is where we set up the northern castle.
+
+north.db.desc = &quot;An impressive castle surrounds you. &quot; \
+                &quot;There might be a princess in one of these towers.&quot;
+north_south = create_object(exits.Exit, key=&quot;south&quot;, 
+                            aliases=[&quot;s&quot;], location=north, destination=centre)
+
+# This is where we set up the eastern cottage.
+
+east.db.desc = &quot;A cosy cottage nestled among mountains &quot; \
+               &quot;stretching east as far as the eye can see.&quot;
+east_west = create_object(exits.Exit, key=&quot;west&quot;, 
+                            aliases=[&quot;w&quot;], location=east, destination=centre)
+
+# This is where we set up the southern camp.
+
+south.db.desc = &quot;Surrounding a clearing are a number of &quot; \
+                &quot;tribal tents and at their centre a roaring fire.&quot;
+south_north = create_object(exits.Exit, key=&quot;north&quot;, 
+                            aliases=[&quot;n&quot;], location=south, destination=centre)
+
+# This is where we set up the western coast.
+
+west.db.desc = &quot;The dark forest halts to a sandy beach. &quot; \
+               &quot;The sound of crashing waves calms the soul.&quot;
+west_east = create_object(exits.Exit, key=&quot;east&quot;, 
+                            aliases=[&quot;e&quot;], location=west, destination=centre)
+
+# Lastly, lets make an entrance to our world from the default Limbo room.
+
+limbo = search_object('Limbo')[0]
+limbo_exit = create_object(exits.Exit, key=&quot;enter world&quot;, 
+                            aliases=[&quot;enter&quot;], location=limbo, destination=centre)
+
+</code></pre>
+
+<p>Apply this new batch code with <code>@batchcode batchcode_world</code>. If there are no errors in the code we now have a nice mini-world to explore. Remember that if you get lost you can look at the map we created! </p>
+<h2 id="in-game-minimap">In-game minimap<a class="headerlink" href="#in-game-minimap" title="Permanent link">&para;</a></h2>
+<p>Now we have a landscape and matching map, but what we really want is a mini-map that displays whenever we move to a room or use the <code>look</code> command. </p>
+<p>We <em>could</em> manually enter a part of the map into the description of every room like we did our map object description. But some MUDs have tens of thousands of rooms! Besides, if we ever changed our map we would have to potentially alter a lot of those room descriptions manually to match the change. So instead we will make one central module to hold our map. Rooms will reference this central location on creation and the map changes will thus come into effect when next running our batchcode. </p>
+<p>To make our mini-map we need to be able to cut our full map into parts. To do this we need to put it in a format which allows us to do that easily. Luckily, python allows us to treat strings as lists of characters allowing us to pick out the characters we need.</p>
+<p><code>mygame/world/map_module.py</code></p>
+<pre><code class="Python"># -*- coding: utf-8 -*-
+
+# We place our map into a sting here.
+world_map = &quot;&quot;&quot;\
+≈≈↑↑↑↑↑∩∩
+≈≈↑╔═╗↑∩∩
+≈≈↑║O║↑∩∩
+≈≈↑╚∞╝↑∩∩
+≈≈≈↑│↑∩∩∩
+≈≈O─O─O⌂∩
+≈≈≈↑│↑∩∩∩
+≈≈↑▲O▲↑∩∩
+≈≈↑↑▲↑↑∩∩
+≈≈↑↑↑↑↑∩∩
+&quot;&quot;&quot;
+
+# This turns our map string into a list of rows. Because python 
+# allows us to treat strings as a list of characters, we can access 
+# those characters with world_map[5][5] where world_map[row][column].
+world_map = world_map.split('\n')
+
+# This allows UTF-8 charcters to be handled cleanly.
+world_map = [character.decode('UTF-8') if isinstance(character, str) 
+                else character for character in world_map]
+
+def return_map():
+    &quot;&quot;&quot;
+    This function returns the whole map
+    &quot;&quot;&quot;
+    map = &quot;&quot;
+
+    #For each row in our map, add it to map
+    for valuey in world_map:
+        map += valuey
+        map += &quot;\n&quot;
+
+    return map
+
+def return_minimap(x, y, radius = 2):
+    &quot;&quot;&quot;
+    This function returns only part of the map.
+    Returning all chars in a 2 char radius from (x,y)
+    &quot;&quot;&quot;
+    map = &quot;&quot;
+
+    #For each row we need, add the characters we need.
+    for valuey in world_map[y-radius:y+radius+1]:
+        for valuex in valuey[x-radius:x+radius+1]:
+            map += valuex
+        map += &quot;\n&quot;
+
+    return map
+</code></pre>
+
+<p>With our map_module set up, let's replace our hardcoded map in <code>mygame/world/batchcode_map.py</code> with a reference to our map module. Make sure to import our map_module!</p>
+<pre><code class="python"># mygame/world/batchcode_map.py
+
+from evennia import create_object
+from evennia import DefaultObject
+from world import map_module
+
+map = create_object(DefaultObject, key=&quot;Map&quot;, location=caller.location)
+
+map.db.desc = map_module.return_map()
+
+caller.msg(&quot;A map appears out of thin air and falls to the ground.&quot;)
+</code></pre>
+
+<p>Log into Evennia as the superuser and run this batchcode. If everything worked our new map should look exactly the same as the old map - you can use <code>@delete</code> to delete the old one (use a number to pick which to delete). </p>
+<p>Now, lets turn our attention towards our game's rooms. Let's use the <code>return_minimap</code> method we created above in order to include a minimap in our room descriptions. This is a little more complicated.</p>
+<p>By itself we would have to settle for either the map being <em>above</em> the description with <code>room.db.desc = map_string + description_string</code>, or the map going <em>below</em> by reversing their order. Both options are rather unsatisfactory - we would like to have the map next to the text! For this solution we'll explore the utilities that ship with Evennia. Tucked away in <code>evennia\evennia\utils</code> is a little module called <a href="https://github.com/evennia/evennia/wiki/evennia.utils.evtable">EvTable</a> . This is an advanced ASCII table creator for you to utilize in your game. We'll use it by creating a basic table with 1 row and two columns (one for our map and one for our text) whilst also hiding the borders. Open the batchfile again</p>
+<pre><code class="python"># mygame\world\batchcode_world.py
+
+# Add to imports
+from evennia.utils import evtable
+from world import map_module
+
+# [...]
+
+# Replace the descriptions with the below code.
+
+# The cross roads.
+# We pass what we want in our table and EvTable does the rest.
+# Passing two arguments will create two columns but we could add more.
+# We also specify no border.
+centre.db.desc = evtable.EvTable(map_module.return_minimap(4,5), 
+                 &quot;The merger of two roads. A single lamp post dimly &quot; \
+                 &quot;illuminates the lonely crossroads. To the north &quot; \
+                 &quot;looms a mighty castle. To the south the glow of &quot; \
+                 &quot;a campfire can be seen. To the east lie a wall of &quot; \
+                 &quot;mountains and to the west the dull roar of the open sea.&quot;, 
+                 border=None)
+# EvTable allows formatting individual columns and cells. We use that here
+# to set a maximum width for our description, but letting the map fill
+# whatever space it needs. 
+centre.db.desc.reformat_column(1, width=70)
+
+# [...]
+
+# The northern castle.
+north.db.desc = evtable.EvTable(map_module.return_minimap(4,2), 
+                &quot;An impressive castle surrounds you. There might be &quot; \
+                &quot;a princess in one of these towers.&quot;, 
+                border=None)
+north.db.desc.reformat_column(1, width=70)   
+
+# [...]
+
+# The eastern cottage.
+east.db.desc = evtable.EvTable(map_module.return_minimap(6,5), 
+               &quot;A cosy cottage nestled among mountains stretching &quot; \
+               &quot;east as far as the eye can see.&quot;, 
+               border=None)
+east.db.desc.reformat_column(1, width=70)
+
+# [...]
+
+# The southern camp.
+south.db.desc = evtable.EvTable(map_module.return_minimap(4,7), 
+                &quot;Surrounding a clearing are a number of tribal tents &quot; \
+                &quot;and at their centre a roaring fire.&quot;, 
+                border=None)
+south.db.desc.reformat_column(1, width=70)
+
+# [...]
+
+# The western coast.
+west.db.desc = evtable.EvTable(map_module.return_minimap(2,5), 
+               &quot;The dark forest halts to a sandy beach. The sound of &quot; \
+               &quot;crashing waves calms the soul.&quot;, 
+               border=None)
+west.db.desc.reformat_column(1, width=70)
+</code></pre>
+
+<p>Before we run our new batchcode, if you are anything like me you would have something like 100 maps lying around and 3-4 different versions of our rooms extending from limbo. Let's wipe it all and start with a clean slate. In Command Prompt you can run <code>evennia flush</code> to clear the database and start anew. It won't reset dbref values however, so if you are at #100 it will start from there. Alternatively you can navigate to <code>mygame/server</code> and delete the <code>evennia.db3</code> file. Now in  Command Prompt use <code>evennia migrate</code> to have a completely freshly made database.</p>
+<p>Log in to evennia and run <code>@batchcode batchcode_world</code> and you'll have a little world to explore.</p>
+<h2 id="conclusions">Conclusions<a class="headerlink" href="#conclusions" title="Permanent link">&para;</a></h2>
+<p>You should now have a mapped little world and a basic understanding of batchcode, EvTable and how easily new game defining features can be added to Evennia. </p>
+<p>You can easily build from this tutorial by expanding the map and creating more rooms to explore. Why not add more features to your game by trying other tutorials: <a href="https://github.com/evennia/evennia/wiki/Weather%20Tutorial">Add weather to your world</a>, <a href="https://github.com/evennia/evennia/wiki/Tutorial:--Aggressive-NPCs">fill your world with NPC's</a> or <a href="https://github.com/evennia/evennia/wiki/Turn%20based%20Combat%20System">implement a combat system</a>.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Help System Tutorial - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#creating-our-app">Creating our app</a></li>
+        <li class="main "><a href="#our-new-page">Our new page</a></li>
+            <li><a href="#create-a-view">Create a view</a></li>
+            <li><a href="#create-a-template">Create a template</a></li>
+            <li><a href="#create-a-new-url">Create a new URL</a></li>
+            <li><a href="#lets-see-it-work">Let's see it work</a></li>
+            <li><a href="#a-brief-reminder">A brief reminder</a></li>
+        <li class="main "><a href="#handling-logged-in-users">Handling logged-in users</a></li>
+        <li class="main "><a href="#the-full-system">The full system</a></li>
+            <li><a href="#the-index-template">The index template</a></li>
+            <li><a href="#the-detail-template">The detail template</a></li>
+            <li><a href="#put-it-all-together">Put it all together</a></li>
+        <li class="main "><a href="#to-improve-this-feature">To improve this feature</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Create-a-page-to-see-your-game-help-online"></a></p>
+<p><strong>Before doing this tutorial you will probably want to read the intro in <a href="Web-Tutorial">Basic Web tutorial</a>.</strong>  Reading the three first parts of the <a href="https://docs.djangoproject.com/en/1.9/intro/tutorial01/">Django tutorial</a> might help as well.</p>
+<p>This tutorial will show you how to access the help system through your website.  Both help commands and regular help entries will be visible, depending on the logged-in user or an anonymous character.</p>
+<p>This tutorial will show you how to:</p>
+<ul>
+<li>Create a new page to add to your website.</li>
+<li>Take advantage of a basic view and basic templates.</li>
+<li>Access the help system on your website.</li>
+<li>Identify whether the viewer of this page is logged-in and, if so, to what account.</li>
+</ul>
+<h2 id="creating-our-app">Creating our app<a class="headerlink" href="#creating-our-app" title="Permanent link">&para;</a></h2>
+<p>The first step is to create our new Django <em>app</em>.  An app in Django can contain pages and mechanisms: your website may contain different apps.  Actually, the website provided out-of-the-box by Evennia has already three apps: a "webclient" app, to handle the entire webclient, a "website" app to contain your basic pages, and a third app provided by Django to create a simple admin interface.  So we'll create another app in parallel, giving it a clear name to represent our help system.</p>
+<p>From your game directory, use the following command:</p>
+<pre><code>evennia startapp help_system
+</code></pre>
+<blockquote>
+<p>Note: calling the app "help" would have been more explicit, but this name is already used by Django.</p>
+</blockquote>
+<p>This will create a directory named <code>help_system</code> at the root of your game directory.  It's a good idea to keep things organized and move this directory in the "web" directory of your game.  Your game directory should look like:</p>
+<pre><code>mygame/
+    ...
+    web/
+        help_system/
+        ...
+</code></pre>
+<p>The "web/help_system" directory contains files created by Django.  We'll use some of them, but if you want to learn more about them all, you should read <a href="https://docs.djangoproject.com/en/1.9/intro/tutorial01/">the Django tutorial</a>.</p>
+<p>There is a last thing to be done: your folder has been added, but Django doesn't know about it, it doesn't know it's a new app.  We need to tell it, and we do so by editing a simple setting.  Open your "server/conf/settings.py" file and add, or edit, these lines:</p>
+<pre><code class="python"># Web configuration
+INSTALLED_APPS += (
+        &quot;web.help_system&quot;,
+)
+</code></pre>
+
+<p>You can start Evennia if you want, and go to your website, probably at <a href="http://localhost:4001">http://localhost:4001</a> . You won't see anything different though: we added the app but it's fairly empty.</p>
+<h2 id="our-new-page">Our new page<a class="headerlink" href="#our-new-page" title="Permanent link">&para;</a></h2>
+<p>At this point, our new <em>app</em>  contains mostly empty files that you can explore.  In order to create a page for our help system, we need to add:</p>
+<ul>
+<li>A <em>view</em>, dealing with the logic of our page.</li>
+<li>A <em>template</em> to display our new page.</li>
+<li>A new <em>URL</em> pointing to our page.</li>
+</ul>
+<blockquote>
+<p>We could get away by creating just a view and a new URL, but that's not a recommended way to work with your website.  Building on templates is so much more convenient.</p>
+</blockquote>
+<h3 id="create-a-view">Create a view<a class="headerlink" href="#create-a-view" title="Permanent link">&para;</a></h3>
+<p>A <em>view</em> in Django is a simple Python function placed in the "views.py" file in your app.  It will handle the behavior that is triggered when a user asks for this information by entering a <em>URL</em> (the connection between <em>views</em> and <em>URLs</em> will be discussed later).</p>
+<p>So let's create our view.  You can open the "web/help_system/view.py" file and paste the following lines:</p>
+<pre><code class="python">from django.shortcuts import render
+
+def index(request):
+    &quot;&quot;&quot;The 'index' view.&quot;&quot;&quot;
+    return render(request, &quot;help_system/index.html&quot;)
+</code></pre>
+
+<p>Our view handles all code logic.  This time, there's not much: when this function is called, it will render the template we will now create.  But that's where we will do most of our work afterward.</p>
+<h3 id="create-a-template">Create a template<a class="headerlink" href="#create-a-template" title="Permanent link">&para;</a></h3>
+<p>The <code>render</code> function called into our <em>view</em> asks the <em>template</em> <code>help_system/index.html</code>.  The <em>templates</em> of our apps are stored in the app directory, "templates" sub-directory.  Django may have created the "templates" folder already.  If not, create it yourself.  In it, create another folder "help_system", and inside of this folder, create a file named "index.html".  Wow, that's some hierarchy.  Your directory structure (starting from <code>web</code>) should look like this:</p>
+<pre><code>web/
+    help_system/
+        ...
+        templates/
+            help_system/
+                index.html
+</code></pre>
+<p>Open the "index.html" file and paste in the following lines:</p>
+<pre><code>{% extends &quot;base.html&quot; %}
+{% block titleblock %}Help index{% endblock %}
+{% block content %}
+&lt;h2&gt;Help index&lt;/h2&gt;
+{% endblock %}
+</code></pre>
+
+<p>Here's a little explanation line by line of what this template does:</p>
+<ol>
+<li>It loads the "base.html" <em>template</em>.  This describes the basic structure of all your pages, with a menu at the top and a footer, and perhaps other information like images and things to be present on each page.  You can create templates that do not inherit from "base.html", but you should have a good reason for doing so.</li>
+<li>The "base.html" <em>template</em> defines all the structure of the page.  What is left is to override some sections of our pages.  These sections are called <em>blocks</em>.  On line 2, we override the block named "blocktitle", which contains the title of our page.</li>
+<li>Same thing here, we override the <em>block</em> named "content", which contains the main content of our web page.  This block is bigger, so we define it on several lines.</li>
+<li>This is perfectly normal HTML code to display a level-2 heading.</li>
+<li>And finally we close the <em>block</em> named "content".</li>
+</ol>
+<h3 id="create-a-new-url">Create a new URL<a class="headerlink" href="#create-a-new-url" title="Permanent link">&para;</a></h3>
+<p>Last step to add our page: we need to add a <em>URL</em> leading to it... otherwise users won't be able to access it.  The URLs of our apps are stored in the app's directory "urls.py" file.</p>
+<p>Open the "web/help_system/urls.py" file (you might have to create it) and write in it:</p>
+<pre><code class="python"># URL patterns for the help_system app
+
+from django.conf.urls import url
+from web.help_system.views import index
+
+urlpatterns = [
+    url(r'^$', index, name=&quot;index&quot;)
+]
+</code></pre>
+
+<p>We also need to add our app as a namespace holder for URLS.  Edit the file "web/urls.py".  In it you will find the <code>custom_patterns</code> variable.  Replace it with:</p>
+<pre><code class="python">custom_patterns = [
+    url(r'^help/', include('web.help_system.urls',
+            namespace='help_system', app_name='help_system')),
+]
+</code></pre>
+
+<p>When a user will ask for a specific <em>URL</em> on your site, Django will:</p>
+<ol>
+<li>Read the list of custom patterns defined in "web/urls.py".  There's one pattern here, which describes to Django that all URLs beginning by 'help/' should be sent to the 'help_system' app.  The 'help/' part is removed.</li>
+<li>Then Django will check the "web.help_system/urls.py" file.  It contains only one URL, which is empty (<code>^$</code>).</li>
+</ol>
+<p>In other words, if the URL is '/help/', then Django will execute our defined view.</p>
+<h3 id="lets-see-it-work">Let's see it work<a class="headerlink" href="#lets-see-it-work" title="Permanent link">&para;</a></h3>
+<p>You can now reload or start Evennia.  Open a tab in your browser and go to <a href="http://localhost:4001/help/">http://localhost:4001/help/</a> .  If everything goes well, you should see your new page... which isn't empty since Evennia uses our "base.html" <em>template</em>.  In the content of our page, there's only a heading that reads "help index".  Notice that the title of our page is "mygame - Help index" ("mygame" is replaced by the name of your game).</p>
+<p>From now on, it will be easier to move forward and add features.</p>
+<h3 id="a-brief-reminder">A brief reminder<a class="headerlink" href="#a-brief-reminder" title="Permanent link">&para;</a></h3>
+<p>We'll be trying the following things:</p>
+<ul>
+<li>Have the help of commands and help entries accessed online.</li>
+<li>Have various commands and help entries depending on whether the user is logged in or not.</li>
+</ul>
+<p>In terms of pages, we'll have:</p>
+<ul>
+<li>One to display the list of help topics.</li>
+<li>One to display the content of a help topic.</li>
+</ul>
+<p>The first one would link to the second.</p>
+<blockquote>
+<p>Should we create two URLs?</p>
+</blockquote>
+<p>The answer is... maybe.  It depends on what you want to do.  We have our help index accessible through the "/help/" URL.  We could have the detail of a help entry accessible through "/help/desc" (to see the detail of the "desc" command).  The problem is that our commands or help topics may contain special characters that aren't to be present in URLs.  There are different ways around this problem.  I have decided to use a <em>GET variable</em> here, which would create URLs like this:</p>
+<pre><code>/help?name=desc
+</code></pre>
+<p>If you use this system, you don't have to add a new URL:  GET and POST variables are accessible through our requests and we'll see how soon enough.</p>
+<h2 id="handling-logged-in-users">Handling logged-in users<a class="headerlink" href="#handling-logged-in-users" title="Permanent link">&para;</a></h2>
+<p>One of our requirements is to have a help system tailored to our accounts.  If an account with admin access logs in, the page should display a lot of commands that aren't accessible to common users.  And perhaps even some additional help topics.</p>
+<p>Fortunately, it's fairly easy to get the logged in account in our view (remember that we'll do most of our coding there).  The <em>request</em> object, passed to our function, contains a <code>user</code> attribute.  This attribute will always be there: we cannot test whether it's <code>None</code> or not, for instance.  But when the request comes from a user that isn't logged in, the <code>user</code> attribute will contain an anonymous Django user.  We then can use the <code>is_anonymous</code> method to see whether the user is logged-in or not.  Last gift by Evennia, if the user is logged in, <code>request.user</code> contains a reference to an account object, which will help us a lot in coupling the game and online system.</p>
+<p>So we might end up with something like:</p>
+<pre><code class="python">def index(request):
+    &quot;&quot;&quot;The 'index' view.&quot;&quot;&quot;
+    user = request.user
+    if not user.is_anonymous() and user.character:
+        character = user.character
+</code></pre>
+
+<blockquote>
+<p>Note: this code works when your MULTISESSION_MODE is set to 0 or 1.  When it's above, you would have something like:</p>
+</blockquote>
+<pre><code class="python">def index(request):
+    &quot;&quot;&quot;The 'index' view.&quot;&quot;&quot;
+    user = request.user
+    if not user.is_anonymous() and user.db._playable_characters:
+        character = user.db._playable_characters[0]
+</code></pre>
+
+<p>In this second case, it will select the first character of the account.</p>
+<p>But what if the user's not logged in?  Again, we have different solutions.  One of the most simple is to create a character that will behave as our default character for the help system.  You can create it through your game:  connect to it and enter:</p>
+<pre><code>@charcreate anonymous
+</code></pre>
+<p>The system should answer:</p>
+<pre><code>Created new character anonymous. Use @ic anonymous to enter the game as this character.
+</code></pre>
+<p>So in our view, we could have something like this:</p>
+<pre><code class="python">from typeclasses.characters import Character
+
+def index(request):
+    &quot;&quot;&quot;The 'index' view.&quot;&quot;&quot;
+    user = request.user
+    if not user.is_anonymous() and user.character:
+        character = user.character
+    else:
+        character = Character.objects.get(db_key=&quot;anonymous&quot;)
+</code></pre>
+
+<p>This time, we have a valid character no matter what:  remember to adapt this code if you're running in multisession mode above 1.</p>
+<h2 id="the-full-system">The full system<a class="headerlink" href="#the-full-system" title="Permanent link">&para;</a></h2>
+<p>What we're going to do is to browse through all commands and help entries, and list all the commands that can be seen by this character (either our 'anonymous' character, or our logged-in character).</p>
+<p>The code is longer, but it presents the entire concept in our view.  Edit the "web/help_system/views.py" file and paste into it:</p>
+<pre><code class="python">from django.http import Http404
+from django.shortcuts import render
+from evennia.help.models import HelpEntry
+
+from typeclasses.characters import Character
+
+def index(request):
+    &quot;&quot;&quot;The 'index' view.&quot;&quot;&quot;
+    user = request.user
+    if not user.is_anonymous() and user.character:
+        character = user.character
+    else:
+        character = Character.objects.get(db_key=&quot;anonymous&quot;)
+
+    # Get the categories and topics accessible to this character
+    categories, topics = _get_topics(character)
+
+    # If we have the 'name' in our GET variable
+    topic = request.GET.get(&quot;name&quot;)
+    if topic:
+        if topic not in topics:
+            raise Http404(&quot;This help topic doesn't exist.&quot;)
+
+        topic = topics[topic]
+        context = {
+                &quot;character&quot;: character,
+                &quot;topic&quot;: topic,
+        }
+        return render(request, &quot;help_system/detail.html&quot;, context)
+    else:
+        context = {
+                &quot;character&quot;: character,
+                &quot;categories&quot;: categories,
+        }
+        return render(request, &quot;help_system/index.html&quot;, context)
+
+def _get_topics(character):
+    &quot;&quot;&quot;Return the categories and topics for this character.&quot;&quot;&quot;
+    cmdset = character.cmdset.all()[0]
+    commands = cmdset.commands
+    entries = [entry for entry in HelpEntry.objects.all()]
+    categories = {}
+    topics = {}
+
+    # Browse commands
+    for command in commands:
+        if not command.auto_help or not command.access(character):
+            continue
+
+        # Create the template for a command
+        template = {
+                &quot;name&quot;: command.key,
+                &quot;category&quot;: command.help_category,
+                &quot;content&quot;: command.get_help(character, cmdset),
+        }
+
+        category = command.help_category
+        if category not in categories:
+            categories[category] = []
+        categories[category].append(template)
+        topics[command.key] = template
+
+    # Browse through the help entries
+    for entry in entries:
+        if not entry.access(character, 'view', default=True):
+            continue
+
+        # Create the template for an entry
+        template = {
+                &quot;name&quot;: entry.key,
+                &quot;category&quot;: entry.help_category,
+                &quot;content&quot;: entry.entrytext,
+        }
+
+        category = entry.help_category
+        if category not in categories:
+            categories[category] = []
+        categories[category].append(template)
+        topics[entry.key] = template
+
+    # Sort categories
+    for entries in categories.values():
+        entries.sort(key=lambda c: c[&quot;name&quot;])
+
+    categories = list(sorted(categories.items()))
+    return categories, topics
+</code></pre>
+
+<p>That's a bit more complicated here, but all in all, it can be divided in small chunks:</p>
+<ul>
+<li>The <code>index</code> function is our view:</li>
+<li>It begins by getting the character as we saw in the previous section.</li>
+<li>It gets the help topics (commands and help entries) accessible to this character.  It's another function that handles that part.</li>
+<li>If there's a <em>GET variable</em> "name" in our URL (like "/help?name=drop"), it will retrieve it.  If it's not a valid topic's name, it returns a <em>404</em>.  Otherwise, it renders the template called "detail.html", to display the detail of our topic.</li>
+<li>If there's no <em>GET variable</em> "name", render "index.html", to display the list of topics.</li>
+<li>The <code>_get_topics</code> is a private function.  Its sole mission is to retrieve the commands a character can execute, and the help entries this same character can see.  This code is more Evennia-specific than Django-specific, it will not be detailed in this tutorial.  Just notice that all help topics are stored in a dictionary.  This is to simplify our job when displaying them in our templates.</li>
+</ul>
+<p>Notice that, in both cases when we asked to render a <em>template</em>, we passed to <code>render</code> a third argument which is the dictionary of variables used in our templates.  We can pass variables this way, and we will use them in our templates.</p>
+<h3 id="the-index-template">The index template<a class="headerlink" href="#the-index-template" title="Permanent link">&para;</a></h3>
+<p>Let's look at our full "index" <em>template</em>.  You can open the "web/help_system/templates/help_sstem/index.html" file and paste the following into it:</p>
+<pre><code>{% extends &quot;base.html&quot; %}
+{% block titleblock %}Help index{% endblock %}
+{% block content %}
+&lt;h2&gt;Help index&lt;/h2&gt;
+{% if categories %}
+    {% for category, topics in categories %}
+        &lt;h2&gt;{{ category|capfirst }}&lt;/h2&gt;
+        &lt;table&gt;
+        &lt;tr&gt;
+        {% for topic in topics %}
+            {% if forloop.counter|divisibleby:&quot;5&quot; %}
+                &lt;/tr&gt;
+                &lt;tr&gt;
+            {% endif %}
+            &lt;td&gt;&lt;a href=&quot;{% url 'help_system:index' %}?name={{ topic.name|urlencode }}&quot;&gt;
+            {{ topic.name }}&lt;/td&gt;
+        {% endfor %}
+        &lt;/tr&gt;
+        &lt;/table&gt;
+    {% endfor %}
+{% endif %}
+{% endblock %}
+</code></pre>
+
+<p>This template is definitely more detailed.  What it does is:</p>
+<ol>
+<li>Browse through all categories.</li>
+<li>For all categories, display a level-2 heading with the name of the category.</li>
+<li>All topics in a category (remember, they can be either commands or help entries) are displayed in a table.  The trickier part may be that, when the loop is above 5, it will create a new line.  The table will have 5 columns at the most per row.</li>
+<li>For every cell in the table, we create a link redirecting to the detail page (see below).  The URL would look something like "help?name=say".  We use <code>urlencode</code> to ensure special characters are properly escaped.</li>
+</ol>
+<h3 id="the-detail-template">The detail template<a class="headerlink" href="#the-detail-template" title="Permanent link">&para;</a></h3>
+<p>It's now time to show the detail of a topic (command or help entry).  You can create the file "web/help_system/templates/help_system/detail.html".  You can paste into it the following code:</p>
+<pre><code>{% extends &quot;base.html&quot; %}
+{% block titleblock %}Help for {{ topic.name }}{% endblock %}
+{% block content %}
+&lt;h2&gt;{{ topic.name|capfirst }} help topic&lt;/h2&gt;
+&lt;p&gt;Category: {{ topic.category|capfirst }}&lt;/p&gt;
+{{ topic.content|linebreaks }}
+{% endblock %}
+</code></pre>
+
+<p>This template is much easier to read.  Some <em>filters</em> might be unknown to you, but they are just used to format here.</p>
+<h3 id="put-it-all-together">Put it all together<a class="headerlink" href="#put-it-all-together" title="Permanent link">&para;</a></h3>
+<p>Remember to reload or start Evennia, and then go to <a href="http://localhost:4001/help/">http://localhost:4001/help</a>.  You should see the list of commands and topics accessible by all characters.  Try to login (click the "login" link in the menu of your website) and go to the same page again.  You should now see a more detailed list of commands and help entries.  Click on one to see its detail.</p>
+<h2 id="to-improve-this-feature">To improve this feature<a class="headerlink" href="#to-improve-this-feature" title="Permanent link">&para;</a></h2>
+<p>As always, a tutorial is here to help you feel comfortable adding new features and code by yourself.  Here are some ideas of things to improve this little feature:</p>
+<ul>
+<li>Links at the bottom of the detail template to go back to the index might be useful.</li>
+<li>A link in the main menu to link to this page would be great... for the time being you have to enter the URL, users won't guess it's there.</li>
+<li>Colors aren't handled at this point, which isn't exactly surprising.  You could add it though.</li>
+<li>Linking help entries between one another won't be simple, but it would be great.  For instance, if you see a help entry about how to use several commands, it would be great if these commands were themselves links to display their details.</li>
+</ul></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

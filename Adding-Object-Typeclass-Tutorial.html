@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Adding Object Typeclass Tutorial - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#change-default-rooms-exits-character-typeclass">Change Default Rooms, Exits, Character Typeclass</a></li>
+        <li class="main "><a href="#create-a-new-type-of-object">Create a new type of object</a></li>
+        <li class="main "><a href="#storing-data-on-initialization">Storing data on initialization</a></li>
+        <li class="main "><a href="#updating-existing-objects">Updating existing objects</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Describes-adding-a-simple-typeclass."></a>
+Evennia comes with a few very basic classes of in-game entities:</p>
+<pre><code>DefaultObject
+   |           
+   DefaultCharacter
+   DefaultRoom
+   DefaultExit
+   DefaultChannel
+</code></pre>
+<p>When you create a new Evennia game (with for example <code>evennia --init mygame</code>) Evennia will
+automatically create empty child classes <code>Object</code>, <code>Character</code>, <code>Room</code> and <code>Exit</code> respectively. They
+are found <code>mygame/typeclasses/objects.py</code>, <code>mygame/typeclasses/rooms.py</code> etc. </p>
+<blockquote>
+<p>Technically these are all <a href="Typeclasses.html">Typeclassed</a>, which can be ignored for now. In
+<code>mygame/typeclasses</code> are also base typeclasses for out-of-character things, notably
+<a href="Communications.html">Channels</a>, <a href="Accounts.html">Accounts</a> and <a href="Scripts.html">Scripts</a>. We don't cover those in
+this tutorial.</p>
+</blockquote>
+<p>For your own game you will most likely want to expand on these very simple beginnings. It's normal
+to want your Characters to have various attributes, for example. Maybe Rooms should hold extra
+information or even <em>all</em> Objects in your game should have properties not included in basic Evennia. </p>
+<h2 id="change-default-rooms-exits-character-typeclass">Change Default Rooms, Exits, Character Typeclass<a class="headerlink" href="#change-default-rooms-exits-character-typeclass" title="Permanent link">&para;</a></h2>
+<p>This is the simplest case.</p>
+<p>The default build commands of a new Evennia game is set up to use the <code>Room</code>, <code>Exit</code> and <code>Character</code>
+classes found in the same-named modules under <code>mygame/typeclasses/</code>. By default these are empty and
+just implements the default parents from the Evennia library (<code>DefaultRoom</code>etc). Just add the
+changes you want to these classes and run <code>@reload</code> to add your new functionality. </p>
+<h2 id="create-a-new-type-of-object">Create a new type of object<a class="headerlink" href="#create-a-new-type-of-object" title="Permanent link">&para;</a></h2>
+<p>Say you want to create a new "Heavy" object-type that characters should not have the ability to pick
+up.</p>
+<ol>
+<li>Edit <code>mygame/typeclasses/objects.py</code> (you could also create a new module there, named something
+   like <code>heavy.py</code>, that's up to how you want to organize things).</li>
+<li>Create a new class inheriting at any distance from <code>DefaultObject</code>. It could look something like
+   this:</li>
+</ol>
+<pre><code class="python">    # end of file mygame/typeclasses/objects.py
+    from evennia import DefaultObject
+
+    class Heavy(DefaultObject):
+       &quot;Heavy object&quot;
+       def at_object_creation(self):
+           &quot;Called whenever a new object is created&quot;
+           # lock the object down by default
+           self.locks.add(&quot;get:false()&quot;)
+           # the default &quot;get&quot; command looks for this Attribute in order
+           # to return a customized error message (we just happen to know
+           # this, you'd have to look at the code of the 'get' command to
+           # find out).
+           self.db.get_err_msg = &quot;This is too heavy to pick up.&quot;
+</code></pre>
+
+<ol>
+<li>Once you are done, log into the game with a build-capable account and do <code>@create/drop
+   rock:objects.Heavy</code> to drop a new heavy "rock" object in your location. Next try to pick it up
+(<code>@quell</code> yourself first if you are a superuser). If you get errors, look at your log files where
+you will find the traceback. The most common error is that you have some sort of syntax error in
+your class. </li>
+</ol>
+<p>Note that the Locks.md and <a href="Attributes.html">Attribute</a> which are set in the typeclass could just
+as well have been set using commands in-game, so this is a <em>very</em> simple example.</p>
+<h2 id="storing-data-on-initialization">Storing data on initialization<a class="headerlink" href="#storing-data-on-initialization" title="Permanent link">&para;</a></h2>
+<p>The <code>at_object_creation</code> is only called once, when the object is first created. This makes it ideal
+for database-bound things like <a href="Attributes.html">Attributes</a>. But sometimes you want to create temporary
+properties (things that are not to be stored in the database but still always exist every time the
+object is created). Such properties can be initialized in the <code>at_init</code> method on the object.
+<code>at_init</code> is called every time the object is loaded into memory. </p>
+<blockquote>
+<p>Note: It's usually pointless and wasteful to assign database data in <code>at_init</code>, since this will
+hit the database with the same value over and over. Put those in <code>at_object_creation</code> instead. </p>
+</blockquote>
+<p>You are wise to use <code>ndb</code> (non-database Attributes) to store these non-persistent properties, since
+ndb-properties are protected against being cached out in various ways and also allows you to list
+them using various in-game tools:</p>
+<pre><code class="python">def at_init(self):
+    self.ndb.counter = 0
+    self.ndb.mylist = []
+</code></pre>
+
+<blockquote>
+<p>Note: As mentioned in the <a href="Typeclasses.html">Typeclasses</a> documentation, <code>at_init</code> replaces the use of
+the standard <code>__init__</code> method of typeclasses due to how the latter may be called in situations
+other than you'd expect. So use <code>at_init</code> where you would normally use <code>__init__</code>. </p>
+</blockquote>
+<h2 id="updating-existing-objects">Updating existing objects<a class="headerlink" href="#updating-existing-objects" title="Permanent link">&para;</a></h2>
+<p>If you already have some <code>Heavy</code> objects created and you add a new <code>Attribute</code> in
+<code>at_object_creation</code>, you will find that those existing objects will not have this Attribute. This
+is not so strange, since <code>at_object_creation</code> is only called once, it will not be called again just
+because you update it. You need to update existing objects manually. </p>
+<p>If the number of objects is limited, you can use <code>@typeclass/force/reload objectname</code> to force a
+re-load of the <code>at_object_creation</code> method (only) on the object. This case is common enough that
+there is an alias <code>@update objectname</code> you can use to get the same effect. If there are multiple
+objects you can use <code>@py</code> to loop over the objects you need: </p>
+<pre><code>@py from typeclasses.objects import Heavy; [obj.at_object_creation() for obj in Heavy.objects.all()]
+
+</code></pre></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>EvEditor - Evennia Manual</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li >
+                                <a href="Administrative-Docs.html">Admin</a>
+                            </li>
+                            <li >
+                                <a href="Builder-Docs.html">Building</a>
+                            </li>
+                            <li >
+                                <a href="Developer-Central.html">Game Development</a>
+                            </li>
+                            <li >
+                                <a href="Tutorials.html">Tutorials</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#launching-the-editor">Launching the editor</a></li>
+        <li class="main "><a href="#example-of-usage">Example of usage</a></li>
+        <li class="main "><a href="#persistent-editor">Persistent editor</a></li>
+        <li class="main "><a href="#line-editor-usage">Line editor usage</a></li>
+        <li class="main "><a href="#the-eveditor-to-edit-code">The EvEditor to edit code</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p><a href="Describes-the-use-of-the-Line-editor"></a></p>
+<p>Evennia offers a powerful in-game line editor in <code>evennia.utils.eveditor.EvEditor</code>. This editor, mimicking the well-known VI line editor. It offers line-by-line editing, undo/redo, line deletes, search/replace, fill, dedent and more. </p>
+<h3 id="launching-the-editor">Launching the editor<a class="headerlink" href="#launching-the-editor" title="Permanent link">&para;</a></h3>
+<p>The editor is created as follows: </p>
+<pre><code class="python">from evennia.utils.eveditor import EvEditor
+
+EvEditor(caller, 
+         loadfunc=None, savefunc=None, quitfunc=None, 
+         key=&quot;&quot;)
+</code></pre>
+
+<ul>
+<li><code>caller</code> (Object or Account): The user of the editor.</li>
+<li><code>loadfunc</code> (callable, optional): This is a function called when the editor is first started. It is called with <code>caller</code> as its only argument. The return value from this function is used as the starting text in the editor buffer.</li>
+<li><code>savefunc</code> (callable, optional): This is called when the user saves their buffer in the editor is called with two arguments, <code>caller</code> and <code>buffer</code>, where <code>buffer</code> is the current buffer. </li>
+<li><code>quitfunc</code> (callable, optional): This is called when the user quits the editor. If given, all cleanup and exit messages to the user must be handled by this function. </li>
+<li><code>key</code> (str, optional): This text will be displayed as an identifier and reminder while editing. It has no other mechanical function.</li>
+<li><code>persistent</code> (default <code>False</code>): if set to <code>True</code>, the editor will survive a reboot.</li>
+</ul>
+<h3 id="example-of-usage">Example of usage<a class="headerlink" href="#example-of-usage" title="Permanent link">&para;</a></h3>
+<p>This is an example command for setting a specific Attribute using the editor.</p>
+<pre><code class="python">from evennia import Command
+from evennia.utils import eveditor
+
+class CmdSetTestAttr(Command):
+    &quot;&quot;&quot;
+    Set the &quot;test&quot; Attribute using 
+    the line editor.
+
+    Usage:
+       settestattr
+
+    &quot;&quot;&quot;
+    key = &quot;settestattr&quot;
+    def func(self):
+        &quot;Set up the callbacks and launch the editor&quot;
+        def load(caller):
+            &quot;get the current value&quot;
+            return caller.attributes.get(&quot;test&quot;)
+        def save(caller, buffer):
+            &quot;save the buffer&quot;
+            caller.attributes.set(&quot;test&quot;, buffer)
+        def quit(caller):
+            &quot;Since we define it, we must handle messages&quot;
+            caller.msg(&quot;Editor exited&quot;)
+        key = &quot;%s/test&quot; % self.caller
+        # launch the editor
+        eveditor.EvEditor(self.caller, 
+                          loadfunc=load, savefunc=save, quitfunc=quit, 
+                          key=key)            
+</code></pre>
+
+<h3 id="persistent-editor">Persistent editor<a class="headerlink" href="#persistent-editor" title="Permanent link">&para;</a></h3>
+<p>If you set the <code>persistent</code> keyword to <code>True</code> when creating the editor, it will remain open even when reloading the game.  In order to be persistent, an editor needs to have its callback functions (<code>loadfunc</code>, <code>savefunc</code> and <code>quitfunc</code>) as top-level functions defined in the module.  Since these functions will be stored, Python will need to find them.</p>
+<pre><code class="python">from evennia import Command
+from evennia.utils import eveditor
+
+def load(caller):
+    &quot;get the current value&quot;
+    return caller.attributes.get(&quot;test&quot;)
+
+def save(caller, buffer):
+    &quot;save the buffer&quot;
+    caller.attributes.set(&quot;test&quot;, buffer)
+
+def quit(caller):
+    &quot;Since we define it, we must handle messages&quot;
+    caller.msg(&quot;Editor exited&quot;)
+
+class CmdSetTestAttr(Command):
+    &quot;&quot;&quot;
+    Set the &quot;test&quot; Attribute using 
+    the line editor.
+
+    Usage:
+       settestattr
+
+    &quot;&quot;&quot;
+    key = &quot;settestattr&quot;
+    def func(self):
+        &quot;Set up the callbacks and launch the editor&quot;
+        key = &quot;%s/test&quot; % self.caller
+        # launch the editor
+        eveditor.EvEditor(self.caller, 
+                          loadfunc=load, savefunc=save, quitfunc=quit, 
+                          key=key, persistent=True)            
+</code></pre>
+
+<h3 id="line-editor-usage">Line editor usage<a class="headerlink" href="#line-editor-usage" title="Permanent link">&para;</a></h3>
+<p>The editor mimics the <code>VIM</code> editor as best as possible. The below is an excerpt of the return from the in-editor help command (<code>:h</code>).</p>
+<pre><code> &lt;txt&gt;  - any non-command is appended to the end of the buffer.
+ :  &lt;l&gt; - view buffer or only line &lt;l&gt;
+ :: &lt;l&gt; - view buffer without line numbers or other parsing
+ :::    - print a ':' as the only character on the line...
+ :h     - this help.
+
+ :w     - save the buffer (don't quit)
+ :wq    - save buffer and quit
+ :q     - quit (will be asked to save if buffer was changed)
+ :q!    - quit without saving, no questions asked
+
+ :u     - (undo) step backwards in undo history
+ :uu    - (redo) step forward in undo history
+ :UU    - reset all changes back to initial state
+
+ :dd &lt;l&gt;     - delete line &lt;n&gt;
+ :dw &lt;l&gt; &lt;w&gt; - delete word or regex &lt;w&gt; in entire buffer or on line &lt;l&gt;
+ :DD         - clear buffer
+
+ :y  &lt;l&gt;        - yank (copy) line &lt;l&gt; to the copy buffer
+ :x  &lt;l&gt;        - cut line &lt;l&gt; and store it in the copy buffer
+ :p  &lt;l&gt;        - put (paste) previously copied line directly after &lt;l&gt;
+ :i  &lt;l&gt; &lt;txt&gt;  - insert new text &lt;txt&gt; at line &lt;l&gt;. Old line will move down
+ :r  &lt;l&gt; &lt;txt&gt;  - replace line &lt;l&gt; with text &lt;txt&gt;
+ :I  &lt;l&gt; &lt;txt&gt;  - insert text at the beginning of line &lt;l&gt;
+ :A  &lt;l&gt; &lt;txt&gt;  - append text after the end of line &lt;l&gt;
+
+ :s &lt;l&gt; &lt;w&gt; &lt;txt&gt; - search/replace word or regex &lt;w&gt; in buffer or on line &lt;l&gt;
+
+ :f &lt;l&gt;    - flood-fill entire buffer or line &lt;l&gt;
+ :fi &lt;l&gt;   - indent entire buffer or line &lt;l&gt;
+ :fd &lt;l&gt;   - de-indent entire buffer or line &lt;l&gt;
+
+ :echo - turn echoing of the input on/off (helpful for some clients)
+
+    Legend:
+    &lt;l&gt; - line numbers, or range lstart:lend, e.g. '3:7'.
+    &lt;w&gt; - one word or several enclosed in quotes.
+    &lt;txt&gt; - longer string, usually not needed to be enclosed in quotes.
+</code></pre>
+
+<h3 id="the-eveditor-to-edit-code">The EvEditor to edit code<a class="headerlink" href="#the-eveditor-to-edit-code" title="Permanent link">&para;</a></h3>
+<p>The <code>EvEditor</code> is also used to edit some Python code in Evennia.  The <code>@py</code> command supports an <code>/edit</code> switch that will open the EvEditor in code mode.  This mode isn't significantly different from the standard one, except it handles automatic indentation of blocks and a few options to control this behavior.</p>
+<ul>
+<li><code>:&lt;</code> to remove a level of indentation for the future lines.</li>
+<li><code>:+</code> to add a level of indentation for the future lines.</li>
+<li><code>:=</code> to disable automatic indentation altogether.</li>
+</ul>
+<p>Automatic indentation is there to make code editing more simple.  Python needs correct indentation, not as an aesthetic addition, but as a requirement to determine beginning and ending of blocks.  The EvEditor will try to guess the next level of indentation.  If you type a block "if", for instance, the EvEditor will propose you an additional level of indentation at the next line.  This feature cannot be perfect, however, and sometimes, you will have to use the above options to handle indentation.</p>
+<p><code>:=</code> can be used to turn automatic indentation off completely.  This can be very useful when trying to paste several lines of code that are already correctly indented, for instance.</p>
+<p>To see the EvEditor in code mode, you can use the <code>@py/edit</code> command.  Type in your code (on one or several lines).  You can then use the <code>:w</code> option (save without quitting) and the code you have typed will be executed.  The <code>:!</code> will do the same thing.  Executing code while not closing the editor can be useful if you want to test the code you have typed but add new lines after your test.</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
