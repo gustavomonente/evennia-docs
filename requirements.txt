@@ -1,0 +1,8 @@
+# requirements for building the docs
+
+mkdocs 
+mkdocs-htmlproofer-plugin
+mkdocs-material         
+mkdocs-minify-plugin   
+mkdocs-macros-plugin
+mkdocs-versioning

@@ -7,14 +7,11 @@ nav:
   - Game Development: Developer-Central.md
   - Tutorials: Tutorials.md
 markdown_extensions:
-  - toc:
-      permalink: true
-  - extra:
-      fenced_code: true
-      tables: true
   - wikilinks: 
       end_url: .html
+  - toc:
+      permalink: true
 plugins:
   - search
-  - htmlproofer
-
+    # - htmlproofer
+  - macros
