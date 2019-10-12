@@ -94,7 +94,6 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<p><a href="How-to-check-for-access-and-define-what-gives-access-or-not."></a></p>
 <p>For most games it is a good idea to restrict what people can do. In Evennia such restrictions are applied and checked by something called <em>locks</em>. All Evennia entities (Commands.md, Objects.md, Scripts.md, Accounts.md, <a href="help-system">Help System</a>, <a href="Communications#Msg">messages</a> and <a href="Communications#Channels">channels</a>) are accessed through locks. </p>
 <p>A lock can be thought of as an "access rule" restricting a particular use of an Evennia entity.  Whenever another entity wants that kind of access the lock will analyze that entity in different ways to determine if access should be granted or not. Evennia implements a "lockdown" philosophy - all entities are inaccessible unless you explicitly define a lock that allows some or full access. </p>
 <p>Let's take an example: An object has a lock on itself that restricts how people may "delete" that object. Apart from knowing that it restricts deletion, the lock also knows that only players with the specific ID of, say, <code>34</code> are allowed to delete it. So whenever a player tries to run <code>delete</code> on the object, the <code>delete</code> command makes sure to check if this player is really allowed to do so. It calls the lock, which in turn checks if the player's id is <code>34</code>. Only then will it allow <code>delete</code> to go on with its job.</p>

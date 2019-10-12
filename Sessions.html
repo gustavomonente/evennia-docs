@@ -87,7 +87,6 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<p><a href="Summarizes-the-use-of-Sessions."></a></p>
 <p>An Evennia <em>Session</em> represents one single established connection to the server. Depending on the Evennia session, it is possible for a person to connect multiple times, for example using different clients in multiple windows. Each such connection is represented by a session object.</p>
 <p>A session object has its own <a href="command-sets">cmdset</a>, usually the "unloggedin" cmdset. This is what is used to show the login screen and to handle commands to create a new account (or <a href="Accounts.html">Account</a> in evennia lingo) read initial help and to log into the game with an existing account. A session object can either be "logged in" or not.  Logged in means that the user has authenticated. When this happens the session is associated with an Account object (which is what holds account-centric stuff). The account can then in turn puppet any number of objects/characters.</p>
 <blockquote>

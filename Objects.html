@@ -87,7 +87,6 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<p><a href="Describes-the-basic-Object-typeclass,-the-base-for-all-in-game-things."></a></p>
 <p>All in-game objects in Evennia, be it characters, chairs, monsters, rooms or hand grenades are represented by an Evennia <em>Object</em>. Objects form the core of Evennia and is probably what you'll spend most time working with. Objects are <a href="Typeclasses.html">Typeclassed</a> entities.</p>
 <h2 id="how-to-create-your-own-object-types">How to create your own object types<a class="headerlink" href="#how-to-create-your-own-object-types" title="Permanent link">&para;</a></h2>
 <p>An Evennia Object is, per definition, a Python class that includes <code>evennia.DefaultObject</code> among its parents. In <code>mygame/typeclasses/objects.py</code> there is already a class <code>Object</code> that inherits from <code>DefaultObject</code> and that you can inherit from. You can put your new typeclass directly in that module or you could organize your code in some other way. Here we assume we make a new module <code>mygame/typeclasses/flowers.py</code>:</p>

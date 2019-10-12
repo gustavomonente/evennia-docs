@@ -87,7 +87,6 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<p>OOB, or Out-Of-Band, means sending data between Evennia and the user's client without the user prompting it or necessarily being aware that it's being passed. Common uses would be to update client health-bars, handle client button-presses or to display certain tagged text in a different window pane.</p>
 <h2 id="briefly-on-inputoutputcommands">Briefly on input/outputcommands<a class="headerlink" href="#briefly-on-inputoutputcommands" title="Permanent link">&para;</a></h2>
 <p>Inside Evennia, all server-client communication happens in the same way (so plain text is also an 'OOB message' as far as Evennia is concerned). The message follows the <a href="Messagepath.html">Message Path</a>. You should read up on that if you are unfamiliar with it. As the message travels along the path it has a standardized internal form: a tuple with a string, a tuple and a dict:</p>
 <pre><code>("cmdname", (args), {kwargs})

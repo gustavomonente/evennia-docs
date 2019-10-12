@@ -82,7 +82,6 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<p><a href="Overview-of-the-mechanism-for-reading-build-instructions-from-text-files."></a></p>
 <p>Building a game world is a lot of work, especially when starting out. Rooms should be created, descriptions have to be written, objects must be detailed and placed in their proper places. In many traditional MUD setups you had to do all this online, line by line, over a telnet session.</p>
 <p>Evennia already moves away from much of this by shifting the main coding work to external Python modules. But also building would be helped if one could do some or all of it externally. Enter Evennia's <em>batch processors</em> (there are two of them). The processors allows you, as a game admin, to build your game completely offline in normal text files (<em>batch files</em>) that the processors understands. Then, when you are ready, you use the processors to read it all into Evennia (and into the database) in one go.</p>
 <p>You can of course still build completely online should you want to - this is certainly the easiest way to go when learning and for small build projects. But for major building work, the advantages of using the batch-processors are many:

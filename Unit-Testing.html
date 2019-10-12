@@ -93,7 +93,6 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<p><a href="Describes-how-to-expand-the-code-with-automatic-testing-suites."></a></p>
 <p><em>Unit testing</em> means testing components of a program in isolation from each other to make sure every part works on its own before using it with others. Extensive testing helps avoid new updates causing unexpected side effects as well as alleviates general code rot (a more comprehensive wikipedia article on unit testing can be found <a href="http://en.wikipedia.org/wiki/Unit_test">here</a>).</p>
 <p>A typical unit test set calls some function or method with a given input, looks at the result and makes sure that this result looks as expected. Rather than having lots of stand-alone test programs, Evennia makes use of a central <em>test runner</em>. This is a program that gathers all available tests all over the Evennia source code (called <em>test suites</em>) and runs them all in one go. Errors and tracebacks are reported. </p>
 <p>By default Evennia only tests itself. But you can also add your own tests to your game code and have Evennia run those for you. </p>

@@ -95,7 +95,6 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<p><a href="These-handle-incoming-requests-from-the-client"></a></p>
 <p>An <em>inputfunc</em> is an Evennia function that handles a particular input (an <a href="OOB.html">inputcommand</a>) from the client. The inputfunc is the last destination for the inputcommand along the <a href="messagepath#the-ingoing-message-path">ingoing message path</a>. The inputcommand always has the form <code>(commandname, (args), {kwargs})</code> and Evennia will use this to try to find and call an inputfunc on the form </p>
 <pre><code class="python">    def commandname(session, *args, **kwargs):
         # ...
