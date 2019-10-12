@@ -1,4 +1,3 @@
-[](Changing-account's-access-and-describes-the-permission-hierarchy.)
 
 *OBS: This gives only a brief introduction to the access system. Locks and permissions are fully detailed* [here](Locks.md).
 

@@ -1,4 +1,3 @@
-[](Describes-the-path-messages-take-through-the-server)
 
 The main functionality of Evennia is to communicate with clients connected to it; a player enters commands or their client queries for a gui update (ingoing data). The server responds or sends data on its own as the game changes (outgoing data). It's important to understand how this flow of information works in Evennia.
 

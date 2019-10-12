@@ -1,4 +1,3 @@
-[](Running-code-snippets-for-building-by-reading-from-a-text-file.)
 
 For an introduction and motivation to using batch processors, see [here](Batch-Processors). This page describes the Batch-*code* processor. The Batch-*command* one is covered [here](Batch-Command-Processor). 
 

@@ -1,4 +1,3 @@
-[](Some-brief-points-to-think-about-when-starting-to-use-the-system.)
 
 Evennia allows for a lot of freedom when designing your game - but to code efficiently you still need to adopt some best practices as well as find a good place to start to learn.
 

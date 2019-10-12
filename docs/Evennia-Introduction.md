@@ -1,4 +1,3 @@
-[](The-first-introduction-to-what-Evennia-is.-You-should-have-read-this-already.)
 > *A MUD (originally Multi-User Dungeon, with later variants Multi-User Dimension and Multi-User Domain) is a multiplayer real-time virtual world described primarily in text. MUDs combine elements of role-playing games, hack and slash, player versus player, interactive fiction and online chat. Players can read or view descriptions of rooms, objects, other players, non-player characters, and actions performed in the virtual world. Players typically interact with each other and the world by typing commands that resemble a natural language.* - [Wikipedia](http://en.wikipedia.org/wiki/MUD)
 
 If you are reading this, it's quite likely you are dreaming of creating and running a text-based massively-multiplayer game ([MUD/MUX/MUSH](http://tinyurl.com/c5sc4bm) etc) of your very own. You might just be starting to think about it, or you might have lugged around that *perfect* game in your mind for years ... you know *just* how good it would be, if you could only make it come to reality. We know how you feel. That is, after all, why Evennia came to be. 
@@ -84,7 +83,7 @@ If you *also* happen to know some web programming (HTML, CSS, Javascript) there 
 
 ### Where to from here?
 
-From here you can continue browsing the [online documentation](Home.md) to find more info about Evennia. Or you can jump into the [Tutorials](Tutorials.md) and get your hands dirty with code right away. You can also read the developer's [dev blog](https://evennia.blogspot.com/) for many tidbits and snippets about Evennia's development and structure.
+From here you can continue browsing the [online documentation](index.md) to find more info about Evennia. Or you can jump into the [Tutorials](Tutorials.md) and get your hands dirty with code right away. You can also read the developer's [dev blog](https://evennia.blogspot.com/) for many tidbits and snippets about Evennia's development and structure.
 
 Some more hints: 
 

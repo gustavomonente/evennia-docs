@@ -1,4 +1,3 @@
-[](Controls-time-and-can-store-data-that-has-no-in-game-existence.)
 
 *Scripts* are the out-of-character siblings to the in-character
 [Objects](Objects.md). Scripts are so flexible that the "Script" is a bit limiting

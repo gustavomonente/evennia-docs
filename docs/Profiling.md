@@ -1,4 +1,3 @@
-*This is considered an advanced topic mainly of interest to server developers.*
 
 ## Introduction
 

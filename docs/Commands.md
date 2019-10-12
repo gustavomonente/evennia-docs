@@ -1,4 +1,3 @@
-[](Main-technical-description-of-commands-and-how-they-work.)
 
 Commands are intimately linked to [Command Sets](Command-Sets) and you need to read that page too to be familiar with how the command system works. The two pages were split for easy reading.
 

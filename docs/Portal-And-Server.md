@@ -1,4 +1,3 @@
-[](The-two-processes-that-make-up-the-running-Evennia-server-are-described.)
 
 Evennia consists of two processes, known as *Portal* and *Server*.  They can be controlled from
 inside the game or from the command line as described [here](Start-Stop-Reload).

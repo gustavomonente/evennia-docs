@@ -1,4 +1,3 @@
-[](A-tutorial-on-how-to-make-it-so-players-can-turn-on-and-off-color-in-your-game.)
 
 This is a small tutorial for customizing your character objects, using the example of letting users turn on and off ANSI color parsing as an example.  `@options NOCOLOR=True` will now do what this tutorial shows, but the tutorial subject can be applied to other toggles you may want, as well.
 

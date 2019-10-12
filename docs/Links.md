@@ -1,4 +1,3 @@
-[](A-long-list-of-Evennia,-MU*-and-other-game-related-resources.)
 *A list of resources that may be useful for Evennia users and developers.*
 
 ### Official Evennia links
@@ -104,4 +103,4 @@
 
 ### Credits
 
- - Wiki [Home](Home.md) Icons made by [Freepik](http://www.freepik.com"-title="Freepik">Freepik) from [flaticon.com](http://www.flaticon.com), licensed under [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0).
+ - Wiki [Home](index.md) Icons made by [Freepik](http://www.freepik.com"-title="Freepik">Freepik) from [flaticon.com](http://www.flaticon.com), licensed under [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0).

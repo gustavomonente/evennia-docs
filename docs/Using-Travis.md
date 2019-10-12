@@ -1,4 +1,3 @@
-Evennia uses [Travis CI](http://travis-ci.org/) to check that it's building successfully after every commit to its Github repository (you can for example see the `build: passing` badge at the top of Evennia's [Readme file](https://github.com/evennia/evennia)). If your game is open source on Github you may also use Travis for free. See [the Travis docs](http://docs.travis-ci.com/user/getting-started/) for how to get started. 
 
 After logging in you will get to point Travis to your repository on github. One further thing you need to set up yourself is a Travis config file named `.travis.yml` (note the initial period `.`). This should be created in the root of your game directory. The idea with this file is that it describes what Travis needs to import and build in order to create an instance of Evennia from scratch and then run validation tests on it. Here is an example: 
 

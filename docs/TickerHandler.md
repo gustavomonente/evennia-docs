@@ -1,4 +1,3 @@
-[](Used-to-repeatedly-'tick'-a-method-on-an-Object.)
 
 One way to implement a dynamic MUD is by using "tickers", also known as "heartbeats". A ticker is a timer that fires ("ticks") at a given interval. The tick triggers updates in various game systems. 
 

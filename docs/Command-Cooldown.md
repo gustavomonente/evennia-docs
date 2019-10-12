@@ -1,4 +1,3 @@
-[](A-tutorial-for-making-commands-that-cannot-be-repeated-until-after-a-cooldown-time-has-passed.)
 
 Some types of games want to limit how often a command can be run. If a
 character casts the spell *Firestorm*, you might not want them to spam that

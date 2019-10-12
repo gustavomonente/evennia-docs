@@ -1,4 +1,3 @@
-[](Running-building-game-commands-from-a-text-file.)
 
 For an introduction and motivation to using batch processors, see [here](Batch-Processors). This page describes the Batch-*command* processor. The Batch-*code* one is covered [here](Batch-Code-Processor).
 

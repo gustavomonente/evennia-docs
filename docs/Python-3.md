@@ -1,4 +1,3 @@
-> *Note: Evennia only supports Python 2.7+ at this time. This page gathers various development information relevant to server developers.*
 
 Django can work with Python 2 and 3 already, though changes may be required to how the Evennia code
 uses it. Twisted has much Python 3 compatibility, but not all modules within it have been ported

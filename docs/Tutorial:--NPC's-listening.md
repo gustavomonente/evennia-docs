@@ -1,4 +1,3 @@
-[](A-tutorial-on-making-NPC's-do-things-(like-reply)-when-a-character-says-something.)
 
 This tutorial shows the implementation of an NPC object that responds to characters speaking in their location. In this example the NPC parrots what is said, but any actions could be triggered this way.
 

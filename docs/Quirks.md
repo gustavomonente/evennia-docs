@@ -1,4 +1,3 @@
-[](Some-less-than-intuitive-things-we-know-people-have-trouble-getting-their-heads-around.)
 
 This is a list of various quirks or common stumbling blocks that people often ask about or report when using (or trying to use) Evennia. They are not bugs.
 

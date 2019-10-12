@@ -1,4 +1,3 @@
-[](A-policy-discussion-about-how-why-the-default-commands-look-the-way-they-do.)
 
 Evennia allows for any command syntax. If you like the way DikuMUDs, LPMuds or MOOs handle things, you could emulate that with Evennia. If you are ambitious you could even design a whole new style, perfectly fitting your own dreams of the ideal game. 
 

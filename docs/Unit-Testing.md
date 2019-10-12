@@ -1,4 +1,3 @@
-[](Describes-how-to-expand-the-code-with-automatic-testing-suites.)
 
 *Unit testing* means testing components of a program in isolation from each other to make sure every part works on its own before using it with others. Extensive testing helps avoid new updates causing unexpected side effects as well as alleviates general code rot (a more comprehensive wikipedia article on unit testing can be found [here](http://en.wikipedia.org/wiki/Unit_test)).
 

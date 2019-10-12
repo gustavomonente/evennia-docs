@@ -1,4 +1,3 @@
-[](Parsing-command-arguments-best-practices)
 
 This tutorial will elaborate on the many ways one can parse command arguments.  The first step after [adding a command](Adding-Command-Tutorial) usually is to parse its arguments.  There are lots of ways to do it, but some are indeed better than others and this tutorial will try to present them.
 

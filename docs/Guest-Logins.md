@@ -1,4 +1,3 @@
-[](Setting-up-guest-accounts)
 
 Evennia supports *guest logins* out of the box. A guest login is an anonymous, low-access account and can be useful if you want users to have a chance to try out your game without committing to creating a real account.
 

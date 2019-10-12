@@ -1,4 +1,3 @@
-[](Adding-dialogues-using-the-in-game-Python-system)
 
 - Next tutorial: [adding a voice-operated elevator with events](A-voice-operated-elevator-using-events).
 

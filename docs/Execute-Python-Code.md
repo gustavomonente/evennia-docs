@@ -1,4 +1,3 @@
-[](How-to-run-snippets-of-Python-code-from-inside-the-game,-for-testing-and-experimenting.)
 
 The `@py` command supplied with the default command set of Evennia allows you to execute Python commands directly from inside the game.  An alias to `@py` is simply "`!`". *Access to the `@py` command should be severely restricted*. This is no joke - being able to execute arbitrary Python code on the server is not something you should entrust to just anybody.
 

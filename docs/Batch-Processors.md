@@ -1,4 +1,3 @@
-[](Overview-of-the-mechanism-for-reading-build-instructions-from-text-files.)
 
 Building a game world is a lot of work, especially when starting out. Rooms should be created, descriptions have to be written, objects must be detailed and placed in their proper places. In many traditional MUD setups you had to do all this online, line by line, over a telnet session.
 

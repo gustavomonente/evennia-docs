@@ -1,4 +1,3 @@
-[](Information-about-the-various-database-systems-which-are-supported.)
 
 This page gives an overview of the supported SQL databases as well as instructions on install:
 

@@ -1,4 +1,3 @@
-[](Creating-vehicles)
 
 This tutorial explains how you can create vehicles that can move around in your world. The tutorial will explain how to create a train, but this can be equally applied to create other kind of vehicles (cars, planes, boats, spaceships, submarines, ...).
 

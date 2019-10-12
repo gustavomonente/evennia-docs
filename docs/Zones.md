@@ -1,4 +1,3 @@
-[](Using-Tags-to-implement-game-Zones.)
 
 Say you create a room named *Meadow* in your nice big forest MUD.  That's all nice and dandy, but what if you, in the other end of that forest want another *Meadow*? As a game creator, this can cause all sorts of confusion. For example, teleporting to *Meadow* will now give you a warning that there are two *Meadow* s and you have to select which one. It's no problem to do that, you just choose for example to go to `2-meadow`, but unless you examine them you couldn't be sure which of the two sat in the magical part of the forest and which didn't.
 

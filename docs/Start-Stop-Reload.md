@@ -1,4 +1,3 @@
-[](How-to-control-the-Server-and-Portal-process-from-the-terminal-and-inside-the-game.)
 
 You control Evennia from your game folder (we refer to it as `mygame/` here), using the `evennia`
 program. If the `evennia` program is not available on the command line you must first install

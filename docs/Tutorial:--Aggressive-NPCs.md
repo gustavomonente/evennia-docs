@@ -1,4 +1,3 @@
-[](A-tutorial-on-making-NPC's-do-things-(like-attack)-when-a-character-enters.)
 
 This tutorial shows the implementation of an NPC object that responds to characters entering their location. In this example the NPC has the option to respond aggressively or not, but any actions could be triggered this way.
 

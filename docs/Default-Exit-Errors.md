@@ -1,4 +1,3 @@
-[](A-tutorial-for-changing-what-error-you-get-when-walking-in-a-non-existing-direction.)
 
 Evennia allows for exits to have any name. The command "kitchen" is a valid exit name as well as "jump out the window" or "north". An exit actually consists of two parts: an [Exit Object](Objects.md) and an [Exit Command](Commands.md) stored on said exit object. The command has the same key and aliases as the object, which is why you can see the exit in the room and just write its name to traverse it.
 

@@ -1,4 +1,3 @@
-[](A-tutorial-on-using-tools-to-handle-game-time.)
 
 A lot of games use a separate time system we refer to as *game time*. This runs in parallel to what we usually think of as *real time*.  The game time might run at a different speed, use different names for its time units or might even use a completely custom calendar. You don't need to rely on a game time system at all. But if you do, Evennia offers basic tools to handle these various situations. This tutorial will walk you through these features.
 

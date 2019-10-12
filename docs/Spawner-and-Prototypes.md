@@ -1,4 +1,3 @@
-[](Describing-how-to-create-objects-with-the-spawner.)
 
 The *spawner* is a system for defining and creating individual objects from a base template called a
 *prototype*. It is only designed for use with in-game [Objects](Objects.md), not any other type of

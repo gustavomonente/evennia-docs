@@ -1,4 +1,3 @@
-[](A-little-hint-for-how-to-add-a-command-prompt-for-players-to-see.)
 
 A *prompt* is quite common in MUDs. The prompt display useful details about your character that you are likely to want to keep tabs on at all times, such as health, magical power etc. It might also show things like in-game time, weather and so on. Many modern MUD clients (including Evennia's own webclient) allows for identifying the prompt and have it appear in a correct location (usually just above the input line). Usually it will remain like that until it is explicitly updated. 
 

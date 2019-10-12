@@ -1,4 +1,3 @@
-[](How-to-use-and-add-help-files-to-the-game.)
 
 An important part of Evennia is the online help system. This allows the players and staff alike to learn how to use the game's commands as well as other information pertinent to the game. The help system has many different aspects, from the normal editing of help entries from inside the game, to auto-generated help entries during code development using the *auto-help system*.
 

@@ -1,4 +1,3 @@
-[](Describes-adding-a-simple-typeclass.)
 Evennia comes with a few very basic classes of in-game entities:
 
     DefaultObject

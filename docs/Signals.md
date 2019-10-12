@@ -1,4 +1,3 @@
-[](Signals-fired-at-particular-times)
 
 _This is feature available from evennia 0.9 and onward_.
 

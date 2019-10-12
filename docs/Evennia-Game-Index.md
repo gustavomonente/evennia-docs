@@ -1,4 +1,3 @@
-[](Connecting-the-game-to-the-Evennia-game-index)
 
 The [Evennia game index](http://games.evennia.com) is a list of games built or
 being built with Evennia. Anyone is allowed to add their game to the index

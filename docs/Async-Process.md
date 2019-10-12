@@ -1,4 +1,3 @@
-[](Using-asynchronous-techniques-to-avoid-blocking-the-server-(advanced).)
 
 *This is considered an advanced topic.*
 

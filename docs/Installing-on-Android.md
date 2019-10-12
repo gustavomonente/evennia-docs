@@ -1,4 +1,3 @@
-[](Describes-how-to-install-Evennia-on-an-Android-phone)
 
 This page describes how to install and run the Evennia server on an Android phone. This will involve
 installing a slew of third-party programs from the Google Play store, so make sure you are okay with

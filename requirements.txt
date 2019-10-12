@@ -5,4 +5,4 @@ mkdocs-htmlproofer-plugin
 mkdocs-material         
 mkdocs-minify-plugin   
 mkdocs-macros-plugin
-mkdocs-versioning
+# mkdocs-versioning

@@ -1,4 +1,3 @@
-[](Tutorial-giving-ideas-about-creating-a-game-rule-system)
 
 The simplest way to create an online roleplaying game (at least from a code perspective) is to
 simply grab a paperback RPG rule book, get a staff of game masters together and start to run scenes

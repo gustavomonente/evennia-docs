@@ -1,4 +1,3 @@
-[](A-tutorial-for-making-a-web-based-chargen-app-for-your-game.)
 
 ## Introduction
 

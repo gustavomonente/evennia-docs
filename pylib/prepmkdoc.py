@@ -38,7 +38,8 @@ _CUSTOM_LINK_REMAP = {
     "EvTable.md": "EvTable.md",
     "Channels.md": "Communications.md#Channels",
     "Comms.md": "Communications.md",
-    "typeclass.md": "Typeclasses.md"
+    "typeclass.md": "Typeclasses.md",
+    "Home.md": "index.md"
 }
 
 
@@ -84,6 +85,8 @@ for inpath in _INFILES:
     with open(inpath) as fil:
         text = fil.read()
         text = _RE_MD_LINK.sub(_sub_link, text)
+        text = text.split('\n')[1:]
+        text = '\n'.join(text)
 
     outfile = inpath.rsplit('/', 1)[-1]
     if outfile == "Home.md":

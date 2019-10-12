@@ -1,4 +1,3 @@
-[](How-to-modify-Evennia's-core-strings-to-use-another-language-than-English.)
 
 *Internationalization* (often abbreviated *i18n* since there are 18 characters between the first "i"
 and the last "n" in that word) allows Evennia's core server to return texts in other languages than

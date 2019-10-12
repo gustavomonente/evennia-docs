@@ -1,4 +1,3 @@
-[](Describes-the-basic-Object-typeclass,-the-base-for-all-in-game-things.)
 
 All in-game objects in Evennia, be it characters, chairs, monsters, rooms or hand grenades are represented by an Evennia *Object*. Objects form the core of Evennia and is probably what you'll spend most time working with. Objects are [Typeclassed](Typeclasses.md) entities.
 

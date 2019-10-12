@@ -1,4 +1,3 @@
-
 [](Auto-generated-listing-of-default-Evennia-commands)
 
 > *This page is auto-generated. Do not modify - your changes will be lost. Report problems to the

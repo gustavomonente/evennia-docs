@@ -1,4 +1,3 @@
-# Adding room coordinates in your game
 
 This tutorial is moderately difficult in content.  You might want to be familiar and at ease with
 some Python concepts (like properties) and possibly Django concepts (like queries), although this

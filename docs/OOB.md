@@ -1,4 +1,3 @@
-OOB, or Out-Of-Band, means sending data between Evennia and the user's client without the user prompting it or necessarily being aware that it's being passed. Common uses would be to update client health-bars, handle client button-presses or to display certain tagged text in a different window pane.
 
 ## Briefly on input/outputcommands
 

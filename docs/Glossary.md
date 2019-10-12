@@ -1,4 +1,3 @@
-[](Indexed-explanations-of-common-terms)
 
 This explains common recurring terms used in the Evennia docs. It will be expanded as needed. 
 

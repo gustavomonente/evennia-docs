@@ -1,4 +1,3 @@
-[](Searching-For-Objects.)
 
 You will often want to operate on a specific object in the database. For example when a player attacks a named target you'll need to find that target so it can be attacked. Or when a rain storm draws in you need to find all outdoor-rooms so you can show it raining in them. This tutorial explains Evennia's tools for searching.
 

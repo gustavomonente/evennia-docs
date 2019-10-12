@@ -1,4 +1,3 @@
-[](Create-a-page-to-see-your-game-help-online)
 
 **Before doing this tutorial you will probably want to read the intro in [Basic Web tutorial](Web-Tutorial).**  Reading the three first parts of the [Django tutorial](https://docs.djangoproject.com/en/1.9/intro/tutorial01/) might help as well.
 

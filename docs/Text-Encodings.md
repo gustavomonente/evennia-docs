@@ -1,4 +1,3 @@
-[](Technical-discussion-about-how-to-deal-with-text-using-different-character-sets.)
 
 Evennia is a text-based game server. This makes it important to understand how
 it actually deals with data in the form of text.

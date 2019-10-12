@@ -1,4 +1,3 @@
-[](Add-a-wiki-on-your-website-through-Django-wiki)
 
 **Before doing this tutorial you will probably want to read the intro in 
 [Basic Web tutorial](Web-Tutorial).**  Reading the three first parts of the 

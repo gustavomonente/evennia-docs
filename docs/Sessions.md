@@ -1,4 +1,3 @@
-[](Summarizes-the-use-of-Sessions.)
 
 An Evennia *Session* represents one single established connection to the server. Depending on the Evennia session, it is possible for a person to connect multiple times, for example using different clients in multiple windows. Each such connection is represented by a session object.
 

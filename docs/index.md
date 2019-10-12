@@ -1,4 +1,3 @@
-[](Wiki-front-page.)
 # Evennia Documentation
 
 This is the manual of [Evennia](http://www.evennia.com), the open source Python `MU*` creation system.

@@ -1,4 +1,3 @@
-[](How-to-get-rid-of-unwanted-players.)
 
 Whether due to abuse, blatant breaking of your rules, or some other reason, you will eventually find
 no other recourse but to kick out a particularly troublesome player. The default command set has

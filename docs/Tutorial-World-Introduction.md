@@ -1,4 +1,3 @@
-[](This-is-a-small-single-player-quest-with-code-you-can-learn-from.)
 
 The *Tutorial World* is a small and functioning MUD-style game world.  It is intended to be deconstructed and used as a way to learn Evennia.  The game consists of a single-player quest and has some 20 rooms that you can explore as you seek to discover the whereabouts of a mythical weapon.
 

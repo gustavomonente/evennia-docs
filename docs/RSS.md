@@ -1,4 +1,3 @@
-[](How-to-connect-your-game-to-an-external-RSS-feed.)
 
 [RSS](http://en.wikipedia.org/wiki/RSS) is a format for easily tracking updates on websites. The principle is simple - whenever a site is updated, a small text file is updated. An RSS reader can then regularly go online, check this file for updates and let the user know what's new. 
 

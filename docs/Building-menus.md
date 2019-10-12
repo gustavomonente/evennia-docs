@@ -1,4 +1,3 @@
-[](Describe-building-menus-in-a-tutorial.)
 
 # The building_menu contrib
 

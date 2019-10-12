@@ -1,4 +1,3 @@
-[](Explains-how-to-download,-install-and-start-Evennia-for-the-first-time.)
 
 This will help you download, install and start Evennia for the first time.
 

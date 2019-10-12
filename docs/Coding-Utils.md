@@ -1,4 +1,3 @@
-[](A-non-complete-list-of-some-of-the-useful-code-utilities-in-src/utils.)
 
 Evennia comes with many utilities to help with common coding tasks. Most are accessible directly from the flat API, otherwise you can find them in the `evennia/utils/` folder.
 

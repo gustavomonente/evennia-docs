@@ -1,4 +1,3 @@
-[](An-explaination-of-the-monitor-handler-system-to-watch-for-attribute-changes-on-objects)
 
 The *MonitorHandler* is a system for watching changes in properties or Attributes on objects. A monitor can be thought of as a sort of trigger that responds to change. 
 

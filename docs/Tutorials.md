@@ -1,4 +1,3 @@
-[](Overview-of-all-tutorial-type-documentation.)
 
 Before continuing to read these tutorials (and especially before you start to code or build your game in earnest) it's strongly recommended that you read the [Evennia coding introduction](Coding-Introduction) as well as the [Planning your own game](Game-Planning) pages first. 
 

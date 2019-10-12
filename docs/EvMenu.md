@@ -1,4 +1,3 @@
-[](Describes-the-built-in-menu-creation-tool)
 
 ## Introduction
 

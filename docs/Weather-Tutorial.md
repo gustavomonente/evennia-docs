@@ -1,4 +1,3 @@
-[](A-tutorial-on-using-tickers-to-make-days-go-by.)
 
 This tutorial will have us create a simple weather system for our MUD.  The way we want to use this is to have all outdoor rooms echo weather-related messages to the room at regular and semi-random intervals. Things like "Clouds gather above", "It starts to rain" and so on. 
 

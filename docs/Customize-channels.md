@@ -1,4 +1,3 @@
-[](A-tutorial-on-customizing-channel-commands.)
 
 # Channel commands in Evennia
 

@@ -1,4 +1,3 @@
-[](Implementing-new-server-protocols-(advanced).)
 
 *Note: This is considered an advanced topic and is mostly of interest to users planning to implement
 their own custom client protocol.*

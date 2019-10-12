@@ -1,4 +1,3 @@
-[](How-to-help-out-in-the-development-of-Evennia.)
 
 Wanna help out? Great! Here's how. 
 

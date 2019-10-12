@@ -1,4 +1,3 @@
-[](Tutorial-for-creating-static-map-view)
 
 ## Introduction
 

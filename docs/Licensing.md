@@ -1,4 +1,3 @@
-[](Tells-you-how-free-you-are-to-use-Evennia-to-your-personal-whims.-Really!)
 
 Evennia is licensed under the very friendly [BSD](http://en.wikipedia.org/wiki/BSD_license)
 (3-clause) license.  You can find the license as

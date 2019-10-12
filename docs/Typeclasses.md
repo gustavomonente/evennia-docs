@@ -1,4 +1,3 @@
-[](The-main-technical-description-of-a-core-concept.-how-Typeclasses-are-used-and-work.)
 
 *Typeclasses* form the core of Evennia data storage. It allows Evennia to represent any number of different game entities as Python classes, without having to modify the database schema for every new type.
 

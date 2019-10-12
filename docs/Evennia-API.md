@@ -1,4 +1,3 @@
-[](The-top-level-evennia-API-module.)
 
 Evennia makes much of its programming tools available directly from the top-level `evennia` package. This is often referred to as Evennia's "flat" [Application Programming Interface](https://en.wikipedia.org/wiki/Application_programming_interface) (API). The flat API tries to collect and bring the most commonly used resources to the front in a way where everything is available at a glance (in a flat display), making it a good place to start to learn Evennia.
 

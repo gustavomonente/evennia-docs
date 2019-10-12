@@ -1,4 +1,3 @@
-[](Shows-where-everything-is-in-the-codebase.)
 
 This is an overview of the directories relevant to Evennia coding. 
 

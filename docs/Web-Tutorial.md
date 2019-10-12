@@ -1,4 +1,3 @@
-[](Gives-examples-on-how-to-customize-the-web-interface.)
 
 Evennia uses the [Django](https://www.djangoproject.com/) web framework as the basis of both its database configuration and the website it provides. While a full understanding of Django requires reading the Django documentation, we have provided this tutorial to get you running with the basics and how they pertain to Evennia. This text details getting everything set up. The [Web-based Character view Tutorial](Web-Character-View-Tutorial) gives a more explicit example of making a custom web page connected to your game, and you may want to read that after finishing this guide.
 

@@ -1,4 +1,3 @@
-[](Used-for-storing-arbitrary-data,-using-for-example-obj.db.name=value.)
 
 When performing actions in Evennia it is often important that you store data for later. If you write
 a menu system, you have to keep track of the current location in the menu tree so that the player

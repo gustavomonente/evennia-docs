@@ -1,4 +1,3 @@
-[](Administration-section-index.)
 The following pages are aimed at game administrators -- the higher-ups that possess shell access and are responsible for managing the game.
 
 ### Installation and Early Life

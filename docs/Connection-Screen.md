@@ -1,4 +1,3 @@
-[](Describes-how-to-change-the-connection-screen-you-see-when-first-connecting.)
 
 When you first connect to your game you are greeted by Evennia's default connection screen. 
 

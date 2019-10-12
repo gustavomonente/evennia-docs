@@ -1,4 +1,3 @@
-[](Describes-the-markup-for-adding-colours-and-other-tags-to-text.)
 
 This documentation details the various text tags supported by Evennia, namely *colours*, *command links* and *inline functions*. 
 

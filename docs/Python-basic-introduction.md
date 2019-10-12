@@ -1,4 +1,3 @@
-This is the first part of our beginner's guide to the basics of using Python with Evennia. It's aimed at you with limited or no programming/Python experience. But also if you are an experienced programmer new to Evennia or Python you might still pick up a thing or two. It is by necessity brief and low on detail. There are countless Python guides and tutorials, books and videos out there for learning more in-depth - use them!
 
 **Contents:**
 - [Evennia Hello world](#evennia-hello-world)

@@ -1,4 +1,3 @@
-[](Adding-an-elevator-using-the-in-game-Python-system)
 
 - Previous tutorial: [Adding dialogues in events](Dialogues-in-events)
 

@@ -1,4 +1,3 @@
-[](How-to-check-for-access-and-define-what-gives-access-or-not.)
 
 For most games it is a good idea to restrict what people can do. In Evennia such restrictions are applied and checked by something called *locks*. All Evennia entities (Commands.md, Objects.md, Scripts.md, Accounts.md, [Help System](help-system), [messages](Communications#Msg) and [channels](Communications#Channels)) are accessed through locks. 
 

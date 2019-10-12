@@ -1,4 +1,3 @@
-[](A-tutorial-on-how-to-add-mass-attributes-to-objects-and-calculate-total-weight-of-object-and-its-contents.)
 
 An easy addition to add dynamic variety to your world objects is to give them some mass.  Why mass
 and not weight? Weight varies in setting; for example things on the Moon weigh 1/6 as much.  On

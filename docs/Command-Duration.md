@@ -1,4 +1,3 @@
-[](A-tutorial-for-creating-commands-that-take-time-to-complete-(advanced).)
 
 Before reading this tutorial, if you haven't done so already, you might want to
 read [the documentation on commands](Commands.md) to get a basic understanding of

@@ -1,4 +1,3 @@
-![http://www.evennia.com](http://tinyurl.com/q6w3ao7) 
 
 **Navigation**
 

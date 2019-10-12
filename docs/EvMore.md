@@ -1,4 +1,3 @@
-[](Describes-the-pager-utility)
 
 When sending a very long text to a user client, it might scroll beyond of the height of the client
 window. The `evennia.utils.evmore.EvMore` class gives the user the in-game ability to only view one

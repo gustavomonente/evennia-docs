@@ -1,4 +1,3 @@
-[](Describes-how-to-update-the-source-from-the-repo-and-how-to-reset-the-database.)
 
 Fortunately, it's extremely easy to keep your Evennia server up-to-date. If you haven't already, see the [Getting Started guide](Getting-Started) and get everything running. 
 

@@ -1,4 +1,3 @@
-[](A-tutorial-on-tweeting-game-stats-automatically.)
 
 This tutorial will create a simple script that will send a tweet to your already configured twitter account. Please see: [How to connect Evennia to Twitter](https://github.com/evennia/evennia/wiki/How-to-connect-Evennia-to-Twitter) if you haven't already done so.
 

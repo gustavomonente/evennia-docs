@@ -1,4 +1,3 @@
-[](Debugging-code-with-pdb)
 
 Sometimes, an error is not trivial to resolve. A few simple `print` statements is not enough to find
 the cause of the issue. Running a *debugger* can then be very helpful and save a lot of time. Debugging

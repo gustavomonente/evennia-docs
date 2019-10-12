@@ -1,4 +1,3 @@
-[](Describes-the-use-of-the-Line-editor)
 
 Evennia offers a powerful in-game line editor in `evennia.utils.eveditor.EvEditor`. This editor, mimicking the well-known VI line editor. It offers line-by-line editing, undo/redo, line deletes, search/replace, fill, dedent and more. 
 

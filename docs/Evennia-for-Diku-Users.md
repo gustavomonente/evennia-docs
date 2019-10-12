@@ -1,4 +1,3 @@
-[](Introduction-of-Evennia-for-users-of-the-Diku-codebase)
 
 Evennia represents a learning curve for those who used to code on [Diku](https://en.wikipedia.org/wiki/DikuMUD) type MUDs. While coding in Python is easy if you already know C, the main effort is to get rid of old C programming habits. Trying to code Python the way you code C will not only look ugly, it will lead to less optimal and harder to maintain code. Reading Evennia example code is a good way to get a feel for how different problems are approached in Python. 
 

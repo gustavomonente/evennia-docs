@@ -1,4 +1,3 @@
-[](Introduces-some-basic-commands-and-builds-some-example-objects.)
 
 The [default command](Default-Command-Help) definitions coming with Evennia
 follows a style [similar](Using-MUX-as-a-Standard) to that of MUX, so the

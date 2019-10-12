@@ -1,4 +1,3 @@
-[](These-handle-incoming-requests-from-the-client)
 
 An *inputfunc* is an Evennia function that handles a particular input (an [inputcommand](OOB.md)) from the client. The inputfunc is the last destination for the inputcommand along the [ingoing message path](messagepath#the-ingoing-message-path). The inputcommand always has the form `(commandname, (args), {kwargs})` and Evennia will use this to try to find and call an inputfunc on the form 
 

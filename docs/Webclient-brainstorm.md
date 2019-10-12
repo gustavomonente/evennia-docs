@@ -1,4 +1,3 @@
-# Ideas for a future webclient gui
 
 *This is a brainstorming whitepage. Add your own comments in a named section below.*
 

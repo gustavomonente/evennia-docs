@@ -1,4 +1,3 @@
-This grid tries to gather Evennia-specific knowledge about the various clients and protocols used. Everyone's welcome to report their findings.
 
 ##### Legend: 
 

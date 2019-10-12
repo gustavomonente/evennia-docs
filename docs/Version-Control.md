@@ -1,4 +1,3 @@
-[](A-tutorial-on-using-version-control-for-your-own-sanity-and-safety.)
 
 Version control software allows you to track the changes you make to your code, as well as being able to easily backtrack these changes, share your development efforts and more. Even if you are not contributing to Evennia itself, and only wish to develop your own MU* using Evennia, having a version control system in place is a good idea (and standard coding practice). For an introduction to the concept, start with the Wikipedia article [here](http://en.wikipedia.org/wiki/Version_control). Evennia uses the version control system [Git](https://git-scm.com/) and this is what will be covered henceforth. Note that this page also deals with commands for Linux operating systems, and the steps below may vary for other systems, however where possible links will be provided for alternative instructions.
 

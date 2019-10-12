@@ -1,4 +1,3 @@
-[](Index-for-all-pages-related-to-building-a-game-world.)
 This section contains information useful to world builders. 
 
 ### Building basics

@@ -1,4 +1,3 @@
-[](This-stores-passwords-and-acts-as-the-'account'-that-controls-in-game-characters.)
 
 All *users* (real people) that starts a game [Session](Sessions.md) on Evennia are doing so through an
 object called *Account*. The Account object has no in-game representation, it represents a unique

@@ -1,4 +1,3 @@
-[](Create-a-new-web-page-displaying-character-info)
 
 **Before doing this tutorial you will probably want to read the intro in [Basic Web tutorial](Web-Tutorial).**
 

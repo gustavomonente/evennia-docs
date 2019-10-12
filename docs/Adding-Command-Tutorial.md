@@ -1,4 +1,3 @@
-[](First-steps-for-changing-commands.)
 This is a quick first-time tutorial expanding on the [Commands](Commands.md) documentation. 
 
 Let's assume you have just downloaded Evennia, installed it and created your game folder (let's call

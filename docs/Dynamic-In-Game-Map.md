@@ -1,4 +1,3 @@
-[](Tutorial-for-making-a-dynamically-updating-map)
 
 ## Introduction 
 

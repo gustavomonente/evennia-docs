@@ -1,4 +1,3 @@
-[](Details-Evennia's-position-on-using-Softcode-along-with-some-history.)
 
 Softcode is a very simple programming language that was created for in-game development on TinyMUD
 derivatives such as MUX, PennMUSH, TinyMUSH, and RhostMUSH. The idea is that by providing a stripped

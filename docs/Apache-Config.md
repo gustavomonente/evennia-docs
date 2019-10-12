@@ -1,4 +1,3 @@
-[](Optional-info-for-using-Apache-as-a-webserver-instead-of-Evennia's-own.)
 
 **Warning**: This information is presented as a convenience, using another webserver than Evennia's
 own is not directly supported and you are on your own if you want to do so.  Evennia's webserver

@@ -1,4 +1,3 @@
-[](Re-naming-how-to-access-and-find-other-entities,-without-modifying-them.)
 
 *Nicks*, short for *Nicknames* is a system allowing an object (usually a [Account](Accounts.md)) to assign custom replacement names for other game entities. 
 

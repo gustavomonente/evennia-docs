@@ -1,4 +1,3 @@
-[](These-are-used-to-quickly-group-and-later-retrieve-game-entities.)
 
 A common task of a game designer is to organize and find groups of objects and do operations on them. A classic example is to have a weather script affect all "outside" rooms. Another would be for a player casting a magic spell that affects every location "in the dungeon", but not those "outside". Another would be to quickly find everyone joined with a particular guild or everyone currently dead. 
 

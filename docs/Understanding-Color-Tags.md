@@ -1,4 +1,3 @@
-This tutorial aims at dispelling confusions regarding the use of color tags within Evennia.
 
 Correct understanding of this topic requires having read the [TextTags](TextTags.md) page and learned Evennia's color tags. Here we'll explain by examples the reasons behind the unexpected (or apparently incoherent) behaviors of some color tags, as mentioned _en passant_ in the [TextTags](TextTags.md) page.
 

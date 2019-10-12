@@ -1,4 +1,3 @@
-[](Expanding-the-database-with-new-models-(advanced).)
 *Note: This is considered an advanced topic.*
 
 Evennia offers many convenient ways to store object data, such as via Attributes or Scripts. This is sufficient for most use cases. But if you aim to build a large stand-alone system, trying to squeeze your storage requirements into those may be more complex than you bargain for. Examples may be to store guild data for guild members to be able to change, tracking the flow of money across a game-wide economic system or implement other custom game systems that requires the storage of custom data in a quickly accessible way. Whereas [Tags](Tags.md) or [Scripts](Scripts.md) can handle many situations, sometimes things may be easier to handle by adding your own database model.

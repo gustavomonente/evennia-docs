@@ -1,4 +1,3 @@
-[](Main-hub-for-all-technical-developer-and-coding-information.)
 
 This page serves as a central nexus for information on using Evennia as well as developing the library itself.
 

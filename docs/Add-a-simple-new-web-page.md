@@ -1,4 +1,3 @@
-[](Simple-tutorial-for-getting-going-with-the-web-components-of-evennia)
 
 Evennia leverages [Django](https://docs.djangoproject.com) which is a web development framework.
 Huge professional websites are made in Django and there is extensive documentation (and books) on it

@@ -1,4 +1,3 @@
-[](Containers-for-commands,-merges-to-describe-which-commands-are-available-at-any-moment.)
 
 Command Sets are intimately linked with [Commands](Commands.md) and you should be familiar with Commands before reading this page. The two pages were split for ease of reading.
 

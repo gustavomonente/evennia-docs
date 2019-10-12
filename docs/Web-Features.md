@@ -1,4 +1,3 @@
-[](Gets-you-started-on-using-Evennia's-web-integration-abilities.)
 
 Evennia is its own webserver and hosts a default website and browser webclient. 
 

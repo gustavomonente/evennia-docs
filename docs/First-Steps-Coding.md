@@ -1,4 +1,3 @@
-[](Tutorial-describing-the-very-first-steps-for-setting-everything-up-before-you-can-start-to-code.)
 
 This section gives a brief step-by-step introduction on how to set up Evennia for the first time so you can modify and overload the defaults easily. You should only need to do these steps once. It also walks through you making your first few tweaks.
 

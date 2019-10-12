@@ -1,4 +1,3 @@
-[](Describes-how-to-build-a-combat-system-from-scratch)
 
 This tutorial gives an example of a full, if simplified, combat system for Evennia. It was inspired by the discussions held on the [mailing list](https://groups.google.com/forum/#!msg/evennia/wnJNM2sXSfs/-dbLRrgWnYMJ).
 

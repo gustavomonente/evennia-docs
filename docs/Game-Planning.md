@@ -1,4 +1,3 @@
-[](A-list-of-things-to-think-about-before-jumping-into-making-your-first-game.)
 
 So you have Evennia up and running. You have a great game idea in mind. Now it's time to start cracking!  But where to start? Here are some ideas for a workflow. Note that the suggestions on this page are just that - suggestions. Also, they are primarily aimed at a lone hobby designer or a small team developing a game in their free time. There is an article in the Imaginary Realities e-zine which was written by the Evennia lead dev. It focuses more on you finding out your motivations for making a game - you can [read the article here](http://journal.imaginary-realities.com/volume-07/issue-03/where-do-i-begin/index.html).
 
