@@ -2,7 +2,8 @@
 
 mkdocs 
 mkdocs-htmlproofer-plugin
-mkdocs-material         
-mkdocs-minify-plugin   
 mkdocs-macros-plugin
-# mkdocs-versioning
+mkdocs-git-revision-date-plugin
+
+# theme
+mkdocs-windmill

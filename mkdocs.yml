@@ -1,5 +1,6 @@
 site_name: "Evennia Manual"
 use_directory_urls: false
+theme: windmill
 nav:
   - Home: index.md
   - Admin: Administrative-Docs.md
@@ -13,5 +14,10 @@ markdown_extensions:
       permalink: true
 plugins:
   - search
-  - macros
+    # - git-revision-date
+    #   - macros
     # - htmlproofer
+extra:
+  logo: img/evennia_logo.png
+  version: 0.9
+  history_buttons: true
