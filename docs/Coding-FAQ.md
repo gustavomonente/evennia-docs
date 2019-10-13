@@ -1,3 +1,4 @@
+*This FAQ page is for users to share their solutions to coding problems. Keep it brief and link to the docs if you can rather than too lengthy explanations. Don't forget to check if an answer already exists before answering - maybe you can clarify that answer rather than to make a new Q&A section.*
 
 
 ## Table of Contents

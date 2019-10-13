@@ -85,7 +85,7 @@ for inpath in _INFILES:
     with open(inpath) as fil:
         text = fil.read()
         text = _RE_MD_LINK.sub(_sub_link, text)
-        text = text.split('\n')[1:]
+        text = text.split('\n')[1:] if text.split('\n')[0].strip().startswith('[]') else text.split('\n')
         text = '\n'.join(text)
 
     outfile = inpath.rsplit('/', 1)[-1]

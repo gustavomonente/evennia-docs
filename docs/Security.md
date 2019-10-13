@@ -1,3 +1,4 @@
+Hackers these days aren't discriminating, and their backgrounds range from bored teenagers to international intelligence agencies. Their scripts and bots endlessly crawl the web, looking for vulnerable systems they can break into. Who owns the system is irrelevant-- it doesn't matter if it belongs to you or the Pentagon, the goal is to take advantage of poorly-secured systems and see what resources can be controlled or stolen from them.
 
 If you're considering deploying to a cloud-based host, you have a vested interest in securing your applications-- you likely have a credit card on file that your host can freely bill. Hackers pegging your CPU to mine cryptocurrency or saturating your network connection to participate in a botnet or send spam can run up your hosting bill, get your service suspended or get your address/site blacklisted by ISPs. It can be a difficult legal or political battle to undo this damage after the fact.
 

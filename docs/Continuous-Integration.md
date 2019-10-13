@@ -1,3 +1,4 @@
+One of the advantages of Evennia over traditional MUSH development systems is that Evennia is
 capable of integrating into enterprise level integration environments and source control. Because of
 this, it can also be the subject of automation for additional convenience, allowing a more
 streamlined development environment.

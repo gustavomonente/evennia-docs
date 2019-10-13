@@ -1,3 +1,4 @@
+Evennia has an [official docker image](https://hub.docker.com/r/evennia/evennia/) which makes running an Evennia-based game in a Docker container easy. 
 
 ## Install Evennia through docker
 

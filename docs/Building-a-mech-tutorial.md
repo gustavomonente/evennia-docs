@@ -1,3 +1,4 @@
+> This page was adapted from the article "Building a Giant Mech in Evennia" by Griatch, published in Imaginary Realities Volume 6, issue 1, 2014. The original article is no longer available online, this is a version adopted to be compatible with the latest Evennia.
 
 ## Creating the Mech
 

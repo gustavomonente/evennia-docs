@@ -1,3 +1,4 @@
+[In the first part](https://github.com/evennia/evennia/wiki/Python-basic-introduction) of this Python-for-Evennia basic tutorial we learned how to run some simple Python code from inside the game. We also made our first new *module* containing a *function* that we called. Now we're going to start exploring the very important subject of *objects*.
 
 **Contents:**
 - [On the subject of objects](#on-the-subject-of-objects)

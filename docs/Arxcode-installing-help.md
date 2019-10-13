@@ -1,3 +1,4 @@
+## Introduction 
 
 [Arx - After the Reckoning](http://play.arxmush.org/) is a big and very popular
 [Evennia](http://www.evennia.com)-based game. Arx is heavily roleplaying-centric, relying on game

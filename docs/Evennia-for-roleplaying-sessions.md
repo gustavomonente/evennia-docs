@@ -1,3 +1,4 @@
+This tutorial will explain how to set up a realtime or play-by-post tabletop style game using a fresh Evennia server.
 
 The scenario is thus: You and a bunch of friends want to play a tabletop role playing game online. One of you will be the game master and you are all okay with playing using written text. You want both the ability to role play in real-time (when people happen to be online at the same time) as well as the ability for people to post when they can and catch up on what happened since they were last online.
 

@@ -1,3 +1,4 @@
+# What is Bootstrap?
 Evennia's new default web page uses a framework called [Bootstrap](https://getbootstrap.com/). This framework is in use across the internet - you'll probably start to recognize its influence once you learn some of the common design patterns. This switch is great for web developers, perhaps like yourself, because instead of wondering about setting up different grid systems or what custom class another designer used, we have a base, a bootstrap, to work from. Bootstrap is responsive by default, and comes with some default styles that Evennia has lightly overrode to keep some of the same colors and styles you're used to from the previous design.
 
 For your reading pleasure, a brief overview of Bootstrap follows. For more in-depth info, please read [the documentation](https://getbootstrap.com/docs/4.0/getting-started/introduction/).

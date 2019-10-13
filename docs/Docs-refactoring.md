@@ -1,3 +1,4 @@
+This is a whitepage for free discussion about the wiki docs and refactorings needed. 
 
 Note that this is not a forum. To keep things clean, each opinion text should ideally present a clear argument or lay out a suggestion. Asking for clarification and any side-discussions should be held in chat or forum.
 

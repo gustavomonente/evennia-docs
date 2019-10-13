@@ -1,3 +1,4 @@
+### Evennia, HTTPS and Secure Websockets can play nicely together, quickly.
 May I suggest giving HAProxy 1.5+ a chance...
 
 Installing HAProxy is usually as simple as:

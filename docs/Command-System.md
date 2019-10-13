@@ -1,3 +1,4 @@
+- [Commands](Commands.md) 
 - [Command Sets](Command-Sets)
 - [Command Auto-help](Help-System#command-auto-help-system)
 

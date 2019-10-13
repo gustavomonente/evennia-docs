@@ -1,3 +1,4 @@
+Building up to Evennia 1.0 and beyond, it's time to comb through the Evennia API for old cruft. This whitepage is for anyone interested to contribute with their views on what part of the API needs refactoring, cleanup or clarification (or extension!)
 
 Note that this is not a forum. To keep things clean, each opinion text should ideally present a clear argument or lay out a suggestion. Asking for clarification and any side-discussions should be held in chat or forum.
 
