@@ -1,98 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Game Planning - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Game Planning - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "Planning (step 1)", url: "#_top", children: [
+              {title: "Systems", url: "#systems" },
+              {title: "Rooms", url: "#rooms" },
+              {title: "Objects", url: "#objects" },
+              {title: "Characters", url: "#characters" },
+          ]},
+          {title: "Coding (step 2)", url: "#coding-step-2", children: [
+              {title: "\"Tech Demo\" Building", url: "#tech-demo-building" },
+          ]},
+          {title: "World Building (step 3)", url: "#world-building-step-3", children: [
+          ]},
+          {title: "Alpha Release", url: "#alpha-release", children: [
+          ]},
+          {title: "Beta Release/Perpetual Beta", url: "#beta-releaseperpetual-beta", children: [
+          ]},
+          {title: "Congratulate yourself!", url: "#congratulate-yourself", children: [
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#planning-step-1">Planning (step 1)</a></li>
-            <li><a href="#systems">Systems</a></li>
-            <li><a href="#rooms">Rooms</a></li>
-            <li><a href="#objects">Objects</a></li>
-            <li><a href="#characters">Characters</a></li>
-        <li class="main "><a href="#coding-step-2">Coding (step 2)</a></li>
-            <li><a href="#tech-demo-building">"Tech Demo" Building</a></li>
-        <li class="main "><a href="#world-building-step-3">World Building (step 3)</a></li>
-        <li class="main "><a href="#alpha-release">Alpha Release</a></li>
-        <li class="main "><a href="#beta-releaseperpetual-beta">Beta Release/Perpetual Beta</a></li>
-        <li class="main "><a href="#congratulate-yourself">Congratulate yourself!</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>So you have Evennia up and running. You have a great game idea in mind. Now it's time to start cracking!  But where to start? Here are some ideas for a workflow. Note that the suggestions on this page are just that - suggestions. Also, they are primarily aimed at a lone hobby designer or a small team developing a game in their free time. There is an article in the Imaginary Realities e-zine which was written by the Evennia lead dev. It focuses more on you finding out your motivations for making a game - you can <a href="http://journal.imaginary-realities.com/volume-07/issue-03/where-do-i-begin/index.html">read the article here</a>.</p>
+    <p>So you have Evennia up and running. You have a great game idea in mind. Now it's time to start cracking!  But where to start? Here are some ideas for a workflow. Note that the suggestions on this page are just that - suggestions. Also, they are primarily aimed at a lone hobby designer or a small team developing a game in their free time. There is an article in the Imaginary Realities e-zine which was written by the Evennia lead dev. It focuses more on you finding out your motivations for making a game - you can <a href="http://journal.imaginary-realities.com/volume-07/issue-03/where-do-i-begin/index.html">read the article here</a>.</p>
 <p>Below are some minimal steps for getting the first version of a new game world going with players. It's worth to at least make the attempt to do these steps in order even if you are itching to jump ahead in the development cycle. On the other hand, you should also make sure to keep your work fun for you, or motivation will falter. Making a full game is a lot of work as it is, you'll need all your motivation to make it a reality.</p>
 <p>Remember that <em>99.99999% of all great game ideas never lead to a game</em>. Especially not to an online game that people can actually play and enjoy. So our first all overshadowing goal is to beat those odds and get <em>something</em> out the door! Even if it's a scaled-down version of your dream game, lacking many "must-have" features! It's better to get it out there and expand on it later than to code in isolation forever until you burn out, lose interest or your hard drive crashes. </p>
 <p>Like is common with online games, getting a game out the door does not mean you are going to be "finished" with the game - most MUDs add features gradually over the course of years - it's often part of the fun!</p>
@@ -168,83 +144,17 @@
 <h2 id="beta-releaseperpetual-beta">Beta Release/Perpetual Beta<a class="headerlink" href="#beta-releaseperpetual-beta" title="Permanent link">&para;</a></h2>
 <p>Once things stabilize in Alpha you can move to <em>Beta</em> and let more people in. Many MUDs are in <a href="http://en.wikipedia.org/wiki/Perpetual_beta">perpetual beta</a>, meaning they are never considered "finished", but just repeat the cycle of Planning, Coding, Testing and Building over and over as new features get implemented or Players come with suggestions. As the game designer it is now up to you to gradually perfect your vision.</p>
 <h2 id="congratulate-yourself">Congratulate yourself!<a class="headerlink" href="#congratulate-yourself" title="Permanent link">&para;</a></h2>
-<p>You are worthy of a celebration since at this point you have joined the small, exclusive crowd who have made their dream game a reality!</p></div>
-        </div>
+<p>You are worthy of a celebration since at this point you have joined the small, exclusive crowd who have made their dream game a reality!</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

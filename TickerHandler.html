@@ -1,89 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>TickerHandler - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>TickerHandler - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "About Tickers", url: "#_top", children: [
+              {title: "When not to use TickerHandler", url: "#when-not-to-use-tickerhandler" },
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#about-tickers">About Tickers</a></li>
-            <li><a href="#when-not-to-use-tickerhandler">When not to use TickerHandler</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>One way to implement a dynamic MUD is by using "tickers", also known as "heartbeats". A ticker is a timer that fires ("ticks") at a given interval. The tick triggers updates in various game systems. </p>
+    <p>One way to implement a dynamic MUD is by using "tickers", also known as "heartbeats". A ticker is a timer that fires ("ticks") at a given interval. The tick triggers updates in various game systems. </p>
 <h2 id="about-tickers">About Tickers<a class="headerlink" href="#about-tickers" title="Permanent link">&para;</a></h2>
 <p>Tickers are very common or even unavoidable in other mud code bases.  Certain code bases are even hard-coded to rely on the concept of the global 'tick'. Evennia has no such notion - the decision to use tickers is very much up to the need of your game and which requirements you have. The "ticker recipe" is just one way of cranking the wheels.</p>
 <p>The most fine-grained way to manage the flow of time is of course to use <a href="Scripts.html">Scripts</a>. Many types of operations (weather being the classic example) are however done on multiple objects in the same way at regular intervals, and for this, storing separate Scripts on each object is inefficient. The way to do this is to use a ticker with a "subscription model" - let objects sign up to be triggered at the same interval, unsubscribing when the updating is no longer desired. </p>
@@ -146,83 +117,17 @@
 <p>Think about it - you might have to run the ticker every second to react to the change fast enough. Most likely nothing will have changed at a given moment. So you are doing pointless calls (since skipping the call gives the same result as doing it). Making sure nothing's changed might even be computationally expensive depending on the complexity of your system. Not to mention that you might need to run the check <em>on every object in the database</em>. Every second. Just to maintain status quo ...</p>
 <p>Rather than checking over and over on the off-chance that something changed, consider a more proactive approach. Could you implement your rarely changing system to <em>itself</em> report when its status changes?  It's almost always much cheaper/efficient if you can do things "on demand". Evennia itself uses hook methods for this very reason.</p>
 <p>So, if you consider a ticker that will fire very often but which you expect to have no effect 99% of the time, consider handling things things some other way. A self-reporting on-demand solution is usually cheaper also for fast-updating properties. Also remember that some things may not need to be updated until someone actually is examining or using them - any interim changes happening up to that moment are pointless waste of computing time. </p>
-<p>The main reason for needing a ticker is when you want things to happen to multiple objects at the same time without input from something else. </p></div>
-        </div>
+<p>The main reason for needing a ticker is when you want things to happen to multiple objects at the same time without input from something else. </p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

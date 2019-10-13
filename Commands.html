@@ -1,102 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Commands - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Commands - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "Defining Commands", url: "#_top", children: [
+              {title: "Who is calling the command?", url: "#who-is-calling-the-command" },
+              {title: "Properties assigned to the command instance at run-time", url: "#properties-assigned-to-the-command-instance-at-run-time" },
+              {title: "Defining your own command classes", url: "#defining-your-own-command-classes" },
+              {title: "On arg_regex", url: "#on-arg_regex" },
+          ]},
+          {title: "Exiting a command", url: "#exiting-a-command", children: [
+          ]},
+          {title: "Pauses in commands", url: "#pauses-in-commands", children: [
+          ]},
+          {title: "Asking for user input", url: "#asking-for-user-input", children: [
+          ]},
+          {title: "System commands", url: "#system-commands", children: [
+          ]},
+          {title: "Dynamic Commands", url: "#dynamic-commands", children: [
+          ]},
+          {title: "Exits", url: "#exits", children: [
+          ]},
+          {title: "Command instances are re-used", url: "#command-instances-are-re-used", children: [
+          ]},
+          {title: "Dynamically created commands", url: "#dynamically-created-commands", children: [
+          ]},
+          {title: "How commands actually work", url: "#how-commands-actually-work", children: [
+          ]},
+          {title: "Assorted notes", url: "#assorted-notes", children: [
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#defining-commands">Defining Commands</a></li>
-            <li><a href="#who-is-calling-the-command">Who is calling the command?</a></li>
-            <li><a href="#properties-assigned-to-the-command-instance-at-run-time">Properties assigned to the command instance at run-time</a></li>
-            <li><a href="#defining-your-own-command-classes">Defining your own command classes</a></li>
-            <li><a href="#on-arg_regex">On arg_regex</a></li>
-        <li class="main "><a href="#exiting-a-command">Exiting a command</a></li>
-        <li class="main "><a href="#pauses-in-commands">Pauses in commands</a></li>
-        <li class="main "><a href="#asking-for-user-input">Asking for user input</a></li>
-        <li class="main "><a href="#system-commands">System commands</a></li>
-        <li class="main "><a href="#dynamic-commands">Dynamic Commands</a></li>
-        <li class="main "><a href="#exits">Exits</a></li>
-        <li class="main "><a href="#command-instances-are-re-used">Command instances are re-used</a></li>
-        <li class="main "><a href="#dynamically-created-commands">Dynamically created commands</a></li>
-        <li class="main "><a href="#how-commands-actually-work">How commands actually work</a></li>
-        <li class="main "><a href="#assorted-notes">Assorted notes</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>Commands are intimately linked to <a href="Command-Sets">Command Sets</a> and you need to read that page too to be familiar with how the command system works. The two pages were split for easy reading.</p>
+    <p>Commands are intimately linked to <a href="Command-Sets">Command Sets</a> and you need to read that page too to be familiar with how the command system works. The two pages were split for easy reading.</p>
 <p>The basic way for users to communicate with the game is through <em>Commands</em>. These can be commands directly related to the game world such as <em>look</em>, <em>get</em>, <em>drop</em> and so on, or administrative commands such as <em>examine</em> or <em>@dig</em>.</p>
 <p>The <a href="Default-Command-Help">default commands</a> coming with Evennia are 'MUX-like' in that they use @ for admin commands, support things like switches, syntax with the '=' symbol etc, but there is nothing that prevents you from implementing a completely different command scheme for your game. You can find the default commands in <code>evennia/commands/default</code>. You should not edit these directly - they will be updated by the Evennia team as new features are added. Rather you should look to them for inspiration and inherit your own designs from them.</p>
 <p>There are two components to having a command running - the <em>Command</em> class and the <a href="Command-Sets">Command Set</a> (command sets were split into a separate wiki page for ease of reading).</p>
@@ -485,83 +466,17 @@ thus do so asynchronously, using callbacks.</p>
 </code></pre>
 
 <p>This is probably not relevant to any but the most advanced/exotic designs (one might use it to create a "nested" command structure for example).</p>
-<p>The <code>save_for_next</code> class variable can be used to implement state-persistent commands. For example it can make a command operate on "it", where it is determined by what the previous command operated on.</p></div>
-        </div>
+<p>The <code>save_for_next</code> class variable can be used to implement state-persistent commands. For example it can make a command operate on "it", where it is determined by what the previous command operated on.</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

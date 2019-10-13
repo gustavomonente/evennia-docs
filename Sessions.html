@@ -1,93 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Sessions - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Sessions - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "Properties on Sessions", url: "#_top", children: [
+          ]},
+          {title: "Multisession mode", url: "#multisession-mode", children: [
+          ]},
+          {title: "Returning data to the session", url: "#returning-data-to-the-session", children: [
+          ]},
+          {title: "Customizing the Session object", url: "#customizing-the-session-object", children: [
+          ]},
+          {title: "Portal and Server Sessions", url: "#portal-and-server-sessions", children: [
+          ]},
+          {title: "Sessionhandlers", url: "#sessionhandlers", children: [
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#properties-on-sessions">Properties on Sessions</a></li>
-        <li class="main "><a href="#multisession-mode">Multisession mode</a></li>
-        <li class="main "><a href="#returning-data-to-the-session">Returning data to the session</a></li>
-        <li class="main "><a href="#customizing-the-session-object">Customizing the Session object</a></li>
-        <li class="main "><a href="#portal-and-server-sessions">Portal and Server Sessions</a></li>
-        <li class="main "><a href="#sessionhandlers">Sessionhandlers</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>An Evennia <em>Session</em> represents one single established connection to the server. Depending on the Evennia session, it is possible for a person to connect multiple times, for example using different clients in multiple windows. Each such connection is represented by a session object.</p>
+    <p>An Evennia <em>Session</em> represents one single established connection to the server. Depending on the Evennia session, it is possible for a person to connect multiple times, for example using different clients in multiple windows. Each such connection is represented by a session object.</p>
 <p>A session object has its own <a href="command-sets">cmdset</a>, usually the "unloggedin" cmdset. This is what is used to show the login screen and to handle commands to create a new account (or <a href="Accounts.html">Account</a> in evennia lingo) read initial help and to log into the game with an existing account. A session object can either be "logged in" or not.  Logged in means that the user has authenticated. When this happens the session is associated with an Account object (which is what holds account-centric stuff). The account can then in turn puppet any number of objects/characters.</p>
 <blockquote>
 <p>Warning: A Session is not <em>persistent</em> - it is not a <a href="Typeclasses.html">Typeclass</a> and has no connection to the database. The Session will go away when a user disconnects and you will lose any custom data on it if the server reloads. The <code>.db</code> handler on Sessions is there to present a uniform API (so you can assume <code>.db</code> exists even if you don't know if you receive an Object or a Session), but this is just an alias to <code>.ndb</code>. So don't store any data on Sessions that you can't afford to lose in a reload. You have been warned.</p>
@@ -162,83 +138,17 @@ on building new protocols.</p>
 <blockquote>
 <p>Note: The <code>SESSION_HANDLER</code> singleton has an older alias <code>SESSIONS</code> that is commonly seen in various places as well. </p>
 </blockquote>
-<p>See the <a href="https://github.com/evennia/evennia/blob/master/evennia/server/sessionhandler.py">sessionhandler.py</a> module for details on the capabilities of the <code>ServerSessionHandler</code>.</p></div>
-        </div>
+<p>See the <a href="https://github.com/evennia/evennia/blob/master/evennia/server/sessionhandler.py">sessionhandler.py</a> module for details on the capabilities of the <code>ServerSessionHandler</code>.</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

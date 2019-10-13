@@ -1,89 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Zones - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Zones - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "Zones in Evennia", url: "#_top", children: [
+          ]},
+          {title: "Using typeclasses and inheritance for zoning", url: "#using-typeclasses-and-inheritance-for-zoning", children: [
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#zones-in-evennia">Zones in Evennia</a></li>
-        <li class="main "><a href="#using-typeclasses-and-inheritance-for-zoning">Using typeclasses and inheritance for zoning</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>Say you create a room named <em>Meadow</em> in your nice big forest MUD.  That's all nice and dandy, but what if you, in the other end of that forest want another <em>Meadow</em>? As a game creator, this can cause all sorts of confusion. For example, teleporting to <em>Meadow</em> will now give you a warning that there are two <em>Meadow</em> s and you have to select which one. It's no problem to do that, you just choose for example to go to <code>2-meadow</code>, but unless you examine them you couldn't be sure which of the two sat in the magical part of the forest and which didn't.</p>
+    <p>Say you create a room named <em>Meadow</em> in your nice big forest MUD.  That's all nice and dandy, but what if you, in the other end of that forest want another <em>Meadow</em>? As a game creator, this can cause all sorts of confusion. For example, teleporting to <em>Meadow</em> will now give you a warning that there are two <em>Meadow</em> s and you have to select which one. It's no problem to do that, you just choose for example to go to <code>2-meadow</code>, but unless you examine them you couldn't be sure which of the two sat in the magical part of the forest and which didn't.</p>
 <p>Another issue is if you want to group rooms in geographic regions.  Let's say the "normal" part of the forest should have separate weather patterns from the magical part. Or maybe a magical disturbance echoes through all magical-forest rooms. It would then be convenient to be able to simply find all rooms that are "magical" so you could send messages to them.</p>
 <h2 id="zones-in-evennia">Zones in Evennia<a class="headerlink" href="#zones-in-evennia" title="Permanent link">&para;</a></h2>
 <p><em>Zones</em> try to separate rooms by global location. In our example we would separate the forest into two parts - the magical and the non-magical part. Each have a <em>Meadow</em> and rooms belonging to each part should be easy to retrieve.</p>
@@ -102,83 +74,17 @@
 
 <h2 id="using-typeclasses-and-inheritance-for-zoning">Using typeclasses and inheritance for zoning<a class="headerlink" href="#using-typeclasses-and-inheritance-for-zoning" title="Permanent link">&para;</a></h2>
 <p>The tagging or aliasing systems above don't instill any sort of functional difference between a magical forest room and a normal one - they are just arbitrary ways to mark objects for quick retrieval later. Any functional differences must be expressed using <a href="Typeclasses.html">Typeclasses</a>.</p>
-<p>Of course, an alternative way to implement zones themselves is to have all rooms/objects in a zone inherit from a given typeclass parent - and then limit your searches to objects inheriting from that given parent. The effect would be similar but you'd need to expand the search functionality to properly search the inheritance tree.</p></div>
-        </div>
+<p>Of course, an alternative way to implement zones themselves is to have all rooms/objects in a zone inherit from a given typeclass parent - and then limit your searches to objects inheriting from that given parent. The effect would be similar but you'd need to expand the search functionality to properly search the inheritance tree.</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

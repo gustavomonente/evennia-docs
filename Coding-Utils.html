@@ -1,100 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Coding Utils - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Coding Utils - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "Searching", url: "#_top", children: [
+          ]},
+          {title: "Create", url: "#create", children: [
+          ]},
+          {title: "Logging", url: "#logging", children: [
+          ]},
+          {title: "Game time", url: "#game-time", children: [
+          ]},
+          {title: "utils.time_format()", url: "#utilstime_format", children: [
+          ]},
+          {title: "utils.inherits_from()", url: "#utilsinherits_from", children: [
+          ]},
+          {title: "utils.delay()", url: "#utilsdelay", children: [
+          ]},
+          {title: "Some text utilities", url: "#some-text-utilities", children: [
+              {title: "utils.fill()", url: "#utilsfill" },
+              {title: "utils.crop()", url: "#utilscrop" },
+              {title: "utils.dedent()", url: "#utilsdedent" },
+              {title: "text conversion()", url: "#text-conversion" },
+              {title: "Making ascii tables", url: "#making-ascii-tables" },
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#searching">Searching</a></li>
-        <li class="main "><a href="#create">Create</a></li>
-        <li class="main "><a href="#logging">Logging</a></li>
-        <li class="main "><a href="#game-time">Game time</a></li>
-        <li class="main "><a href="#utilstime_format">utils.time_format()</a></li>
-        <li class="main "><a href="#utilsinherits_from">utils.inherits_from()</a></li>
-        <li class="main "><a href="#utilsdelay">utils.delay()</a></li>
-        <li class="main "><a href="#some-text-utilities">Some text utilities</a></li>
-            <li><a href="#utilsfill">utils.fill()</a></li>
-            <li><a href="#utilscrop">utils.crop()</a></li>
-            <li><a href="#utilsdedent">utils.dedent()</a></li>
-            <li><a href="#text-conversion">text conversion()</a></li>
-            <li><a href="#making-ascii-tables">Making ascii tables</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>Evennia comes with many utilities to help with common coding tasks. Most are accessible directly from the flat API, otherwise you can find them in the <code>evennia/utils/</code> folder.</p>
+    <p>Evennia comes with many utilities to help with common coding tasks. Most are accessible directly from the flat API, otherwise you can find them in the <code>evennia/utils/</code> folder.</p>
 <h2 id="searching">Searching<a class="headerlink" href="#searching" title="Permanent link">&para;</a></h2>
 <p>A common thing to do is to search for objects. The most common time one needs to do this is inside a command body. There it's easiest to use the <code>search</code> method defined on all objects. This will search for objects in the same location and inside the caller:</p>
 <pre><code class="python">     obj = self.caller.search(objname)
@@ -255,83 +233,17 @@ never raise a traceback but instead echo errors through logging. See
 <a href="Text-Encodings">here</a> for more info.</p>
 <h3 id="making-ascii-tables">Making ascii tables<a class="headerlink" href="#making-ascii-tables" title="Permanent link">&para;</a></h3>
 <p>The EvTable class (<code>evennia/utils/evtable.py</code>) can be used to create correctly formatted text tables. There is also EvForm (<code>evennia/utils/evform.py</code>). This reads a fixed-format text template from a file in order to create any level of sophisticated ascii layout.  Both evtable and evform have lots of options and inputs so see the header of each module for help.</p>
-<p>The third-party <a href="https://code.google.com/p/prettytable/">PrettyTable</a> module is also included in Evennia. PrettyTable is considered deprecated in favor of EvTable since PrettyTable cannot handle ANSI colour. PrettyTable can be found in <code>evennia/utils/prettytable/</code>.  See its homepage above for instructions.</p></div>
-        </div>
+<p>The third-party <a href="https://code.google.com/p/prettytable/">PrettyTable</a> module is also included in Evennia. PrettyTable is considered deprecated in favor of EvTable since PrettyTable cannot handle ANSI colour. PrettyTable can be found in <code>evennia/utils/prettytable/</code>.  See its homepage above for instructions.</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

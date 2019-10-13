@@ -1,110 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Web Character Generation - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Web Character Generation - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "Introduction", url: "#_top", children: [
+          ]},
+          {title: "Pictures", url: "#pictures", children: [
+          ]},
+          {title: "Installing an App", url: "#installing-an-app", children: [
+              {title: "Checkpoint:", url: "#checkpoint" },
+          ]},
+          {title: "Create Models", url: "#create-models", children: [
+              {title: "Checkpoint:", url: "#checkpoint_1" },
+          ]},
+          {title: "Create Views", url: "#create-views", children: [
+              {title: "Index view", url: "#index-view" },
+              {title: "Detail view", url: "#detail-view" },
+          ]},
+          {title: "Creating view", url: "#creating-view", children: [
+              {title: "Checkpoint:", url: "#checkpoint_2" },
+          ]},
+          {title: "Create URLs", url: "#create-urls", children: [
+              {title: "Checkpoint:", url: "#checkpoint_3" },
+          ]},
+          {title: "HTML Templates", url: "#html-templates", children: [
+              {title: "index.html", url: "#indexhtml" },
+              {title: "detail.html", url: "#detailhtml" },
+              {title: "create.html", url: "#createhtml" },
+              {title: "Checkpoint:", url: "#checkpoint_4" },
+          ]},
+          {title: "Activating your new character generation", url: "#activating-your-new-character-generation", children: [
+          ]},
+          {title: "Adding a no CAPCHA reCAPCHA on your character generation", url: "#adding-a-no-capcha-recapcha-on-your-character-generation", children: [
+              {title: "Step 1: Obtain a SiteKey and secret from Google", url: "#step-1-obtain-a-sitekey-and-secret-from-google" },
+              {title: "Step 2: installing and configuring the dedicated Django app", url: "#step-2-installing-and-configuring-the-dedicated-django-app" },
+              {title: "Step 3: Adding the CAPCHA to our form", url: "#step-3-adding-the-capcha-to-our-form" },
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#introduction">Introduction</a></li>
-        <li class="main "><a href="#pictures">Pictures</a></li>
-        <li class="main "><a href="#installing-an-app">Installing an App</a></li>
-            <li><a href="#checkpoint">Checkpoint:</a></li>
-        <li class="main "><a href="#create-models">Create Models</a></li>
-            <li><a href="#checkpoint_1">Checkpoint:</a></li>
-        <li class="main "><a href="#create-views">Create Views</a></li>
-            <li><a href="#index-view">Index view</a></li>
-            <li><a href="#detail-view">Detail view</a></li>
-        <li class="main "><a href="#creating-view">Creating view</a></li>
-            <li><a href="#checkpoint_2">Checkpoint:</a></li>
-        <li class="main "><a href="#create-urls">Create URLs</a></li>
-            <li><a href="#checkpoint_3">Checkpoint:</a></li>
-        <li class="main "><a href="#html-templates">HTML Templates</a></li>
-            <li><a href="#indexhtml">index.html</a></li>
-            <li><a href="#detailhtml">detail.html</a></li>
-            <li><a href="#createhtml">create.html</a></li>
-            <li><a href="#checkpoint_4">Checkpoint:</a></li>
-        <li class="main "><a href="#activating-your-new-character-generation">Activating your new character generation</a></li>
-        <li class="main "><a href="#adding-a-no-capcha-recapcha-on-your-character-generation">Adding a no CAPCHA reCAPCHA on your character generation</a></li>
-            <li><a href="#step-1-obtain-a-sitekey-and-secret-from-google">Step 1: Obtain a SiteKey and secret from Google</a></li>
-            <li><a href="#step-2-installing-and-configuring-the-dedicated-django-app">Step 2: installing and configuring the dedicated Django app</a></li>
-            <li><a href="#step-3-adding-the-capcha-to-our-form">Step 3: Adding the CAPCHA to our form</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+    <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>This tutorial will create a simple web-based interface for generating a new in-game Character. Accounts will need to have first logged into the website (with their <code>AccountDB</code> account). Once finishing character generation the Character will be created immediately and the Accounts can then log into the game and play immediately (the Character will not require staff approval or anything like that). This guide does not go over how to create an AccountDB on the website with the right permissions to transfer to their web-created characters.</p>
 <p>It is probably most useful to set <code>MULTISESSION_MODE = 2</code> or <code>3</code> (which gives you a character-selection screen when you log into the game later). Other modes can be used with some adaptation to auto-puppet the new Character.</p>
 <p>You should have some familiarity with how Django sets up its Model Template View framework. You need to understand what is happening in the basic <a href="https://github.com/evennia/evennia/wiki/Web-Character-View-Tutorial">Web Character View tutorial</a>. If you don’t understand the listed tutorial or have a grasp of Django basics, please look at the <a href="https://docs.djangoproject.com/en/1.8/intro/">Django tutorial</a> to get a taste of what Django does, before throwing Evennia into the mix (Evennia shares its API and attributes with the website interface). This guide will outline the format of the models, views, urls, and html templates needed. </p>
@@ -554,83 +534,17 @@ class AppForm(forms.Form):
 {% endblock %}
 </code></pre>
 
-<p>Reload and open <a href="http://localhost:4001/chargen/create/">http://localhost:4001/chargen/create</a> and you should see your beautiful CAPCHA just before the "submit" button.  Try not to check the checkbox to see what happens.  And do the same while checking the checkbox!</p></div>
-        </div>
+<p>Reload and open <a href="http://localhost:4001/chargen/create/">http://localhost:4001/chargen/create</a> and you should see your beautiful CAPCHA just before the "submit" button.  Try not to check the checkbox to see what happens.  And do the same while checking the checkbox!</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

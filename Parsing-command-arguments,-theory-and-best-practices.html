@@ -1,99 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Parsing command arguments, theory and best practices - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Parsing command arguments, theory and best practices - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "What are command arguments?", url: "#_top", children: [
+          ]},
+          {title: "Working with strings", url: "#working-with-strings", children: [
+              {title: "self.args", url: "#selfargs" },
+              {title: "Stripping", url: "#stripping" },
+              {title: "Convert arguments to numbers", url: "#convert-arguments-to-numbers" },
+              {title: "Working with several arguments", url: "#working-with-several-arguments" },
+              {title: "Optional arguments", url: "#optional-arguments" },
+          ]},
+          {title: "Evennia searches", url: "#evennia-searches", children: [
+              {title: "Local searches", url: "#local-searches" },
+              {title: "Quiet searches", url: "#quiet-searches" },
+              {title: "Global searches", url: "#global-searches" },
+          ]},
+          {title: "Conclusion", url: "#conclusion", children: [
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#what-are-command-arguments">What are command arguments?</a></li>
-        <li class="main "><a href="#working-with-strings">Working with strings</a></li>
-            <li><a href="#selfargs">self.args</a></li>
-            <li><a href="#stripping">Stripping</a></li>
-            <li><a href="#convert-arguments-to-numbers">Convert arguments to numbers</a></li>
-            <li><a href="#working-with-several-arguments">Working with several arguments</a></li>
-            <li><a href="#optional-arguments">Optional arguments</a></li>
-        <li class="main "><a href="#evennia-searches">Evennia searches</a></li>
-            <li><a href="#local-searches">Local searches</a></li>
-            <li><a href="#quiet-searches">Quiet searches</a></li>
-            <li><a href="#global-searches">Global searches</a></li>
-        <li class="main "><a href="#conclusion">Conclusion</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>This tutorial will elaborate on the many ways one can parse command arguments.  The first step after <a href="Adding-Command-Tutorial">adding a command</a> usually is to parse its arguments.  There are lots of ways to do it, but some are indeed better than others and this tutorial will try to present them.</p>
+    <p>This tutorial will elaborate on the many ways one can parse command arguments.  The first step after <a href="Adding-Command-Tutorial">adding a command</a> usually is to parse its arguments.  There are lots of ways to do it, but some are indeed better than others and this tutorial will try to present them.</p>
 <p>If you're a Python beginner, this tutorial might help you a lot.  If you're already familiar with Python syntax, this tutorial might still contain useful information.  There are still a lot of things I find in the standard library that come as a surprise, though they were there all along.  This might be true for others.</p>
 <p>In this tutorial we will:</p>
 <ul>
@@ -624,83 +598,17 @@ except ValueError:
 </code></pre>
 
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
-<p>Parsing command arguments is vital for most game designers.  If you design "intelligent" commands, users should be able to guess how to use them without reading the help, or with a very quick peek at said help.  Good commands are intuitive to users.  Better commands do what they're told to do.  For game designers working on MUDs, commands are the main entry point for users into your game.  This is no trivial.  If commands execute correctly (if their argument is parsed, if they don't behave in unexpected ways and report back the right errors), you will have happier players that might stay longer on your game.  I hope this tutorial gave you some pointers on ways to improve your command parsing.  There are, of course, other ways you will discover, or ways you are already using in your code.</p></div>
-        </div>
+<p>Parsing command arguments is vital for most game designers.  If you design "intelligent" commands, users should be able to guess how to use them without reading the help, or with a very quick peek at said help.  Good commands are intuitive to users.  Better commands do what they're told to do.  For game designers working on MUDs, commands are the main entry point for users into your game.  This is no trivial.  If commands execute correctly (if their argument is parsed, if they don't behave in unexpected ways and report back the right errors), you will have happier players that might stay longer on your game.  I hope this tutorial gave you some pointers on ways to improve your command parsing.  There are, of course, other ways you will discover, or ways you are already using in your code.</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

@@ -1,107 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>EvMenu - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>EvMenu - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "Introduction", url: "#_top", children: [
+          ]},
+          {title: "Launching the menu", url: "#launching-the-menu", children: [
+          ]},
+          {title: "The Menu nodes", url: "#the-menu-nodes", children: [
+              {title: "Input arguments to the node", url: "#input-arguments-to-the-node" },
+              {title: "Return values from the node", url: "#return-values-from-the-node" },
+          ]},
+          {title: "Temporary storage", url: "#temporary-storage", children: [
+          ]},
+          {title: "Customizing Menu formatting", url: "#customizing-menu-formatting", children: [
+          ]},
+          {title: "Examples:", url: "#examples", children: [
+              {title: "Example: Simple branching menu", url: "#example-simple-branching-menu" },
+              {title: "Example: Dynamic goto", url: "#example-dynamic-goto" },
+              {title: "Example: Set caller properties", url: "#example-set-caller-properties" },
+              {title: "Example: Get arbitrary input", url: "#example-get-arbitrary-input" },
+              {title: "Example: Storing data between nodes", url: "#example-storing-data-between-nodes" },
+              {title: "Example: Repeating the same node", url: "#example-repeating-the-same-node" },
+              {title: "Defining nodes in a dictionary", url: "#defining-nodes-in-a-dictionary" },
+          ]},
+          {title: "Ask for simple input", url: "#ask-for-simple-input", children: [
+              {title: "The yield way", url: "#the-yield-way" },
+              {title: "The get_input way", url: "#the-get_input-way" },
+          ]},
+          {title: "The @list_node decorator", url: "#the-list_node-decorator", children: [
+          ]},
+          {title: "Assorted notes", url: "#assorted-notes", children: [
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#introduction">Introduction</a></li>
-        <li class="main "><a href="#launching-the-menu">Launching the menu</a></li>
-        <li class="main "><a href="#the-menu-nodes">The Menu nodes</a></li>
-            <li><a href="#input-arguments-to-the-node">Input arguments to the node</a></li>
-            <li><a href="#return-values-from-the-node">Return values from the node</a></li>
-        <li class="main "><a href="#temporary-storage">Temporary storage</a></li>
-        <li class="main "><a href="#customizing-menu-formatting">Customizing Menu formatting</a></li>
-        <li class="main "><a href="#examples">Examples:</a></li>
-            <li><a href="#example-simple-branching-menu">Example: Simple branching menu</a></li>
-            <li><a href="#example-dynamic-goto">Example: Dynamic goto</a></li>
-            <li><a href="#example-set-caller-properties">Example: Set caller properties</a></li>
-            <li><a href="#example-get-arbitrary-input">Example: Get arbitrary input</a></li>
-            <li><a href="#example-storing-data-between-nodes">Example: Storing data between nodes</a></li>
-            <li><a href="#example-repeating-the-same-node">Example: Repeating the same node</a></li>
-            <li><a href="#defining-nodes-in-a-dictionary">Defining nodes in a dictionary</a></li>
-        <li class="main "><a href="#ask-for-simple-input">Ask for simple input</a></li>
-            <li><a href="#the-yield-way">The yield way</a></li>
-            <li><a href="#the-get_input-way">The get_input way</a></li>
-        <li class="main "><a href="#the-list_node-decorator">The @list_node decorator</a></li>
-        <li class="main "><a href="#assorted-notes">Assorted notes</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+    <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>The <code>EvMenu</code> utility class is located in
 <a href="https://github.com/evennia/evennia/blob/master/evennia/utils/evmenu.py">evennia/utils/evmenu.py</a>.
 It allows for easily adding interactive menus to the game; for example to implement Character
@@ -937,83 +916,17 @@ menu will be assigned a <a href="Command-Sets">CmdSet</a> with the commands they
 This means that if you were to, from inside the menu, assign a new command set to the caller, <em>you
 may override the Menu Cmdset and kill the menu</em>. If you want to assign cmdsets to the caller as part
 of the menu, you should store the cmdset on <code>caller.ndb._menutree</code> and wait to actually assign it
-until the exit node.</p></div>
-        </div>
+until the exit node.</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

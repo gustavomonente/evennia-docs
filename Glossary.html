@@ -1,110 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Glossary - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Glossary - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "account", url: "#_top", children: [
+          ]},
+          {title: "admin-site", url: "#admin-site", children: [
+          ]},
+          {title: "attribute", url: "#attribute", children: [
+          ]},
+          {title: "channel", url: "#channel", children: [
+          ]},
+          {title: "character", url: "#character", children: [
+          ]},
+          {title: "django", url: "#django", children: [
+          ]},
+          {title: "core", url: "#core", children: [
+          ]},
+          {title: "field", url: "#field", children: [
+          ]},
+          {title: "git", url: "#git", children: [
+          ]},
+          {title: "migrate", url: "#migrate", children: [
+          ]},
+          {title: "multisession mode", url: "#multisession-mode", children: [
+          ]},
+          {title: "github", url: "#github", children: [
+          ]},
+          {title: "object", url: "#object", children: [
+          ]},
+          {title: "pip", url: "#pip", children: [
+          ]},
+          {title: "puppet", url: "#puppet", children: [
+          ]},
+          {title: "property", url: "#property", children: [
+          ]},
+          {title: "repository", url: "#repository", children: [
+          ]},
+          {title: "script", url: "#script", children: [
+          ]},
+          {title: "session", url: "#session", children: [
+          ]},
+          {title: "ticker", url: "#ticker", children: [
+          ]},
+          {title: "typeclass", url: "#typeclass", children: [
+          ]},
+          {title: "twisted", url: "#twisted", children: [
+          ]},
+          {title: "virtualenv", url: "#virtualenv", children: [
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#account">account</a></li>
-        <li class="main "><a href="#admin-site">admin-site</a></li>
-        <li class="main "><a href="#attribute">attribute</a></li>
-        <li class="main "><a href="#channel">channel</a></li>
-        <li class="main "><a href="#character">character</a></li>
-        <li class="main "><a href="#django">django</a></li>
-        <li class="main "><a href="#core">core</a></li>
-        <li class="main "><a href="#field">field</a></li>
-        <li class="main "><a href="#git">git</a></li>
-        <li class="main "><a href="#migrate">migrate</a></li>
-        <li class="main "><a href="#multisession-mode">multisession mode</a></li>
-        <li class="main "><a href="#github">github</a></li>
-        <li class="main "><a href="#object">object</a></li>
-        <li class="main "><a href="#pip">pip</a></li>
-        <li class="main "><a href="#puppet">puppet</a></li>
-        <li class="main "><a href="#property">property</a></li>
-        <li class="main "><a href="#repository">repository</a></li>
-        <li class="main "><a href="#script">script</a></li>
-        <li class="main "><a href="#session">session</a></li>
-        <li class="main "><a href="#ticker">ticker</a></li>
-        <li class="main "><a href="#typeclass">typeclass</a></li>
-        <li class="main "><a href="#twisted">twisted</a></li>
-        <li class="main "><a href="#virtualenv">virtualenv</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>This explains common recurring terms used in the Evennia docs. It will be expanded as needed. </p>
+    <p>This explains common recurring terms used in the Evennia docs. It will be expanded as needed. </p>
 <ul>
 <li><em><a href="#account">account</a></em> - the player's account on the game</li>
 <li><em><a href="#admin-site">admin-site</a></em> - the Django web page for manipulating the database</li>
@@ -247,83 +240,17 @@
 <blockquote>
 <p>We sometimes say that we are "in" the virtualenv when it's active. But just to be clear - you never have to actually <code>cd</code> into the <code>evenv</code> folder. You can activate it from anywhere and will still be considered "in" the virtualenv wherever you go until you <code>deactivate</code> or close the console/terminal. </p>
 </blockquote>
-<p>So, when do I <em>need</em> to activate my virtualenv? If the virtualenv is not active, none of the Python packages/programs you installed in it will be available to you. So at a minimum, <em>it needs to be activated whenever you want to use the <code>evennia</code> command</em> for any reason. </p></div>
-        </div>
+<p>So, when do I <em>need</em> to activate my virtualenv? If the virtualenv is not active, none of the Python packages/programs you installed in it will be available to you. So at a minimum, <em>it needs to be activated whenever you want to use the <code>evennia</code> command</em> for any reason. </p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>

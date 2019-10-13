@@ -1,103 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Evennia for roleplaying sessions - Evennia Manual</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = false;
         
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Evennia for roleplaying sessions - Evennia Manual</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        var pageToc = [
+          {title: "Starting out", url: "#_top", children: [
+          ]},
+          {title: "The Game Master role", url: "#the-game-master-role", children: [
+              {title: "Short version", url: "#short-version" },
+              {title: "The permission hierarchy", url: "#the-permission-hierarchy" },
+              {title: "How to grant permissions", url: "#how-to-grant-permissions" },
+              {title: "Optional: Making a GM-granting command", url: "#optional-making-a-gm-granting-command" },
+          ]},
+          {title: "Character sheet", url: "#character-sheet", children: [
+              {title: "Short version", url: "#short-version_1" },
+              {title: "Building a Character sheet", url: "#building-a-character-sheet" },
+              {title: "Tie a Character sheet to a Character", url: "#tie-a-character-sheet-to-a-character" },
+              {title: "Command for Account to change Character sheet", url: "#command-for-account-to-change-character-sheet" },
+              {title: "Commands for GM to change Character sheet", url: "#commands-for-gm-to-change-character-sheet" },
+          ]},
+          {title: "Dice roller", url: "#dice-roller", children: [
+          ]},
+          {title: "Rooms", url: "#rooms", children: [
+          ]},
+          {title: "Channels", url: "#channels", children: [
+          ]},
+          {title: "PMs", url: "#pms", children: [
+          ]},
+        ];
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
 
-    <body>
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
 
-                <!-- Collapsed navigation -->
-                <div class="navbar-header">
-                    <!-- Expander button -->
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html">Evennia Manual</a>
-                </div>
 
-                <!-- Expanded navigation -->
-                <div class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li >
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li >
-                                <a href="Administrative-Docs.html">Admin</a>
-                            </li>
-                            <li >
-                                <a href="Builder-Docs.html">Building</a>
-                            </li>
-                            <li >
-                                <a href="Developer-Central.html">Game Development</a>
-                            </li>
-                            <li >
-                                <a href="Tutorials.html">Tutorials</a>
-                            </li>
-                        </ul>
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#starting-out">Starting out</a></li>
-        <li class="main "><a href="#the-game-master-role">The Game Master role</a></li>
-            <li><a href="#short-version">Short version</a></li>
-            <li><a href="#the-permission-hierarchy">The permission hierarchy</a></li>
-            <li><a href="#how-to-grant-permissions">How to grant permissions</a></li>
-            <li><a href="#optional-making-a-gm-granting-command">Optional: Making a GM-granting command</a></li>
-        <li class="main "><a href="#character-sheet">Character sheet</a></li>
-            <li><a href="#short-version_1">Short version</a></li>
-            <li><a href="#building-a-character-sheet">Building a Character sheet</a></li>
-            <li><a href="#tie-a-character-sheet-to-a-character">Tie a Character sheet to a Character</a></li>
-            <li><a href="#command-for-account-to-change-character-sheet">Command for Account to change Character sheet</a></li>
-            <li><a href="#commands-for-gm-to-change-character-sheet">Commands for GM to change Character sheet</a></li>
-        <li class="main "><a href="#dice-roller">Dice roller</a></li>
-        <li class="main "><a href="#rooms">Rooms</a></li>
-        <li class="main "><a href="#channels">Channels</a></li>
-        <li class="main "><a href="#pms">PMs</a></li>
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
-
-<p>This tutorial will explain how to set up a realtime or play-by-post tabletop style game using a fresh Evennia server.</p>
+    <p>This tutorial will explain how to set up a realtime or play-by-post tabletop style game using a fresh Evennia server.</p>
 <p>The scenario is thus: You and a bunch of friends want to play a tabletop role playing game online. One of you will be the game master and you are all okay with playing using written text. You want both the ability to role play in real-time (when people happen to be online at the same time) as well as the ability for people to post when they can and catch up on what happened since they were last online.</p>
 <p>This is the functionality we will be needing and using:</p>
 <ul>
@@ -642,83 +619,17 @@ class CmdGMsheet(MuxCommand):
 page recipient, recipient, ... = message
 </code></pre>
 
-<p>Players can use <code>page</code> alone to see the latest messages. This also works if they were not online when the message was sent.</p></div>
-        </div>
+<p>Players can use <code>page</code> alone to see the latest messages. This also works if they were not online when the message was sent.</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+  <br>
+    
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 
-    </body>
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
 </html>
