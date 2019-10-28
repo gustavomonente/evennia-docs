@@ -13,4 +13,4 @@ with a few extras.
   4. `mkdocs serve` - You should now be able to go to `http://localhost:8000` to see the docs in your browser.
 
 For those with commit rights, pull the latest docs to `master` branch and run `mkdocs gh-deploy` to build and 
-deploy to the online static stite on github. 
+deploy to the online static stite on github. The site will be available at https://evennia.github.io/evennia-docs
