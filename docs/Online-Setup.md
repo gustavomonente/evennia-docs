@@ -265,7 +265,7 @@ There are all sorts of services available. Below are some international suggesti
 Hosting name       |  Type          |  Lowest price  |  Comments
 -------------------|:--------------:|:-------:|----------------
 [silvren.com][1]   | Shell account | Free for MU*  | Private hobby provider so don't assume backups or expect immediate support. To ask for an account, connect with a MUD client to iweb.localecho.net, port 4201 and ask for "Jarin".
-[Digital Ocean][2] | VPS | $5/month | You can get a $100 credit for three months if you use the referral link https://m.do.co/c/8f64fec2670c - if you do, once you've had it long enough to have paid $25 we will get that as a referral bonus to help Evennia development.
+[Digital Ocean][2] | VPS | $5/month | You can get a $50 credit if you use the referral link https://m.do.co/c/8f64fec2670c - if you do, once you've had it long enough to have paid $25 we will get that as a referral bonus to help Evennia development.
 [Amazon Web services][3] | Cloud | ~$5/month / on-demand | Free Tier first 12 months. Regions available around the globe.
 [Amazon Lightsail][9] | Cloud | $5/month | Free first month. AWS's new "fixed cost" offering. 
 [Genesis MUD hosting][4] | Shell account | $8/month | Dedicated MUD host with very limited memory offerings. As for 2017, runs a 13 years old Python version (2.4) so you'd need to either convince them to update or compile yourself. Note that Evennia needs *at least* the "Deluxe" package (50MB RAM) and probably *a lot* higher for a production game. This host is *not* recommended for Evennia.

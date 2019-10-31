@@ -51,9 +51,9 @@ Now set up a "stop" configuration by following the same steps as above, but set 
 
 A dropdown box holding your new configurations should appear next to your PyCharm run button.  Select MyMUD start and press the debug icon to begin debugging.  Depending on how far you let the program run, you may need to run your "MyMUD stop" config to actually stop the server, before you'll be able start it again.
 
-## Alternative run confuguration - utilizing logfiles as source of data
+## Alternative run configuration - utilizing logfiles as source of data
 
-This configuration takes a bit different approach as instead of focusing on getting the data back through logfiles. Reason for that is this way you can easily separate data streams, for example you rarely want to follow both server and portal at the same time, and this will allow it. This will also make sure to stop the evennia before starting it, essentially working as reload command (it will also include instructions how to disable that part of functionality). We will start by definifing a configuration that will stop evennia. This assumes that `upfire` is your pycharm project name, and also the game name, hence the `upfire/upfire` path.
+This configuration takes a bit different approach as instead of focusing on getting the data back through logfiles. Reason for that is this way you can easily separate data streams, for example you rarely want to follow both server and portal at the same time, and this will allow it. This will also make sure to stop the evennia before starting it, essentially working as reload command (it will also include instructions how to disable that part of functionality). We will start by defining a configuration that will stop evennia. This assumes that `upfire` is your pycharm project name, and also the game name, hence the `upfire/upfire` path.
 
 1. Go to `Run > Edit Configutations...`\
 1. Click the plus-symbol to add a new configuration and choose the python interpreter to use (should be project default)
@@ -64,7 +64,7 @@ This configuration takes a bit different approach as instead of focusing on gett
 Now we will define the start/reload command that will make sure that evennia is not running already, and then start the server in one go.
 1. Go to `Run > Edit Configutations...`\
 1. Click the plus-symbol to add a new configuration and choose the python interpreter to use (should be project default)
-1. Name the configuration as "stop evennia" and fill rest of the fields accordingly to the image:
+1. Name the configuration as "start evennia" and fill rest of the fields accordingly to the image:
 ![Start run configuration](https://i.imgur.com/5YEjeHq.png)
 1. Navigate to the `Logs` tab and add the log files you would like to follow. The picture shows adding `portal.log` which will show itself in `portal` tab when running:
 ![Configuring logs following](https://i.imgur.com/gWYuOWl.png)

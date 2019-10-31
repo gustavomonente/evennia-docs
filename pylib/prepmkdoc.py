@@ -5,6 +5,7 @@
 Prepare files for mkdoc. This assumes evennia.wiki is cloned
 to a folder at the same level as the evennia-docs repo.
 
+Just run this to update everything.
 
 """
 

@@ -229,3 +229,4 @@ Evennia itself offers the following default inline functions (mostly as examples
 * `crop(text, width, suffix)` - See above. 
 * `pad(text, width, align, fillchar)` - this pads the text to `width` (default 78), alignment ("c", "l" or "r", defaulting to "c") and fill-in character (defaults to space). Example: `$pad(40,l,-)`
 * `clr(startclr, text, endclr)` - A programmatic way to enter colored text for those who don't want to use the normal `|c` type color markers for some reason. The `color` argument is the same as the color markers except without the actual pre-marker, so `|r` would be just `r`. If `endclr` is not given, it defaults to resetting the color (`n`). Example: `$clr(b, A blue text)`
+* `space(number)` - Inserts the given number of spaces. If no argument is given, use 4 spaces. 

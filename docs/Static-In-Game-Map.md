@@ -57,13 +57,11 @@ Evennia offers a range of [default commands](Default-Command-Help) for [creating
 
 To overcome this, Evennia offers [batch processors](https://github.com/evennia/evennia/wiki/Batch-Processors) that work as input-files created out-of-game. In this tutorial we'll be using the more powerful of the two available batch processors, the [Batch Code Processor ](https://github.com/evennia/evennia/wiki/Batch-code%20processor), called with the `@batchcode` command. This is a very powerful tool. It allows you to craft Python files to act as blueprints of your entire game world. These files have access to use Evennia's Python API directly. Batchcode allows for easy editing and creation in whatever text editor you prefer, avoiding having to manually build the world line-by-line inside the game. 
 
-> Important warning: `@batchcode`'s power is only rivaled by the `@py` command. Batchcode is so powerful it should be reserved only for the [superuser](Building-Permissions). Think carefully before you let others (such as `Developers`- level staff) run `@batchcode` on their own - make sure you are okay with them running *arbitrary Python code* on your server.
+> Important warning: `@batchcode`'s power is only rivaled by the `@py` command. Batchcode is so powerful it should be reserved only for the [superuser](Building-Permissions). Think carefully before you let others (such as `Developer`- level staff) run `@batchcode` on their own - make sure you are okay with them running *arbitrary Python code* on your server.
 
 While a simple example, the map object it serves as good way to try out `@batchcode`. Go to `mygame/world` and create a new file there named `batchcode_map.py`:
 
 ```Python
-# -*- coding: utf-8 -*-
-
 # mygame/world/batchcode_map.py
 
 from evennia import create_object
@@ -108,8 +106,6 @@ A new map object should have appeared on the ground. You can view the map by usi
 We've just used batchcode to create an object useful for our adventures. But the locations on that map does not actually exist yet - we're all mapped up with nowhere to go! Let's use batchcode to build a game area based on our map. We have five areas outlined: a castle, a cottage, a campsite, a coastal beach and the crossroads which connects them. Create a new batchcode file for this in `mygame/world`, named `batchcode_world.py`.
 
 ```Python
-# -*- coding: utf-8 -*-
-
 # mygame/world/batchcode_world.py
 
 from evennia import create_object, search_object
@@ -194,8 +190,6 @@ To make our mini-map we need to be able to cut our full map into parts. To do th
 
 `mygame/world/map_module.py`
 ```Python
-# -*- coding: utf-8 -*-
-
 # We place our map into a sting here.
 world_map = """\
 ≈≈↑↑↑↑↑∩∩
@@ -214,10 +208,6 @@ world_map = """\
 # allows us to treat strings as a list of characters, we can access 
 # those characters with world_map[5][5] where world_map[row][column].
 world_map = world_map.split('\n')
-
-# This allows UTF-8 charcters to be handled cleanly.
-world_map = [character.decode('UTF-8') if isinstance(character, str) 
-                else character for character in world_map]
 
 def return_map():
     """

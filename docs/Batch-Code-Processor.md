@@ -41,17 +41,17 @@ Below is a version of the example file found in `evennia/contrib/tutorial_exampl
     
     # This will be included in all other #CODE blocks
     
-    from evennia.utils import create, search
+    from evennia import create_object, search_object
     from evennia.contrib.tutorial_examples import red_button
     from typeclasses.objects import Object
     
-    limbo = search.objects(caller, 'Limbo', global_search=True)[0]
+    limbo = search_object('Limbo')[0]
     
     
     #CODE 
  
-    red_button = create.create_object(red_button.RedButton, key="Red button", 
-                                      location=limbo, aliases=["button"])
+    red_button = create_object(red_button.RedButton, key="Red button", 
+                               location=limbo, aliases=["button"])
     
     # caller points to the one running the script
     caller.msg("A red button was created.")
@@ -61,8 +61,8 @@ Below is a version of the example file found in `evennia/contrib/tutorial_exampl
     
     #CODE
     
-    table = create.create_object(Object, key="Blue Table", location=limbo)
-    chair = create.create_object(Object, key="Blue Chair", location=limbo)
+    table = create_object(Object, key="Blue Table", location=limbo)
+    chair = create_object(Object, key="Blue Chair", location=limbo)
     
     string = "A %s and %s were created."
     if DEBUG:

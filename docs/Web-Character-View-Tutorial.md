@@ -141,9 +141,8 @@ The last file we need to edit is the master URLs file. This is needed in order t
 # web/urls.py
 
 custom_patterns = [
-    url(r'^character/', include('web.character.urls',
-                                namespace='character', app_name='character')),
-    ]
+    url(r'^character/', include('web.character.urls))
+   ]
 ```
 
 Now reload the server with `evennia reload` and visit the page in your browser. If you haven't changed your defaults, you should be able to find the sheet for character `#1` at `http://localhost:4001/character/sheet/1/`
