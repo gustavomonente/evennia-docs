@@ -169,9 +169,8 @@ def sheet(request, object_id):
 <pre><code class="python"># web/urls.py
 
 custom_patterns = [
-    url(r'^character/', include('web.character.urls',
-                                namespace='character', app_name='character')),
-    ]
+    url(r'^character/', include('web.character.urls))
+   ]
 </code></pre>
 
 <p>Now reload the server with <code>evennia reload</code> and visit the page in your browser. If you haven't changed your defaults, you should be able to find the sheet for character <code>#1</code> at <code>http://localhost:4001/character/sheet/1/</code></p>

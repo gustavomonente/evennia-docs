@@ -106,17 +106,17 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     # This will be included in all other #CODE blocks
 
-    from evennia.utils import create, search
+    from evennia import create_object, search_object
     from evennia.contrib.tutorial_examples import red_button
     from typeclasses.objects import Object
 
-    limbo = search.objects(caller, 'Limbo', global_search=True)[0]
+    limbo = search_object('Limbo')[0]
 
 
     #CODE 
 
-    red_button = create.create_object(red_button.RedButton, key=&quot;Red button&quot;, 
-                                      location=limbo, aliases=[&quot;button&quot;])
+    red_button = create_object(red_button.RedButton, key=&quot;Red button&quot;, 
+                               location=limbo, aliases=[&quot;button&quot;])
 
     # caller points to the one running the script
     caller.msg(&quot;A red button was created.&quot;)
@@ -126,8 +126,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     #CODE
 
-    table = create.create_object(Object, key=&quot;Blue Table&quot;, location=limbo)
-    chair = create.create_object(Object, key=&quot;Blue Chair&quot;, location=limbo)
+    table = create_object(Object, key=&quot;Blue Table&quot;, location=limbo)
+    chair = create_object(Object, key=&quot;Blue Chair&quot;, location=limbo)
 
     string = &quot;A %s and %s were created.&quot;
     if DEBUG:

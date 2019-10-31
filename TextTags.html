@@ -246,6 +246,7 @@ def crop(*args, **kwargs):
 <li><code>crop(text, width, suffix)</code> - See above. </li>
 <li><code>pad(text, width, align, fillchar)</code> - this pads the text to <code>width</code> (default 78), alignment ("c", "l" or "r", defaulting to "c") and fill-in character (defaults to space). Example: <code>$pad(40,l,-)</code></li>
 <li><code>clr(startclr, text, endclr)</code> - A programmatic way to enter colored text for those who don't want to use the normal <code>|c</code> type color markers for some reason. The <code>color</code> argument is the same as the color markers except without the actual pre-marker, so <code>|r</code> would be just <code>r</code>. If <code>endclr</code> is not given, it defaults to resetting the color (<code>n</code>). Example: <code>$clr(b, A blue text)</code></li>
+<li><code>space(number)</code> - Inserts the given number of spaces. If no argument is given, use 4 spaces. </li>
 </ul>
 
   <br>

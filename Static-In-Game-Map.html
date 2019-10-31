@@ -108,12 +108,10 @@ O─O─O  To the south, the glow of a campfire can be seen. To the east lie
 <p>Evennia offers a range of <a href="Default-Command-Help">default commands</a> for <a href="https://github.com/evennia/evennia/wiki/Building%20Quickstart">creating objects and rooms in-game</a>. While readily accessible, these commands are made to do very specific, restricted things and will thus not offer as much flexibility to experiment (for an advanced exception see <a href="https://github.com/evennia/evennia/wiki/TextTags#new-inlinefuncs">in-line functions</a>). Additionally, entering long descriptions and properties over and over in the game client can become tedious; especially when testing and you may want to delete and recreate things over and over. </p>
 <p>To overcome this, Evennia offers <a href="https://github.com/evennia/evennia/wiki/Batch-Processors">batch processors</a> that work as input-files created out-of-game. In this tutorial we'll be using the more powerful of the two available batch processors, the <a href="https://github.com/evennia/evennia/wiki/Batch-code%20processor">Batch Code Processor </a>, called with the <code>@batchcode</code> command. This is a very powerful tool. It allows you to craft Python files to act as blueprints of your entire game world. These files have access to use Evennia's Python API directly. Batchcode allows for easy editing and creation in whatever text editor you prefer, avoiding having to manually build the world line-by-line inside the game. </p>
 <blockquote>
-<p>Important warning: <code>@batchcode</code>'s power is only rivaled by the <code>@py</code> command. Batchcode is so powerful it should be reserved only for the <a href="Building-Permissions">superuser</a>. Think carefully before you let others (such as <code>Developers</code>- level staff) run <code>@batchcode</code> on their own - make sure you are okay with them running <em>arbitrary Python code</em> on your server.</p>
+<p>Important warning: <code>@batchcode</code>'s power is only rivaled by the <code>@py</code> command. Batchcode is so powerful it should be reserved only for the <a href="Building-Permissions">superuser</a>. Think carefully before you let others (such as <code>Developer</code>- level staff) run <code>@batchcode</code> on their own - make sure you are okay with them running <em>arbitrary Python code</em> on your server.</p>
 </blockquote>
 <p>While a simple example, the map object it serves as good way to try out <code>@batchcode</code>. Go to <code>mygame/world</code> and create a new file there named <code>batchcode_map.py</code>:</p>
-<pre><code class="Python"># -*- coding: utf-8 -*-
-
-# mygame/world/batchcode_map.py
+<pre><code class="Python"># mygame/world/batchcode_map.py
 
 from evennia import create_object
 from evennia import DefaultObject
@@ -150,9 +148,7 @@ caller.msg(&quot;A map appears out of thin air and falls to the ground.&quot;)
 <p>A new map object should have appeared on the ground. You can view the map by using <code>look map</code>. Let's take it with the <code>get map</code> command. We'll need it in case we get lost!</p>
 <h2 id="building-the-map-areas">Building the map areas<a class="headerlink" href="#building-the-map-areas" title="Permanent link">&para;</a></h2>
 <p>We've just used batchcode to create an object useful for our adventures. But the locations on that map does not actually exist yet - we're all mapped up with nowhere to go! Let's use batchcode to build a game area based on our map. We have five areas outlined: a castle, a cottage, a campsite, a coastal beach and the crossroads which connects them. Create a new batchcode file for this in <code>mygame/world</code>, named <code>batchcode_world.py</code>.</p>
-<pre><code class="Python"># -*- coding: utf-8 -*-
-
-# mygame/world/batchcode_world.py
+<pre><code class="Python"># mygame/world/batchcode_world.py
 
 from evennia import create_object, search_object
 from typeclasses import rooms, exits
@@ -230,9 +226,7 @@ limbo_exit = create_object(exits.Exit, key=&quot;enter world&quot;,
 <p>We <em>could</em> manually enter a part of the map into the description of every room like we did our map object description. But some MUDs have tens of thousands of rooms! Besides, if we ever changed our map we would have to potentially alter a lot of those room descriptions manually to match the change. So instead we will make one central module to hold our map. Rooms will reference this central location on creation and the map changes will thus come into effect when next running our batchcode. </p>
 <p>To make our mini-map we need to be able to cut our full map into parts. To do this we need to put it in a format which allows us to do that easily. Luckily, python allows us to treat strings as lists of characters allowing us to pick out the characters we need.</p>
 <p><code>mygame/world/map_module.py</code></p>
-<pre><code class="Python"># -*- coding: utf-8 -*-
-
-# We place our map into a sting here.
+<pre><code class="Python"># We place our map into a sting here.
 world_map = &quot;&quot;&quot;\
 ≈≈↑↑↑↑↑∩∩
 ≈≈↑╔═╗↑∩∩
@@ -250,10 +244,6 @@ world_map = &quot;&quot;&quot;\
 # allows us to treat strings as a list of characters, we can access 
 # those characters with world_map[5][5] where world_map[row][column].
 world_map = world_map.split('\n')
-
-# This allows UTF-8 charcters to be handled cleanly.
-world_map = [character.decode('UTF-8') if isinstance(character, str) 
-                else character for character in world_map]
 
 def return_map():
     &quot;&quot;&quot;
