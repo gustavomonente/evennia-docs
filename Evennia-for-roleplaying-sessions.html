@@ -129,7 +129,7 @@ Permissions on Yvonne: accounts
 <li>We'll add a new command, for the server admin to assign the GM-flag properly.</li>
 </ol>
 <h4 id="character-modification">Character modification<a class="headerlink" href="#character-modification" title="Permanent link">&para;</a></h4>
-<p>Let's first start by customizing the Character. We recommend you browse the beginning of the <a href="Accounts.html">Account</a> page to make sure you know how Evennia differentiates between the OOC "Account objects" (not to be confused with the <code>Accounts</code> permission, which is just a string specifying your access) and the IC "Character objects".</p>
+<p>Let's first start by customizing the Character. We recommend you browse the beginning of the <a href="Accounts">Account</a> page to make sure you know how Evennia differentiates between the OOC "Account objects" (not to be confused with the <code>Accounts</code> permission, which is just a string specifying your access) and the IC "Character objects".</p>
 <p>Open <code>mygame/typeclasses/characters.py</code> and modify the default <code>Character</code> class:</p>
 <pre><code class="python"># in mygame/typeclasses/characters.py
 
@@ -160,12 +160,12 @@ class Character(DefaultCharacter):
 
 </code></pre>
 
-<p>Above, we change how the Character's name is displayed: If the account controlling this Character is a GM, we attach the string <code>(GM)</code> to the Character's name so everyone can tell who's the boss. If we ourselves are Developers or GM's we will see database ids attached to Characters names, which can help if doing database searches against Characters of exactly the same name. We base the "gm-ingness" on having an flag (an <a href="Attributes.html">Attribute</a>) named <code>is_gm</code>. We'll make sure new GM's actually get this flag below.</p>
+<p>Above, we change how the Character's name is displayed: If the account controlling this Character is a GM, we attach the string <code>(GM)</code> to the Character's name so everyone can tell who's the boss. If we ourselves are Developers or GM's we will see database ids attached to Characters names, which can help if doing database searches against Characters of exactly the same name. We base the "gm-ingness" on having an flag (an <a href="Attributes">Attribute</a>) named <code>is_gm</code>. We'll make sure new GM's actually get this flag below.</p>
 <blockquote>
 <p><strong>Extra exercise:</strong> This will only show the <code>(GM)</code> text on <em>Characters</em> puppeted by a GM account, that is, it will show only to those in the same location. If we wanted it to also pop up in, say, <code>who</code> listings and channels, we'd need to make a similar change to the <code>Account</code> typeclass in <code>mygame/typeclasses/accounts.py</code>. We leave this as an exercise to the reader.</p>
 </blockquote>
 <h4 id="new-gmungm-command">New @gm/@ungm command<a class="headerlink" href="#new-gmungm-command" title="Permanent link">&para;</a></h4>
-<p>We will describe in some detail how to create and add an Evennia <a href="Commands.html">command</a> here with the hope that we don't need to be as detailed when adding commands in the future. We will build on Evennia's default "mux-like" commands here.</p>
+<p>We will describe in some detail how to create and add an Evennia <a href="Commands">command</a> here with the hope that we don't need to be as detailed when adding commands in the future. We will build on Evennia's default "mux-like" commands here.</p>
 <p>Open <code>mygame/commands/command.py</code> and add a new Command class at the bottom:</p>
 <pre><code class="python"># in mygame/commands/command.py
 
@@ -259,7 +259,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
 <h3 id="building-a-character-sheet">Building a Character sheet<a class="headerlink" href="#building-a-character-sheet" title="Permanent link">&para;</a></h3>
 <p>There are many ways to build a Character sheet in text, from manually pasting strings together to more automated ways. Exactly what is the best/easiest way depends on the sheet one tries to create. We will here show two examples using the <em>EvTable</em> and <em>EvForm</em> utilities.Later we will create Commands to edit and display the output from those utilities.</p>
 <blockquote>
-<p>Note that due to the limitations of the wiki, no color is used in any of the examples. See <a href="TextTags.html">the text tag documentation</a> for how to add color to the tables and forms.</p>
+<p>Note that due to the limitations of the wiki, no color is used in any of the examples. See <a href="TextTags">the text tag documentation</a> for how to add color to the tables and forms.</p>
 </blockquote>
 <h4 id="making-a-sheet-with-evtable">Making a sheet with EvTable<a class="headerlink" href="#making-a-sheet-with-evtable" title="Permanent link">&para;</a></h4>
 <p><a href="https://github.com/evennia/evennia/wiki/evennia.utils.evtable">EvTable</a> is a text-table generator. It helps with displaying text in ordered rows and columns. This is an example of using it in code:</p>
@@ -605,7 +605,7 @@ class CmdGMsheet(MuxCommand):
 <p>TODO: Describe how to add a logging room, that logs says and poses to a log file that people can access after the fact.</p>
 </blockquote>
 <h2 id="channels">Channels<a class="headerlink" href="#channels" title="Permanent link">&para;</a></h2>
-<p>Evennia comes with <a href="Communications.html#Channels">Channels</a> in-built and they are described fully in the documentation. For brevity, here are the relevant commands for normal use:</p>
+<p>Evennia comes with <a href="Channels">Channels</a> in-built and they are described fully in the documentation. For brevity, here are the relevant commands for normal use:</p>
 <ul>
 <li><code>@ccreate new_channel;alias;alias = short description</code> - Creates a new channel.</li>
 <li><code>addcom channel</code> - join an existing channel. Use <code>addcom alias = channel</code> to add a new alias you can use to talk to the channel, as many as desired.</li>

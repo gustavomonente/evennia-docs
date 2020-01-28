@@ -55,7 +55,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><em>This is feature available from evennia 0.9 and onward</em>.</p>
+    <p><a href="Signals-fired-at-particular-times"></a></p>
+<p><em>This is feature available from evennia 0.9 and onward</em>.</p>
 <p>There are multiple ways for you to plug in your own functionality into Evennia.
 The most common way to do so is through <em>hooks</em> - methods on typeclasses that
 gets called at particular events. Hooks are great when you want a game entity
@@ -105,7 +106,7 @@ be extracted from the <code>**kwargs</code> dict in the signal handler.</p>
   used way for users to themselves create accounts during login. It passes and extra kwarg <code>ip</code> with
   the client IP of the connecting account.</li>
 <li><code>SIGNAL_ACCOUNT_POST_LOGIN</code> - this will always fire when the account has authenticated.  Sends
-  extra kwarg <code>session</code> with the new <a href="Sessions.html">Session</a> object involved.</li>
+  extra kwarg <code>session</code> with the new <a href="Sessions">Session</a> object involved.</li>
 <li><code>SIGNAL_ACCCOUNT_POST_FIRST_LOGIN</code> - this fires just before <code>SIGNAL_ACCOUNT_POST_LOGIN</code> but only if
   this is the <em>first</em> connection done (that is, if there are no previous sessions connected). Also
   passes the <code>session</code> along as a kwarg.</li>

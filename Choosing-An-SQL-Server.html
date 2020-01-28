@@ -65,7 +65,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>This page gives an overview of the supported SQL databases as well as instructions on install:</p>
+    <p><a href="Information-about-the-various-database-systems-which-are-supported."></a></p>
+<p>This page gives an overview of the supported SQL databases as well as instructions on install:</p>
 <ul>
 <li>SQLite3 (default)</li>
 <li>PostgreSQL</li>
@@ -74,7 +75,11 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <p>Since Evennia uses <a href="http://djangoproject.com">Django</a>, most of our notes are based off of what we know from the community and their documentation. While the information below may be useful, you can always find the most up-to-date and "correct" information at Django's <a href="http://docs.djangoproject.com/en/dev/ref/databases/#ref-databases">Notes about supported Databases</a> page.</p>
 <h2 id="sqlite3">SQLite3<a class="headerlink" href="#sqlite3" title="Permanent link">&para;</a></h2>
 <p><a href="https://sqlite.org/">SQLite3</a> is a light weight single-file database. It is our default database and Evennia will set this up for you automatically if you give no other options. SQLite stores the database in a single file (<code>mygame/server/evennia.db3</code>). This means it's very easy to reset this database - just delete (or move) that <code>evennia.db3</code> file and run <code>evennia migrate</code> again! No server process is needed and the administrative overhead and resource consumption is tiny. It is also very fast since it's run in-memory. For the vast majority of Evennia installs it will probably be all that's ever needed.  </p>
-<p>SQLite will generally be much faster than MySQL/PostgreSQL but it might not scale as well for huge databases (it's used successfully for games with 100's of thousands of objects though). Its main drawback is otherwise that it does not work very well with multiple concurrent threads or processes. This has to do with file-locking clashes of the database file. So for a production server making heavy use of process- or thread pools (or when using a third-party webserver like Apache), a more full-featured database may be the better choice. </p>
+<p>SQLite will generally be much faster than MySQL/PostgreSQL but its performance comes with two drawbacks:</p>
+<ul>
+<li>SQLite <a href="https://www.sqlite.org/faq.html#q9">ignores length constraints by design</a>; it is possible to store very large strings and numbers in fields that technically should not accept them. This is not something you will notice; your game will read and write them and function normally, but this <em>can</em> create some data migration problems requiring careful thought if you do need to change databases later.</li>
+<li>SQLite can scale well to storage of millions of objects, but if you end up with a thundering herd of users trying to access your MUD and web site at the same time, or you find yourself writing long-running functions to update large numbers of objects on a live game, either will yield errors and interference. SQLite does not work reliably with multiple concurrent threads or processes accessing its records. This has to do with file-locking clashes of the database file. So for a production server making heavy use of process- or thread pools (or when using a third-party webserver like Apache), a proper database is a more appropriate choice.</li>
+</ul>
 <h3 id="install-of-sqlite3">Install of SQlite3<a class="headerlink" href="#install-of-sqlite3" title="Permanent link">&para;</a></h3>
 <p>This is installed and configured as part of Evennia. The database file is created as <code>mygame/server/evennia.db3</code> when you run </p>
 <pre><code>evennia migrate
@@ -92,13 +97,25 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <h3 id="install-and-initial-setup-of-postgresql">Install and initial setup of PostgreSQL<a class="headerlink" href="#install-and-initial-setup-of-postgresql" title="Permanent link">&para;</a></h3>
 <p>First, install the posgresql server. Version <code>9.6</code> is tested with Evennia. Packages are readily available for all distributions. You need to also get the <code>psql</code> client (this is called <code>postgresql-client</code> on debian-derived systems). Windows/Mac users can <a href="https://www.postgresql.org/download/">find what they need on the postgresql download page</a>. You should be setting up a password for your database-superuser (always called <code>postgres</code>) when you install. </p>
 <p>For interaction with Evennia you need to also install <code>psycopg2</code> to your Evennia install (<code>pip install psycopg2-binary</code> in your virtualenv). This acts as the python bridge to the database server.</p>
-<p>Next, start the postgres client</p>
-<pre><code class="bash">    psql -U postgres
+<p>Next, start the postgres client:</p>
+<pre><code class="bash">    psql -U postgres --password
 </code></pre>
 
-<p>You may need to supply <code>-p yourpassword</code> as well depending on your setup. On the psql command line: </p>
+<blockquote>
+<p>:warning: <strong>Warning:</strong> With the <code>--password</code> argument, Postgres should prompt you for a password. 
+If it won't, replace that with <code>-p yourpassword</code> instead. Do not use the <code>-p</code> argument unless you have to since the resulting command, and your password, will be logged in the shell history.</p>
+</blockquote>
+<p>This will open a console to the postgres service using the psql client. </p>
+<p>On the psql command line: </p>
 <pre><code class="sql">CREATE USER evennia WITH PASSWORD 'somepassword';
 CREATE DATABASE evennia;
+
+# Postgres-specific optimizations
+# https://docs.djangoproject.com/en/dev/ref/databases/#optimizing-postgresql-s-configuration
+ALTER ROLE evennia SET client_encoding TO 'utf8';
+ALTER ROLE evennia SET default_transaction_isolation TO 'read committed';
+ALTER ROLE evennia SET timezone TO 'UTC';
+
 GRANT ALL PRIVILEGES ON DATABASE evennia TO evennia;
 \l       # list all databases and permissions
 \q       # exit 

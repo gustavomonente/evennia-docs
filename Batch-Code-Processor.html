@@ -73,7 +73,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>For an introduction and motivation to using batch processors, see <a href="Batch-Processors">here</a>. This page describes the Batch-<em>code</em> processor. The Batch-<em>command</em> one is covered <a href="Batch-Command-Processor">here</a>. </p>
+    <p><a href="Running-code-snippets-for-building-by-reading-from-a-text-file."></a></p>
+<p>For an introduction and motivation to using batch processors, see <a href="Batch-Processors">here</a>. This page describes the Batch-<em>code</em> processor. The Batch-<em>command</em> one is covered <a href="Batch-Command-Processor">here</a>. </p>
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>The batch-code processor is a superuser-only function, invoked by </p>
 <pre><code> &gt; @batchcode path.to.batchcodefile
@@ -178,7 +179,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <p>Global variables won't work in code batch files, each block is executed as stand-alone environments. <code>#HEADER</code> blocks are literally pasted on top of each <code>#CODE</code> block so updating some header-variable in your block will not make that change available in another block. Whereas a python execution limitation, allowing this would also lead to very hard-to-debug code when using the interactive mode - this would be a classical example of "spaghetti code". </p>
 <p>The main practical issue with this is when building e.g. a room in one code block and later want to connect that room with a room you built in the current block. There are two ways to do this: </p>
 <ul>
-<li>Perform a database search for the name of the room you created (since you cannot know in advance which dbref it got assigned). The problem is that a name may not be unique (you may have a lot of "A dark forest" rooms). There is an easy way to handle this though - use <a href="Tags.html">Tags</a> or <em>Aliases</em>. You can assign any number of tags and/or aliases to any object. Make sure that one of those tags or aliases is unique to the room (like "room56") and you will henceforth be able to always uniquely search and find it later.</li>
+<li>Perform a database search for the name of the room you created (since you cannot know in advance which dbref it got assigned). The problem is that a name may not be unique (you may have a lot of "A dark forest" rooms). There is an easy way to handle this though - use <a href="Tags">Tags</a> or <em>Aliases</em>. You can assign any number of tags and/or aliases to any object. Make sure that one of those tags or aliases is unique to the room (like "room56") and you will henceforth be able to always uniquely search and find it later.</li>
 <li>
 <p>Use the <code>caller</code> global property as an inter-block storage. For example, you could have a dictionary of room references in an <code>ndb</code>:
     ```python

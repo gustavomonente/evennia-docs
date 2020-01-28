@@ -72,7 +72,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>You control Evennia from your game folder (we refer to it as <code>mygame/</code> here), using the <code>evennia</code>
+    <p><a href="How-to-control-the-Server-and-Portal-process-from-the-terminal-and-inside-the-game."></a></p>
+<p>You control Evennia from your game folder (we refer to it as <code>mygame/</code> here), using the <code>evennia</code>
 program. If the <code>evennia</code> program is not available on the command line you must first install
 Evennia as described in the <a href="Getting-Started">Getting Started</a> page.</p>
 <blockquote>
@@ -123,7 +124,7 @@ Evennia under the control of some other type of process.</p>
 again. Everyone will get a message and the game will be briefly paused for all accounts as the server
 reboots. Since they are connected to the <em>Portal</em>, their connections are not lost.</p>
 <p>Reloading is as close to a "warm reboot" you can get. It reinitializes all code of Evennia, but
-doesn't kill "persistent" <a href="Scripts.html">Scripts</a>. It also calls <code>at_server_reload()</code> hooks on all objects so you
+doesn't kill "persistent" <a href="Scripts">Scripts</a>. It also calls <code>at_server_reload()</code> hooks on all objects so you
 can save eventual temporary properties you want.</p>
 <p>From in-game the <code>@reload</code> command is used. You can also reload the server from outside the game:</p>
 <pre><code> evennia reload

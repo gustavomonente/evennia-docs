@@ -51,13 +51,14 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>This tutorial shows the implementation of an NPC object that responds to characters entering their location. In this example the NPC has the option to respond aggressively or not, but any actions could be triggered this way.</p>
-<p>One could imagine using a <a href="Scripts.html">Script</a> that is constantly checking for newcomers. This would be highly inefficient (most of the time its check would fail). Instead we handle this on-demand by using a couple of existing object hooks to inform the NPC that a Character has entered.</p>
+    <p><a href="A-tutorial-on-making-NPC's-do-things-(like-attack)-when-a-character-enters"></a>)</p>
+<p>This tutorial shows the implementation of an NPC object that responds to characters entering their location. In this example the NPC has the option to respond aggressively or not, but any actions could be triggered this way.</p>
+<p>One could imagine using a <a href="Scripts">Script</a> that is constantly checking for newcomers. This would be highly inefficient (most of the time its check would fail). Instead we handle this on-demand by using a couple of existing object hooks to inform the NPC that a Character has entered.</p>
 <p>It is assumed that you already know how to create custom room and character typeclasses, please see the <a href="https://github.com/evennia/evennia/wiki/Tutorial%20for%20basic%20MUSH%20like%20game">Basic Game tutorial</a> if you haven't already done this.</p>
 <p>What we will need is the following: </p>
 <ul>
 <li>An NPC typeclass that can react when someone enters</li>
-<li>A custom <a href="Objects.html">Room</a> typeclass that can tell the NPC that someone entered</li>
+<li>A custom <a href="Objects">Room</a> typeclass that can tell the NPC that someone entered</li>
 <li>We will also tweak our default <code>Character</code> typeclass a little. </li>
 </ul>
 <p>To begin with, we need to create an NPC typeclass.</p>

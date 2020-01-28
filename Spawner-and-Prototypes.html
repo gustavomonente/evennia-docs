@@ -65,10 +65,11 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>The <em>spawner</em> is a system for defining and creating individual objects from a base template called a
-<em>prototype</em>. It is only designed for use with in-game <a href="Objects.html">Objects</a>, not any other type of
+    <p><a href="Describing-how-to-create-objects-with-the-spawner."></a></p>
+<p>The <em>spawner</em> is a system for defining and creating individual objects from a base template called a
+<em>prototype</em>. It is only designed for use with in-game <a href="Objects">Objects</a>, not any other type of
 entity.</p>
-<p>The normal way to create a custom object in Evennia is to make a <a href="Typeclasses.html">Typeclass</a>. If you
+<p>The normal way to create a custom object in Evennia is to make a <a href="Typeclasses">Typeclass</a>. If you
 haven't read up on Typeclasses yet, think of them as normal Python classes that save to the database
 behind the scenes. Say you wanted to create a "Goblin" enemy. A common way to do this would be to
 first create a <code>Mobile</code> typeclass that holds everything common to mobiles in the game, like generic
@@ -144,11 +145,11 @@ to be able to use such features, you need to offer them through <a href="#protfu
 <li><code>home</code> - a valid <code>#dbref</code>. Defaults to <code>location</code> or <code>settings.DEFAULT_HOME</code> if location does not exist.</li>
 <li><code>destination</code> - a valid <code>#dbref</code>. Only used by exits.</li>
 <li><code>permissions</code> - list of permission strings, like <code>["Accounts", "may_use_red_door"]</code></li>
-<li><code>locks</code> - a <a href="Locks.html">lock-string</a> like <code>"edit:all();control:perm(Builder)"</code></li>
+<li><code>locks</code> - a <a href="Locks">lock-string</a> like <code>"edit:all();control:perm(Builder)"</code></li>
 <li><code>aliases</code> - list of strings for use as aliases</li>
-<li><code>tags</code> - list <a href="Tags.html">Tags</a>. These are given as tuples <code>(tag, category, data)</code>.</li>
-<li><code>attrs</code> - list of <a href="Attributes.html">Attributes</a>. These are given as tuples <code>(attrname, value, category, lockstring)</code></li>
-<li>Any other keywords are interpreted as non-category <a href="Attributes.html">Attributes</a> and their values. This is
+<li><code>tags</code> - list <a href="Tags">Tags</a>. These are given as tuples <code>(tag, category, data)</code>.</li>
+<li><code>attrs</code> - list of <a href="Attributes">Attributes</a>. These are given as tuples <code>(attrname, value, category, lockstring)</code></li>
+<li>Any other keywords are interpreted as non-category <a href="Attributes">Attributes</a> and their values. This is
    convenient for simple Attributes - use <code>attrs</code> for full control of Attributes.</li>
 </ul>
 <p>Deprecated as of Evennia 0.8:</p>
@@ -290,7 +291,7 @@ do limited coding/scripting for their prototypes without giving them direct acce
 <h2 id="storing-prototypes">Storing prototypes<a class="headerlink" href="#storing-prototypes" title="Permanent link">&para;</a></h2>
 <p>A prototype can be defined and stored in two ways, either in the database or as a dict in a module. </p>
 <h3 id="database-prototypes">Database prototypes<a class="headerlink" href="#database-prototypes" title="Permanent link">&para;</a></h3>
-<p>Stored as <a href="Scripts.html">Scripts</a> in the database. These are sometimes referred to as <em>database-prototypes</em> This is the only way for in-game builders to modify and add prototypes. They have the advantage of being easily modifiable and sharable between builders but you need to work with them using in-game tools.  </p>
+<p>Stored as <a href="Scripts">Scripts</a> in the database. These are sometimes referred to as <em>database-prototypes</em> This is the only way for in-game builders to modify and add prototypes. They have the advantage of being easily modifiable and sharable between builders but you need to work with them using in-game tools.  </p>
 <h3 id="module-based-prototypes">Module-based prototypes<a class="headerlink" href="#module-based-prototypes" title="Permanent link">&para;</a></h3>
 <p>These prototypes are defined as dictionaries assigned to global variables in one of the modules defined in <code>settings.PROTOTYPE_MODULES</code>. They can only be modified from outside the game so they are are necessarily "read-only" from in-game and cannot be modified (but copies of them could be made into database-prototypes). These were the only prototypes available before Evennia 0.8. Module based prototypes can be useful in order for developers to provide read-only "starting" or "base" prototypes to build from or if they just prefer to work offline in an external code editor. </p>
 <p>By default <code>mygame/world/prototypes.py</code> is set up for you to add your own prototypes. <em>All global dicts</em> in this module will be considered by Evennia to be a prototype. You could also tell Evennia to look for prototypes in more modules if you want: </p>

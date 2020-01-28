@@ -57,7 +57,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>Evennia runs out of the box without any changes to its settings. But there are several important ways to customize the server and expand it with your own plugins. </p>
+    <p><a href="Some-things-to-remember-when-dealing-with-the-settings.py-file."></a></p>
+<p>Evennia runs out of the box without any changes to its settings. But there are several important ways to customize the server and expand it with your own plugins. </p>
 <h2 id="settings-file">Settings file<a class="headerlink" href="#settings-file" title="Permanent link">&para;</a></h2>
 <p>The "Settings" file referenced throughout the documentation is the file <code>mygame/server/conf/settings.py</code>. This is automatically created on the first run of <code>evennia --init</code> (see the <a href="Getting-Started">Getting Started</a> page). </p>
 <p>Your new <code>settings.py</code> is relatively bare out of the box. Evennia's core settings file is actually <a href="https://github.com/evennia/evennia/blob/master/evennia/settings_default.py">evennia/settings_default.py</a> and is considerably more extensive (it is also heavily documented so you should refer to this file directly for the available settings). </p>
@@ -86,11 +87,11 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li><code>at_server_startstop.py</code> - this module contains two functions that Evennia will call every time the Server starts and stops respectively - this includes stopping due to reloading and resetting as well as shutting down completely. It's a useful place to put custom startup code for handlers and other things that must run in your game but which has no database persistence.</li>
 <li><code>connection_screens.py</code> - all global string variables in this module are interpreted by Evennia as a greeting screen to show when an Account first connects. If more than one string variable is present in the module a random one will be picked.</li>
 <li><code>inlinefuncs.py</code> - this is where you can define custom <a href="TextTags#inlinefuncs">Inline functions</a>.</li>
-<li><code>inputfuncs.py</code> - this is where you define custom Inputfuncs.md to handle data from the client.</li>
-<li><code>lockfuncs.py</code> - this is one of many possible modules to hold your own "safe" <em>lock functions</em> to make available to Evennia's <a href="Locks.html">Locks</a>.</li>
+<li><code>inputfuncs.py</code> - this is where you define custom <a href="InputFuncs">Input functions</a> to handle data from the client.</li>
+<li><code>lockfuncs.py</code> - this is one of many possible modules to hold your own "safe" <em>lock functions</em> to make available to Evennia's <a href="Locks">Locks</a>.</li>
 <li><code>mssp.py</code> - this holds meta information about your game. It is used by MUD search engines (which you often have to register with) in order to display what kind of game you are running along with
     statistics such as number of online accounts and online status.</li>
-<li><code>oobfuncs.py</code> - in here you can define custom <a href="OOB.html">OOB functions</a>.</li>
+<li><code>oobfuncs.py</code> - in here you can define custom <a href="OOB">OOB functions</a>.</li>
 <li><code>portal_services_plugin.py</code> - this allows for adding your own custom services/protocols to the Portal. It must define one particular function that will be called by Evennia at startup. There can be any number of service plugin modules, all will be imported and used if defined. More info can be found <a href="http://code.google.com/p/evennia/wiki/SessionProtocols#Adding_custom_Protocols">here</a>.</li>
 <li><code>server_services_plugin.py</code> - this is equivalent to the previous one, but used for adding new services to the Server instead. More info can be found <a href="http://code.google.com/p/evennia/wiki/SessionProtocols#Adding_custom_Protocols">here</a>.</li>
 </ul>

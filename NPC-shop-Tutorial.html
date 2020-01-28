@@ -60,7 +60,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>This tutorial will describe how to make an NPC-run shop. We will make use of the <a href="EvMenu.html">EvMenu</a> system to present shoppers with a menu where they can buy things from the store's stock.</p>
+    <p>This tutorial will describe how to make an NPC-run shop. We will make use of the <a href="EvMenu">EvMenu</a> system to present shoppers with a menu where they can buy things from the store's stock.</p>
 <p>Our shop extends over two rooms - a "front" room open to the shop's customers and a locked "store room" holding the wares the shop should be able to sell. We aim for the following features:</p>
 <ul>
 <li>The front room should have an Attribute <code>storeroom</code> that points to the store room.</li>
@@ -71,7 +71,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li>We will lock the store room so that only people with the right key can get in there.</li>
 </ul>
 <h3 id="the-shop-menu">The shop menu<a class="headerlink" href="#the-shop-menu" title="Permanent link">&para;</a></h3>
-<p>We want to show a menu to the customer where they can list, examine and buy items in the store. This menu should change depending on what is currently for sale. Evennia's <em>EvMenu</em> utility will manage the menu for us. It's a good idea to <a href="EvMenu.html">read up on EvMenu</a> if you are not familiar with it.</p>
+<p>We want to show a menu to the customer where they can list, examine and buy items in the store. This menu should change depending on what is currently for sale. Evennia's <em>EvMenu</em> utility will manage the menu for us. It's a good idea to <a href="EvMenu">read up on EvMenu</a> if you are not familiar with it.</p>
 <h4 id="designing-the-menu">Designing the menu<a class="headerlink" href="#designing-the-menu" title="Permanent link">&para;</a></h4>
 <p>The shopping menu's design is straightforward. First we want the main screen. You get this when you enter a shop and use the <code>browse</code> or <code>buy</code> command:</p>
 <pre><code>*** Welcome to ye Old Sword shop! ***
@@ -175,7 +175,7 @@ def menunode_inspect_and_buy(caller, raw_string):
 <p>We just show the customer the <code>desc</code> of the item. In a more elaborate setup you might want to show things like weapon damage and special stats here as well.</p>
 <p>When the user choose the "buy" option, EvMenu will execute the <code>exec</code> instruction <em>before</em> we go back to the top node (the <code>goto</code> instruction). For this we make a little inline function <code>buy_ware_result</code>. EvMenu will call the function given to <code>exec</code> like any menu node but it does not need to return anything. In <code>buy_ware_result</code> we determine if the customer can afford the cost and give proper return messages. This is also where we actually move the bought item into the inventory of the customer.</p>
 <h4 id="the-command-to-start-the-menu">The command to start the menu<a class="headerlink" href="#the-command-to-start-the-menu" title="Permanent link">&para;</a></h4>
-<p>We could <em>in principle</em> launch the shopping menu the moment a customer steps into our shop room, but this would probably be considered pretty annoying. It's better to create a <a href="Commands.html">Command</a> for customers to explicitly wanting to shop around.</p>
+<p>We could <em>in principle</em> launch the shopping menu the moment a customer steps into our shop room, but this would probably be considered pretty annoying. It's better to create a <a href="Commands">Command</a> for customers to explicitly wanting to shop around.</p>
 <pre><code class="python"># mygame/typeclasses/npcshop.py
 
 from evennia import Command
@@ -202,7 +202,7 @@ class CmdBuy(Command):
                       startnode=&quot;menunode_shopfront&quot;)
 </code></pre>
 
-<p>This will launch the menu. The <code>EvMenu</code> instance is initialized with the path to this very module - since the only global functions available in this module are our menu nodes, this will work fine (you could also have put those in a separate module). We now just need to put this command in a <a href="Command-Sets.html">CmdSet</a> so we can add it correctly to the game:</p>
+<p>This will launch the menu. The <code>EvMenu</code> instance is initialized with the path to this very module - since the only global functions available in this module are our menu nodes, this will work fine (you could also have put those in a separate module). We now just need to put this command in a <a href="Cmdsets">CmdSet</a> so we can add it correctly to the game:</p>
 <pre><code class="python">from evennia import CmdSet
 
 class ShopCmdSet(CmdSet):
@@ -216,7 +216,7 @@ class ShopCmdSet(CmdSet):
 <li>The shop has the <code>storeroom</code> Attribute set on it, pointing to a second (completely normal) room.</li>
 <li>It has the <code>ShopCmdSet</code> stored on itself. This makes the <code>buy</code> command available to users entering the shop.</li>
 </ul>
-<p>For testing we could easily add these features manually to a room using <code>@py</code> or other admin commands. Just to show how it can be done we'll instead make a custom <a href="Typeclasses.html">Typeclass</a> for the shop room and make a small command that builders can use to build both the shop and the storeroom at once.</p>
+<p>For testing we could easily add these features manually to a room using <code>@py</code> or other admin commands. Just to show how it can be done we'll instead make a custom <a href="Typeclasses">Typeclass</a> for the shop room and make a small command that builders can use to build both the shop and the storeroom at once.</p>
 <pre><code class="python"># bottom of mygame/typeclasses/npcshop.py
 
 from evennia import DefaultRoom, DefaultExit, DefaultObject
@@ -286,7 +286,7 @@ class CmdBuildShop(Command):
 </code></pre>
 
 <p>Our typeclass is simple and so is our <code>buildshop</code> command. The command (which is for Builders only) just takes the name of the shop and builds the front room and a store room to go with it (always named <code>"&lt;shopname&gt;-storage"</code>. It connects the rooms with a two-way exit. You need to add <code>CmdBuildShop</code> <a href="Adding-Command-Tutorial#step-2-adding-the-command-to-a-default-cmdset">to the default cmdset</a> before you can use it. Once having created the shop you can now <code>@teleport</code> to it or <code>@open</code> a new exit to it. You could also easily expand the above command to automatically create exits to and from the new shop from your current location.</p>
-<p>To avoid customers walking in and stealing everything, we create a <a href="Locks.html">Lock</a> on the storage door. It's a simple lock that requires the one entering to carry an object named <code>&lt;shopname&gt;-storekey</code>. We even create such a key object and drop it in the shop for the new shop keeper to pick up.</p>
+<p>To avoid customers walking in and stealing everything, we create a <a href="Locks">Lock</a> on the storage door. It's a simple lock that requires the one entering to carry an object named <code>&lt;shopname&gt;-storekey</code>. We even create such a key object and drop it in the shop for the new shop keeper to pick up.</p>
 <blockquote>
 <p>If players are given the right to name their own objects, this simple lock is not very secure and you need to come up with a more robust lock-key solution.</p>
 <p>We don't add any descriptions to all these objects so looking "at" them will not be too thrilling. You could add better default descriptions as part of the <code>@buildshop</code> command or leave descriptions this up to the Builder.</p>
@@ -299,7 +299,7 @@ class CmdBuildShop(Command):
 <li>What if someone else were to buy the item we're looking at just before we decide to buy it? It would then be gone and the counter be wrong - the shop would pass us the next item in the list.</li>
 </ul>
 <p>Fixing these issues are left as an exercise.</p>
-<p>If you want to keep the shop fully NPC-run you could add a <a href="Scripts.html">Script</a> to restock the shop's store room regularly. This shop example could also easily be owned by a human Player (run for them by a hired NPC) - the shop owner would get the key to the store room and be responsible for keeping it well stocked.</p>
+<p>If you want to keep the shop fully NPC-run you could add a <a href="Scripts">Script</a> to restock the shop's store room regularly. This shop example could also easily be owned by a human Player (run for them by a hired NPC) - the shop owner would get the key to the store room and be responsible for keeping it well stocked.</p>
 
   <br>
     

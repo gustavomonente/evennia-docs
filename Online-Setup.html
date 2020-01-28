@@ -72,7 +72,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>Evennia development can be made without any Internet connection beyond fetching updates. At some point however, you are likely to want to make your game visible online, either as part opening it to the public or to allow other developers or beta testers access to it. </p>
+    <p><a href="Goes-through-the-options-for-getting-your-game-visible-online-and-how-to-do-it."></a></p>
+<p>Evennia development can be made without any Internet connection beyond fetching updates. At some point however, you are likely to want to make your game visible online, either as part opening it to the public or to allow other developers or beta testers access to it. </p>
 <h2 id="connecting-from-the-outside">Connecting from the outside<a class="headerlink" href="#connecting-from-the-outside" title="Permanent link">&para;</a></h2>
 <p>It's actually very easy to get Evennia itself online if you just want to try hosting it on your own computer (other hosting solutions are discussed later). The problems are usually with the security measures of your own computer and network that blocks this from happening. </p>
 <p>Out of the box, Evennia uses three ports for outward communication. If your computer has a firewall, these should be open for in/out communication (and only these, other ports used by Evennia are internal to your computer only). 
@@ -113,17 +114,6 @@ ALLOWED_HOSTS = [&quot;.mymudgame.com&quot;]
 # uncomment when you want to take server offline later
 # LOCKDOWN_MODE = True
 
-# Optional - register with Evennia game index 
-# (see games.evennia.com for first setup)
-GAME_DIRECTORY_LISTING = {
-    'game_status': 'pre-alpha',
-    'game_website': 'http://mymudgame.com:4002',
-    'listing_contact': 'me@mymudgame.com',
-    'telnet_hostname': 'mymudgame.com',
-    'telnet_port': 4000,
-    'short_description': &quot;The official Mygame.&quot;,
-    'long_description':'Mygame is ...'
-}
 </code></pre>
 
 <p>Read on for a description of the individual settings.</p>
@@ -190,23 +180,11 @@ AMP_PORT = 4006
 <h3 id="lockdown-mode">Lockdown mode<a class="headerlink" href="#lockdown-mode" title="Permanent link">&para;</a></h3>
 <p>When you test things out and check configurations you may not want players to drop in on you. Similarly, if you are doing maintenance on a live game you may want to take it offline for a while to fix eventual problems without risking people connecting. To do this, stop the server with <code>evennia stop</code> and add <code>LOCKDOWN_MODE = True</code> to your settings file. When you start the server again, your game will only be accessible from localhost.</p>
 <h3 id="registering-with-the-evennia-game-directory">Registering with the Evennia game directory<a class="headerlink" href="#registering-with-the-evennia-game-directory" title="Permanent link">&para;</a></h3>
-<p>Once your game is online you should make sure to register it with the <a href="http://games.evennia.com/">Evennia Game Index</a>. Registering with the index will help  people find your server, drum up interest for your game and also shows people that Evennia is being used. It's a convenient place to reference your game from (if you don't have a fancy URL set up yet). You <em>don't</em> need to have a fully-fledged production game to go on the game index. If it's very rough just set the development status to "pre-alpha".</p>
-<p>In the example settings snippet above is an example registry entry you can modify for your game. To activate the directory client you also need to add three lines to <code>mygame/server/conf/server_services_plugins.py</code>:</p>
-<pre><code class="python"># in mygame/server/conf/server_services_plugins.py`
-
-from evennia.contrib.egi_client import EvenniaGameIndexService  # ADD
-
-def start_plugin_services(server):
-    &quot;&quot;&quot;
-    This hook is called by Evennia, last in the Server startup process.
-
-    server - a reference to the main server application.
-    &quot;&quot;&quot;
-    egi_service = EvenniaGameIndexService()  # ADD
-    server.services.addService(egi_service)  # ADD
+<p>Once your game is online you should make sure to register it with the <a href="http://games.evennia.com/">Evennia Game Index</a>. Registering with the index will help  people find your server, drum up interest for your game and also shows people that Evennia is being used. You can do this even if you are just starting development - if you don't give any telnet/web address it will appear as <em>Not yet public</em> and just be a teaser. If so, pick <em>pre-alpha</em> as the development status.</p>
+<p>To register, stand in your game dir, run </p>
+<pre><code>evennia connections
 </code></pre>
-
-<p>Once that's in place, just restart your game. See the <a href="https://github.com/evennia/evennia/tree/master/evennia/contrib/egi_client">EGI client documentation</a> for more info. </p>
+<p>and follow the instructions. See the <a href="https://github.com/evennia/evennia/tree/master/evennia/contrib/egi_client">Game client documentation</a> for more info. </p>
 <h2 id="ssl">SSL<a class="headerlink" href="#ssl" title="Permanent link">&para;</a></h2>
 <p>SSL can be very useful for web clients. It will protect the credentials and gameplay of your users over a web client if they are in a public place, and your websocket can also be switched to WSS for the same benefit. SSL certificates used to cost money on a yearly basis, but there is now a program that issues them for free with assisted setup to make the entire process less painful.</p>
 <p>Options that may be useful in combination with an SSL proxy:</p>

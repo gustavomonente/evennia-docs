@@ -61,11 +61,12 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>A common task of a game designer is to organize and find groups of objects and do operations on them. A classic example is to have a weather script affect all "outside" rooms. Another would be for a player casting a magic spell that affects every location "in the dungeon", but not those "outside". Another would be to quickly find everyone joined with a particular guild or everyone currently dead. </p>
-<p><em>Tags</em> are short text labels that you attach to objects so as to easily be able to retrieve and group them. An Evennia entity can be tagged with any number of Tags. On the database side, Tag entities are <em>shared</em> between all objects with that tag. This makes them very efficient but also fundamentally different from <a href="Attributes.html">Attributes</a>, each of which always belongs to one <em>single</em> object. </p>
-<p>In Evennia, Tags are technically also used to implement <code>Aliases</code> (alternative names for objects) and <code>Permissions</code> (simple strings for <a href="Locks.html">Locks</a> to check for). </p>
+    <p><a href="These-are-used-to-quickly-group-and-later-retrieve-game-entities."></a></p>
+<p>A common task of a game designer is to organize and find groups of objects and do operations on them. A classic example is to have a weather script affect all "outside" rooms. Another would be for a player casting a magic spell that affects every location "in the dungeon", but not those "outside". Another would be to quickly find everyone joined with a particular guild or everyone currently dead. </p>
+<p><em>Tags</em> are short text labels that you attach to objects so as to easily be able to retrieve and group them. An Evennia entity can be tagged with any number of Tags. On the database side, Tag entities are <em>shared</em> between all objects with that tag. This makes them very efficient but also fundamentally different from <a href="Attributes">Attributes</a>, each of which always belongs to one <em>single</em> object. </p>
+<p>In Evennia, Tags are technically also used to implement <code>Aliases</code> (alternative names for objects) and <code>Permissions</code> (simple strings for <a href="Locks">Locks</a> to check for). </p>
 <h2 id="properties-of-tags-and-aliases-and-permissions">Properties of Tags (and Aliases and Permissions)<a class="headerlink" href="#properties-of-tags-and-aliases-and-permissions" title="Permanent link">&para;</a></h2>
-<p>Tags are <em>unique</em>. This means that there is only ever one Tag object with a given key and category. When Tags are assigned to game entities, these entities are actually sharing the same Tag. This means that Tags are not suitable for storing information about a single object - use an <a href="Attributes.html">Attribute</a> for this instead. Tags are a lot more limited than Attributes but this also makes them very quick to lookup in the database - this is the whole point.</p>
+<p>Tags are <em>unique</em>. This means that there is only ever one Tag object with a given key and category. When Tags are assigned to game entities, these entities are actually sharing the same Tag. This means that Tags are not suitable for storing information about a single object - use an <a href="Attributes">Attribute</a> for this instead. Tags are a lot more limited than Attributes but this also makes them very quick to lookup in the database - this is the whole point.</p>
 <p>Tags have the following properties, stored in the database:</p>
 <ul>
 <li><strong>key</strong> - the name of the Tag. This is the main property to search for when looking up a Tag.</li>
@@ -76,7 +77,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 - <strong>model</strong> - this holds a <em>natural-key</em> description of the model object that this tag deals with, on the form <em>application.modelclass</em>, for example <code>objects.objectdb</code>. It used by the TagHandler of each entity type for correctly storing the data behind the  scenes. 
 - <strong>tagtype</strong> - this is a "top-level category" of sorts for the inbuilt children of Tags, namely <em>Aliases</em> and <em>Permissions</em>. The Taghandlers using this special field are especially intended to free up the <em>category</em> property for any use you desire. </p>
 <h2 id="addingremoving-tags">Adding/Removing Tags<a class="headerlink" href="#addingremoving-tags" title="Permanent link">&para;</a></h2>
-<p>You can tag any <em>typeclassed</em> object, namely <a href="Objects.html">Objects</a>, <a href="Accounts.html">Accounts</a>, <a href="Scripts.html">Scripts</a> and <a href="Communications.html">Channels</a>. General tags are added by the <em>Taghandler</em>.  The tag handler is accessed as a property <code>tags</code> on the relevant entity: </p>
+<p>You can tag any <em>typeclassed</em> object, namely <a href="Objects">Objects</a>, <a href="Accounts">Accounts</a>, <a href="Scripts">Scripts</a> and <a href="Comms">Channels</a>. General tags are added by the <em>Taghandler</em>.  The tag handler is accessed as a property <code>tags</code> on the relevant entity: </p>
 <pre><code class="python">     mychair.tags.add(&quot;furniture&quot;)
      myroom.tags.add(&quot;dungeon#01&quot;)
      myscript.tags.add(&quot;weather&quot;, category=&quot;climate&quot;)
@@ -128,7 +129,7 @@ objs = evennia.search_tag(category=&quot;bar&quot;)
 
 </code></pre>
 
-<p>There is also an in-game command that deals with assigning and using (<a href="Objects.html">Object-</a>) tags:</p>
+<p>There is also an in-game command that deals with assigning and using (<a href="Objects">Object-</a>) tags:</p>
 <pre><code> @tag/search furniture
 </code></pre>
 <h2 id="using-aliases-and-permissions">Using Aliases and Permissions<a class="headerlink" href="#using-aliases-and-permissions" title="Permanent link">&para;</a></h2>
@@ -144,7 +145,7 @@ objs = evennia.search_tag(category=&quot;bar&quot;)
 <h2 id="assorted-notes">Assorted notes<a class="headerlink" href="#assorted-notes" title="Permanent link">&para;</a></h2>
 <p>Generally, tags are enough on their own for grouping objects. Having no tag <code>category</code> is perfectly fine and the normal operation. Simply adding a new Tag for grouping objects is often better than making a new category. So think hard before deciding you really need to categorize your Tags. </p>
 <p>That said, tag categories can be useful if you build some game system that uses tags. You can then use tag categories to make sure to separate tags created with this system from any other tags created elsewhere. You can then supply custom search methods that <em>only</em> find objects tagged with tags of that category. An example of this 
-is found in the <a href="Zones.html">Zone tutorial</a>. </p>
+is found in the <a href="Zones">Zone tutorial</a>. </p>
 
   <br>
     

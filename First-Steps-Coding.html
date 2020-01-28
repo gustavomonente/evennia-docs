@@ -58,12 +58,13 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>This section gives a brief step-by-step introduction on how to set up Evennia for the first time so you can modify and overload the defaults easily. You should only need to do these steps once. It also walks through you making your first few tweaks.</p>
+    <p><a href="Tutorial-describing-the-very-first-steps-for-setting-everything-up-before-you-can-start-to-code."></a></p>
+<p>This section gives a brief step-by-step introduction on how to set up Evennia for the first time so you can modify and overload the defaults easily. You should only need to do these steps once. It also walks through you making your first few tweaks.</p>
 <p>Before continuing, make sure you have Evennia installed and running by following the <a href="Getting-Started">Getting Started</a> instructions. You should have initialized a new game folder with the <code>evennia --init foldername</code> command.  We will in the following assume this folder is called "mygame".</p>
 <p>It might be a good idea to eye through the brief <a href="Coding-Introduction">Coding Introduction</a> too (especially the recommendations in the section about the evennia "flat" API and about using <code>evennia shell</code> will help you here and in the future).</p>
 <p>To follow this tutorial you also need to know the basics of operating your computer's terminal/command line. You also need to have a text editor to edit and create source text files. There are plenty of online tutorials on how to use the terminal and plenty of good free text editors. We will assume these things are already familiar to you henceforth.</p>
 <h2 id="your-first-changes">Your First Changes<a class="headerlink" href="#your-first-changes" title="Permanent link">&para;</a></h2>
-<p>Below are some first things to try with your new custom modules. You can test these to get a feel for the system. See also <a href="Tutorials.html">Tutorials</a> for more step-by-step help and special cases.</p>
+<p>Below are some first things to try with your new custom modules. You can test these to get a feel for the system. See also <a href="Tutorials">Tutorials</a> for more step-by-step help and special cases.</p>
 <h3 id="tweak-default-character">Tweak Default Character<a class="headerlink" href="#tweak-default-character" title="Permanent link">&para;</a></h3>
 <p>We will add some simple rpg attributes to our default Character. In the next section we will follow up with a new command to view those attributes.</p>
 <ol>
@@ -97,7 +98,7 @@ class Character(DefaultCharacter):
 </li>
 </ol>
 <h4 id="updating-yourself">Updating Yourself<a class="headerlink" href="#updating-yourself" title="Permanent link">&para;</a></h4>
-<p>It's important to note that the new <a href="Attributes.html">Attributes</a> we added above will only be stored on <em>newly</em> created characters. The reason for this is simple: The <code>at_object_creation</code> method, where we added those Attributes, is per definition only called when the object is <em>first created</em>, then never again. This is usually a good thing since those Attributes may change over time - calling that hook would reset them back to start values. But it also means that your existing character doesn't have them yet. You can see this by calling the <code>get_abilities</code> hook on yourself at this point:</p>
+<p>It's important to note that the new <a href="Attributes">Attributes</a> we added above will only be stored on <em>newly</em> created characters. The reason for this is simple: The <code>at_object_creation</code> method, where we added those Attributes, is per definition only called when the object is <em>first created</em>, then never again. This is usually a good thing since those Attributes may change over time - calling that hook would reset them back to start values. But it also means that your existing character doesn't have them yet. You can see this by calling the <code>get_abilities</code> hook on yourself at this point:</p>
 <pre><code># (you have to be superuser to use @py)
 @py self.get_abilities()
 &lt;&lt;&lt; (None, None, None)
@@ -124,7 +125,7 @@ for obj in MyClass.objects.all():
 <pre><code>@py typeclasses.myclass import MyClass;[obj.swap_typeclass(MyClass) for obj in MyClass.objects.all()]
 </code></pre>
 
-<p>See the <a href="Adding-Object-Typeclass-tutorial">Object Typeclass tutorial</a> for more help and the <a href="Typeclasses.html">Typeclasses</a> and <a href="Attributes.html">Attributes</a> page for detailed documentation about Typeclasses and Attributes.</p>
+<p>See the <a href="Adding-Object-Typeclass-tutorial">Object Typeclass tutorial</a> for more help and the <a href="Typeclasses">Typeclasses</a> and <a href="Attributes">Attributes</a> page for detailed documentation about Typeclasses and Attributes.</p>
 <h4 id="troubleshooting-updating-yourself">Troubleshooting: Updating Yourself<a class="headerlink" href="#troubleshooting-updating-yourself" title="Permanent link">&para;</a></h4>
 <p>One may experience errors for a number of reasons. Common beginner errors are spelling mistakes, wrong indentations or code omissions leading to a <code>SyntaxError</code>. Let's say you leave out a colon from the end of a class function like so: <code>def at_object_creation(self)</code>. The client will reload without issue. <em>However</em>, if you look at the terminal/console (i.e. not in-game), you will see Evennia complaining (this is called a <em>traceback</em>):</p>
 <pre><code>Traceback (most recent call last):
@@ -143,7 +144,7 @@ SyntaxError: invalid syntax
 <p>Note: Learning how to interpret an error traceback is a critical skill for anyone learning Python. Full tracebacks will appear in the terminal/Console you started Evennia from. The traceback text can sometimes be quite long, but you are usually just looking for the last few lines: The description of the error and the filename + line number for where the error occurred. In the example above, we see it's a <code>SyntaxError</code> happening at <code>line 33</code> of <code>mygame\typeclasses\characters.py</code>. In this case it even points out <em>where</em> on the line it encountered the error (the missing colon). Learn to read tracebacks and you'll be able to resolve the vast majority of common errors easily.</p>
 </blockquote>
 <h3 id="add-a-new-default-command">Add a New Default Command<a class="headerlink" href="#add-a-new-default-command" title="Permanent link">&para;</a></h3>
-<p>The <code>@py</code> command used above is only available to privileged users. We want any player to be able to see their stats.  Let's add a new <a href="Commands.html">command</a> to list the abilities we added in the previous section.</p>
+<p>The <code>@py</code> command used above is only available to privileged users. We want any player to be able to see their stats.  Let's add a new <a href="Commands">command</a> to list the abilities we added in the previous section.</p>
 <ol>
 <li>
 <p>Open <code>mygame/commands/command.py</code>. You could in principle put your command anywhere but this module has all the imports already set up along with some useful documentation. Make a new class at the bottom of this file:</p>
@@ -189,7 +190,7 @@ SyntaxError: invalid syntax
 STR: 5, AGI: 4, MAG: 2
 </code></pre>
 
-<p>See the <a href="Adding-Command-Tutorial">Adding a Command tutorial</a> for more examples and the <a href="Commands.html">Commands</a> section for detailed documentation about the Command system.</p>
+<p>See the <a href="Adding-Command-Tutorial">Adding a Command tutorial</a> for more examples and the <a href="Commands">Commands</a> section for detailed documentation about the Command system.</p>
 <h3 id="make-a-new-type-of-object">Make a New Type of Object<a class="headerlink" href="#make-a-new-type-of-object" title="Permanent link">&para;</a></h3>
 <p>Let's test to make a new type of object. This example is an "wise stone" object that returns some random comment when you look at it, like this:</p>
 <pre><code>&gt; look stone
@@ -241,7 +242,7 @@ from typeclasses.objects import Object</p>
 <p>Note that <code>at_object_creation</code> is only called once, when the stone is first created. If you make changes to this method later, already existing stones will not see those changes. As with the <code>Character</code> example above you can use <code>@typeclass/force</code> to tell the stone to re-run its initialization.</p>
 <p>The <code>at_object_creation</code> is a special case though. Changing most other aspects of the typeclass does <em>not</em> require manual updating like this - you just need to <code>@reload</code> to have all changes applied automatically to all existing objects.</p>
 <h2 id="where-to-go-from-here">Where to Go From Here?<a class="headerlink" href="#where-to-go-from-here" title="Permanent link">&para;</a></h2>
-<p>There are more <a href="Tutorials.html">Tutorials</a>, including one for building a <a href="Tutorial-for-basic-MUSH-like-game">whole little MUSH-like game</a> - that is instructive also if you have no interest in MUSHes per se. A good idea is to also get onto the <a href="http://webchat.freenode.net/?channels=evennia">IRC chat</a> and the <a href="https://groups.google.com/forum/#!forum/evennia">mailing list</a> to get in touch with the community and other developers.</p>
+<p>There are more <a href="Tutorials">Tutorials</a>, including one for building a <a href="Tutorial-for-basic-MUSH-like-game">whole little MUSH-like game</a> - that is instructive also if you have no interest in MUSHes per se. A good idea is to also get onto the <a href="http://webchat.freenode.net/?channels=evennia">IRC chat</a> and the <a href="https://groups.google.com/forum/#!forum/evennia">mailing list</a> to get in touch with the community and other developers.</p>
 
   <br>
     

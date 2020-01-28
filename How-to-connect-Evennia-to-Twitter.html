@@ -59,7 +59,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="http://en.wikipedia.org/wiki/twitter">Twitter</a> is an online social networking service that enables users to send and read short 280-character messages called "tweets". Following is a short tutorial explaining how to enable users to send tweets from inside Evennia.</p>
+    <p><a href="Connecting-your-game-to-a-twitter-account."></a></p>
+<p><a href="http://en.wikipedia.org/wiki/twitter">Twitter</a> is an online social networking service that enables users to send and read short 280-character messages called "tweets". Following is a short tutorial explaining how to enable users to send tweets from inside Evennia.</p>
 <h2 id="configuring-twitter">Configuring Twitter<a class="headerlink" href="#configuring-twitter" title="Permanent link">&para;</a></h2>
 <p>You must first have a Twitter account. Log in and register an App at the <a href="https://apps.twitter.com/">Twitter Dev Site</a>. Make sure you enable access to "write" tweets!</p>
 <p>To tweet from Evennia you will need both the "API Token" and the "API secret" strings as well as the "Access Token" and "Access Secret" strings.</p>
@@ -70,7 +71,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 </code></pre>
 
 <h2 id="a-basic-tweet-command">A basic tweet command<a class="headerlink" href="#a-basic-tweet-command" title="Permanent link">&para;</a></h2>
-<p>Evennia doesn't have a <code>tweet</code> command out of the box so you need to write your own little <a href="Commands.html">Command</a> in order to tweet. If you are unsure about how commands work and how to add them, it can be an idea to go through the <a href="https://github.com/evennia/evennia/wiki/Adding%20Command%20Tutorial">Adding a Command Tutorial</a> before continuing.</p>
+<p>Evennia doesn't have a <code>tweet</code> command out of the box so you need to write your own little <a href="Commands">Command</a> in order to tweet. If you are unsure about how commands work and how to add them, it can be an idea to go through the <a href="https://github.com/evennia/evennia/wiki/Adding%20Command%20Tutorial">Adding a Command Tutorial</a> before continuing.</p>
 <p>You can create the command in a separate command module (something like <code>mygame/commands/tweet.py</code>) or together with your other custom commands, as you prefer.  </p>
 <p>This is how it can look: </p>
 <pre><code class="python">import twitter
@@ -120,7 +121,7 @@ class CmdTweet(Command):
 </code></pre>
 
 <p>Be sure to substitute your own actual API/Access keys and secrets in the appropriate places. </p>
-<p>We default to limiting tweet access to players with <code>Developers</code>-level access <em>or</em> to those players that have the permission "tweet" (allow individual characters to tweet with <code>@perm/player playername = tweet</code>). You may change the <a href="Locks.html">lock</a> as you feel is appropriate. Change the overall permission to <code>Players</code> if you want everyone to be able to tweet. </p>
+<p>We default to limiting tweet access to players with <code>Developers</code>-level access <em>or</em> to those players that have the permission "tweet" (allow individual characters to tweet with <code>@perm/player playername = tweet</code>). You may change the <a href="Locks">lock</a> as you feel is appropriate. Change the overall permission to <code>Players</code> if you want everyone to be able to tweet. </p>
 <p>Now add this command to your default command set (e.g in <code>mygame/commands/defalt_cmdsets.py</code>") and reload the server. From now on those with access can simply use <code>tweet &lt;message&gt;</code> to see the tweet posted from the game's Twitter account.</p>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>This shows only a basic tweet setup, other things to do could be:</p>

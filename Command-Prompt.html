@@ -56,7 +56,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>A <em>prompt</em> is quite common in MUDs. The prompt display useful details about your character that you are likely to want to keep tabs on at all times, such as health, magical power etc. It might also show things like in-game time, weather and so on. Many modern MUD clients (including Evennia's own webclient) allows for identifying the prompt and have it appear in a correct location (usually just above the input line). Usually it will remain like that until it is explicitly updated. </p>
+    <p><a href="A-little-hint-for-how-to-add-a-command-prompt-for-players-to-see."></a></p>
+<p>A <em>prompt</em> is quite common in MUDs. The prompt display useful details about your character that you are likely to want to keep tabs on at all times, such as health, magical power etc. It might also show things like in-game time, weather and so on. Many modern MUD clients (including Evennia's own webclient) allows for identifying the prompt and have it appear in a correct location (usually just above the input line). Usually it will remain like that until it is explicitly updated. </p>
 <h2 id="sending-a-prompt">Sending a prompt<a class="headerlink" href="#sending-a-prompt" title="Permanent link">&para;</a></h2>
 <p>A prompt is sent using the  <code>prompt</code> keyword to the <code>msg()</code> method on objects. The prompt will be sent without any line breaks. </p>
 <pre><code class="python">    self.msg(prompt=&quot;HP: 5, MP: 2, SP: 8&quot;)
@@ -66,7 +67,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <pre><code class="python">    self.msg(&quot;This is a text&quot;, prompt=&quot;This is a prompt&quot;)
 </code></pre>
 
-<p>You can update the prompt on demand, this is normally done using <a href="OOB.html">OOB</a>-tracking of the relevant Attributes (like the character's health). You could also make sure that attacking commands update the prompt when they cause a change in health, for example. </p>
+<p>You can update the prompt on demand, this is normally done using <a href="OOB">OOB</a>-tracking of the relevant Attributes (like the character's health). You could also make sure that attacking commands update the prompt when they cause a change in health, for example. </p>
 <p>Here is a simple example of the prompt sent/updated from a command class: </p>
 <pre><code class="python">    from evennia import Command
 

@@ -61,8 +61,9 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><em>Scripts</em> are the out-of-character siblings to the in-character
-<a href="Objects.html">Objects</a>. Scripts are so flexible that the "Script" is a bit limiting
+    <p><a href="Controls-time-and-can-store-data-that-has-no-in-game-existence."></a></p>
+<p><em>Scripts</em> are the out-of-character siblings to the in-character
+<a href="Objects">Objects</a>. Scripts are so flexible that the "Script" is a bit limiting
 - we had to pick something to name them after all. Other possible names
 (depending on what you'd use them for) would be <code>OOBObjects</code>,
 <code>StorageContainers</code> or <code>TimerObjects</code>. </p>
@@ -73,7 +74,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li>They can work as timers and tickers - anything that may change with Time. But
   they can also have no time dependence at all. Note though that if all you want
   is just to have an object method called repeatedly, you should consider using
-  the <a href="TickerHandler.html">TickerHandler</a> which is more limited but is specialized on
+  the <a href="TickerHandler">TickerHandler</a> which is more limited but is specialized on
   just this task. </li>
 <li>They can describe State changes. A Script is an excellent platform for
 hosting a persistent, but unique system handler. For example, a Script could be
@@ -81,11 +82,11 @@ used as the base to track the state of a turn-based combat system. Since
 Scripts can also operate on a timer they can also update themselves regularly
 to perform various actions. </li>
 <li>They can act as data stores for storing game data persistently in the database 
-(thanks to its ability to have <a href="Attributes.html">Attributes</a>). </li>
+(thanks to its ability to have <a href="Attributes">Attributes</a>). </li>
 <li>They can be used as OOC stores for sharing data between groups of objects, for 
 example for tracking the turns in a turn-based combat system or barter exchange.</li>
 </ul>
-<p>Scripts are <a href="Typeclasses.html">Typeclassed</a> entities and are manipulated in a similar 
+<p>Scripts are <a href="Typeclasses">Typeclassed</a> entities and are manipulated in a similar 
 way to how it works for other such Evennia entities: </p>
 <pre><code class="python"># create a new script 
 new_script = evennia.create_script(key=&quot;myscript&quot;, typeclass=...)  
@@ -97,12 +98,26 @@ list_of_myscript = evennia.search_script(&quot;myscript&quot;)
 
 <h2 id="defining-new-scripts">Defining new Scripts<a class="headerlink" href="#defining-new-scripts" title="Permanent link">&para;</a></h2>
 <p>A Script is defined as a class and is created in the same way as other
-<a href="Typeclasses.html">typeclassed</a> entities. The class has several properties 
-to control the timer-component of the scripts. These are all optional 
-and leaving them out will just create a Script with no timer components.</p>
+<a href="Typeclasses">typeclassed</a> entities. The class has several properties 
+to control the timer-component of the scripts. These are all <em>optional</em> -
+leaving them out will just create a Script with no timer components (useful to act as
+a database store or to hold a persistent game system, for example).</p>
 <p>This you can do for example in the module
 <code>evennia/typeclasses/scripts.py</code>. Below is an example Script
    Typeclass.</p>
+<pre><code class="python">from evennia import DefaultScript
+
+class MyScript(DefaultScript):
+
+    def at_script_creation(self):
+        self.key = &quot;myscript&quot;
+        self.interval = 60  # 1 min repeat
+
+    def at_repeat(self):
+        # do stuff every minute 
+</code></pre>
+
+<p>In <code>mygame/typeclasses/scripts.py</code> is the <code>Script</code> class which inherits from <code>DefaultScript</code> already. This is provided as your own base class to do with what you like: You can tweak <code>Script</code> if you want to change the default behavior and it is usually convenient to inherit from this instead. Here's an example: </p>
 <pre><code class="python">    # for example in mygame/typeclasses/scripts.py  
     # Script class is defined at the top of this module
 
@@ -137,7 +152,7 @@ and leaving them out will just create a Script with no timer components.</p>
 <p>If we put this script on a room, it will randomly report some weather 
 to everyone in the room every 5 minutes.</p>
 <p>To activate it, just add it to the script handler (<code>scripts</code>) on an
-<a href="Objects.html">Room</a>. That object becomes <code>self.obj</code> in the example above.  Here we
+<a href="Objects">Room</a>. That object becomes <code>self.obj</code> in the example above.  Here we
 put it on a room called <code>myroom</code>:</p>
 <pre><code>    myroom.scripts.add(scripts.Weather)
 </code></pre>
@@ -167,7 +182,7 @@ a server reload):</p>
 <p>You can conveniently view and kill running Scripts by using the <code>@scripts</code>
 command in-game.</p>
 <h2 id="properties-and-functions-defined-on-scripts">Properties and functions defined on Scripts<a class="headerlink" href="#properties-and-functions-defined-on-scripts" title="Permanent link">&para;</a></h2>
-<p>A Script has all the properties of a typeclassed object, such as <code>db</code> and <code>ndb</code>(see <a href="Typeclasses.html">Typeclasses</a>). Setting <code>key</code> is useful in order to manage scripts (delete them by name etc). These are usually set up in the Script's typeclass, but can also be assigned on the fly as keyword arguments to <code>evennia.create_script</code>.</p>
+<p>A Script has all the properties of a typeclassed object, such as <code>db</code> and <code>ndb</code>(see <a href="Typeclasses">Typeclasses</a>). Setting <code>key</code> is useful in order to manage scripts (delete them by name etc). These are usually set up in the Script's typeclass, but can also be assigned on the fly as keyword arguments to <code>evennia.create_script</code>.</p>
 <ul>
 <li><code>desc</code> - an optional description of the script's function. Seen in script listings.</li>
 <li><code>interval</code> - how often the script should run. If <code>interval == 0</code> (default), this script has no timing component, will not repeat and will exist forever. This is useful for Scripts used for storage or acting as bases for various non-time dependent game systems. </li>
@@ -177,7 +192,7 @@ command in-game.</p>
 </ul>
 <p>There is one special property:</p>
 <ul>
-<li><code>obj</code> - the <a href="Objects.html">Object</a> this script is attached to (if any).  You should not need to set this manually. If you add the script to the Object with <code>myobj.scripts.add(myscriptpath)</code> or give <code>myobj</code> as an argument to the <code>utils.create.create_script</code> function, the <code>obj</code> property will be set to <code>myobj</code> for you.</li>
+<li><code>obj</code> - the <a href="Objects">Object</a> this script is attached to (if any).  You should not need to set this manually. If you add the script to the Object with <code>myobj.scripts.add(myscriptpath)</code> or give <code>myobj</code> as an argument to the <code>utils.create.create_script</code> function, the <code>obj</code> property will be set to <code>myobj</code> for you.</li>
 </ul>
 <p>It's also imperative to know the hook functions. Normally, overriding
 these are all the customization you'll need to do in Scripts. You can

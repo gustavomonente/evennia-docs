@@ -51,7 +51,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>This tutorial will create a simple script that will send a tweet to your already configured twitter account. Please see: <a href="https://github.com/evennia/evennia/wiki/How-to-connect-Evennia-to-Twitter">How to connect Evennia to Twitter</a> if you haven't already done so.</p>
+    <p><a href="A-tutorial-on-tweeting-game-stats-automatically."></a></p>
+<p>This tutorial will create a simple script that will send a tweet to your already configured twitter account. Please see: <a href="https://github.com/evennia/evennia/wiki/How-to-connect-Evennia-to-Twitter">How to connect Evennia to Twitter</a> if you haven't already done so.</p>
 <p>The script could be expanded to cover a variety of statistics you might wish to tweet about regularly, from player deaths to how much currency is in the economy etc.</p>
 <pre><code class="python"># evennia/typeclasses/tweet_stats.py
 
@@ -125,7 +126,7 @@ class TweetStats(DefaultScript):
 <li>Shows the number of Player Characters, Rooms and Other/Objects</li>
 <li>Shows the number of prototypes currently in the game and then selects 3 random keys to show </li>
 </ol>
-<p><a href="Scripts.html">Scripts Information</a> will show you how to add it as a Global script, however, for testing it may be useful to start/stop it quickly from within the game.  Assuming that you create the file as <code>mygame/typeclasses/tweet_stats.py</code> it can be started by using the following command </p>
+<p><a href="Scripts">Scripts Information</a> will show you how to add it as a Global script, however, for testing it may be useful to start/stop it quickly from within the game.  Assuming that you create the file as <code>mygame/typeclasses/tweet_stats.py</code> it can be started by using the following command </p>
 <pre><code>@script Here = tweet_stats.TweetStats
 </code></pre>
 

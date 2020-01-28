@@ -60,7 +60,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>All in-game objects in Evennia, be it characters, chairs, monsters, rooms or hand grenades are represented by an Evennia <em>Object</em>. Objects form the core of Evennia and is probably what you'll spend most time working with. Objects are <a href="Typeclasses.html">Typeclassed</a> entities.</p>
+    <p><a href="Describes-the-basic-Object-typeclass,-the-base-for-all-in-game-things."></a></p>
+<p>All in-game objects in Evennia, be it characters, chairs, monsters, rooms or hand grenades are represented by an Evennia <em>Object</em>. Objects form the core of Evennia and is probably what you'll spend most time working with. Objects are <a href="Typeclasses">Typeclassed</a> entities.</p>
 <h2 id="how-to-create-your-own-object-types">How to create your own object types<a class="headerlink" href="#how-to-create-your-own-object-types" title="Permanent link">&para;</a></h2>
 <p>An Evennia Object is, per definition, a Python class that includes <code>evennia.DefaultObject</code> among its parents. In <code>mygame/typeclasses/objects.py</code> there is already a class <code>Object</code> that inherits from <code>DefaultObject</code> and that you can inherit from. You can put your new typeclass directly in that module or you could organize your code in some other way. Here we assume we make a new module <code>mygame/typeclasses/flowers.py</code>:</p>
 <pre><code class="python">    # mygame/typeclasses/flowers.py
@@ -86,17 +87,17 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
     new_rose = create_object(&quot;typeclasses.flowers.Rose&quot;, key=&quot;MyRose&quot;)
 </code></pre>
 
-<p>(The <code>@create</code> command will auto-append the most likely path to your typeclass, if you enter the call manually you have to give the full path to the class. The <code>create.create_object</code> function is powerful and should be used for all coded object creating (so this is what you use when defining your own building commands). Check out the <code>ev.create_*</code> functions for how to build other entities like <a href="Scripts.html">Scripts</a>). </p>
+<p>(The <code>@create</code> command will auto-append the most likely path to your typeclass, if you enter the call manually you have to give the full path to the class. The <code>create.create_object</code> function is powerful and should be used for all coded object creating (so this is what you use when defining your own building commands). Check out the <code>ev.create_*</code> functions for how to build other entities like <a href="Scripts">Scripts</a>). </p>
 <p>This particular Rose class doesn't really do much, all it does it make sure the attribute <code>desc</code>(which is what the <code>look</code> command looks for) is pre-set, which is pretty pointless since you will usually want to change this at build time (using the <code>@desc</code> command or using the <a href="https://github.com/evennia/evennia/wiki/Spawner-and-Prototypes">Spawner</a>). The <code>Object</code> typeclass offers many more hooks that is available to use though - see next section. </p>
 <h2 id="properties-and-functions-on-objects">Properties and functions on Objects<a class="headerlink" href="#properties-and-functions-on-objects" title="Permanent link">&para;</a></h2>
-<p>Beyond the properties assigned to all <a href="Typeclasses.html">typeclassed</a> objects (see that page for a list of those), the Object also has the following custom properties: </p>
+<p>Beyond the properties assigned to all <a href="Typeclasses">typeclassed</a> objects (see that page for a list of those), the Object also has the following custom properties: </p>
 <ul>
 <li><code>aliases</code> - a handler that allows you to add and remove aliases from this object. Use <code>aliases.add()</code> to add a new alias and <code>aliases.remove()</code> to remove one. </li>
 <li><code>location</code> - a reference to the object currently containing this object.</li>
 <li><code>home</code> is a backup location. The main motivation is to have a safe place to move the object to if its <code>location</code> is destroyed. All objects should usually have a home location for safety.</li>
 <li><code>destination</code> - this holds a reference to another object this object links to in some way. Its main use is for <a href="Objects#Exits">Exits</a>, it's otherwise usually unset.</li>
-<li><code>nicks</code> - as opposed to aliases, a <a href="Nicks.html">Nick</a> holds a convenient nickname replacement for a real name, word or sequence, only valid for this object. This mainly makes sense if the Object is used as a game character - it can then store briefer shorts, example so as to quickly reference game commands or other characters. Use nicks.add(alias, realname) to add a new one.</li>
-<li><code>account</code> - this holds a reference to a connected <a href="Accounts.html">Account</a> controlling this object (if any). Note that this is set also if the controlling account is <em>not</em> currently online - to test if an account is online, use the <code>has_account</code> property instead.</li>
+<li><code>nicks</code> - as opposed to aliases, a <a href="Nicks">Nick</a> holds a convenient nickname replacement for a real name, word or sequence, only valid for this object. This mainly makes sense if the Object is used as a game character - it can then store briefer shorts, example so as to quickly reference game commands or other characters. Use nicks.add(alias, realname) to add a new one.</li>
+<li><code>account</code> - this holds a reference to a connected <a href="Accounts">Account</a> controlling this object (if any). Note that this is set also if the controlling account is <em>not</em> currently online - to test if an account is online, use the <code>has_account</code> property instead.</li>
 <li><code>sessions</code> - if <code>account</code> field is set <em>and the account is online</em>, this is a list of all active sessions (server connections) to contact them through (it may be more than one if multiple connections are allowed in settings).</li>
 <li><code>has_account</code> - a shorthand for checking if an <em>online</em> account is currently connected to this object.</li>
 <li><code>contents</code> - this returns a list referencing all objects 'inside' this object (i,e. which has this object set as their <code>location</code>).</li>
@@ -105,7 +106,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <p>The last two properties are special:</p>
 <ul>
 <li><code>cmdset</code> - this is a handler that stores all <a href="Commands#Command_Sets">command sets</a> defined on the object (if any).</li>
-<li><code>scripts</code> - this is a handler that manages Scripts.md attached to the object (if any).</li>
+<li><code>scripts</code> - this is a handler that manages <a href="scripts">Scripts</a> attached to the object (if any).</li>
 </ul>
 <p>The Object also has a host of useful utility functions. See the function headers in <code>src/objects/objects.py</code> for their arguments and more details. </p>
 <ul>
@@ -123,7 +124,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <h2 id="subclasses-of-object">Subclasses of <code>Object</code><a class="headerlink" href="#subclasses-of-object" title="Permanent link">&para;</a></h2>
 <p>There are three special subclasses of <em>Object</em> in default Evennia - <em>Characters</em>, <em>Rooms</em> and <em>Exits</em>. The reason they are separated is because these particular object types are fundamental, something you will always need and in some cases requires some extra attention in order to be recognized by the game engine (there is nothing stopping you from redefining them though). In practice they are all pretty similar to the base Object.  </p>
 <h3 id="characters">Characters<a class="headerlink" href="#characters" title="Permanent link">&para;</a></h3>
-<p>Characters are objects controlled by <a href="Accounts.html">Accounts</a>. When a new Account
+<p>Characters are objects controlled by <a href="Accounts">Accounts</a>. When a new Account
 logs in to Evennia for the first time, a new <code>Character</code> object is created and
 the Account object is assigned to the <code>account</code> attribute. A <code>Character</code> object
 must have a <a href="Commands#Command_Sets">Default Commandset</a> set on itself at
@@ -135,11 +136,11 @@ to modify.</p>
 <h3 id="rooms">Rooms<a class="headerlink" href="#rooms" title="Permanent link">&para;</a></h3>
 <p><em>Rooms</em> are the root containers of all other objects. The only thing really separating a room from any other object is that they have no <code>location</code> of their own and that default commands like <code>@dig</code> creates objects of this class - so if you want to expand your rooms with more functionality, just inherit from <code>ev.DefaultRoom</code>. In <code>mygame/typeclasses/rooms.py</code> is an empty <code>Room</code> class ready for you to modify.</p>
 <h3 id="exits">Exits<a class="headerlink" href="#exits" title="Permanent link">&para;</a></h3>
-<p><em>Exits</em> are objects connecting other objects (usually <em>Rooms</em>) together. An object named <em>North</em> or <em>in</em> might be an exit, as well as <em>door</em>, <em>portal</em> or <em>jump out the window</em>. An exit has two things that separate them from other objects. Firstly, their <em>destination</em> property is set and points to a valid object. This fact makes it easy and fast to locate exits in the database. Secondly, exits define a special <a href="Commands.html">Transit Command</a> on themselves when they are created. This command is named the same as the exit object and will, when called, handle the practicalities of moving the character to the Exits's <em>destination</em> - this allows you to just enter the name of the exit on its own to move around, just as you would expect. </p>
-<p>The exit functionality is all defined on the Exit typeclass, so you could in principle completely change how exits work in your game (it's not recommended though, unless you really know what you are doing).  Exits are <a href="Locks.html">locked</a> using an access_type called <em>traverse</em> and also make use of a few hook methods for giving feedback if the traversal fails.  See <code>evennia.DefaultExit</code> for more info.  In <code>mygame/typeclasses/exits.py</code> there is an empty <code>Exit</code> class for you to modify.</p>
+<p><em>Exits</em> are objects connecting other objects (usually <em>Rooms</em>) together. An object named <em>North</em> or <em>in</em> might be an exit, as well as <em>door</em>, <em>portal</em> or <em>jump out the window</em>. An exit has two things that separate them from other objects. Firstly, their <em>destination</em> property is set and points to a valid object. This fact makes it easy and fast to locate exits in the database. Secondly, exits define a special <a href="Commands">Transit Command</a> on themselves when they are created. This command is named the same as the exit object and will, when called, handle the practicalities of moving the character to the Exits's <em>destination</em> - this allows you to just enter the name of the exit on its own to move around, just as you would expect. </p>
+<p>The exit functionality is all defined on the Exit typeclass, so you could in principle completely change how exits work in your game (it's not recommended though, unless you really know what you are doing).  Exits are <a href="Locks">locked</a> using an access_type called <em>traverse</em> and also make use of a few hook methods for giving feedback if the traversal fails.  See <code>evennia.DefaultExit</code> for more info.  In <code>mygame/typeclasses/exits.py</code> there is an empty <code>Exit</code> class for you to modify.</p>
 <p>The process of traversing an exit is as follows:</p>
 <ol>
-<li>The traversing <code>obj</code> sends a command that matches the Exit-command name on the Exit object. The <a href="Commands.html">cmdhandler</a> detects this and triggers the command defined on the Exit. Traversal always involves the "source" (the current location) and the <code>destination</code> (this is stored on the Exit object). </li>
+<li>The traversing <code>obj</code> sends a command that matches the Exit-command name on the Exit object. The <a href="Commands">cmdhandler</a> detects this and triggers the command defined on the Exit. Traversal always involves the "source" (the current location) and the <code>destination</code> (this is stored on the Exit object). </li>
 <li>The Exit command checks the <code>traverse</code> lock on the Exit object</li>
 <li>The Exit command triggers <code>at_traverse(obj, destination)</code> on the Exit object.</li>
 <li>In <code>at_traverse</code>, <code>object.move_to(destination)</code> is triggered. This triggers the following hooks, in order:<ol>

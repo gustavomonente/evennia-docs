@@ -51,15 +51,16 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>Evennia supports <em>guest logins</em> out of the box. A guest login is an anonymous, low-access account and can be useful if you want users to have a chance to try out your game without committing to creating a real account.</p>
+    <p><a href="Setting-up-guest-accounts"></a></p>
+<p>Evennia supports <em>guest logins</em> out of the box. A guest login is an anonymous, low-access account and can be useful if you want users to have a chance to try out your game without committing to creating a real account.</p>
 <p>Guest accounts are turned off by default. To activate, add this to your <code>game/settings.py</code> file:</p>
 <pre><code>GUEST_ENABLED = True
 </code></pre>
 <p>Henceforth users can use <code>connect guest</code> (in the default command set) to login with a guest account. You may need to change your <a href="Connection-Screen">Connection Screen</a> to inform them of this possibility. Guest accounts work differently from normal accounts - they are automatically <em>deleted</em> whenever the user logs off or the server resets (but not during a reload). They are literally re-usable throw-away accounts. </p>
 <p>You can add a few more variables to your <code>settings.py</code> file to customize your guests:</p>
 <ul>
-<li><code>BASE_GUEST_TYPECLASS</code> - the python-path to the default <a href="Typeclasses.html">typeclass</a> for guests. Defaults to <code>"typeclasses.accounts.Guest"</code>.</li>
-<li><code>PERMISSION_GUEST_DEFAULT</code> - <a href="Locks.html">permission level</a> for guest accounts. Defaults to <code>"Guests"</code>, which is the lowest permission level in the hierarchy.</li>
+<li><code>BASE_GUEST_TYPECLASS</code> - the python-path to the default <a href="Typeclasses">typeclass</a> for guests. Defaults to <code>"typeclasses.accounts.Guest"</code>.</li>
+<li><code>PERMISSION_GUEST_DEFAULT</code> - <a href="Locks">permission level</a> for guest accounts. Defaults to <code>"Guests"</code>, which is the lowest permission level in the hierarchy.</li>
 <li><code>GUEST_START_LOCATION</code> - the <code>#dbref</code> to the starting location newly logged-in guests should appear at. Defaults to <code>"#2</code> (Limbo).</li>
 <li><code>GUEST_HOME</code> - guest home locations. Defaults to Limbo as well.</li>
 <li><code>GUEST_LIST</code> - this is a list holding the possible guest names to use when entering the game. The length of this list also sets how many guests may log in at the same time. By default this is a list of nine names from <code>"Guest1"</code> to <code>"Guest9"</code>.</li>

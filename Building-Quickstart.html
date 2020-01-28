@@ -67,7 +67,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>The <a href="Default-Command-Help">default command</a> definitions coming with Evennia
+    <p><a href="Introduces-some-basic-commands-and-builds-some-example-objects."></a></p>
+<p>The <a href="Default-Command-Help">default command</a> definitions coming with Evennia
 follows a style <a href="Using-MUX-as-a-Standard">similar</a> to that of MUX, so the
 commands should be familiar if you used any such code bases before. </p>
 <blockquote>
@@ -112,17 +113,17 @@ You see nothing special.
 <p>If you try the <code>get</code> command we will pick up the box. So far so good, but if we really want this to be a large and heavy box, people should <em>not</em> be able to run off with it that easily. To prevent this we need to lock it down. This is done by assigning a <em>Lock</em>  to it. Make sure the box was dropped in the room, then try this: </p>
 <pre><code>lock box = get:false()
 </code></pre>
-<p>Locks represent a rather <a href="Locks.html">big topic</a>, but for now that will do what we want. This will lock the box so noone can lift it. The exception is superusers, they override all locks and will pick it up anyway. Make sure you are quelling your superuser powers and try to get the box now:</p>
+<p>Locks represent a rather <a href="Locks">big topic</a>, but for now that will do what we want. This will lock the box so noone can lift it. The exception is superusers, they override all locks and will pick it up anyway. Make sure you are quelling your superuser powers and try to get the box now:</p>
 <pre><code>&gt; get box
 You can't get that.
 </code></pre>
-<p>Think thís default error message looks dull? The <code>get</code> command looks for an <a href="Attributes.html">Attribute</a> named <code>get_err_msg</code> for returning a nicer error message (we just happen to know this, you would need to peek into the <a href="https://github.com/evennia/evennia/blob/master/evennia/commands/default/general.py#L235">code</a> for the <code>get</code> command to find out.). You set attributes using the <code>set</code> command:</p>
+<p>Think thís default error message looks dull? The <code>get</code> command looks for an <a href="Attributes">Attribute</a> named <code>get_err_msg</code> for returning a nicer error message (we just happen to know this, you would need to peek into the <a href="https://github.com/evennia/evennia/blob/master/evennia/commands/default/general.py#L235">code</a> for the <code>get</code> command to find out.). You set attributes using the <code>set</code> command:</p>
 <pre><code>set box/get_err_msg = It's way too heavy for you to lift.
 </code></pre>
 <p>Try to get it now and you should see a nicer error message echoed back to you.</p>
 <p>You create new Commands (or modify existing ones) in Python outside the game. See the <a href="https://github.com/evennia/evennia/wiki/Adding%20Command%20Tutorial">Adding Commands tutorial</a> for help with creating your first own Command.</p>
 <h2 id="get-a-personality">Get a Personality<a class="headerlink" href="#get-a-personality" title="Permanent link">&para;</a></h2>
-<p><a href="Scripts.html">Scripts</a> are powerful out-of-character objects useful for many "under the hood" things. One of their optional abilities is to do things on a timer. To try out a first script, let's put one on ourselves. There is an example script in <code>evennia/contrib/tutorial_examples/bodyfunctions.py</code> that is called <code>BodyFunctions</code>. To add this to us we will use the <code>script</code> command:</p>
+<p><a href="Scripts">Scripts</a> are powerful out-of-character objects useful for many "under the hood" things. One of their optional abilities is to do things on a timer. To try out a first script, let's put one on ourselves. There is an example script in <code>evennia/contrib/tutorial_examples/bodyfunctions.py</code> that is called <code>BodyFunctions</code>. To add this to us we will use the <code>script</code> command:</p>
 <pre><code>script self = tutorial_examples.bodyfunctions.BodyFunctions
 </code></pre>
 <p>(note that you don't have to give the full path as long as you are pointing to a place inside the <code>contrib</code> directory, it's one of the places Evennia looks for Scripts). Wait a while and you will notice yourself starting making random observations.</p>
@@ -132,15 +133,15 @@ You can't get that.
 <p>When you are tired of your character's "insights", kill the script with</p>
 <pre><code>script/stop self = tutorial_examples.bodyfunctions.BodyFunctions
 </code></pre>
-<p>You create your own scripts in Python, outside the game; the path you give to <code>script</code> is literally the Python path to your script file. The <a href="Scripts.html">Scripts</a> page explains more details.</p>
+<p>You create your own scripts in Python, outside the game; the path you give to <code>script</code> is literally the Python path to your script file. The <a href="Scripts">Scripts</a> page explains more details.</p>
 <h2 id="pushing-your-buttons">Pushing Your Buttons<a class="headerlink" href="#pushing-your-buttons" title="Permanent link">&para;</a></h2>
-<p>If we get back to the box we made, there is only so much fun you can do with it at this point. It's just a dumb generic object. If you renamed it to <code>stone</code> and changed its description noone would be the wiser. However, with the combined use of custom <a href="Typeclasses.html">Typeclasses</a>, <a href="Scripts.html">Scripts</a> and object-based <a href="Commands.html">Commands</a>, you could expand it and other items to be as unique, complex and interactive as you want. </p>
+<p>If we get back to the box we made, there is only so much fun you can do with it at this point. It's just a dumb generic object. If you renamed it to <code>stone</code> and changed its description noone would be the wiser. However, with the combined use of custom <a href="Typeclasses">Typeclasses</a>, <a href="Scripts">Scripts</a> and object-based <a href="Commands">Commands</a>, you could expand it and other items to be as unique, complex and interactive as you want. </p>
 <p>Let's take an example. So far we have only created objects that use the default object typeclass named simply <code>Object</code>. Let's create an object that is a little more interesting. Under <code>evennia/contrib/tutorial_examples</code> there is a module <code>red_button.py</code>.  It contains the enigmatic <code>RedButton</code> typeclass.</p>
 <p>Let's make us one of <em>those</em>!</p>
 <pre><code>create/drop button:tutorial_examples.red_button.RedButton
 </code></pre>
 <p>We import the RedButton python class the same way you would import it in Python except Evennia makes sure to look in<code>evennia/contrib/</code> so you don't have to write the full path every time. There you go - one red button. </p>
-<p>The RedButton is an example object intended to show off a few of Evennia's features. You will find that the <a href="Typeclasses.html">Typeclass</a> and <a href="Commands.html">Commands</a> controlling it are inside <code>evennia/contrib/tutorial_examples/</code>.</p>
+<p>The RedButton is an example object intended to show off a few of Evennia's features. You will find that the <a href="Typeclasses">Typeclass</a> and <a href="Commands">Commands</a> controlling it are inside <code>evennia/contrib/tutorial_examples/</code>.</p>
 <p>If you wait for a while (make sure you dropped it!) the button will blink invitingly. Why don't you try to push it ...? Surely a big red button is meant to be pushed. You know you want to. </p>
 <h2 id="making-yourself-a-house">Making Yourself a House<a class="headerlink" href="#making-yourself-a-house" title="Permanent link">&para;</a></h2>
 <p>The main command for shaping the game world is <code>dig</code>. For example, if you are standing in Limbo you can dig a route to your new house location like this: </p>

@@ -59,7 +59,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>Evennia comes with a few very basic classes of in-game entities:</p>
+    <p><a href="Describes-adding-a-simple-typeclass."></a>
+Evennia comes with a few very basic classes of in-game entities:</p>
 <pre><code>DefaultObject
    |           
    DefaultCharacter
@@ -71,9 +72,9 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 automatically create empty child classes <code>Object</code>, <code>Character</code>, <code>Room</code> and <code>Exit</code> respectively. They
 are found <code>mygame/typeclasses/objects.py</code>, <code>mygame/typeclasses/rooms.py</code> etc. </p>
 <blockquote>
-<p>Technically these are all <a href="Typeclasses.html">Typeclassed</a>, which can be ignored for now. In
+<p>Technically these are all <a href="Typeclasses">Typeclassed</a>, which can be ignored for now. In
 <code>mygame/typeclasses</code> are also base typeclasses for out-of-character things, notably
-<a href="Communications.html">Channels</a>, <a href="Accounts.html">Accounts</a> and <a href="Scripts.html">Scripts</a>. We don't cover those in
+<a href="Communications">Channels</a>, <a href="Accounts">Accounts</a> and <a href="Scripts">Scripts</a>. We don't cover those in
 this tutorial.</p>
 </blockquote>
 <p>For your own game you will most likely want to expand on these very simple beginnings. It's normal
@@ -117,11 +118,11 @@ up.</p>
 you will find the traceback. The most common error is that you have some sort of syntax error in
 your class. </li>
 </ol>
-<p>Note that the Locks.md and <a href="Attributes.html">Attribute</a> which are set in the typeclass could just
+<p>Note that the <a href="locks">Locks</a> and <a href="Attributes">Attribute</a> which are set in the typeclass could just
 as well have been set using commands in-game, so this is a <em>very</em> simple example.</p>
 <h2 id="storing-data-on-initialization">Storing data on initialization<a class="headerlink" href="#storing-data-on-initialization" title="Permanent link">&para;</a></h2>
 <p>The <code>at_object_creation</code> is only called once, when the object is first created. This makes it ideal
-for database-bound things like <a href="Attributes.html">Attributes</a>. But sometimes you want to create temporary
+for database-bound things like <a href="Attributes">Attributes</a>. But sometimes you want to create temporary
 properties (things that are not to be stored in the database but still always exist every time the
 object is created). Such properties can be initialized in the <code>at_init</code> method on the object.
 <code>at_init</code> is called every time the object is loaded into memory. </p>
@@ -138,7 +139,7 @@ them using various in-game tools:</p>
 </code></pre>
 
 <blockquote>
-<p>Note: As mentioned in the <a href="Typeclasses.html">Typeclasses</a> documentation, <code>at_init</code> replaces the use of
+<p>Note: As mentioned in the <a href="Typeclasses">Typeclasses</a> documentation, <code>at_init</code> replaces the use of
 the standard <code>__init__</code> method of typeclasses due to how the latter may be called in situations
 other than you'd expect. So use <code>at_init</code> where you would normally use <code>__init__</code>. </p>
 </blockquote>

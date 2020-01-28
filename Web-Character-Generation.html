@@ -84,7 +84,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+    <p><a href="A-tutorial-for-making-a-web-based-chargen-app-for-your-game."></a></p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>This tutorial will create a simple web-based interface for generating a new in-game Character. Accounts will need to have first logged into the website (with their <code>AccountDB</code> account). Once finishing character generation the Character will be created immediately and the Accounts can then log into the game and play immediately (the Character will not require staff approval or anything like that). This guide does not go over how to create an AccountDB on the website with the right permissions to transfer to their web-created characters.</p>
 <p>It is probably most useful to set <code>MULTISESSION_MODE = 2</code> or <code>3</code> (which gives you a character-selection screen when you log into the game later). Other modes can be used with some adaptation to auto-puppet the new Character.</p>
 <p>You should have some familiarity with how Django sets up its Model Template View framework. You need to understand what is happening in the basic <a href="https://github.com/evennia/evennia/wiki/Web-Character-View-Tutorial">Web Character View tutorial</a>. If you don’t understand the listed tutorial or have a grasp of Django basics, please look at the <a href="https://docs.djangoproject.com/en/1.8/intro/">Django tutorial</a> to get a taste of what Django does, before throwing Evennia into the mix (Evennia shares its API and attributes with the website interface). This guide will outline the format of the models, views, urls, and html templates needed. </p>
@@ -263,8 +264,8 @@ def creating(request):
 <p>Most importantly, the following attributes must be set on the created character object:</p>
 <ul>
 <li>Evennia <a href="https://github.com/evennia/evennia/wiki/Locks#permissions">permissions</a> (copied from the <code>AccountDB</code>).</li>
-<li>The right <code>puppet</code> <a href="Locks.html">locks</a> so the Account can actually play as this Character later.</li>
-<li>The relevant Character <a href="Typeclasses.html">typeclass</a></li>
+<li>The right <code>puppet</code> <a href="Locks">locks</a> so the Account can actually play as this Character later.</li>
+<li>The relevant Character <a href="Typeclasses">typeclass</a></li>
 <li>Character name (key)</li>
 <li>The Character's home room location (<code>#2</code> by default)</li>
 </ul>

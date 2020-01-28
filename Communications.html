@@ -59,28 +59,29 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>Apart from moving around in the game world and talking, players might need other forms of communication. This is offered by Evennia's <code>Comm</code> system. Stock evennia implements a 'MUX-like' system of channels, but there is nothing stopping you from changing things to better suit your taste. </p>
+    <p><a href="How-to-code-with-Channels,-Messages-and-other-systems-for-sending-info-to-others."></a></p>
+<p>Apart from moving around in the game world and talking, players might need other forms of communication. This is offered by Evennia's <code>Comm</code> system. Stock evennia implements a 'MUX-like' system of channels, but there is nothing stopping you from changing things to better suit your taste. </p>
 <p>Comms rely on two main database objects - <code>Msg</code> and <code>Channel</code>. There is also the <code>TempMsg</code> which mimics the API of a <code>Msg</code> but has no connection to the database.</p>
 <h2 id="msg">Msg<a class="headerlink" href="#msg" title="Permanent link">&para;</a></h2>
-<p>The <code>Msg</code> object is the basic unit of communication in Evennia. A message works a little like an e-mail; it always has a sender (a <a href="Accounts.html">Account</a>) and one or more recipients. The recipients may be either other Accounts, or a <em>Channel</em> (see below). You can mix recipients to send the message to both Channels and Accounts if you like.</p>
+<p>The <code>Msg</code> object is the basic unit of communication in Evennia. A message works a little like an e-mail; it always has a sender (a <a href="Accounts">Account</a>) and one or more recipients. The recipients may be either other Accounts, or a <em>Channel</em> (see below). You can mix recipients to send the message to both Channels and Accounts if you like.</p>
 <p>Once created, a <code>Msg</code> is normally not changed. It is peristently saved in the database. This allows for comprehensive logging of communications. This could be useful for allowing senders/receivers to have 'mailboxes' with the messages they want to keep. </p>
 <h3 id="properties-defined-on-msg">Properties defined on <code>Msg</code><a class="headerlink" href="#properties-defined-on-msg" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>senders</code> - this is a reference to one or many <a href="Accounts.html">Account</a> or <a href="Objects.html">Objects</a> (normally <em>Characters</em>) sending the message.  This could also be an <em>External Connection</em> such as a message coming in over IRC/IMC2 (see below). There is usually only one sender, but the types can also be mixed in any combination.</li>
-<li><code>receivers</code> - a list of target <a href="Accounts.html">Accounts</a>, <a href="Objects.html">Objects</a> (usually <em>Characters</em>) or <em>Channels</em> to send the message to. The types of receivers can be mixed in any combination.</li>
+<li><code>senders</code> - this is a reference to one or many <a href="Accounts">Account</a> or <a href="Objects">Objects</a> (normally <em>Characters</em>) sending the message.  This could also be an <em>External Connection</em> such as a message coming in over IRC/IMC2 (see below). There is usually only one sender, but the types can also be mixed in any combination.</li>
+<li><code>receivers</code> - a list of target <a href="Accounts">Accounts</a>, <a href="Objects">Objects</a> (usually <em>Characters</em>) or <em>Channels</em> to send the message to. The types of receivers can be mixed in any combination.</li>
 <li><code>header</code> - this is a text field for storing a title or header for the message. </li>
 <li><code>message</code> - the actual text being sent.</li>
 <li><code>date_sent</code> - when message was sent (auto-created).</li>
-<li><code>locks</code> - a <a href="Locks.html">lock definition</a>.</li>
+<li><code>locks</code> - a <a href="Locks">lock definition</a>.</li>
 <li><code>hide_from</code> - this can optionally hold a list of objects, accounts or channels to hide this <code>Msg</code> from. This relationship is stored in the database primarily for optimization reasons, allowing for quickly post-filter out messages not intended for a given target.  There is no in-game methods for setting this, it's intended to be done in code.</li>
 </ul>
 <p>You create new messages in code using <code>evennia.create_message</code> (or <code>evennia.utils.create.create_message.</code>) </p>
 <h2 id="tempmsg">TempMsg<a class="headerlink" href="#tempmsg" title="Permanent link">&para;</a></h2>
 <p><code>evennia.comms.models</code> also has <code>TempMsg</code> which mimics the API of <code>Msg</code> but is not connected to the database. TempMsgs are used by Evennia for channel messages by default. They can be used for any system expecting a <code>Msg</code> but when you don't actually want to save anything. </p>
 <h2 id="channels">Channels<a class="headerlink" href="#channels" title="Permanent link">&para;</a></h2>
-<p>Channels are <a href="Typeclasses.html">Typeclassed</a> entities, which mean they can be easily extended and their functionality modified. To change which channel typeclass Evennia uses, change settings.BASE_CHANNEL_TYPECLASS.</p>
-<p>Channels act as generic distributors of messages. Think of them as "switch boards" redistributing <code>Msg</code> or <code>TempMsg</code> objects. Internally they hold a list of "listening" objects and any <code>Msg</code> (or <code>TempMsg</code>) sent to the channel will be distributed out to all channel listeners. Channels have <a href="Locks.html">Locks</a> to limit who may listen and/or send messages through them. </p>
-<p>The <em>sending</em> of text to a channel is handled by a dynamically created <a href="Commands.html">Command</a> that always have the same name as the channel. This is created for each channel by the global <code>ChannelHandler</code>. The Channel command is added to the Account's cmdset and normal command locks are used to determine which channels are possible to write to. When subscribing to a channel, you can then just write the channel name and the text to send. </p>
+<p>Channels are <a href="Typeclasses">Typeclassed</a> entities, which mean they can be easily extended and their functionality modified. To change which channel typeclass Evennia uses, change settings.BASE_CHANNEL_TYPECLASS.</p>
+<p>Channels act as generic distributors of messages. Think of them as "switch boards" redistributing <code>Msg</code> or <code>TempMsg</code> objects. Internally they hold a list of "listening" objects and any <code>Msg</code> (or <code>TempMsg</code>) sent to the channel will be distributed out to all channel listeners. Channels have <a href="Locks">Locks</a> to limit who may listen and/or send messages through them. </p>
+<p>The <em>sending</em> of text to a channel is handled by a dynamically created <a href="Commands">Command</a> that always have the same name as the channel. This is created for each channel by the global <code>ChannelHandler</code>. The Channel command is added to the Account's cmdset and normal command locks are used to determine which channels are possible to write to. When subscribing to a channel, you can then just write the channel name and the text to send. </p>
 <p>The default ChannelCommand (which can be customized by pointing <code>settings.CHANNEL_COMMAND_CLASS</code> to your own command), implements a few convenient features: </p>
 <ul>
 <li>It only sends <code>TempMsg</code> objects. Instead of storing individual entries in the database it instead dumps channel output a file log in <code>server/logs/channel_&lt;channelname&gt;.log</code>. This is mainly for practical reasons - we find one rarely need to query individual Msg objects at a later date. Just stupidly dumping the log to a file also means a lot less database overhead. </li>
@@ -107,7 +108,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li><code>aliases</code> - alternative native names for channels</li>
 <li><code>desc</code> - optional description of channel (seen in listings)</li>
 <li><code>keep_log</code> (bool) - if the channel should store messages (default)</li>
-<li><code>locks</code> - A <a href="Locks.html">lock definition</a>. Channels normally use the access_types <code>send, control</code> and <code>listen</code>.</li>
+<li><code>locks</code> - A <a href="Locks">lock definition</a>. Channels normally use the access_types <code>send, control</code> and <code>listen</code>.</li>
 </ul>
 
   <br>

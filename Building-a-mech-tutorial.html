@@ -74,8 +74,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <p>This makes it so that everyone can control the mech. More mechs to the people! (Note that whereas Evennia’s default commands may look vaguely MUX-like, you can change the syntax to look like whatever interface style you prefer.)</p>
 <p>Before we continue, let’s make a brief detour. Evennia is very flexible about its objects and even more flexible about using and adding commands to those objects. Here are some ground rules well worth remembering for the remainder of this article:</p>
 <ul>
-<li>The <a href="Accounts.html">Account</a> represents the real person logging in and has no game-world existence.</li>
-<li>Any <a href="Objects.html">Object</a> can be puppeted by an Account (with proper permissions).</li>
+<li>The <a href="Accounts">Account</a> represents the real person logging in and has no game-world existence.</li>
+<li>Any <a href="Objects">Object</a> can be puppeted by an Account (with proper permissions).</li>
 <li><a href="Objects#characters">Characters</a>, <a href="Objects#rooms">Rooms</a>, and <a href="Objects#exits">Exits</a> are just children of normal Objects.</li>
 <li>Any Object can be inside another (except if it creates a loop).</li>
 <li>Any Object can store custom sets of commands on it. Those commands can:<ul>
@@ -144,7 +144,7 @@ space we won’t describe it here; it looks the same except it returns a text
 about the missiles being fired and has different <code>key</code> and <code>aliases</code>. We leave
 that up to you to create as an exercise. You could have it print "WOOSH! The
 mech launches missiles against <target>!", for example.</p>
-<p>Now we shove our commands into a command set. A <a href="Command-Sets.html">Command Set</a> (CmdSet) is a container holding any number of commands. The command set is what we will store on the mech.</p>
+<p>Now we shove our commands into a command set. A <a href="CommandSet">Command Set</a> (CmdSet) is a container holding any number of commands. The command set is what we will store on the mech.</p>
 <pre><code class="python"># in the same file mygame/commands/mechcommands.py
 
 from evennia import CmdSet
@@ -178,7 +178,7 @@ BOOM! The mech fires its gun in the air!
 </blockquote>
 <h2 id="making-a-mech-production-line">Making a Mech production line<a class="headerlink" href="#making-a-mech-production-line" title="Permanent link">&para;</a></h2>
 <p>What we’ve done so far is just to make a normal Object, describe it and put some commands on it. This is great for testing. The way we added it, the MechCmdSet will even go away if we reload the server. Now we want to make the mech an actual object “type” so we can create mechs without those extra steps. For this we need to create a new Typeclass.</p>
-<p>A <a href="Typeclasses.html">Typeclass</a> is a near-normal Python class that stores its existence to the database behind the scenes. A Typeclass is created in a normal Python source file:</p>
+<p>A <a href="Typeclasses">Typeclass</a> is a near-normal Python class that stores its existence to the database behind the scenes. A Typeclass is created in a normal Python source file:</p>
 <pre><code class="python"># in the new file mygame/typeclasses/mech.py
 
 from typeclasses.objects import Object

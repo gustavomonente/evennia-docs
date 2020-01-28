@@ -65,7 +65,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+    <p><a href="Tutorial-for-making-a-dynamically-updating-map"></a></p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>An often desired feature in a MUD is to show an in-game map to help navigation. The <a href="Static-In-Game-Map">Static in-game map</a> tutorial solves this by creating a <em>static</em> map, meaning the map is pre-drawn once and for all - the rooms are then created to match that map. When walking around, parts of the static map is then cut out and displayed next to the room description.</p>
 <p>In this tutorial we'll instead do it the other way around; We will dynamically draw the map based on the relationships we find between already existing rooms.</p>
 <h2 id="the-grid-of-rooms">The Grid of Rooms<a class="headerlink" href="#the-grid-of-rooms" title="Permanent link">&para;</a></h2>
@@ -317,7 +318,7 @@ class Room(DefaultRoom):
 </code></pre>
 
 <p>Obviously this method of generating maps doesn't take into account of any doors or exits that are hidden.. etc.. but hopefully it serves as a good base to start with. Like previously mentioned, it is very important to have a solid foundation on rooms before implementing this. You can try this on vanilla evennia by using @tunnel and essentially you can just create a long straight/edgy non-looping rooms that will show on your in-game map. </p>
-<p>The above example will display the map above the room description. You could also use an <a href="https://github.com/evennia/evennia/wiki/evennia.utils.evtable">EvTable</a> to place description and map next to each other. Some other things you can do is to have a <a href="Commands.html">Command</a> that displays with a larger radius, maybe with a legend and other features. </p>
+<p>The above example will display the map above the room description. You could also use an <a href="https://github.com/evennia/evennia/wiki/evennia.utils.evtable">EvTable</a> to place description and map next to each other. Some other things you can do is to have a <a href="Commands">Command</a> that displays with a larger radius, maybe with a legend and other features. </p>
 <p>Below is the whole <code>map.py</code> for your reference. You need to update your <code>Room</code> typeclass (see above) to actually call it. Remember that to see different symbols for a location you also need to set the <code>sector_type</code> Attribute on the room to one of the keys in the <code>SYMBOLS</code> dictionary. So in this example, to make a room be mapped as <code>[.]</code> you would set the room's <code>sector_type</code> to <code>"SECT_INSIDE"</code>. Try it out with <code>@set here/sector_type = "SECT_INSIDE"</code>. If you wanted all new rooms to have a given sector symbol, you could change the default in the <code>SYMBOLS´ dictionary below, or you could add the Attribute in the Room's</code>at_object_creation` method.</p>
 <pre><code class="python">#mygame/world/map.py
 

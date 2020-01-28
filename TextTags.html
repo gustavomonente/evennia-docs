@@ -60,7 +60,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>This documentation details the various text tags supported by Evennia, namely <em>colours</em>, <em>command links</em> and <em>inline functions</em>. </p>
+    <p><a href="Describes-the-markup-for-adding-colours-and-other-tags-to-text."></a></p>
+<p>This documentation details the various text tags supported by Evennia, namely <em>colours</em>, <em>command links</em> and <em>inline functions</em>. </p>
 <p>There is also an <a href="Understanding-Color-Tags">Understanding Color Tags</a> tutorial which expands on the use of ANSI color tags and the pitfalls of mixing ANSI and Xterms256 color tags in the same context.</p>
 <h2 id="coloured-text">Coloured text<a class="headerlink" href="#coloured-text" title="Permanent link">&para;</a></h2>
 <p><em>Note that the Documentation does not display colour the way it would look on the screen.</em></p>
@@ -192,7 +193,7 @@ Normal text, |*reversed text|n, normal again.
 </code></pre>
 
 <p>where <code>*args</code> denotes all the arguments this function will accept as an <code>$inlinefunc</code>. The inline function is expected to clean arguments and check that they are valid. If needed arguments are not given, default values should be used. The function should always return a string (even if it's empty). An inlinefunc should never cause a traceback regardless of the input (but it could log errors if desired). </p>
-<p>Note that whereas the function should accept <code>**kwargs</code>, keyword inputs are <em>not</em> usable in the call to the inlinefunction. The <code>kwargs</code> part is instead intended for Evennia to be able to supply extra information. Currently Evennia sends a single keyword to every inline function and that is <code>session</code>, which holds the <a href="Sessions.html">serversession</a> this text is targeted at. Through the session object, a lot of dynamic possibilities are opened up for your inline functions. </p>
+<p>Note that whereas the function should accept <code>**kwargs</code>, keyword inputs are <em>not</em> usable in the call to the inlinefunction. The <code>kwargs</code> part is instead intended for Evennia to be able to supply extra information. Currently Evennia sends a single keyword to every inline function and that is <code>session</code>, which holds the <a href="Sessions">serversession</a> this text is targeted at. Through the session object, a lot of dynamic possibilities are opened up for your inline functions. </p>
 <p>The <code>settings.INLINEFUNC_MODULES</code> configuration option is a list that decides which modules should be parsed for inline function definitions. This will include <code>mygame/server/conf/inlinefuncs.py</code> but more could be added. The list is read from left to right so if you want to overload default functions you just have to put your custom module-paths later in the list and name your functions the same as default ones.</p>
 <p>Here is an example, the <code>crop</code> default inlinefunction:</p>
 <pre><code class="python">from evennia.utils import utils

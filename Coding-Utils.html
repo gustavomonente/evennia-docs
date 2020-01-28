@@ -72,7 +72,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p>Evennia comes with many utilities to help with common coding tasks. Most are accessible directly from the flat API, otherwise you can find them in the <code>evennia/utils/</code> folder.</p>
+    <p><a href="A-non-complete-list-of-some-of-the-useful-code-utilities-in-src/utils."></a></p>
+<p>Evennia comes with many utilities to help with common coding tasks. Most are accessible directly from the flat API, otherwise you can find them in the <code>evennia/utils/</code> folder.</p>
 <h2 id="searching">Searching<a class="headerlink" href="#searching" title="Permanent link">&para;</a></h2>
 <p>A common thing to do is to search for objects. The most common time one needs to do this is inside a command body. There it's easiest to use the <code>search</code> method defined on all objects. This will search for objects in the same location and inside the caller:</p>
 <pre><code class="python">     obj = self.caller.search(objname)
@@ -170,7 +171,7 @@ gametime.schedule(church_clock, hour=2)
 </ul>
 <h2 id="utilsinherits_from">utils.inherits_from()<a class="headerlink" href="#utilsinherits_from" title="Permanent link">&para;</a></h2>
 <p>This useful function takes two arguments - an object to check and a parent. It returns <code>True</code> if object inherits from parent <em>at any distance</em> (as opposed to Python's in-built <code>is_instance()</code> that will only catch immediate dependence). This function also accepts as input any combination of classes, instances or python-paths-to-classes.</p>
-<p>Note that Python code should usually work with <a href="http://en.wikipedia.org/wiki/Duck_typing">duck typing</a>. But in Evennia's case it can sometimes be useful to check if an object inherits from a given <a href="Typeclasses.html">Typeclass</a> as a way of identification. Say for example that we have a typeclass <em>Animal</em>. This has a subclass <em>Felines</em> which in turn has a subclass <em>HouseCat</em>. Maybe there are a bunch of other animal types too, like horses and dogs. Using <code>inherits_from</code> will allow you to check for all animals in one go:</p>
+<p>Note that Python code should usually work with <a href="http://en.wikipedia.org/wiki/Duck_typing">duck typing</a>. But in Evennia's case it can sometimes be useful to check if an object inherits from a given <a href="Typeclasses">Typeclass</a> as a way of identification. Say for example that we have a typeclass <em>Animal</em>. This has a subclass <em>Felines</em> which in turn has a subclass <em>HouseCat</em>. Maybe there are a bunch of other animal types too, like horses and dogs. Using <code>inherits_from</code> will allow you to check for all animals in one go:</p>
 <pre><code class="python">     from evennia import utils
      if (utils.inherits_from(obj, &quot;typeclasses.objects.animals.Animal&quot;):
         obj.msg(&quot;The bouncer stops you in the door. He says: 'No talking animals allowed.'&quot;)
@@ -189,9 +190,9 @@ deferred = utils.delay(10, _callback, obj, &quot;Echo!&quot;, persistent=False)
 
 </code></pre>
 
-<p>This creates an asynchronous delayed call. It will fire the given callback function after the given number of seconds. This is a very light wrapper over a Twisted <a href="https://twistedmatrix.com/documents/current/core/howto/defer.html">Deferred</a>. Normally this is run non-persistently, which means that if the server is <code>@reload</code>ed before the delay is over, the callback will never run (the server forgets it). If setting <code>persistent</code> to True, the delay will be stored in the database and survive a <code>@reload</code> - but for this to work it is susceptible to the same limitations incurred when saving to an <a href="Attributes.html">Attribute</a>.</p>
+<p>This creates an asynchronous delayed call. It will fire the given callback function after the given number of seconds. This is a very light wrapper over a Twisted <a href="https://twistedmatrix.com/documents/current/core/howto/defer.html">Deferred</a>. Normally this is run non-persistently, which means that if the server is <code>@reload</code>ed before the delay is over, the callback will never run (the server forgets it). If setting <code>persistent</code> to True, the delay will be stored in the database and survive a <code>@reload</code> - but for this to work it is susceptible to the same limitations incurred when saving to an <a href="Attributes">Attribute</a>.</p>
 <p>The <code>deferred</code> return object can usually be ignored, but calling its <code>.cancel()</code> method will abort the delay prematurely.</p>
-<p><code>utils.delay</code> is the lightest form of delayed call in Evennia. For other way to create time-bound tasks, see the <a href="TickerHandler.html">TickerHandler</a> and <a href="Scripts.html">Scripts</a>.</p>
+<p><code>utils.delay</code> is the lightest form of delayed call in Evennia. For other way to create time-bound tasks, see the <a href="TickerHandler">TickerHandler</a> and <a href="Scripts">Scripts</a>.</p>
 <blockquote>
 <p>Note that many delayed effects can be achieved without any need for an active timer. For example if you have a trait that should recover a point every 5 seconds you might just need its value when it's needed, but checking the current time and calculating on the fly what value it should have.</p>
 </blockquote>

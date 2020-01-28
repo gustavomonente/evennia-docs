@@ -91,11 +91,11 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li><a href="#non-latin-characters-in-evtable">Use wide characters with EvTable</a></li>
 </ul>
 <h2 id="removing-default-commands">Removing default commands<a class="headerlink" href="#removing-default-commands" title="Permanent link">&para;</a></h2>
-<p><strong>Q:</strong> How does one <em>remove</em> (not replace) e.g. the default <code>get</code> <a href="Commands.html">Command</a> from the Character <a href="Command-Sets.html">Command Set</a>?</p>
+<p><strong>Q:</strong> How does one <em>remove</em> (not replace) e.g. the default <code>get</code> <a href="Commands">Command</a> from the Character <a href="CmdSets">Command Set</a>?</p>
 <p><strong>A:</strong> Go to <code>mygame/commands/default_cmdsets.py</code>. Find the <code>CharacterCmdSet</code> class. It has one method named <code>at_cmdset_creation</code>. At the end of that method, add the following line: <code>self.remove(default_cmds.CmdGet())</code>. See the <a href="Adding-Command-Tutorial">Adding Commands Tutorial</a> for more info.</p>
 <h2 id="preventing-character-from-moving-based-on-a-condition">Preventing character from moving based on a condition<a class="headerlink" href="#preventing-character-from-moving-based-on-a-condition" title="Permanent link">&para;</a></h2>
 <p><strong>Q:</strong> How does one keep a character from using any exit, if they meet a certain condition? (I.E. in combat, immobilized, etc.)</p>
-<p><strong>A:</strong> The <code>at_before_move</code> hook is called by Evennia just before performing any move. If it returns <code>False</code>, the move is aborted. Let's say we want to check for an <a href="Attributes.html">Attribute</a> <code>cantmove</code>. Add the following code to the <code>Character</code> class:</p>
+<p><strong>A:</strong> The <code>at_before_move</code> hook is called by Evennia just before performing any move. If it returns <code>False</code>, the move is aborted. Let's say we want to check for an <a href="Attributes">Attribute</a> <code>cantmove</code>. Add the following code to the <code>Character</code> class:</p>
 <pre><code class="python">def at_before_move(self, destination):
     &quot;Called just before trying to move&quot;
     if self.db.cantmove: # replace with condition you want to test
@@ -106,7 +106,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
 <h2 id="reference-initiating-object-in-an-evmenu-command">Reference initiating object in an EvMenu command.<a class="headerlink" href="#reference-initiating-object-in-an-evmenu-command" title="Permanent link">&para;</a></h2>
 <p><strong>Q:</strong> An object has a Command on it starts up an EvMenu instance. How do I capture a reference to that object for use in the menu?</p>
-<p><strong>A:</strong> When an <a href="EvMenu.html">EvMenu</a> is started, the menu object is stored as <code>caller.ndb._menutree</code>. This is a good place to store menu-specific things since it will clean itself up when the menu closes. When initiating the menu, any additional keywords you give will be available for you as properties on this menu object:</p>
+<p><strong>A:</strong> When an <a href="EvMenu">EvMenu</a> is started, the menu object is stored as <code>caller.ndb._menutree</code>. This is a good place to store menu-specific things since it will clean itself up when the menu closes. When initiating the menu, any additional keywords you give will be available for you as properties on this menu object:</p>
 <pre><code class="python">class MyObjectCommand(Command):
     # A Command stored on an object (the object is always accessible from
     # the Command as self.obj)
@@ -169,7 +169,7 @@ class BlockingRoom(Room):
 <p>After <code>@reload</code>, make some <code>BlockingRooms</code> (or switch a room to it with <code>@typeclass</code>). Entering one will now replace the given commands for anyone that does not have the <code>Builders</code> or higher permission. Note that the 'call' lock is special in that even the superuser will be affected by it (otherwise superusers would always see other player's cmdsets and a game would be unplayable for superusers).</p>
 <h2 id="select-command-based-on-a-condition">Select Command based on a condition<a class="headerlink" href="#select-command-based-on-a-condition" title="Permanent link">&para;</a></h2>
 <p><strong>Q:</strong> I want a command to be available only based on a condition. For example I want the "werewolf" command to only be available on a full moon, from midnight to three in-game time.</p>
-<p><strong>A:</strong> This is easiest accomplished by putting the "werewolf" command on the Character as normal, but to <a href="Locks.html">lock</a> it with the "cmd" type lock. Only if the "cmd" lock type is passed will the command be available.</p>
+<p><strong>A:</strong> This is easiest accomplished by putting the "werewolf" command on the Character as normal, but to <a href="Locks">lock</a> it with the "cmd" type lock. Only if the "cmd" lock type is passed will the command be available.</p>
 <pre><code class="python"># in mygame/commands/command.py
 
 from evennia import Command
@@ -310,21 +310,20 @@ MuxCommand class is also found commented-out in the <code>mygame/commands/comman
 <p><strong>Q:</strong> If a user has already logged out of an Evennia account, their IP is no longer visible to staff that wants to ban-by-ip (instead of the user) with <code>@ban/ip</code>?</p>
 <p><strong>A:</strong> One approach is to write the IP from the last session onto the "account" account object.</p>
 <p><code>typeclasses/accounts.py</code></p>
-<pre><code class="python">    def at_post_login(self):
-        super().at_post_login()
+<pre><code class="python">    def at_post_login(self, session=None, **kwargs):
+        super().at_post_login(session=session, **kwargs)
         self.db.lastsite = self.sessions.all()[-1].address
 </code></pre>
 
 <p>Adding timestamp for login time and appending to a list to keep the last N login IP addresses and timestamps is possible, also.  Additionally, if you don't want the list to grow beyond a <code>do_not_exceed</code> length, conditionally pop a value after you've added it, if the length has grown too long.</p>
 <p><strong>NOTE:</strong> You'll need to add <code>import time</code> to generate the login timestamp.</p>
-<pre><code class="python">    def at_post_login(self):
-        super().at_post_login()
+<pre><code class="python">    def at_post_login(self, session=None, **kwargs):
+        super().at_post_login(session=session, **kwargs)
         do_not_exceed = 24  # Keep the last two dozen entries
         session = self.sessions.all()[-1]  # Most recent session
         if not self.db.lastsite:
            self.db.lastsite = []
-        self.db.lastsite = self.db.lastsite.insert(0, (session.address,
-                                                      int(time.time())))
+        self.db.lastsite.insert(0, (session.address, int(time.time())))
         if len(self.db.lastsite) &gt; do_not_exceed:
             self.db.lastsite.pop()
 </code></pre>
