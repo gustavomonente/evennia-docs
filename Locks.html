@@ -69,8 +69,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="How-to-check-for-access-and-define-what-gives-access-or-not."></a></p>
-<p>For most games it is a good idea to restrict what people can do. In Evennia such restrictions are applied and checked by something called <em>locks</em>. All Evennia entities (<a href="commands">Commands</a>, <a href="objects">Objects</a>, <a href="scripts">Scripts</a>, <a href="accounts">Accounts</a>, <a href="help-system">Help System</a>, <a href="Communications#Msg">messages</a> and <a href="Communications#Channels">channels</a>) are accessed through locks. </p>
+    <p>For most games it is a good idea to restrict what people can do. In Evennia such restrictions are applied and checked by something called <em>locks</em>. All Evennia entities (Commands.md, Objects.md, Scripts.md, Accounts.md, <a href="help-system">Help System</a>, <a href="Communications#Msg">messages</a> and <a href="Communications#Channels">channels</a>) are accessed through locks. </p>
 <p>A lock can be thought of as an "access rule" restricting a particular use of an Evennia entity.  Whenever another entity wants that kind of access the lock will analyze that entity in different ways to determine if access should be granted or not. Evennia implements a "lockdown" philosophy - all entities are inaccessible unless you explicitly define a lock that allows some or full access. </p>
 <p>Let's take an example: An object has a lock on itself that restricts how people may "delete" that object. Apart from knowing that it restricts deletion, the lock also knows that only players with the specific ID of, say, <code>34</code> are allowed to delete it. So whenever a player tries to run <code>delete</code> on the object, the <code>delete</code> command makes sure to check if this player is really allowed to do so. It calls the lock, which in turn checks if the player's id is <code>34</code>. Only then will it allow <code>delete</code> to go on with its job.</p>
 <h2 id="setting-and-checking-a-lock">Setting and checking a lock<a class="headerlink" href="#setting-and-checking-a-lock" title="Permanent link">&para;</a></h2>
@@ -111,9 +110,9 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <p>If you want to make sure the lock is used however, you should pick <code>access_type</code> names that you (or the default command set) actually checks for, as in the example of <code>delete</code> above that uses the 'delete' <code>access_type</code>.</p>
 <p>Below are the access_types checked by the default commandset.</p>
 <ul>
-<li><a href="Commands">Commands</a> </li>
+<li><a href="Commands.html">Commands</a> </li>
 <li><code>cmd</code> - this defines who may call this command at all.</li>
-<li><a href="Objects">Objects</a>:</li>
+<li><a href="Objects.html">Objects</a>:</li>
 <li><code>control</code> - who is the "owner" of the object. Can set locks, delete it etc. Defaults to the creator of the object.</li>
 <li><code>call</code> - who may call Object-commands stored on this Object except for the Object itself. By default, Objects share their Commands with anyone in the same location (e.g. so you can 'press' a <code>Button</code> object in the room). For Characters and Mobs (who likely only use those Commands for themselves and don't want to share them) this should usually be turned off completely, using something like <code>call:false()</code>. </li>
 <li><code>examine</code> - who may examine this object's properties.</li>
@@ -128,13 +127,13 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li><a href="Objects#Exits">Exits</a>: </li>
 <li>Same as for Objects </li>
 <li><code>traverse</code> - who may pass the exit.</li>
-<li><a href="Accounts">Accounts</a>:</li>
+<li><a href="Accounts.html">Accounts</a>:</li>
 <li><code>examine</code> - who may examine the account's properties.</li>
 <li><code>delete</code> - who may delete the account.</li>
 <li><code>edit</code> - who may edit the account's attributes and properties.</li>
 <li><code>msg</code> - who may send messages to the account.</li>
 <li><code>boot</code> - who may boot the account.</li>
-<li><a href="Attributes">Attributes</a>: (only checked by <code>obj.secure_attr</code>)</li>
+<li><a href="Attributes.html">Attributes</a>: (only checked by <code>obj.secure_attr</code>)</li>
 <li><code>attrread</code> - see/access attribute</li>
 <li><code>attredit</code> - change/delete attribute</li>
 <li><a href="Communications#Channels">Channels</a>:</li>
@@ -194,7 +193,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li><code>perm(perm)</code> - this tries to match a given <code>permission</code> property, on an Account firsthand, on a Character second. See <a href="Locks#permissions">below</a>.</li>
 <li><code>perm_above(perm)</code> - like <code>perm</code> but requires a "higher" permission level than the one given.</li>
 <li><code>id(num)/dbref(num)</code> - checks so the access_object has a certain dbref/id.</li>
-<li><code>attr(attrname)</code> - checks if a certain <a href="Attributes">Attribute</a> exists on accessing_object.</li>
+<li><code>attr(attrname)</code> - checks if a certain <a href="Attributes.html">Attribute</a> exists on accessing_object.</li>
 <li><code>attr(attrname, value)</code> - checks so an attribute exists on accessing_object <em>and</em> has the given value.</li>
 <li><code>attr_gt(attrname, value)</code> - checks so accessing_object has a value larger (<code>&gt;</code>) than the given value.</li>
 <li><code>attr_ge, attr_lt, attr_le, attr_ne</code> - corresponding for <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code> and <code>!=</code>.</li>
@@ -213,7 +212,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
 <p>Note here that the <code>access_type</code> can be left to a dummy value since this method does not actually do a Lock lookup.</p>
 <h2 id="default-locks">Default locks<a class="headerlink" href="#default-locks" title="Permanent link">&para;</a></h2>
-<p>Evennia sets up a few basic locks on all new objects and accounts (if we didn't, noone would have any access to anything from the start).  This is all defined in the root <a href="Typeclasses">Typeclasses</a> of the respective entity, in the hook method <code>basetype_setup()</code> (which you usually don't want to edit unless you want to change how basic stuff like rooms and exits store their internal variables). This is called once, before <code>at_object_creation</code>, so just put them in the latter method on your child object to change the default. Also creation commands like <code>create</code> changes the locks of objects you create - for example it sets the <code>control</code> lock_type so as to allow you, its creator, to control and delete the object.</p>
+<p>Evennia sets up a few basic locks on all new objects and accounts (if we didn't, noone would have any access to anything from the start).  This is all defined in the root <a href="Typeclasses.html">Typeclasses</a> of the respective entity, in the hook method <code>basetype_setup()</code> (which you usually don't want to edit unless you want to change how basic stuff like rooms and exits store their internal variables). This is called once, before <code>at_object_creation</code>, so just put them in the latter method on your child object to change the default. Also creation commands like <code>create</code> changes the locks of objects you create - for example it sets the <code>control</code> lock_type so as to allow you, its creator, to control and delete the object.</p>
 <h1 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>This section covers the underlying code use of permissions. If you just want to learn how to practically assign permissions in-game, refer to the <a href="Building-Permissions">Building Permissions</a> page, which details how you use the <code>perm</code> command.</p>
@@ -249,12 +248,12 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <p>There is also a <code>Guest</code> level below <code>Player</code> that is only active if <code>settings.GUEST_ENABLED</code> is set. This is never part of <code>settings.PERMISSION_HIERARCHY</code>.</p>
 </blockquote>
 <p>The main use of this is that if you use the lock function <code>perm()</code> mentioned above, a lock check for a particular permission in the hierarchy will <em>also</em> grant access to those with <em>higher</em> hierarchy access. So if you have the permission "Admin" you will also pass a lock defined as <code>perm(Builder)</code> or any of those levels below "Admin". </p>
-<p>When doing an access check from an <a href="Objects">Object</a> or Character, the <code>perm()</code> lock function will always first use the permissions of any Account connected to that Object before checking for permissions on the Object. In the case of hierarchical permissions (Admins, Builders etc), the Account permission will always be used (this stops an Account from escalating their permission by puppeting a high-level Character).  If the permission looked for is not in the hierarchy, an exact match is required, first on the Account and if not found there (or if no Account is connected), then on the Object itself. </p>
+<p>When doing an access check from an <a href="Objects.html">Object</a> or Character, the <code>perm()</code> lock function will always first use the permissions of any Account connected to that Object before checking for permissions on the Object. In the case of hierarchical permissions (Admins, Builders etc), the Account permission will always be used (this stops an Account from escalating their permission by puppeting a high-level Character).  If the permission looked for is not in the hierarchy, an exact match is required, first on the Account and if not found there (or if no Account is connected), then on the Object itself. </p>
 <p>Here is how you use <code>perm</code> to give an account more permissions: </p>
 <pre><code> perm/account Tommy = Builders
  perm/account/del Tommy = Builders # remove it again
 </code></pre>
-<p>Note the use of the <code>/account</code> switch. It means you assign the permission to the <a href="Account">Accounts</a> Tommy instead of any <a href="Objects">Character</a> that also happens to be named "Tommy". </p>
+<p>Note the use of the <code>/account</code> switch. It means you assign the permission to the Accounts.md Tommy instead of any <a href="Objects.html">Character</a> that also happens to be named "Tommy". </p>
 <p>Putting permissions on the <em>Account</em> guarantees that they are kept, <em>regardless</em> of which Character they are currently puppeting. This is especially important to remember when assigning permissions from the <em>hierarchy tree</em> - as mentioned above, an Account's permissions will overrule that of its character. So to be sure to avoid confusion you should generally put hierarchy permissions on the Account, not on their Characters (but see also <a href="Locks#Quelling">quelling</a>).</p>
 <p>Below is an example of an object without any connected account</p>
 <pre><code class="python">    obj1.permissions = [&quot;Builders&quot;, &quot;cool_guy&quot;]
@@ -295,7 +294,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
 <p>This is how the <code>create</code> command sets up new objects. In sequence, this permission string sets the owner of this object be the creator (the one  running <code>create</code>). Builders may examine the object whereas only Admins and the creator may delete it. Everyone can pick it up.</p>
 <h2 id="a-complete-example-of-setting-locks-on-an-object">A complete example of setting locks on an object<a class="headerlink" href="#a-complete-example-of-setting-locks-on-an-object" title="Permanent link">&para;</a></h2>
-<p>Assume we have two objects - one is ourselves (not superuser) and the other is an <a href="Objects">Object</a> called <code>box</code>. </p>
+<p>Assume we have two objects - one is ourselves (not superuser) and the other is an <a href="Objects.html">Object</a> called <code>box</code>. </p>
 <pre><code> &gt; create/drop box
  &gt; desc box = "This is a very big and heavy box."
 </code></pre>
@@ -311,7 +310,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
         return
 </code></pre>
 
-<p>So the <code>get</code> command looks for a lock with the type <em>get</em> (not so surprising). It also looks for an <a href="Attributes">Attribute</a> on the checked object called <em>get_err_msg</em> in order to return a customized error message. Sounds good! Let's start by setting that on the box: </p>
+<p>So the <code>get</code> command looks for a lock with the type <em>get</em> (not so surprising). It also looks for an <a href="Attributes.html">Attribute</a> on the checked object called <em>get_err_msg</em> in order to return a customized error message. Sounds good! Let's start by setting that on the box: </p>
 <pre><code> &gt; set box/get_err_msg = You are not strong enough to lift this box.
 </code></pre>
 <p>Next we need to craft a Lock of type <em>get</em> on our box. We want it to only be passed if the accessing object has the attribute <em>strength</em> of the right value. For this we would need to create a lock function that checks if attributes have a value greater than a given value. Luckily there is already such a one included in evennia (see <code>evennia/locks/lockfuncs.py</code>), called <code>attr_gt</code>. </p>

@@ -55,19 +55,18 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="This-stores-passwords-and-acts-as-the-'account'-that-controls-in-game-characters."></a></p>
-<p>All <em>users</em> (real people) that starts a game <a href="Sessions">Session</a> on Evennia are doing so through an
+    <p>All <em>users</em> (real people) that starts a game <a href="Sessions.html">Session</a> on Evennia are doing so through an
 object called <em>Account</em>. The Account object has no in-game representation, it represents a unique
-game account.  In order to actually get on the game the Account must <em>puppet</em> an <a href="Objects">Object</a>
+game account.  In order to actually get on the game the Account must <em>puppet</em> an <a href="Objects.html">Object</a>
 (normally a <a href="Objects#Character">Character</a>). </p>
 <p>Exactly how many Sessions can interact with an Account and its Puppets at once is determined by
 Evennia's <a href="Sessions#Multisession-mode">MULTISESSION_MODE</a> setting.</p>
 <p>Apart from storing login information and other account-specific data, the Account object is what is
-chatting on <a href="Communications">Channels</a>.  It is also a good place to store <a href="Locks">Permissions</a> to be
+chatting on <a href="Communications.html">Channels</a>.  It is also a good place to store <a href="Locks.html">Permissions</a> to be
 consistent between different in-game characters as well as configuration options.  The Account
-object also has its own <a href="CmdSets">CmdSet</a>, the <code>AccountCmdSet</code>. </p>
+object also has its own <a href="Command-Sets.html">CmdSet</a>, the <code>AccountCmdSet</code>. </p>
 <p>Logged into default evennia, you can use the <code>ooc</code> command to leave your current
-<a href="objects">character</a> and go into OOC mode. You are quite limited in this mode, basically it works
+Objects.md and go into OOC mode. You are quite limited in this mode, basically it works
 like a simple chat program.  It acts as a staging area for switching between Characters (if your
 game supports that) or as a safety mode if your Character gets deleted. Use <code>ic</code> to attempt to
 (re)puppet a Character. </p>
@@ -115,7 +114,7 @@ path to your custom class as its value. By default this points to <code>typeclas
 the empty template we used above.</p>
 </blockquote>
 <h2 id="properties-on-accounts">Properties on Accounts<a class="headerlink" href="#properties-on-accounts" title="Permanent link">&para;</a></h2>
-<p>Beyond those properties assigned to all typeclassed objects (see <a href="Typeclasses">Typeclasses</a>), the
+<p>Beyond those properties assigned to all typeclassed objects (see <a href="Typeclasses.html">Typeclasses</a>), the
 Account also has the following custom properties: </p>
 <ul>
 <li><code>user</code> - a unique link to a <code>User</code> Django object, representing the logged-in user.</li>
@@ -129,9 +128,9 @@ Account also has the following custom properties: </p>
 <li><code>is_superuser</code> (bool: True/False) - if this account is a superuser.</li>
 </ul>
 <p>Special handlers:
-- <code>cmdset</code> - This holds all the current <a href="Commands">Commands</a> of this Account. By default these are
+- <code>cmdset</code> - This holds all the current <a href="Commands.html">Commands</a> of this Account. By default these are
   the commands found in the cmdset defined by <code>settings.CMDSET_ACCOUNT</code>.
-- <code>nicks</code> - This stores and handles <a href="Nicks">Nicks</a>, in the same way as nicks it works on Objects.
+- <code>nicks</code> - This stores and handles <a href="Nicks.html">Nicks</a>, in the same way as nicks it works on Objects.
   For Accounts, nicks are primarily used to store custom aliases for <a href="Communications#Channels">Channels</a>.</p>
 <p>Selection of special methods (see <code>evennia.DefaultAccount</code> for details):
 - <code>get_puppet</code> - get a currently puppeted object connected to the Account and a given session id, if

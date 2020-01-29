@@ -66,14 +66,13 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="Used-for-storing-arbitrary-data,-using-for-example-obj.db.name=value."></a></p>
-<p>When performing actions in Evennia it is often important that you store data for later. If you write
+    <p>When performing actions in Evennia it is often important that you store data for later. If you write
 a menu system, you have to keep track of the current location in the menu tree so that the player
 can give correct subsequent commands. If you are writing a combat system, you might have a
 combattant's next roll get easier dependent on if their opponent failed. Your characters will
 probably need to store roleplaying-attributes like strength and agility. And so on.</p>
-<p><a href="Typeclasses">Typeclassed</a> game entities (<a href="Accounts">Accounts</a>, <a href="Objects">Objects</a>,
-<a href="Scripts">Scripts</a> and <a href="Communications">Channels</a>) always have <em>Attributes</em> associated with them.
+<p><a href="Typeclasses.html">Typeclassed</a> game entities (<a href="Accounts.html">Accounts</a>, <a href="Objects.html">Objects</a>,
+<a href="Scripts.html">Scripts</a> and <a href="Communications.html">Channels</a>) always have <em>Attributes</em> associated with them.
 Attributes are used to store any type of data 'on' such entities. This is different from storing
 data in properties already defined on entities (such as <code>key</code> or <code>location</code>) - these have very
 specific names and require very specific types of data (for example you couldn't assign a python
@@ -81,7 +80,7 @@ specific names and require very specific types of data (for example you couldn't
 want to assign arbitrary data to arbitrary names.</p>
 <h2 id="the-db-and-ndb-shortcuts">The .db and .ndb shortcuts<a class="headerlink" href="#the-db-and-ndb-shortcuts" title="Permanent link">&para;</a></h2>
 <p>To save persistent data on a Typeclassed object you normally use the <code>db</code> (DataBase) operator. Let's
-try to save some data to a <em>Rose</em> (an <a href="Objects">Object</a>):</p>
+try to save some data to a <em>Rose</em> (an <a href="Objects.html">Object</a>):</p>
 <pre><code class="python">    # saving
     rose.db.has_thorns = True
     # getting it back
@@ -133,7 +132,7 @@ which sits on typeclassed entities as the <code>.attributes</code> property. <co
   returned, but the method takes keywords for returning the Attribute object itself. By supplying an
   <code>accessing_object</code> to the call one can also make sure to check permissions before modifying
   anything.</li>
-<li><code>add(...)</code> - this adds a new Attribute to the object. An optional <a href="Locks">lockstring</a> can be
+<li><code>add(...)</code> - this adds a new Attribute to the object. An optional <a href="Locks.html">lockstring</a> can be
   supplied here to restrict future access and also the call itself may be checked against locks.</li>
 <li><code>remove(...)</code> - Remove the given Attribute. This can optionally be made to check for permission
   before performing the deletion.  - <code>clear(...)</code>  - removes all Attributes from object.</li>
@@ -163,16 +162,16 @@ access and editing. The <code>Nattribute</code> offers no concept of access cont
   <code>obj.db.attrname = value</code>, the <code>value</code> is stored here.</li>
 <li><code>category</code> - this is an optional property that is set to None for most Attributes. Setting this
   allows to use Attributes for different functionality. This is usually not needed unless you want
-  to use Attributes for very different functionality (<a href="Nicks">Nicks</a> is an example of using Attributes
+  to use Attributes for very different functionality (<a href="Nicks.html">Nicks</a> is an example of using Attributes
   in this way). To modify this property you need to use the <a href="Attributes#The_Attribute_Handler">Attribute Handler</a>.</li>
 <li><code>strvalue</code> - this is a separate value field that only accepts strings. This severely limits the
   data possible to store, but allows for easier database lookups. This property is usually not used
-  except when re-using Attributes for some other purpose (<a href="Nicks">Nicks</a> use it). It is only
+  except when re-using Attributes for some other purpose (<a href="Nicks.html">Nicks</a> use it). It is only
   accessible via the <a href="Attributes#The_Attribute_Handler">Attribute Handler</a>.</li>
 </ul>
 <p>There are also two special properties:</p>
 <ul>
-<li><code>attrtype</code> - this is used internally by Evennia to separate <a href="Nicks">Nicks</a>, from Attributes (Nicks
+<li><code>attrtype</code> - this is used internally by Evennia to separate <a href="Nicks.html">Nicks</a>, from Attributes (Nicks
   use Attributes behind the scenes).</li>
 <li><code>model</code> - this is a <em>natural-key</em> describing the model this Attribute is attached to. This is on
   the form <em>appname.modelclass</em>, like <code>objects.objectdb</code>. It is used by the Attribute and
@@ -196,7 +195,7 @@ useful in a few situations though.</p>
   during heavy loads.</li>
 <li>A more valid reason for using non-persistent data is if you <em>want</em> to lose your state when logging
   off. Maybe you are storing throw-away data that are re-initialized at server startup. Maybe you
-  are implementing some caching of your own. Or maybe you are testing a buggy <a href="Scripts">Script</a> that
+  are implementing some caching of your own. Or maybe you are testing a buggy <a href="Scripts.html">Script</a> that
   does potentially harmful stuff to your character object. With non-persistent storage you can be sure
   that whatever is messed up, it's nothing a server reboot can't clear up.</li>
 <li>NAttributes have no restrictions at all on what they can store (see next section), since they
@@ -358,7 +357,7 @@ way.</p>
 <h2 id="locking-and-checking-attributes">Locking and checking Attributes<a class="headerlink" href="#locking-and-checking-attributes" title="Permanent link">&para;</a></h2>
 <p>Attributes are normally not locked down by default, but you can easily change that for individual
 Attributes (like those that may be game-sensitive in games with user-level building).</p>
-<p>First you need to set a <em>lock string</em> on your Attribute. Lock strings are specified <a href="Locks">Locks</a>. The relevant lock types are</p>
+<p>First you need to set a <em>lock string</em> on your Attribute. Lock strings are specified <a href="Locks.html">Locks</a>. The relevant lock types are</p>
 <ul>
 <li><code>attrread</code> - limits who may read the value of the Attribute</li>
 <li><code>attredit</code> - limits who may set/change this Attribute</li>

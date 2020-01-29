@@ -63,8 +63,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="Using-asynchronous-techniques-to-avoid-blocking-the-server-(advanced)."></a></p>
-<p><em>This is considered an advanced topic.</em></p>
+    <p><em>This is considered an advanced topic.</em></p>
 <h2 id="synchronous-versus-asynchronous">Synchronous versus Asynchronous<a class="headerlink" href="#synchronous-versus-asynchronous" title="Permanent link">&para;</a></h2>
 <p>Most program code operates <em>synchronously</em>. This means that each statement in your code gets
 processed and finishes before the next can begin. This makes for easy-to-understand code. It is also
@@ -138,7 +137,7 @@ line quite pointless for processing any data from the function. Instead one has 
 <li><code>at_err_kwargs</code> - an optional dictionary that will be fed as keyword arguments to the <code>at_err</code>
   errback.</li>
 </ul>
-<p>An example of making an asynchronous call from inside a <a href="Commands">Command</a> definition:</p>
+<p>An example of making an asynchronous call from inside a <a href="Commands.html">Command</a> definition:</p>
 <pre><code class="python">    from evennia import utils, Command
 
     class CmdAsync(Command):

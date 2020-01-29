@@ -59,8 +59,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="First-steps-for-changing-commands."></a>
-This is a quick first-time tutorial expanding on the <a href="Commands">Commands</a> documentation. </p>
+    <p>This is a quick first-time tutorial expanding on the <a href="Commands.html">Commands</a> documentation. </p>
 <p>Let's assume you have just downloaded Evennia, installed it and created your game folder (let's call
 it just <code>mygame</code> here). Now you want to try to add a new command. This is the fastest way to do it. </p>
 <h2 id="step-1-creating-a-custom-command">Step 1: Creating a custom command<a class="headerlink" href="#step-1-creating-a-custom-command" title="Permanent link">&para;</a></h2>
@@ -137,7 +136,7 @@ its argument <code>test</code> (which will end up in <code>self.args). To change
 <p>If you want to overload existing default commands (such as <code>look</code> or <code>get</code>), just add your new
 command with the same key as the old one - it will then replace it. Just remember that you must use
 <code>@reload</code> to see any changes. </p>
-<p>See <a href="Commands">Commands</a> for many more details and possibilities when defining Commands and using
+<p>See <a href="Commands.html">Commands</a> for many more details and possibilities when defining Commands and using
 Cmdsets in various ways.</p>
 <h2 id="adding-the-command-to-specific-object-types">Adding the command to specific object types<a class="headerlink" href="#adding-the-command-to-specific-object-types" title="Permanent link">&para;</a></h2>
 <p>Adding your Command to the <code>CharacterCmdSet</code> is just one easy exapmple. The cmdset system is very
@@ -168,7 +167,7 @@ be gone. You <em>could</em> add the <code>permanent=True</code> keyword to the <
 only make the new merged cmdset permanent on that <em>single</em> object. Often you want <em>all</em> objects of
 this particular class to have this cmdset.</p>
 <p>To make sure all new created objects get your new merged set, put the <code>cmdset.add</code> call in your
-custom <a href="Typeclasses">Typeclasses</a>' <code>at_object_creation</code> method: </p>
+custom <a href="Typeclasses.html">Typeclasses</a>' <code>at_object_creation</code> method: </p>
 <pre><code class="python">    # e.g. in mygame/typeclasses/objects.py
 
     from evennia import DefaultObject

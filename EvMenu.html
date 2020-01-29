@@ -80,8 +80,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="Describes-the-built-in-menu-creation-tool"></a></p>
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+    <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>The <code>EvMenu</code> utility class is located in
 <a href="https://github.com/evennia/evennia/blob/master/evennia/utils/evmenu.py">evennia/utils/evmenu.py</a>.
 It allows for easily adding interactive menus to the game; for example to implement Character
@@ -106,7 +105,7 @@ functions/nodes either from a module or by being passed a dictionary mapping the
 said functions, like <code>{"nodename": &lt;function&gt;, ...}</code></p>
 <h2 id="launching-the-menu">Launching the menu<a class="headerlink" href="#launching-the-menu" title="Permanent link">&para;</a></h2>
 <p>Initializing the menu is done using a call to the <code>evennia.utils.evmenu.EvMenu</code> class. This is the
-most common way to do so - from inside a <a href="Commands">Command</a>:</p>
+most common way to do so - from inside a <a href="Commands.html">Command</a>:</p>
 <pre><code class="python"># in, for example gamedir/commands/command.py
 
 from evennia.utils.evmenu import EvMenu
@@ -139,7 +138,7 @@ class CmdTestMenu(Command):
 
 <ul>
 <li><code>caller</code> (Object or Account): is a reference to the object using the menu. This object will get a
-   new <a href="CmdSet">CmdSet</a> assigned to it, for handling the menu.</li>
+   new <a href="Command-Sets.html">CmdSet</a> assigned to it, for handling the menu.</li>
 <li><code>menu_data</code> (str, module or dict): is a module or python path to a module where the global-level
    functions will each be considered to be a menu node. Their names in the module will be the names
    by which they are referred to in the module. Importantly, function names starting with an underscore
@@ -147,7 +146,7 @@ class CmdTestMenu(Command):
 <li><code>startnode</code> (str): is the name of the menu-node to start the menu at. Changing this means that
    you can jump into a menu tree at different positions depending on circumstance and thus possibly
    re-use menu entries.</li>
-<li><code>cmdset_mergetype</code> (str): This is usually one of "Replace" or "Union" (see <a href="CmdSets">CmdSets</a>.
+<li><code>cmdset_mergetype</code> (str): This is usually one of "Replace" or "Union" (see <a href="Command-Sets.html">CmdSets</a>.
    The first means that the menu is exclusive - the user has no access to any other commands while
    in the menu. The Union mergetype means the menu co-exists with previous commands (and may overload
    them, so be careful as to what to name your menu entries in this case).</li>
@@ -168,7 +167,7 @@ class CmdTestMenu(Command):
 <li><code>startnode_input</code> (str or (str, dict) tuple): Pass an input text or a input text + kwargs to the
    start node as if it was entered on a fictional previous node. This can be very useful in order to
    start a menu differently depending on the Command's arguments in which it was initialized.</li>
-<li><code>session</code> (Session): Useful when calling the menu from an <a href="Accounts">Account</a> in
+<li><code>session</code> (Session): Useful when calling the menu from an <a href="Accounts.html">Account</a> in
    <code>MULTISESSION_MODDE</code> higher than 2, to make sure only the right Session sees the menu output.</li>
 <li><code>debug</code> (bool): If set, the <code>menudebug</code> command will be made available in the menu. Use it to
    list the current state of the menu and use <code>menudebug &lt;variable&gt;</code> to inspect a specific state
@@ -495,7 +494,7 @@ def enter_guild:
 
 <p>This simple callable goto will analyse what happens depending on who the <code>caller</code> is.  The
 <code>enter_guild</code> node will give you a choice of what to say to the guard. If you try to enter, you will
-end up in different nodes depending on (in this example) if you have the right <a href="Tags">Tag</a> set on
+end up in different nodes depending on (in this example) if you have the right <a href="Tags.html">Tag</a> set on
 yourself or not. Note that since we don't include any 'key's in the option dictionary, you will just
 get to pick between numbers.</p>
 <h3 id="example-set-caller-properties">Example: Set caller properties<a class="headerlink" href="#example-set-caller-properties" title="Permanent link">&para;</a></h3>
@@ -912,7 +911,7 @@ options available. The callable should return the menu to go to depending on the
 empty dictionary for its options. It returning options, those will supplement the options
 auto-created by the <code>list_node</code> decorator.</p>
 <h2 id="assorted-notes">Assorted notes<a class="headerlink" href="#assorted-notes" title="Permanent link">&para;</a></h2>
-<p>The EvMenu is implemented using <a href="Commands">Commands</a>. When you start a new EvMenu, the user of the
+<p>The EvMenu is implemented using <a href="Commands.html">Commands</a>. When you start a new EvMenu, the user of the
 menu will be assigned a <a href="Command-Sets">CmdSet</a> with the commands they need to navigate the menu.
 This means that if you were to, from inside the menu, assign a new command set to the caller, <em>you
 may override the Menu Cmdset and kill the menu</em>. If you want to assign cmdsets to the caller as part

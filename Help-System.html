@@ -57,8 +57,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="How-to-use-and-add-help-files-to-the-game."></a></p>
-<p>An important part of Evennia is the online help system. This allows the players and staff alike to learn how to use the game's commands as well as other information pertinent to the game. The help system has many different aspects, from the normal editing of help entries from inside the game, to auto-generated help entries during code development using the <em>auto-help system</em>.</p>
+    <p>An important part of Evennia is the online help system. This allows the players and staff alike to learn how to use the game's commands as well as other information pertinent to the game. The help system has many different aspects, from the normal editing of help entries from inside the game, to auto-generated help entries during code development using the <em>auto-help system</em>.</p>
 <h2 id="viewing-the-help-database">Viewing the help database<a class="headerlink" href="#viewing-the-help-database" title="Permanent link">&para;</a></h2>
 <p>The main command is <code>help</code>: </p>
 <pre><code> help [searchstring]
@@ -101,7 +100,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li>The <em>topic</em>. This is the name of the help entry. This is what players search for when they are looking for help. The topic can contain spaces and also partial matches will be found.</li>
 <li>The <em>help category</em>. Examples are <em>Administration</em>, <em>Building</em>, <em>Comms</em> or <em>General</em>. This is an overall grouping of similar help topics, used by the engine to give a better overview.</li>
 <li>The <em>text</em> - the help text itself, of any length.</li>
-<li>locks - a <a href="Locks">lock definition</a>. This can be used to limit access to this help entry, maybe because it's staff-only or otherwise meant to be restricted. Help commands check for <code>access_type</code>s <code>view</code> and <code>edit</code>. An example of a lock string would be <code>view:perm(Builders)</code>.</li>
+<li>locks - a <a href="Locks.html">lock definition</a>. This can be used to limit access to this help entry, maybe because it's staff-only or otherwise meant to be restricted. Help commands check for <code>access_type</code>s <code>view</code> and <code>edit</code>. An example of a lock string would be <code>view:perm(Builders)</code>.</li>
 </ul>
 <p>You can create new help entries in code by using <code>evennia.create_help_entry()</code>.</p>
 <pre><code class="python">from evennia import create_help_entry
@@ -117,7 +116,7 @@ entry = create_help_entry(&quot;emote&quot;,
 <pre><code>&gt; @sethelp/add emote, Roleplaying = Emoting is important because ...
 </code></pre>
 <p>If the category <em>Roleplaying</em> did not already exist, it is created and will appear in the help index. </p>
-<p>You can, finally, define a lock for the help entry by following the category with a <a href="Locks">lock definition</a>: </p>
+<p>You can, finally, define a lock for the help entry by following the category with a <a href="Locks.html">lock definition</a>: </p>
 <pre><code>&gt; @sethelp/add emote, Roleplaying, view:all() = Emoting is ...
 </code></pre>
 

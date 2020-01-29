@@ -59,8 +59,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="How-to-run-snippets-of-Python-code-from-inside-the-game,-for-testing-and-experimenting."></a></p>
-<p>The <code>@py</code> command supplied with the default command set of Evennia allows you to execute Python commands directly from inside the game.  An alias to <code>@py</code> is simply "<code>!</code>". <em>Access to the <code>@py</code> command should be severely restricted</em>. This is no joke - being able to execute arbitrary Python code on the server is not something you should entrust to just anybody.</p>
+    <p>The <code>@py</code> command supplied with the default command set of Evennia allows you to execute Python commands directly from inside the game.  An alias to <code>@py</code> is simply "<code>!</code>". <em>Access to the <code>@py</code> command should be severely restricted</em>. This is no joke - being able to execute arbitrary Python code on the server is not something you should entrust to just anybody.</p>
 <pre><code>@py 1+2 
 &lt;&lt;&lt; 3
 </code></pre>
@@ -69,7 +68,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <ul>
 <li><strong>self</strong> / <strong>me</strong> - the calling object (i.e. you)</li>
 <li><strong>here</strong> - the current caller's location</li>
-<li><strong>obj</strong> - a dummy <a href="Objects">Object</a> instance</li>
+<li><strong>obj</strong> - a dummy <a href="Objects.html">Object</a> instance</li>
 <li><strong>evennia</strong> - Evennia's <a href="evennia-API">flat API</a> - through this you can access all of Evennia.</li>
 </ul>
 <p>For accessing other objects in the same room you need to use <code>self.search(name)</code>. For objects in other locations, use one of the <code>evennia.search_*</code> methods. See <a href="https://github.com/evennia/evennia/wiki/Execute%20Python%20Code#finding-objects">below</a>.</p>

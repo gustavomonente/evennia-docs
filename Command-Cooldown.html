@@ -55,8 +55,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="A-tutorial-for-making-commands-that-cannot-be-repeated-until-after-a-cooldown-time-has-passed."></a></p>
-<p>Some types of games want to limit how often a command can be run. If a
+    <p>Some types of games want to limit how often a command can be run. If a
 character casts the spell <em>Firestorm</em>, you might not want them to spam that
 command over and over. Or in an advanced combat system, a massive swing may
 offer a chance of lots of damage at the cost of not being able to re-do it for
@@ -134,7 +133,7 @@ database, you need to use the caster for the storage.</p>
     self.caller.db.firestorm_lastcast = now
 </code></pre>
 
-<p>Since we are storing as an <a href="Attributes">Attribute</a>, we need to identify the
+<p>Since we are storing as an <a href="Attributes.html">Attribute</a>, we need to identify the
 variable as <code>firestorm_lastcast</code> so we are sure we get the right one (we'll
     likely have other skills with cooldowns after all). But this method of
 using cooldowns also has the advantage of working <em>between</em> commands - you can

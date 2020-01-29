@@ -53,8 +53,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="Describes-the-pager-utility"></a></p>
-<p>When sending a very long text to a user client, it might scroll beyond of the height of the client
+    <p>When sending a very long text to a user client, it might scroll beyond of the height of the client
 window. The <code>evennia.utils.evmore.EvMore</code> class gives the user the in-game ability to only view one
 page of text at a time. It is usually used via its access function, <code>evmore.msg</code>.</p>
 <p>The name comes from the famous unix pager utility <em>more</em> which performs just this function.</p>
@@ -65,7 +64,7 @@ page of text at a time. It is usually used via its access function, <code>evmore
 evmore.msg(receiver, long_text)
 </code></pre>
 
-<p>Where receiver is an <a href="Objects">Object</a> or a <a href="Accounts">Account</a>. If the text is longer than the
+<p>Where receiver is an <a href="Objects.html">Object</a> or a <a href="Accounts.html">Account</a>. If the text is longer than the
 client's screen height (as determined by the NAWS handshake or by <code>settings.CLIENT_DEFAULT_HEIGHT</code>)
 the pager will show up, something like this:</p>
 <blockquote>

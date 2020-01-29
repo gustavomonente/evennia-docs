@@ -55,8 +55,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="Re-naming-how-to-access-and-find-other-entities,-without-modifying-them."></a></p>
-<p><em>Nicks</em>, short for <em>Nicknames</em> is a system allowing an object (usually a <a href="Accounts">Account</a>) to assign custom replacement names for other game entities. </p>
+    <p><em>Nicks</em>, short for <em>Nicknames</em> is a system allowing an object (usually a <a href="Accounts.html">Account</a>) to assign custom replacement names for other game entities. </p>
 <p>Nicks are not to be confused with <em>Aliases</em>. Setting an Alias on a game entity actually changes an inherent attribute on that entity, and everyone in the game will be able to use that alias to address the entity thereafter. A <em>Nick</em> on the other hand, is used to map a different way <em>you alone</em> can refer to that entity. Nicks are also commonly used to replace your input text which means you can create your own aliases to default commands. </p>
 <p>Default Evennia use Nicks in three flavours that determine when Evennia actually tries to do the substitution.</p>
 <ul>
@@ -100,7 +99,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li>[!seq] - matches everything <em>not</em> in the sequence. e.g. [!xyz] will match all but x,y z.</li>
 </ul>
 <h2 id="coding-with-nicks">Coding with nicks<a class="headerlink" href="#coding-with-nicks" title="Permanent link">&para;</a></h2>
-<p>Nicks are stored as the <code>Nick</code> database model and are referred from the normal Evennia <a href="Objects">object</a> through the <code>nicks</code> property - this is known as the <em>NickHandler</em>. The NickHandler offers effective error checking, searches and conversion.</p>
+<p>Nicks are stored as the <code>Nick</code> database model and are referred from the normal Evennia <a href="Objects.html">object</a> through the <code>nicks</code> property - this is known as the <em>NickHandler</em>. The NickHandler offers effective error checking, searches and conversion.</p>
 <pre><code class="python">    # A command/channel nick:
       obj.nicks.add(&quot;greetjack&quot;, &quot;tell Jack = Hello pal!&quot;)
 
@@ -121,9 +120,9 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 </code></pre>
 
 <p>In a command definition you can reach the nick handler through <code>self.caller.nicks</code>. See the <code>nick</code> command in <code>evennia/commands/default/general.py</code> for more examples.</p>
-<p>As a last note, The Evennia <a href="Communications">channel</a> alias systems are using nicks with the <code>nick_type="channel"</code> in order to allow users to create their own custom aliases to channels. </p>
+<p>As a last note, The Evennia <a href="Communications.html">channel</a> alias systems are using nicks with the <code>nick_type="channel"</code> in order to allow users to create their own custom aliases to channels. </p>
 <h1 id="advanced-note">Advanced note<a class="headerlink" href="#advanced-note" title="Permanent link">&para;</a></h1>
-<p>Internally, nicks are <a href="Attributes">Attributes</a> saved with the <code>db_attrype</code> set to "nick" (normal Attributes has this set to <code>None</code>). </p>
+<p>Internally, nicks are <a href="Attributes.html">Attributes</a> saved with the <code>db_attrype</code> set to "nick" (normal Attributes has this set to <code>None</code>). </p>
 <p>The nick stores the replacement data in the Attribute.db_value field as a tuple with four fields <code>(regex_nick, template_string, raw_nick, raw_template)</code>. Here <code>regex_nick</code> is the converted regex representation of the <code>raw_nick</code> and the <code>template-string</code> is a version of the <code>raw_template</code> prepared for efficient replacement of any <code>$</code>- type markers. The <code>raw_nick</code> and <code>raw_template</code> are basically the unchanged strings you enter to the <code>nick</code> command (with unparsed <code>$</code> etc). </p>
 <p>If you need to access the tuple for some reason, here's how: </p>
 <pre><code class="python">tuple = obj.nicks.get(&quot;nickname&quot;, return_tuple=True)

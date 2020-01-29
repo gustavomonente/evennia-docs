@@ -51,10 +51,9 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="A-tutorial-on-using-tickers-to-make-days-go-by."></a></p>
-<p>This tutorial will have us create a simple weather system for our MUD.  The way we want to use this is to have all outdoor rooms echo weather-related messages to the room at regular and semi-random intervals. Things like "Clouds gather above", "It starts to rain" and so on. </p>
+    <p>This tutorial will have us create a simple weather system for our MUD.  The way we want to use this is to have all outdoor rooms echo weather-related messages to the room at regular and semi-random intervals. Things like "Clouds gather above", "It starts to rain" and so on. </p>
 <p>One could imagine every outdoor room in the game having a script running on themselves that fires regularly. For this particular example it is however more efficient to do it another way, namely by using a "ticker-subscription" model. The principle is simple: Instead of having each Object individually track the time, they instead subscribe to be called by a global ticker who handles time keeping.  Not only does this centralize and organize much of the code in one place, it also has less computing overhead. </p>
-<p>Evennia offers the <a href="TickerHandler">TickerHandler</a> specifically for using the subscription model. We will use it for our weather system. </p>
+<p>Evennia offers the <a href="TickerHandler.html">TickerHandler</a> specifically for using the subscription model. We will use it for our weather system. </p>
 <p>We will assume you know how to make your own Typeclasses. If not see one of the beginning tutorials. We will create a new WeatherRoom typeclass that is aware of the day-night cycle.</p>
 <pre><code class="python">
     import random

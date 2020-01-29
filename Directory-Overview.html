@@ -55,13 +55,12 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="Shows-where-everything-is-in-the-codebase."></a></p>
-<p>This is an overview of the directories relevant to Evennia coding. </p>
+    <p>This is an overview of the directories relevant to Evennia coding. </p>
 <h2 id="the-game-directory">The Game directory<a class="headerlink" href="#the-game-directory" title="Permanent link">&para;</a></h2>
 <p>The game directory is created with <code>evennia --init &lt;name&gt;</code>. In the Evennia documentation we always assume it's called <code>mygame</code>. Apart from the <code>server/</code> subfolder within, you could reorganize this folder if you preferred a different code structure for your game.</p>
 <ul>
 <li><code>mygame/</code></li>
-<li><code>commands/</code> - Overload default <a href="Commands">Commands</a> or add your own Commands/<a href="Command-Sets">Command sets</a> here.</li>
+<li><code>commands/</code> - Overload default <a href="Commands.html">Commands</a> or add your own Commands/<a href="Command-Sets">Command sets</a> here.</li>
 <li><code>server</code>/  - The structure of this folder should not change since Evennia expects it.  <ul>
 <li><a href="https://github.com/evennia/evennia/tree/master/evennia/game_template/server"><code>conf/</code></a> - All server configuration files sits here. The most important file is <code>settings.py</code>. </li>
 <li><code>logs/</code> - Portal log files are stored here (Server is logging to the terminal by default)</li>
@@ -85,7 +84,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <li><code>contrib/</code> - Optional plugins too game-specific for core Evennia.</li>
 <li><code>game_template/</code> - Copied to become the "game directory" when using <code>evennia --init</code>. </li>
 <li><a href="Help-System"><code>help/</code></a> - Handles the storage and  creation of help entries.</li>
-<li><code>locale/</code> - Language files (<a href="Internationalization">i18n</a>).</li>
+<li><code>locale/</code> - Language files (<a href="Internationalization.html">i18n</a>).</li>
 <li><a href="Locks"><code>locks/</code></a> - Lock system for restricting access to in-game entities.</li>
 <li><a href="Objects"><code>objects/</code></a> - In-game entities (all types of items and Characters).</li>
 <li><a href="https://github.com/evennia/evennia/wiki/Spawner-and-Prototypes"><code>prototypes/</code></a> - Object Prototype/spawning system and OLC menu</li>

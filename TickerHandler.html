@@ -54,11 +54,10 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="Used-to-repeatedly-'tick'-a-method-on-an-Object."></a></p>
-<p>One way to implement a dynamic MUD is by using "tickers", also known as "heartbeats". A ticker is a timer that fires ("ticks") at a given interval. The tick triggers updates in various game systems. </p>
+    <p>One way to implement a dynamic MUD is by using "tickers", also known as "heartbeats". A ticker is a timer that fires ("ticks") at a given interval. The tick triggers updates in various game systems. </p>
 <h2 id="about-tickers">About Tickers<a class="headerlink" href="#about-tickers" title="Permanent link">&para;</a></h2>
 <p>Tickers are very common or even unavoidable in other mud code bases.  Certain code bases are even hard-coded to rely on the concept of the global 'tick'. Evennia has no such notion - the decision to use tickers is very much up to the need of your game and which requirements you have. The "ticker recipe" is just one way of cranking the wheels.</p>
-<p>The most fine-grained way to manage the flow of time is of course to use <a href="Scripts">Scripts</a>. Many types of operations (weather being the classic example) are however done on multiple objects in the same way at regular intervals, and for this, storing separate Scripts on each object is inefficient. The way to do this is to use a ticker with a "subscription model" - let objects sign up to be triggered at the same interval, unsubscribing when the updating is no longer desired. </p>
+<p>The most fine-grained way to manage the flow of time is of course to use <a href="Scripts.html">Scripts</a>. Many types of operations (weather being the classic example) are however done on multiple objects in the same way at regular intervals, and for this, storing separate Scripts on each object is inefficient. The way to do this is to use a ticker with a "subscription model" - let objects sign up to be triggered at the same interval, unsubscribing when the updating is no longer desired. </p>
 <p>Evennia offers an optimized implementation of the subscription model - the <em>TickerHandler</em>. This is a singleton global handler reachable from <code>evennia.TICKER_HANDLER</code>. You can assign any <em>callable</em> (a function or, more commonly, a method on a database object) to this handler. The TickerHandler will then call this callable at an interval you specify, and with the arguments you supply when adding it. This continues until the callable un-subscribes from the ticker. The handler survives a reboot and is highly optimized in resource usage.</p>
 <p>Here is an example of importing <code>TICKER_HANDLER</code> and using it: </p>
 <pre><code class="python">    # we assume that obj has a hook &quot;at_tick&quot; defined on itself
@@ -106,7 +105,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
 <p>The <code>callable</code> can be on any form as long as it accepts the arguments you give to send to it in <code>TickerHandler.add</code>. </p>
 <blockquote>
-<p>Note that everything you supply to the TickerHandler will need to be pickled at some point to be saved into the database. Most of the time the handler will correctly store things like database objects, but the same restrictions as for <a href="Attributes">Attributes</a> apply to what the TickerHandler may store. </p>
+<p>Note that everything you supply to the TickerHandler will need to be pickled at some point to be saved into the database. Most of the time the handler will correctly store things like database objects, but the same restrictions as for <a href="Attributes.html">Attributes</a> apply to what the TickerHandler may store. </p>
 </blockquote>
 <p>When testing, you can stop all tickers in the entire game with <code>tickerhandler.clear()</code>. You can also view the currently subscribed objects with <code>tickerhandler.all()</code>.</p>
 <p>See the <a href="Weather-Tutorial">Weather Tutorial</a> for an example of using the TickerHandler.</p>

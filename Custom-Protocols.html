@@ -59,8 +59,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="Implementing-new-server-protocols-(advanced)."></a></p>
-<p><em>Note: This is considered an advanced topic and is mostly of interest to users planning to implement
+    <p><em>Note: This is considered an advanced topic and is mostly of interest to users planning to implement
 their own custom client protocol.</em></p>
 <p>A <a href="Portal-and-Server-Sessions">PortalSession</a> is the basic data object representing an external
 connection to the Evennia <a href="Portal-And-Server">Portal</a> -- usually a human player running a mud client
@@ -79,7 +78,7 @@ You &lt;-&gt;
             InputFunc  
 </code></pre>
 
-<p>(See the <a href="Messagepath">Message Path</a> for the bigger picture of how data flows through Evennia). The parts that needs to be customized to make your own custom protocol is the <code>Protocol + PortalSession</code> (which translates between data coming in/out over the wire to/from Evennia internal representation) as well as the <code>InputFunc</code> (which handles incoming data).</p>
+<p>(See the <a href="Messagepath.html">Message Path</a> for the bigger picture of how data flows through Evennia). The parts that needs to be customized to make your own custom protocol is the <code>Protocol + PortalSession</code> (which translates between data coming in/out over the wire to/from Evennia internal representation) as well as the <code>InputFunc</code> (which handles incoming data).</p>
 <h2 id="adding-custom-protocols">Adding custom Protocols<a class="headerlink" href="#adding-custom-protocols" title="Permanent link">&para;</a></h2>
 <p>Evennia has a plugin-system that add the protocol as a new "service" to the application.</p>
 <p>Take a look at <code>evennia/server/portal/portal.py</code>, notably the sections towards the end of that file.
@@ -239,7 +238,7 @@ class MyCustomClient(TwistedClient, Session):
 
 <p>The message will pass through the system such that the sessionhandler will dig out the session and check if it has a <code>send_text</code> method (it has). It will then pass the "foo" into that method, which in our case means sending "foo" across the network. </p>
 <h3 id="receiving-data">Receiving data<a class="headerlink" href="#receiving-data" title="Permanent link">&para;</a></h3>
-<p>Just because the protocol is there, does not mean Evennia knows what to do with it. An <a href="Inputfunc">Inputfunc</a> must exist to receive it. In the case of the <code>text</code> input exemplified above, Evennia alredy handles this input - it will parse it as a Command name followed by its inputs. So handle that you need to simply add a cmdset with commands on your receiving Session (and/or the Object/Character it is puppeting). If not you may need to add your own Inputfunc (see the <a href="Inputfunc">Inputfunc</a> page for how to do this. </p>
+<p>Just because the protocol is there, does not mean Evennia knows what to do with it. An Inputfuncs.md must exist to receive it. In the case of the <code>text</code> input exemplified above, Evennia alredy handles this input - it will parse it as a Command name followed by its inputs. So handle that you need to simply add a cmdset with commands on your receiving Session (and/or the Object/Character it is puppeting). If not you may need to add your own Inputfunc (see the Inputfuncs.md page for how to do this. </p>
 <p>These might not be as clear-cut in all protocols, but the principle is there. These four basic
 components - however they are accessed - links to the <em>Portal Session</em>, which is the actual common
 interface between the different low-level protocols and Evennia.</p>

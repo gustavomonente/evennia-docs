@@ -53,8 +53,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="An-explaination-of-the-monitor-handler-system-to-watch-for-attribute-changes-on-objects"></a></p>
-<p>The <em>MonitorHandler</em> is a system for watching changes in properties or Attributes on objects. A monitor can be thought of as a sort of trigger that responds to change. </p>
+    <p>The <em>MonitorHandler</em> is a system for watching changes in properties or Attributes on objects. A monitor can be thought of as a sort of trigger that responds to change. </p>
 <p>The main use for the MonitorHandler is to report changes to the client; for example the client Session may ask Evennia to monitor the value of the Characer's <code>health</code> attribute and report whenever it changes. This way the client could for example update its health bar graphic as needed. </p>
 <h2 id="using-the-monitorhandler">Using the MonitorHandler<a class="headerlink" href="#using-the-monitorhandler" title="Permanent link">&para;</a></h2>
 <p>The MontorHandler is accessed from the singleton <code>evennia.MONITOR_HANDLER</code>. The code for the handler is in <code>evennia.scripts.monitorhandler</code>.</p>
@@ -67,8 +66,8 @@ MONITOR_HANDLER.add(obj, fieldname, callback,
 </code></pre>
 
 <ul>
-<li><code>obj</code> (<a href="Typeclasses">Typeclassed</a> entity) - the object to monitor. Since this must be typeclassed, it means you can't monitor changes on <a href="Sessions">Sessions</a> with the monitorhandler, for example.</li>
-<li><code>fieldname</code> (str) - the name of a field or <a href="Attributes">Attribute</a> on <code>obj</code>. If you want to monitor a database field you must specify its full name, including the starting <code>db_</code> (like <code>db_key</code>, <code>db_location</code> etc). Any names not starting with <code>db_</code> are instead assumed to be the names of Attributes. This difference matters, since the MonitorHandler will automatically know to watch the <code>db_value</code> field of the Attribute. </li>
+<li><code>obj</code> (<a href="Typeclasses.html">Typeclassed</a> entity) - the object to monitor. Since this must be typeclassed, it means you can't monitor changes on <a href="Sessions.html">Sessions</a> with the monitorhandler, for example.</li>
+<li><code>fieldname</code> (str) - the name of a field or <a href="Attributes.html">Attribute</a> on <code>obj</code>. If you want to monitor a database field you must specify its full name, including the starting <code>db_</code> (like <code>db_key</code>, <code>db_location</code> etc). Any names not starting with <code>db_</code> are instead assumed to be the names of Attributes. This difference matters, since the MonitorHandler will automatically know to watch the <code>db_value</code> field of the Attribute. </li>
 <li><code>callback</code>(callable) - This will be called as <code>callback(fieldname=fieldname, obj=obj, **kwargs)</code> when the field updates.</li>
 <li><code>idstring</code> (str) - this is used to separate multiple monitors on the same object and fieldname. This is required in order to properly identify and remove the monitor later. It's also used for saving it. </li>
 <li><code>persistent</code> (bool) - if True, the monitor will survive a server reboot.</li>

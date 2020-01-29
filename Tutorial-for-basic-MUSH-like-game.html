@@ -71,8 +71,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="A-long-tutorial-for-building-a-simple-MUSH-in-Evennia,-from-scratch."></a></p>
-<p>This tutorial lets you code a small but complete and functioning MUSH-like game in Evennia. A <a href="http://en.wikipedia.org/wiki/MUSH">MUSH</a> is, for our purposes, a class of roleplay-centric games focused on free form storytelling. Even if you are not interested in MUSH:es, this is still a good first game-type to try since it's not so code heavy. You will be able to use the same principles for building other types of games.  </p>
+    <p>This tutorial lets you code a small but complete and functioning MUSH-like game in Evennia. A <a href="http://en.wikipedia.org/wiki/MUSH">MUSH</a> is, for our purposes, a class of roleplay-centric games focused on free form storytelling. Even if you are not interested in MUSH:es, this is still a good first game-type to try since it's not so code heavy. You will be able to use the same principles for building other types of games.  </p>
 <p>The tutorial starts from scratch. If you did the <a href="First-Steps-Coding">First Steps Coding</a> tutorial already you should have some ideas about how to do some of the steps already. </p>
 <p>The following are the (very simplistic and cut-down) features we will implement (this was taken from a feature request from a MUSH user new to Evennia). A Character in this system should: </p>
 <ul>
@@ -104,7 +103,7 @@ class Character(DefaultCharacter):
         self.db.combat_score = 1
 </code></pre>
 
-<p>We defined two new <a href="Attributes">Attributes</a> <code>power</code> and <code>combat_score</code> and set them to default values. Make sure to <code>@reload</code> the server if you had it already running (you need to reload every time you update your python code, don't worry, no accounts will be disconnected by the reload). </p>
+<p>We defined two new <a href="Attributes.html">Attributes</a> <code>power</code> and <code>combat_score</code> and set them to default values. Make sure to <code>@reload</code> the server if you had it already running (you need to reload every time you update your python code, don't worry, no accounts will be disconnected by the reload). </p>
 <p>Note that only <em>new</em> characters will see your new Attributes (since the <code>at_object_creation</code> hook is called when the object is first created, existing Characters won't have it).  To update yourself, run </p>
 <pre><code> @typeclass/force self
 </code></pre>
@@ -117,14 +116,14 @@ class Character(DefaultCharacter):
 <p>Note that this again is made so as to be easy to expand to a full-fledged game. With our simple example, we could simply set an <code>is_in_chargen</code> flag on the account and have the <code>+setpower</code> command check it. Using this method however will make it easy to add more functionality later. </p>
 <p>What we need are the following:</p>
 <ul>
-<li>One character generation <a href="Commands">Command</a> to set the "Power" on the <code>Character</code>.  </li>
+<li>One character generation <a href="Commands.html">Command</a> to set the "Power" on the <code>Character</code>.  </li>
 <li>A chargen <a href="Command-Sets">CmdSet</a> to hold this command. Lets call it <code>ChargenCmdset</code>.  </li>
 <li>A custom <code>ChargenRoom</code> type that makes this set of commands available to players in such rooms.  </li>
 <li>One such room to test things in.  </li>
 </ul>
 <h3 id="the-setpower-command">The +setpower command<a class="headerlink" href="#the-setpower-command" title="Permanent link">&para;</a></h3>
 <p>For this tutorial we will add all our new commands to <code>mygame/commands/command.py</code> but you could split your commands into multiple module if you prefered.</p>
-<p>For this tutorial character generation will only consist of one <a href="Commands">Command</a> to set the Character s "power" stat. It will be called on the following MUSH-like form: </p>
+<p>For this tutorial character generation will only consist of one <a href="Commands.html">Command</a> to set the Character s "power" stat. It will be called on the following MUSH-like form: </p>
 <pre><code> +setpower 4
 </code></pre>
 <p>Open <code>command.py</code> file. It contains documented empty templates for the base command and the "MuxCommand" type used by default in Evennia. We will use the plain <code>Command</code> type here, the <code>MuxCommand</code> class offers some extra features like stripping whitespace that may be useful - if so, just import from that instead. </p>
@@ -202,7 +201,7 @@ class ChargenRoom(Room):
         self.cmdset.add(ChargenCmdset, permanent=True)
 </code></pre>
 
-<p>Note how new rooms created with this typeclass will always start with <code>ChargenCmdset</code> on themselves. Don't forget the <code>permanent=True</code> keyword or you will lose the cmdset after a server reload. For more information about <a href="Command-Sets">Command Sets</a> and <a href="Commands">Commands</a>, see the respective links. </p>
+<p>Note how new rooms created with this typeclass will always start with <code>ChargenCmdset</code> on themselves. Don't forget the <code>permanent=True</code> keyword or you will lose the cmdset after a server reload. For more information about <a href="Command-Sets">Command Sets</a> and <a href="Commands.html">Commands</a>, see the respective links. </p>
 <h3 id="testing-chargen">Testing chargen<a class="headerlink" href="#testing-chargen" title="Permanent link">&para;</a></h3>
 <p>First, make sure you have <code>@reload</code>ed the server (or use <code>evennia reload</code> from the terminal) to have your new python code added to the game. Check your terminal and fix any errors you see - the error traceback lists exactly where the error is found - look line numbers in files you have changed.</p>
 <p>We can't test things unless we have some chargen areas to test. Log into the game (you should at this point be using the new, custom Character class). Let's dig a chargen area to test. </p>
@@ -213,7 +212,7 @@ class ChargenRoom(Room):
 between fixes. Don't continue until the creation seems to have worked okay. </p>
 <pre><code> chargen
 </code></pre>
-<p>This should bring you to the chargen room. Being in there you should now have the <code>+setpower</code> command available, so test it out. When you leave (via the <code>finish</code> exit), the command will go away and trying <code>+setpower</code> should now give you a command-not-found error. Use <code>ex me</code> (as a privileged user) to check so the <code>Power</code> <a href="Attributes">Attribute</a> has been set correctly.</p>
+<p>This should bring you to the chargen room. Being in there you should now have the <code>+setpower</code> command available, so test it out. When you leave (via the <code>finish</code> exit), the command will go away and trying <code>+setpower</code> should now give you a command-not-found error. Use <code>ex me</code> (as a privileged user) to check so the <code>Power</code> <a href="Attributes.html">Attribute</a> has been set correctly.</p>
 <p>If things are not working, make sure your typeclasses and commands are free of bugs and that you have entered the paths to the various command sets and commands correctly. Check the logs or command line for tracebacks and errors. </p>
 <h2 id="combat-system">Combat System<a class="headerlink" href="#combat-system" title="Permanent link">&para;</a></h2>
 <p>We will add our combat command to the default command set, meaning it will be available to everyone at all times. The combat system consists of a <code>+attack</code> command to get how successful our attack is. We also change the default <code>look</code> command to display the current combat score.</p>
@@ -352,12 +351,12 @@ class CmdCreateNPC(Command):
 </code></pre>
 
 <p>Here we define a <code>+createnpc</code> (<code>+createNPC</code> works too) that is callable by everyone <em>not</em> having the <code>nonpcs</code> "<a href="Locks#Permissions">permission</a>" (in Evennia, a "permission" can just as well be used to block access, it depends on the lock we define). We create the NPC object in the caller's current location, using our custom <code>Character</code> typeclass to do so. </p>
-<p>We set an extra lock condition on the NPC, which we will use to check who may edit the NPC later -- we allow the creator to do so, and anyone with the Builders permission (or higher). See <a href="Locks">Locks</a> for more information about the lock system.</p>
+<p>We set an extra lock condition on the NPC, which we will use to check who may edit the NPC later -- we allow the creator to do so, and anyone with the Builders permission (or higher). See <a href="Locks.html">Locks</a> for more information about the lock system.</p>
 <p>Note that we just give the object default permissions (by not specifying the <code>permissions</code> keyword to the <code>create_object()</code> call).  In some games one might want to give the NPC the same permissions as the Character creating them, this might be a security risk though.</p>
 <p>Add this command to your default cmdset the same way you did the <code>+attack</code> command earlier. <code>@reload</code> and it will be available to test. </p>
 <h3 id="editing-the-npc-with-editnpc">Editing the NPC with +editNPC<a class="headerlink" href="#editing-the-npc-with-editnpc" title="Permanent link">&para;</a></h3>
 <p>Since we re-used our custom character typeclass, our new NPC already has a <em>Power</em> value - it defaults to 1. How do we change this? </p>
-<p>There are a few ways we can do this. The easiest is to remember that the <code>power</code> attribute is just a simple <a href="Attributes">Attribute</a> stored on the NPC object. So as a Builder or Admin we could set this right away with the default <code>@set</code> command: </p>
+<p>There are a few ways we can do this. The easiest is to remember that the <code>power</code> attribute is just a simple <a href="Attributes.html">Attribute</a> stored on the NPC object. So as a Builder or Admin we could set this right away with the default <code>@set</code> command: </p>
 <pre><code> @set mynpc/power = 6
 </code></pre>
 <p>The <code>@set</code> command is too generally powerful though, and thus only available to staff. We will add a custom command that only changes the things we want players to be allowed to change. We could in principle re-work our old <code>+setpower</code> command, but let's try something more useful. Let's make a <code>+editNPC</code> command. </p>
@@ -497,7 +496,7 @@ Anna says, 'Hello!'
 <p>This ends the tutorial. It looks like a lot of text but the amount of code you have to write is actually relatively short. At this point you should have a basic skeleton of a game and a feel for what is involved in coding your game. </p>
 <p>From here on you could build a few more ChargenRooms and link that to a bigger grid. The <code>+setpower</code> command can either be built upon or accompanied by many more to get a more elaborate character generation.</p>
 <p>The simple "Power" game mechanic should be easily expandable to something more full-fledged and useful, same is true for the combat score principle. The <code>+attack</code> could be made to target a specific player (or npc) and automatically compare their relevant attributes to determine a result.</p>
-<p>To continue from here, you can take a look at the <a href="Tutorial-World-Introduction">Tutorial World</a>. For more specific ideas, see the <a href="Tutorials">other tutorials and hints</a> as well 
+<p>To continue from here, you can take a look at the <a href="Tutorial-World-Introduction">Tutorial World</a>. For more specific ideas, see the <a href="Tutorials.html">other tutorials and hints</a> as well 
 as the <a href="Developer-Central">Developer Central</a>.</p>
 
   <br>

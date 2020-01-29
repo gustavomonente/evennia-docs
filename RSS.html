@@ -54,8 +54,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     
 
-    <p><a href="How-to-connect-your-game-to-an-external-RSS-feed."></a></p>
-<p><a href="http://en.wikipedia.org/wiki/RSS">RSS</a> is a format for easily tracking updates on websites. The principle is simple - whenever a site is updated, a small text file is updated. An RSS reader can then regularly go online, check this file for updates and let the user know what's new. </p>
+    <p><a href="http://en.wikipedia.org/wiki/RSS">RSS</a> is a format for easily tracking updates on websites. The principle is simple - whenever a site is updated, a small text file is updated. An RSS reader can then regularly go online, check this file for updates and let the user know what's new. </p>
 <p>Evennia allows for connecting any number of RSS feeds to any number of in-game channels. Updates to the feed will be conveniently echoed to the channel. There are many potential uses for this: For example the MUD might use a separate website to host its forums. Through RSS, the players can then be notified when new posts are made. Another example is to let everyone know you updated your dev blog. Admins might also want to track the latest Evennia updates through our own RSS feed <a href="http://code.google.com/feeds/p/evennia/updates/basic">here</a>.</p>
 <h2 id="configuring-rss">Configuring RSS<a class="headerlink" href="#configuring-rss" title="Permanent link">&para;</a></h2>
 <p>To use RSS, you first need to install the <a href="http://code.google.com/p/feedparser/">feedparser</a> python module.</p>
@@ -75,7 +74,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <p>That's it, really. New Evennia updates will now show up as a one-line title and link in the channel. Give the <code>@rss2chan</code> command on its own to show all connections. To remove a feed from a channel, you specify the connection again (use the command to see it in the list) but add the <code>/delete</code> switch: </p>
 <pre><code> @rss2chan/delete rss = https://github.com/evennia/evennia/commits/master.atom
 </code></pre>
-<p>You can connect any number of RSS feeds to a channel this way. You could also connect them to the same channels as <a href="IRC">IRC</a> to have the feed echo to external chat channels as well. </p>
+<p>You can connect any number of RSS feeds to a channel this way. You could also connect them to the same channels as <a href="IRC.html">IRC</a> to have the feed echo to external chat channels as well. </p>
 
   <br>
     
